@@ -244,6 +244,7 @@ class LevelSystemPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Hệ thống xếp hạng',
@@ -252,69 +253,256 @@ class LevelSystemPage extends StatelessWidget {
                 ),
           ).animate().fadeIn(),
           const SizedBox(height: 8),
-          Text(
-            'PoolOS sử dụng hệ thống cấp bậc để đánh giá trình độ của bạn',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
-            textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 32),
-          Expanded(
-            child: ListView.separated(
-              itemCount: AppConstants.playerLevels.length,
-              separatorBuilder: (_, __) => const Divider(),
-              itemBuilder: (context, index) {
-                final level = AppConstants.playerLevels.keys.toList()[index];
-                final label = AppConstants.playerLevels[level]!;
-                final isCurrentLevel = index == 0; // Beginner is default
-
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: isCurrentLevel
-                        ? AppTheme.primaryGreen
-                        : Colors.grey.shade300,
-                    child: Text(
-                      level[0].toUpperCase(),
-                      style: TextStyle(
-                        color: isCurrentLevel ? Colors.white : Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    label,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.accentGold.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, size: 18, color: AppTheme.accentGold),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Tham khảo theo chuẩn xếp hạng của Hà Nội. Mỗi nơi có thể có định nghĩa khác nhau.',
                     style: TextStyle(
-                      fontWeight:
-                          isCurrentLevel ? FontWeight.bold : FontWeight.normal,
+                      fontSize: 12,
+                      color: AppTheme.accentGold,
                     ),
                   ),
-                  trailing: isCurrentLevel
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Text(
-                            'Bạn ở đây',
-                            style: TextStyle(
-                              color: AppTheme.primaryGreen,
-                              fontSize: 12,
-                            ),
-                          ),
-                        )
-                      : const Icon(Icons.arrow_forward, size: 16),
-                )
-                    .animate()
-                    .fadeIn(delay: (100 * index).ms)
-                    .slideX(begin: 0.1, end: 0, delay: (100 * index).ms);
-              },
+                ),
+              ],
+            ),
+          ).animate().fadeIn(delay: 100.ms),
+          const SizedBox(height: 16),
+
+          // Amateur Section
+          _LevelCategoryHeader(
+            title: 'Nghiệp dư',
+            subtitle: 'Người mới đến người chơi phong trào',
+          ).animate().fadeIn(delay: 150.ms),
+          const SizedBox(height: 8),
+          _LevelItem(
+            level: AppConstants.playerLevels['beginner']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 200.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['K']!,
+            showBadge: true,
+          ).animate().fadeIn(delay: 250.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['I']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 300.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['H']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 350.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['G']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 400.ms),
+
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 16),
+
+          // Competitive Section
+          _LevelCategoryHeader(
+            title: 'Phong trào → Chuyên nghiệp',
+            subtitle: 'Bước vào sân chơi chuyên nghiệp',
+          ).animate().fadeIn(delay: 450.ms),
+          const SizedBox(height: 8),
+          _LevelItem(
+            level: AppConstants.playerLevels['F']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 500.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['E']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 550.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['D']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 600.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['C']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 650.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['B']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 700.ms),
+          _LevelItem(
+            level: AppConstants.playerLevels['A']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 750.ms),
+
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 16),
+
+          // Professional
+          _LevelCategoryHeader(
+            title: 'Chuyên nghiệp',
+            subtitle: 'Cao thủ, thi đấu quốc tế',
+          ).animate().fadeIn(delay: 800.ms),
+          const SizedBox(height: 8),
+          _LevelItem(
+            level: AppConstants.playerLevels['pro']!,
+            showBadge: false,
+          ).animate().fadeIn(delay: 850.ms),
+
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.lightbulb_outline, size: 18, color: AppTheme.primaryGreen),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Khi bạn đạt G, hệ thống sẽ gợi ý bạn đánh giá lại để xác định F hoặc cao hơn.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.primaryGreen,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ).animate().fadeIn(delay: 900.ms),
+        ],
+      ),
+    );
+  }
+}
+
+class _LevelCategoryHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+
+  const _LevelCategoryHeader({
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: AppTheme.primaryGreen,
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
             ),
           ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            subtitle,
+            style: TextStyle(
+              color: AppTheme.textSecondary,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LevelItem extends StatelessWidget {
+  final PlayerLevel level;
+  final bool showBadge;
+
+  const _LevelItem({
+    required this.level,
+    required this.showBadge,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                level.code == 'beginner' ? '?' : level.code,
+                style: TextStyle(
+                  color: AppTheme.primaryGreen,
+                  fontWeight: FontWeight.bold,
+                  fontSize: level.code == 'pro' ? 10 : 16,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  level.name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  level.description,
+                  style: TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (showBadge)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryGreen,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Mặc định',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
         ],
       ),
     );
