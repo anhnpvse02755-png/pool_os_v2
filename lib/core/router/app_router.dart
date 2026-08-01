@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../presentation/screens/onboarding/welcome_screen.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
+import '../../presentation/screens/onboarding/interest_selection_screen.dart';
 import '../../presentation/screens/home/home_screen.dart';
 import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
@@ -29,6 +30,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/onboarding',
         name: 'onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding/interests',
+        name: 'interests',
+        builder: (context, state) => const InterestSelectionScreen(),
       ),
 
       // Main App (Bottom Navigation)
