@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../core/utils/pool_rating_calculator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,6 +16,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final Map<int, int> _answers = {};
 
   @override
   void dispose() {
@@ -23,13 +25,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < 5) {
+    if (_currentPage < 9) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
-      // Complete onboarding -> Home
       context.go('/home');
     }
   }
@@ -44,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
-                children: List.generate(6, (index) {
+                children: List.generate(10, (index) {
                   return Expanded(
                     child: Container(
                       height: 4,
@@ -67,13 +68,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 controller: _pageController,
                 onPageChanged: (page) => setState(() => _currentPage = page),
                 physics: const NeverScrollableScrollPhysics(),
-                children: const [
-                  WelcomePage(),
-                  BenefitsPage(),
-                  LevelSystemPage(),
-                  AssessmentPage1(),
-                  AssessmentPage2(),
-                  ResultPage(),
+                children: [
+                  const WelcomePage(),
+                  const LevelSystemIntroPage(),
+                  const AssessmentIntroPage(),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[0], onAnswer: (v) => _answers[1] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[1], onAnswer: (v) => _answers[2] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[2], onAnswer: (v) => _answers[3] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[3], onAnswer: (v) => _answers[4] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[4], onAnswer: (v) => _answers[5] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[5], onAnswer: (v) => _answers[6] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[6], onAnswer: (v) => _answers[7] = v),
+                  _AssessmentQuestionPage(question: AppConstants.assessmentQuestions[7], onAnswer: (v) => _answers[8] = v),
+                  ResultPage(answers: _answers),
                 ],
               ),
             ),
@@ -98,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     flex: _currentPage > 0 ? 1 : 2,
                     child: ElevatedButton(
                       onPressed: _nextPage,
-                      child: Text(_currentPage < 5 ? 'Tiếp tục' : 'Bắt đầu'),
+                      child: Text(_currentPage < 9 ? 'Tiếp tục' : 'Bắt đầu'),
                     ),
                   ),
                 ],
@@ -136,7 +143,7 @@ class WelcomePage extends StatelessWidget {
           ).animate().fadeIn(delay: 200.ms),
           const SizedBox(height: 16),
           Text(
-            'Trước khi bắt đầu, hãy để PoolOS hiểu bạn.',
+            'Trước khi bắt đầu, hãy để PoolOS hiểu về kỹ năng của bạn.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: AppTheme.textSecondary,
                 ),
@@ -170,255 +177,212 @@ class WelcomePage extends StatelessWidget {
   }
 }
 
-class BenefitsPage extends StatelessWidget {
-  const BenefitsPage({super.key});
+class LevelSystemIntroPage extends StatelessWidget {
+  const LevelSystemIntroPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final benefits = [
-      'Xác định trình độ hiện tại của bạn',
-      'Tạo giáo trình học riêng phù hợp với bạn',
-      'AI phân tích lối chơi và đưa ra gợi ý cải thiện',
-      'Theo dõi tiến bộ qua từng trận đấu',
-      'Đề xuất video và bài tập phù hợp trình độ',
-      'Luyện tập mỗi ngày với kế hoạch rõ ràng',
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          Text(
-            'Bạn sẽ nhận được gì?',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ).animate().fadeIn(),
-          const SizedBox(height: 32),
-          Expanded(
-            child: ListView.separated(
-              itemCount: benefits.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                return Row(
-                  children: [
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryGreen,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        benefits[index],
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                  ],
-                )
-                    .animate()
-                    .fadeIn(delay: (100 * index).ms)
-                    .slideX(begin: 0.2, end: 0, delay: (100 * index).ms);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class LevelSystemPage extends StatelessWidget {
-  const LevelSystemPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hệ thống xếp hạng',
+            'Hệ thống xếp hạng PoolOS',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ).animate().fadeIn(),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
+
+          // Intro text
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppTheme.accentGold.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, size: 18, color: AppTheme.accentGold),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Tham khảo theo chuẩn xếp hạng của Hà Nội. Mỗi nơi có thể có định nghĩa khác nhau.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.accentGold,
+                Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 20, color: AppTheme.accentGold),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Về hệ thống xếp hạng',
+                      style: TextStyle(
+                        color: AppTheme.accentGold,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Hệ thống xếp hạng trong PoolOS được xây dựng dựa trên cách phân hạng phổ biến của cộng đồng Pool Hà Nội.',
+                  style: TextStyle(height: 1.5),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Do mỗi địa phương hoặc câu lạc bộ có thể sử dụng cách gọi khác nhau, PoolOS sử dụng hệ thống dưới đây để giúp người chơi dễ trao đổi và thống nhất khi tham gia các hoạt động trong ứng dụng.',
+                  style: TextStyle(height: 1.5, color: AppTheme.textSecondary),
                 ),
               ],
             ),
           ).animate().fadeIn(delay: 100.ms),
-          const SizedBox(height: 16),
 
-          // Amateur Section
-          _LevelCategoryHeader(
-            title: 'Nghiệp dư',
-            subtitle: 'Người mới đến người chơi phong trào',
-          ).animate().fadeIn(delay: 150.ms),
-          const SizedBox(height: 8),
-          _LevelItem(
-            level: AppConstants.playerLevels['beginner']!,
-            showBadge: false,
+          const SizedBox(height: 24),
+
+          // Amateur section
+          _LevelCategory(
+            title: 'Người chơi phong trào',
+            levels: ['K', 'I', 'H', 'G'],
           ).animate().fadeIn(delay: 200.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['K']!,
-            showBadge: true,
-          ).animate().fadeIn(delay: 250.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['I']!,
-            showBadge: false,
+
+          const SizedBox(height: 16),
+
+          // Competitive section
+          _LevelCategory(
+            title: 'Người chơi thi đấu',
+            levels: ['F', 'E', 'D', 'C', 'B', 'A'],
           ).animate().fadeIn(delay: 300.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['H']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 350.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['G']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 400.ms),
 
-          const SizedBox(height: 16),
-          const Divider(),
-          const SizedBox(height: 16),
-
-          // Competitive Section
-          _LevelCategoryHeader(
-            title: 'Phong trào → Chuyên nghiệp',
-            subtitle: 'Bước vào sân chơi chuyên nghiệp',
-          ).animate().fadeIn(delay: 450.ms),
-          const SizedBox(height: 8),
-          _LevelItem(
-            level: AppConstants.playerLevels['F']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 500.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['E']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 550.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['D']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 600.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['C']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 650.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['B']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 700.ms),
-          _LevelItem(
-            level: AppConstants.playerLevels['A']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 750.ms),
-
-          const SizedBox(height: 16),
-          const Divider(),
           const SizedBox(height: 16),
 
           // Professional
-          _LevelCategoryHeader(
+          _LevelCategory(
             title: 'Chuyên nghiệp',
-            subtitle: 'Cao thủ, thi đấu quốc tế',
-          ).animate().fadeIn(delay: 800.ms),
-          const SizedBox(height: 8),
-          _LevelItem(
-            level: AppConstants.playerLevels['pro']!,
-            showBadge: false,
-          ).animate().fadeIn(delay: 850.ms),
+            levels: ['pro'],
+          ).animate().fadeIn(delay: 400.ms),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
+
+          // Auto suggestion note
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                Icon(Icons.lightbulb_outline, size: 18, color: AppTheme.primaryGreen),
-                const SizedBox(width: 8),
+                Icon(Icons.auto_awesome, color: AppTheme.primaryGreen),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Khi bạn đạt G, hệ thống sẽ gợi ý bạn đánh giá lại để xác định F hoặc cao hơn.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppTheme.primaryGreen,
-                    ),
+                    'PoolOS sẽ tự động đề xuất hạng dựa trên bài đánh giá và kết quả thi đấu thực tế.',
+                    style: TextStyle(color: AppTheme.primaryGreen),
                   ),
                 ),
               ],
             ),
-          ).animate().fadeIn(delay: 900.ms),
+          ).animate().fadeIn(delay: 500.ms),
+
+          const SizedBox(height: 24),
+
+          // New player note
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.help_outline, color: Colors.grey.shade600),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Chưa từng chơi? PoolOS sẽ bắt đầu đánh giá từ mức K và tự động điều chỉnh khi bạn sử dụng ứng dụng.',
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                ),
+              ],
+            ),
+          ).animate().fadeIn(delay: 600.ms),
         ],
       ),
     );
   }
 }
 
-class _LevelCategoryHeader extends StatelessWidget {
+class _LevelCategory extends StatelessWidget {
   final String title;
-  final String subtitle;
+  final List<String> levels;
 
-  const _LevelCategoryHeader({
+  const _LevelCategory({
     required this.title,
-    required this.subtitle,
+    required this.levels,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            title,
-            style: TextStyle(
-              color: AppTheme.primaryGreen,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
+        Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.primaryGreen,
           ),
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            subtitle,
-            style: TextStyle(
-              color: AppTheme.textSecondary,
-              fontSize: 12,
-            ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade200),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            children: List.generate(levels.length, (index) {
+              final level = AppConstants.playerLevels[levels[index]]!;
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: index.isEven ? Colors.white : Colors.grey.shade50,
+                  borderRadius: index == 0 && index == levels.length - 1
+                      ? BorderRadius.circular(12)
+                      : index == 0
+                          ? const BorderRadius.vertical(top: Radius.circular(12))
+                          : index == levels.length - 1
+                              ? const BorderRadius.vertical(bottom: Radius.circular(12))
+                              : null,
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(
+                          level.code == 'pro' ? 'PRO' : level.code,
+                          style: TextStyle(
+                            color: AppTheme.primaryGreen,
+                            fontWeight: FontWeight.bold,
+                            fontSize: level.code == 'pro' ? 10 : 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        level.description,
+                        style: TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
           ),
         ),
       ],
@@ -426,344 +390,265 @@ class _LevelCategoryHeader extends StatelessWidget {
   }
 }
 
-class _LevelItem extends StatelessWidget {
-  final PlayerLevel level;
-  final bool showBadge;
+class AssessmentIntroPage extends StatelessWidget {
+  const AssessmentIntroPage({super.key});
 
-  const _LevelItem({
-    required this.level,
-    required this.showBadge,
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.psychology,
+              size: 64,
+              color: AppTheme.primaryGreen,
+            ),
+          ).animate().scale(duration: 400.ms),
+          const SizedBox(height: 32),
+          Text(
+            'Bài đánh giá kỹ năng',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ).animate().fadeIn(delay: 200.ms),
+          const SizedBox(height: 16),
+          Text(
+            '8 câu hỏi để hiểu về trình độ của bạn',
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textSecondary,
+                ),
+            textAlign: TextAlign.center,
+          ).animate().fadeIn(delay: 300.ms),
+          const SizedBox(height: 32),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppTheme.accentGold.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.lightbulb_outline, color: AppTheme.accentGold),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Triết lý của PoolOS',
+                      style: TextStyle(
+                        color: AppTheme.accentGold,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'PoolOS không hỏi bạn "hạng gì?" một cách chủ quan. Thay vào đó, PoolOS thu thập năng lực thực tế của bạn và tính Pool Rating một cách khách quan.',
+                  style: TextStyle(height: 1.5),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Hạng của bạn sẽ được điều chỉnh tự động khi có đủ dữ liệu từ các buổi chơi thực tế.',
+                  style: TextStyle(
+                    height: 1.5,
+                    color: AppTheme.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          )
+              .animate()
+              .fadeIn(delay: 400.ms)
+              .slideY(begin: 0.1, end: 0),
+          const SizedBox(height: 24),
+          Text(
+            'Hãy trả lời dựa trên khả năng thực tế của bạn nhé!',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.primaryGreen,
+                  fontWeight: FontWeight.w500,
+                ),
+          ).animate().fadeIn(delay: 500.ms),
+        ],
+      ),
+    );
+  }
+}
+
+class _AssessmentQuestionPage extends StatefulWidget {
+  final AssessmentQuestion question;
+  final ValueChanged<int> onAnswer;
+
+  const _AssessmentQuestionPage({
+    required this.question,
+    required this.onAnswer,
   });
 
   @override
+  State<_AssessmentQuestionPage> createState() => _AssessmentQuestionPageState();
+}
+
+class _AssessmentQuestionPageState extends State<_AssessmentQuestionPage> {
+  int? _selectedValue;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(
-              child: Text(
-                level.code == 'beginner' ? '?' : level.code,
-                style: TextStyle(
+          // Question number badge
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
                   color: AppTheme.primaryGreen,
-                  fontWeight: FontWeight.bold,
-                  fontSize: level.code == 'pro' ? 10 : 16,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  level.name,
+                child: Text(
+                  'Câu ${widget.question.id}',
                   style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  level.description,
-                  style: TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontSize: 12,
+              ),
+              if (widget.question.isImportant) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentGold,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star, size: 12, color: Colors.white),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Quan trọng',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
-            ),
-          ),
-          if (showBadge)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryGreen,
+            ],
+          ).animate().fadeIn(),
+          const SizedBox(height: 20),
+
+          // Question title
+          Text(
+            widget.question.title,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ).animate().fadeIn(delay: 100.ms),
+          const SizedBox(height: 8),
+
+          // Subtitle
+          Text(
+            widget.question.subtitle,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.textSecondary,
+                  fontStyle: FontStyle.italic,
+                ),
+          ).animate().fadeIn(delay: 150.ms),
+          const SizedBox(height: 24),
+
+          // Options
+          ...List.generate(widget.question.options.length, (index) {
+            final option = widget.question.options[index];
+            final isSelected = _selectedValue == option.value;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: InkWell(
+                onTap: () {
+                  setState(() => _selectedValue = option.value);
+                  widget.onAnswer(option.value);
+                },
                 borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Mặc định',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
+                      width: isSelected ? 2 : 1,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    color: isSelected
+                        ? AppTheme.primaryGreen.withValues(alpha: 0.05)
+                        : Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected ? AppTheme.primaryGreen : Colors.grey,
+                            width: 2,
+                          ),
+                          color: isSelected ? AppTheme.primaryGreen : Colors.transparent,
+                        ),
+                        child: isSelected
+                            ? const Icon(Icons.check, size: 16, color: Colors.white)
+                            : null,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          option.label,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              )
+                  .animate()
+                  .fadeIn(delay: (200 + index * 50).ms)
+                  .slideX(begin: 0.05, end: 0, delay: (200 + index * 50).ms),
+            );
+          }),
         ],
       ),
     );
-  }
-}
-
-class AssessmentPage1 extends StatefulWidget {
-  const AssessmentPage1({super.key});
-
-  @override
-  State<AssessmentPage1> createState() => _AssessmentPage1State();
-}
-
-class _AssessmentPage1State extends State<AssessmentPage1> {
-  int? _selectedYears;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Bạn chơi bi-a bao lâu rồi?',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ).animate().fadeIn(),
-          const SizedBox(height: 32),
-          Expanded(
-            child: ListView(
-              children: [
-                _buildOption(
-                  'Chưa từng chơi',
-                  'Tôi muốn bắt đầu từ đầu',
-                  isSelected: _selectedYears == 0,
-                  onTap: () => setState(() => _selectedYears = 0),
-                ),
-                const SizedBox(height: 12),
-                _buildOption(
-                  'Dưới 1 năm',
-                  'Mới tập chơi, đang học hỏi',
-                  isSelected: _selectedYears == 1,
-                  onTap: () => setState(() => _selectedYears = 1),
-                ),
-                const SizedBox(height: 12),
-                _buildOption(
-                  '1-3 năm',
-                  'Đã biết cách chơi cơ bản',
-                  isSelected: _selectedYears == 2,
-                  onTap: () => setState(() => _selectedYears = 2),
-                ),
-                const SizedBox(height: 12),
-                _buildOption(
-                  'Hơn 3 năm',
-                  'Chơi thường xuyên',
-                  isSelected: _selectedYears == 3,
-                  onTap: () => setState(() => _selectedYears = 3),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOption(String title, String subtitle,
-      {required bool isSelected, required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected
-              ? AppTheme.primaryGreen.withValues(alpha: 0.05)
-              : Colors.white,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? AppTheme.primaryGreen : Colors.grey,
-                  width: 2,
-                ),
-                color: isSelected ? AppTheme.primaryGreen : Colors.transparent,
-              ),
-              child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
-                  : null,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1, end: 0, delay: 200.ms);
-  }
-}
-
-class AssessmentPage2 extends StatefulWidget {
-  const AssessmentPage2({super.key});
-
-  @override
-  State<AssessmentPage2> createState() => _AssessmentPage2State();
-}
-
-class _AssessmentPage2State extends State<AssessmentPage2> {
-  int? _selectedHours;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Bạn chơi bao nhiêu giờ mỗi tuần?',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ).animate().fadeIn(),
-          const SizedBox(height: 32),
-          Expanded(
-            child: ListView(
-              children: [
-                _buildOption(
-                  'Ít hơn 1 giờ',
-                  'Chơi thỉnh thoảng cho vui',
-                  isSelected: _selectedHours == 0,
-                  onTap: () => setState(() => _selectedHours = 0),
-                ),
-                const SizedBox(height: 12),
-                _buildOption(
-                  '1-5 giờ',
-                  'Chơi đều đặn mỗi tuần',
-                  isSelected: _selectedHours == 1,
-                  onTap: () => setState(() => _selectedHours = 1),
-                ),
-                const SizedBox(height: 12),
-                _buildOption(
-                  '5-10 giờ',
-                  'Chơi khá thường xuyên',
-                  isSelected: _selectedHours == 2,
-                  onTap: () => setState(() => _selectedHours = 2),
-                ),
-                const SizedBox(height: 12),
-                _buildOption(
-                  'Hơn 10 giờ',
-                  'Bi-a là đam mê lớn',
-                  isSelected: _selectedHours == 3,
-                  onTap: () => setState(() => _selectedHours = 3),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOption(String title, String subtitle,
-      {required bool isSelected, required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected
-              ? AppTheme.primaryGreen.withValues(alpha: 0.05)
-              : Colors.white,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? AppTheme.primaryGreen : Colors.grey,
-                  width: 2,
-                ),
-                color: isSelected ? AppTheme.primaryGreen : Colors.transparent,
-              ),
-              child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
-                  : null,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.1, end: 0, delay: 200.ms);
   }
 }
 
 class ResultPage extends StatelessWidget {
-  const ResultPage({super.key});
+  final Map<int, int> answers;
+
+  const ResultPage({super.key, required this.answers});
 
   @override
   Widget build(BuildContext context) {
+    // Calculate initial rating
+    final rating = PoolRatingCalculator.calculateFromAssessment(answers);
+    final level = PoolRatingCalculator.getLevelFromRating(rating);
+    final levelInfo = PoolRatingCalculator.getLevelInfo(level);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -777,8 +662,8 @@ class ResultPage extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.emoji_events,
-              size: 40,
+              Icons.check_circle,
+              size: 48,
               color: Colors.white,
             ),
           )
@@ -787,12 +672,15 @@ class ResultPage extends StatelessWidget {
               .fadeIn(),
           const SizedBox(height: 24),
           Text(
-            'Xác định xong!',
+            'Đánh giá hoàn tất!',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ).animate().fadeIn(delay: 200.ms),
+
           const SizedBox(height: 16),
+
+          // Main text with highlighted "hạng khởi tạo"
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
@@ -815,29 +703,50 @@ class ResultPage extends StatelessWidget {
               ],
             ),
           ).animate().fadeIn(delay: 300.ms),
+
           const SizedBox(height: 24),
+
+          // Level display
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppTheme.primaryGreen, width: 2),
             ),
             child: Column(
               children: [
-                const Text(
-                  'K',
+                Text(
+                  level,
                   style: TextStyle(
-                    fontSize: 48,
+                    fontSize: 64,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.primaryGreen,
                   ),
                 ),
-                Text(
-                  'Người mới tập chơi',
-                  style: TextStyle(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.8),
-                    fontWeight: FontWeight.w500,
+                if (levelInfo != null)
+                  Text(
+                    levelInfo.description,
+                    style: TextStyle(
+                      color: AppTheme.textSecondary,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentGold.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Pool Rating: $rating',
+                    style: TextStyle(
+                      color: AppTheme.accentGold,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -846,7 +755,10 @@ class ResultPage extends StatelessWidget {
               .animate()
               .fadeIn(delay: 400.ms)
               .slideY(begin: 0.2, end: 0, delay: 400.ms),
+
           const SizedBox(height: 24),
+
+          // Info box
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -872,7 +784,7 @@ class ResultPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Hạng khởi tạo là hạng đánh giá sơ bộ, không hoàn toàn chính xác với trình độ thực tế của bạn.',
+                  'Hạng khởi tạo là hạng đánh giá sơ bộ dựa trên câu trả lời của bạn, không hoàn toàn chính xác với trình độ thực tế.',
                   style: TextStyle(
                     color: AppTheme.textPrimary,
                     height: 1.5,
@@ -888,14 +800,14 @@ class ResultPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.checklist, size: 18, color: AppTheme.primaryGreen),
+                      Icon(Icons.auto_awesome, size: 18, color: AppTheme.primaryGreen),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
