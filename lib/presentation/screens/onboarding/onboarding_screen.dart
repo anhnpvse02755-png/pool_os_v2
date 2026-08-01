@@ -764,28 +764,28 @@ class ResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 100,
-            height: 100,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen,
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.emoji_events,
-              size: 56,
+              size: 40,
               color: Colors.white,
             ),
           )
               .animate()
               .scale(duration: 400.ms, curve: Curves.elasticOut)
               .fadeIn(),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           Text(
             'Xác định xong!',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -793,16 +793,31 @@ class ResultPage extends StatelessWidget {
                 ),
           ).animate().fadeIn(delay: 200.ms),
           const SizedBox(height: 16),
-          Text(
-            'Dựa trên câu trả lời của bạn, PoolOS xác định bạn đang ở cấp độ:',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
+          RichText(
             textAlign: TextAlign.center,
+            text: TextSpan(
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.textSecondary,
+                    height: 1.5,
+                  ),
+              children: [
+                const TextSpan(text: 'Dựa trên câu trả lời của bạn, PoolOS xác định '),
+                TextSpan(
+                  text: 'hạng khởi tạo',
+                  style: TextStyle(
+                    color: AppTheme.primaryGreen,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppTheme.primaryGreen,
+                  ),
+                ),
+                const TextSpan(text: ' của bạn đang ở cấp độ:'),
+              ],
+            ),
           ).animate().fadeIn(delay: 300.ms),
           const SizedBox(height: 24),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
@@ -832,13 +847,75 @@ class ResultPage extends StatelessWidget {
               .fadeIn(delay: 400.ms)
               .slideY(begin: 0.2, end: 0, delay: 400.ms),
           const SizedBox(height: 24),
-          Text(
-            'PoolOS sẽ tạo lộ trình học riêng cho bạn dựa trên trình độ này.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppTheme.accentGold.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.accentGold.withValues(alpha: 0.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 20, color: AppTheme.accentGold),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Hạng khởi tạo là gì?',
+                      style: TextStyle(
+                        color: AppTheme.accentGold,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-            textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 500.ms),
+                const SizedBox(height: 12),
+                Text(
+                  'Hạng khởi tạo là hạng đánh giá sơ bộ, không hoàn toàn chính xác với trình độ thực tế của bạn.',
+                  style: TextStyle(
+                    color: AppTheme.textPrimary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Sau khi PoolOS ghi nhận đủ dữ liệu (số lượng rack đấu hoặc kết quả bài tập), hệ thống sẽ tự động đánh giá chính xác lại hạng của bạn.',
+                  style: TextStyle(
+                    color: AppTheme.textPrimary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.checklist, size: 18, color: AppTheme.primaryGreen),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'PoolOS sẽ tạo lộ trình học riêng phù hợp với bạn.',
+                          style: TextStyle(
+                            color: AppTheme.textPrimary,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          )
+              .animate()
+              .fadeIn(delay: 500.ms)
+              .slideY(begin: 0.1, end: 0, delay: 500.ms),
         ],
       ),
     );
