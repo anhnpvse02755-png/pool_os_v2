@@ -158,15 +158,15 @@
 | Coach Home | `/coach` | ✅ Done | Placeholder |
 | Recommendations | `/coach/recommendations` | ✅ Done | Via learning path |
 | Analysis | `/coach/analysis` | ✅ Done | Performance |
-| Training Plan | `/coach/plan` | 📋 TODO | Weekly plan |
+| Training Plan | `/coach/plan` | ✅ Done | Weekly plan |
 
 ### Module: Profile
 
 | Screen | Route | Status | Notes |
 |--------|-------|--------|-------|
 | Profile Home | `/profile` | ✅ Done | Full implementation |
-| Edit Profile | `/profile/edit` | 📋 TODO | |
-| Equipment | `/profile/equipment` | 📋 TODO | Cue management |
+| Edit Profile | `/profile/edit` | ✅ Done | Avatar, name, email, etc |
+| Equipment | `/profile/equipment` | ✅ Done | Cue management |
 | Settings | `/profile/settings` | ✅ Done | App settings |
 
 ### Module: Authentication
@@ -225,27 +225,21 @@
 | Home (AI Dashboard) | 1 | 1 | 100% |
 | Training Center | 14 | 14 | 100% |
 | Play | 6 | 6 | 100% |
-| Coach | 3 | 3 | 100% |
-| Profile | 2 | 4 | 50% |
+| Coach | 4 | 4 | 100% |
+| Profile | 4 | 4 | 100% |
 | Settings | 1 | 1 | 100% |
 | Authentication | 2 | 2 | 100% |
 | Database | 1 | 1 | 100% |
 | Services | 4 | 4 | 100% |
 
-**Overall Progress: 98%**
+**Overall Progress: 99%**
 
-## 🎯 NEXT ACTIONS (Cần làm)
+## 🎯 NEXT ACTIONS (Còn lại)
 
 ### High Priority
 1. **Supabase Setup** - Kết nối database thực sự
-2. **Training Plan Screen** - Weekly plan `/coach/plan`
-3. **Edit Profile** - Chỉnh sửa thông tin user
-
-### Medium Priority
-4. **Equipment Management** - Quản lý cue
-5. **Match Data Persistence** - Lưu trận đấu
 
 ### Low Priority
-6. **Community Features** - Social, leaderboards
-7. **Vision Auto Recording** - Camera ML
-8. **Unit Tests** - Testing
+2. **Community Features** - Social, leaderboards
+3. **Vision Auto Recording** - Camera ML
+4. **Unit Tests** - Testing
