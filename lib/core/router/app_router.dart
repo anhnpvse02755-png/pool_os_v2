@@ -13,6 +13,9 @@ import '../../presentation/screens/training/drill_session_screen.dart';
 import '../../presentation/screens/training/learning_path_screen.dart';
 import '../../presentation/screens/training/knowledge_list_screen.dart';
 import '../../presentation/screens/training/knowledge_detail_screen.dart';
+import '../../presentation/screens/training/certification_list_screen.dart';
+import '../../presentation/screens/training/certification_detail_screen.dart';
+import '../../presentation/screens/play/match_recording_screen.dart';
 import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
@@ -119,6 +122,24 @@ final routerProvider = Provider<GoRouter>((ref) {
               final articleId = state.pathParameters['articleId']!;
               return KnowledgeDetailScreen(articleId: articleId);
             },
+          ),
+          GoRoute(
+            path: '/training/certification',
+            name: 'certificationList',
+            builder: (context, state) => const CertificationListScreen(),
+          ),
+          GoRoute(
+            path: '/training/certification/:certId',
+            name: 'certificationDetail',
+            builder: (context, state) {
+              final certId = state.pathParameters['certId']!;
+              return CertificationDetailScreen(certificationId: certId);
+            },
+          ),
+          GoRoute(
+            path: '/play/recording',
+            name: 'matchRecording',
+            builder: (context, state) => const MatchRecordingScreen(),
           ),
           GoRoute(
             path: '/training/session/new',
