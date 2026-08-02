@@ -151,7 +151,7 @@ class LearningPathScreen extends ConsumerWidget {
                 order: index + 1,
                 onStart: () {
                   context.push(
-                    '/training/session/new?drill=${item.drill.code}&level=${item.suggestedLevel}',
+                    '/training/session/new?drill=${item.drillCode}',
                   );
                 },
                 onSkip: () {
@@ -250,22 +250,22 @@ class _LearningPathCard extends StatelessWidget {
 
   Color _getPriorityColor() {
     switch (item.priority) {
-      case PathPriority.high:
+      case 1:
         return Colors.orange;
-      case PathPriority.medium:
+      case 2:
         return Colors.blue;
-      case PathPriority.low:
+      default:
         return Colors.grey;
     }
   }
 
   String _getPriorityLabel() {
     switch (item.priority) {
-      case PathPriority.high:
+      case 1:
         return 'Ưu tiên cao';
-      case PathPriority.medium:
+      case 2:
         return 'Khuyến nghị';
-      case PathPriority.low:
+      default:
         return 'Bổ sung';
     }
   }
@@ -320,7 +320,7 @@ class _LearningPathCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              item.drill.nameVi,
+                              item.drillNameVi,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -368,7 +368,7 @@ class _LearningPathCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
-                              'Lv ${item.suggestedLevel}',
+                              '${item.estimatedMinutes} phút',
                               style: TextStyle(
                                 color: Colors.grey.shade700,
                                 fontSize: 11,
@@ -440,7 +440,7 @@ class _LearningPathCard extends StatelessWidget {
   }
 
   Color _getDifficultyColor() {
-    switch (item.drill.difficulty) {
+    switch (item.difficulty) {
       case 'easy':
         return Colors.green;
       case 'medium':
@@ -455,7 +455,7 @@ class _LearningPathCard extends StatelessWidget {
   }
 
   String _getDifficultyLabel() {
-    switch (item.drill.difficulty) {
+    switch (item.difficulty) {
       case 'easy':
         return 'Easy';
       case 'medium':
@@ -465,7 +465,7 @@ class _LearningPathCard extends StatelessWidget {
       case 'expert':
         return 'Expert';
       default:
-        return item.drill.difficulty;
+        return item.difficulty;
     }
   }
 }

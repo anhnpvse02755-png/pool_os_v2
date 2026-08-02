@@ -246,11 +246,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'friendlyMatch',
             builder: (context, state) => const FriendlyMatchScreen(),
           ),
-          GoRoute(
-            path: '/play/history',
-            name: 'matchHistory',
-            builder: (context, state) => const MatchHistoryScreen(),
-          ),
 
           // Coach
           GoRoute(

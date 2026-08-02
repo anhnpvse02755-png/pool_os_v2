@@ -103,19 +103,19 @@ class _OverviewCard extends StatelessWidget {
               Expanded(
                 child: _OverviewStat(
                   label: 'Tỷ lệ thành công',
-                  value: '${summary.averageSuccessRate.toStringAsFixed(1)}%',
+                  value: '${summary.overallAccuracy}%',
                 ),
               ),
               Expanded(
                 child: _OverviewStat(
-                  label: 'Bài tập',
-                  value: '${summary.totalDrillsStarted}',
+                  label: 'Tổng buổi',
+                  value: '${summary.totalSessions}',
                 ),
               ),
               Expanded(
                 child: _OverviewStat(
-                  label: 'Hoàn thành',
-                  value: '${summary.totalDrillsCompleted}',
+                  label: 'Tổng bi',
+                  value: '${summary.totalShots}',
                 ),
               ),
             ],
@@ -249,7 +249,7 @@ class _WeaknessCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  '${weakness.successRate.toStringAsFixed(0)}%',
+                  '${weakness.currentRate}%',
                   style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
@@ -276,7 +276,7 @@ class _WeaknessCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '${weakness.totalAttempts} lần thử',
+            '${weakness.attempts} lần thử',
             style: TextStyle(
               color: Colors.grey.shade500,
               fontSize: 11,

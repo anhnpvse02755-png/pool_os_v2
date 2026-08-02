@@ -1,0 +1,33 @@
+{
+  "name": "poolos_v2",
+  "version": "1.0.0",
+  "description": "**Version:** 2.0.0   **Repository:** https://github.com/anhnpvse02755-png/pool_os_v2",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "test:ci": "playwright test --reporter=html,junit --report=html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anhnpvse02755-png/pool_os_v2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anhnpvse02755-png/pool_os_v2/issues"
+  },
+  "homepage": "https://github.com/anhnpvse02755-png/pool_os_v2#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.1.2"
+  }
+}

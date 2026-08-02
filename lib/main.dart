@@ -5,9 +5,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'core/constants/supabase_config.dart';
+import 'core/services/local_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Local Storage
+  await LocalStorageService.init();
 
   // Initialize Supabase (will fail gracefully without credentials)
   try {

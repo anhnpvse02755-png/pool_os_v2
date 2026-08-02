@@ -12,7 +12,7 @@ class ProgressScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final summaryAsync = ref.watch(performanceSummaryProvider);
-    final progressAsync = ref.watch(allDrillProgressProvider);
+    final progressMap = ref.watch(allDrillProgressProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -41,11 +41,7 @@ class ProgressScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
 
-            progressAsync.when(
-              data: (progress) => _buildCategoryProgress(context, progress),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox(),
-            ),
+            _buildCategoryProgress(context, progressMap),
 
             const SizedBox(height: 24),
 
@@ -58,113 +54,107 @@ class ProgressScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
 
-            progressAsync.when(
-              data: (progress) => _buildRecentActivity(context, progress),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox(),
-            ),
+            _buildRecentActivity(context, progressMap),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildCategoryProgress(BuildContext context, List<dynamic> progress) {
-    // Group by category
-    final categories = <String, List<dynamic>>{};
-    for (final p in progress) {
-      // TODO: Group by category
+  Widget _buildCategoryProgress(BuildContext context, Map<String, SimpleDrillProgress> progressMap) {
+    if (progressMap.isEmpty) {
+      return _buildEmptyProgress();
     }
 
+    final progressList = progressMap.values.toList();
+
+    return Column(
+      children: progressList.map((progress) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: _ProgressCard(progress: progress),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildRecentActivity(BuildContext context, Map<String, SimpleDrillProgress> progressMap) {
+    if (progressMap.isEmpty) {
+      return _buildEmptyActivity();
+    }
+
+    final sortedProgress = progressMap.values.toList()
+      ..sort((a, b) {
+        if (a.lastAttemptedAt == null && b.lastAttemptedAt == null) return 0;
+        if (a.lastAttemptedAt == null) return 1;
+        if (b.lastAttemptedAt == null) return -1;
+        return b.lastAttemptedAt!.compareTo(a.lastAttemptedAt!);
+      });
+
+    return Column(
+      children: sortedProgress.take(5).map((progress) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: _ActivityTile(progress: progress),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildEmptyProgress() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-          ),
-        ],
       ),
       child: Column(
         children: [
-          _CategoryProgressRow(
-            category: 'Potting',
-            icon: Icons.center_focus_strong,
-            color: Colors.blue,
-            progress: 0.6,
+          Icon(Icons.fitness_center, size: 48, color: Colors.grey.shade400),
+          const SizedBox(height: 12),
+          Text(
+            'Chưa có tiến độ',
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          const Divider(),
-          _CategoryProgressRow(
-            category: 'Cue Ball',
-            icon: Icons.circle_outlined,
-            color: Colors.orange,
-            progress: 0.4,
-          ),
-          const Divider(),
-          _CategoryProgressRow(
-            category: 'Position',
-            icon: Icons.gps_fixed,
-            color: Colors.purple,
-            progress: 0.3,
-          ),
-          const Divider(),
-          _CategoryProgressRow(
-            category: 'Safety',
-            icon: Icons.shield,
-            color: Colors.green,
-            progress: 0.5,
-          ),
-          const Divider(),
-          _CategoryProgressRow(
-            category: 'Special',
-            icon: Icons.star,
-            color: Colors.red,
-            progress: 0.2,
+          const SizedBox(height: 4),
+          Text(
+            'Bắt đầu tập để xem tiến độ của bạn',
+            style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
           ),
         ],
       ),
-    ).animate().fadeIn();
+    );
   }
 
-  Widget _buildRecentActivity(BuildContext context, List<dynamic> progress) {
-    if (progress.isEmpty) {
-      return Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: Column(
-            children: [
-              Icon(Icons.history, size: 48, color: Colors.grey.shade400),
-              const SizedBox(height: 8),
-              Text(
-                'Chưa có hoạt động',
-                style: TextStyle(color: Colors.grey.shade600),
-              ),
-            ],
+  Widget _buildEmptyActivity() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.history, size: 48, color: Colors.grey.shade400),
+          const SizedBox(height: 12),
+          Text(
+            'Chưa có hoạt động',
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      );
-    }
-
-    return Column(
-      children: progress.take(5).map((p) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: _ActivityCard(progress: p),
-        );
-      }).toList(),
-    ).animate().fadeIn(delay: 200.ms);
+        ],
+      ),
+    );
   }
 }
 
 class _SummaryCard extends StatelessWidget {
-  final dynamic summary;
+  final PerformanceSummary summary;
 
   const _SummaryCard({required this.summary});
 
@@ -182,41 +172,40 @@ class _SummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Expanded(
-                child: _StatItem(
-                  label: 'Bài tập đã làm',
-                  value: '${summary.totalDrillsStarted}',
-                  icon: Icons.fitness_center,
-                ),
-              ),
-              Expanded(
-                child: _StatItem(
-                  label: 'Đã hoàn thành',
-                  value: '${summary.totalDrillsCompleted}',
-                  icon: Icons.check_circle,
+              const Icon(Icons.emoji_events, color: Colors.white, size: 28),
+              const SizedBox(width: 12),
+              const Text(
+                'Tổng quan',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Expanded(
-                child: _StatItem(
-                  label: 'Tỷ lệ thành công',
-                  value: '${summary.averageSuccessRate.toStringAsFixed(0)}%',
-                  icon: Icons.trending_up,
-                ),
+              _SummaryItem(
+                icon: Icons.fitness_center,
+                value: '${summary.totalSessions}',
+                label: 'Buổi tập',
               ),
-              Expanded(
-                child: _StatItem(
-                  label: 'Thời gian tập',
-                  value: summary.practiceTimeFormatted,
-                  icon: Icons.timer,
-                ),
+              _SummaryItem(
+                icon: Icons.sports_cricket,
+                value: '${summary.totalShots}',
+                label: 'Tổng bi',
+              ),
+              _SummaryItem(
+                icon: Icons.percent,
+                value: '${summary.overallAccuracy}%',
+                label: 'Độ chính xác',
               ),
             ],
           ),
@@ -226,109 +215,122 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
-class _StatItem extends StatelessWidget {
-  final String label;
-  final String value;
+class _SummaryItem extends StatelessWidget {
   final IconData icon;
+  final String value;
+  final String label;
 
-  const _StatItem({
-    required this.label,
-    required this.value,
+  const _SummaryItem({
     required this.icon,
+    required this.value,
+    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Icon(icon, color: Colors.white.withValues(alpha: 0.8), size: 20),
-        const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.8),
-                fontSize: 11,
-              ),
-            ),
-          ],
+        Icon(icon, color: Colors.white70, size: 24),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+          ),
         ),
       ],
     );
   }
 }
 
-class _CategoryProgressRow extends StatelessWidget {
-  final String category;
-  final IconData icon;
-  final Color color;
-  final double progress;
+class _ProgressCard extends StatelessWidget {
+  final SimpleDrillProgress progress;
 
-  const _CategoryProgressRow({
-    required this.category,
-    required this.icon,
-    required this.color,
-    required this.progress,
-  });
+  const _ProgressCard({required this.progress});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
+    final rate = progress.successRate;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      category,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    Text(
-                      '${(progress * 100).toInt()}%',
-                      style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  progress.drillName,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                const SizedBox(height: 4),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.grey.shade200,
-                  valueColor: AlwaysStoppedAnimation<Color>(color),
-                  borderRadius: BorderRadius.circular(4),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _getRateColor(rate).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-              ],
+                child: Text(
+                  '${rate.toStringAsFixed(0)}%',
+                  style: TextStyle(
+                    color: _getRateColor(rate),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: rate / 100,
+              minHeight: 8,
+              backgroundColor: Colors.grey.shade200,
+              valueColor: AlwaysStoppedAnimation(_getRateColor(rate)),
             ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${progress.totalAttempts} lần tập • ${progress.successfulAttempts} thành công',
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
           ),
         ],
       ),
     );
   }
+
+  Color _getRateColor(double rate) {
+    if (rate >= 80) return Colors.green;
+    if (rate >= 60) return Colors.orange;
+    return Colors.red;
+  }
 }
 
-class _ActivityCard extends StatelessWidget {
-  final dynamic progress;
+class _ActivityTile extends StatelessWidget {
+  final SimpleDrillProgress progress;
 
-  const _ActivityCard({required this.progress});
+  const _ActivityTile({required this.progress});
 
   @override
   Widget build(BuildContext context) {
@@ -336,13 +338,8 @@ class _ActivityCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-          ),
-        ],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Row(
         children: [
@@ -351,10 +348,10 @@ class _ActivityCard extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              Icons.check,
+            child: const Icon(
+              Icons.fitness_center,
               color: AppTheme.primaryGreen,
               size: 20,
             ),
@@ -365,44 +362,38 @@ class _ActivityCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  progress.drillCode ?? 'Unknown',
+                  progress.drillName,
                   style: const TextStyle(fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  'Level ${progress.currentLevel} • ${progress.overallSuccessRate.toStringAsFixed(0)}%',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
-                  ),
+                  _formatDate(progress.lastAttemptedAt),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                 ),
               ],
             ),
           ),
           Text(
-            _formatTime(progress.lastAttemptAt),
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: 11,
-            ),
+            '${progress.successRate.toStringAsFixed(0)}%',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
 
-  String _formatTime(DateTime? date) {
-    if (date == null) return '';
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Chưa tập';
     final now = DateTime.now();
     final diff = now.difference(date);
 
     if (diff.inMinutes < 60) {
-      return '${diff.inMinutes}p trước';
+      return '${diff.inMinutes} phút trước';
     } else if (diff.inHours < 24) {
-      return '${diff.inHours}h trước';
+      return '${diff.inHours} giờ trước';
     } else if (diff.inDays < 7) {
-      return '${diff.inDays}ngày trước';
+      return '${diff.inDays} ngày trước';
     } else {
-      return '${date.day}/${date.month}';
+      return '${date.day}/${date.month}/${date.year}';
     }
   }
 }

@@ -1,0 +1,1868 @@
+{
+  "schemaVersion": 1,
+  "algorithm": "louvain",
+  "totalFiles": 134,
+  "totalBatches": 9,
+  "exportsByPath": {
+    "lib/main.dart": [
+      "main",
+      "build",
+      "PoolOSApp"
+    ],
+    "lib/supabase.dart": [
+      "initialize",
+      "client",
+      "SupabaseConfig"
+    ],
+    "lib/core/constants/app_constants.dart": [
+      "AppConstants",
+      "PlayerLevel",
+      "RatingRange",
+      "AssessmentQuestion",
+      "QuestionType",
+      "AssessmentOption"
+    ],
+    "lib/core/constants/constants.dart": [
+      "app_constants.dart",
+      "supabase_config.dart"
+    ],
+    "lib/core/constants/supabase_config.dart": [
+      "SupabaseConfig"
+    ],
+    "lib/core/models/certification.dart": [
+      "SkillCertification",
+      "SkillCertification.fromJson",
+      "SkillCertification",
+      "CertificationTest",
+      "CertificationTest.fromJson",
+      "toJson",
+      "passRate",
+      "CertificationTest",
+      "CertificationResult",
+      "CertificationResult.fromJson",
+      "toJson",
+      "CertificationResult",
+      "getCertification",
+      "getByCategory",
+      "CertificationLibrary"
+    ],
+    "lib/core/models/drill_progress.dart": [
+      "DrillProgress",
+      "DrillProgress.fromJson",
+      "toJson",
+      "overallSuccessRate",
+      "isLevelUnlocked",
+      "isLevelPassed",
+      "copyWith",
+      "DrillProgress",
+      "DrillLevelAttempt",
+      "DrillLevelAttempt.fromJson",
+      "toJson",
+      "DrillLevelAttempt"
+    ],
+    "lib/core/models/knowledge.dart": [
+      "KnowledgeArticle",
+      "KnowledgeArticle.fromJson",
+      "toJson",
+      "KnowledgeArticle",
+      "getAllArticles",
+      "getArticle",
+      "getArticlesByCategory",
+      "getRelatedArticles",
+      "searchArticles",
+      "KnowledgeLibrary",
+      "KnowledgeCategory"
+    ],
+    "lib/core/models/match.dart": [
+      "Match",
+      "Match.fromJson",
+      "toJson",
+      "isInProgress",
+      "duration",
+      "copyWith",
+      "Match",
+      "Rack",
+      "Rack.fromJson",
+      "toJson",
+      "copyWith",
+      "Rack",
+      "MatchStats",
+      "MatchStats.fromRacks",
+      "MatchStats"
+    ],
+    "lib/core/models/player.dart": [
+      "Player",
+      "Player.fromJson",
+      "toJson",
+      "copyWith",
+      "Player"
+    ],
+    "lib/core/models/player_interests.dart": [
+      "PlayerInterests",
+      "PlayerInterests.fromJson",
+      "toJson",
+      "copyWith",
+      "PlayerInterests",
+      "InterestOption"
+    ],
+    "lib/core/models/training_session.dart": [
+      "TrainingSession",
+      "TrainingSession.fromJson",
+      "toJson",
+      "isCompleted",
+      "copyWith",
+      "TrainingSession",
+      "DrillRun",
+      "DrillRun.fromJson",
+      "toJson",
+      "passed",
+      "copyWith",
+      "DrillRun"
+    ],
+    "lib/core/models/tournament.dart": [
+      "Tournament",
+      "Tournament.fromJson",
+      "toJson",
+      "Tournament",
+      "TournamentParticipant",
+      "TournamentParticipant.fromJson",
+      "TournamentParticipant",
+      "TournamentBracket",
+      "TournamentBracket.fromJson",
+      "TournamentBracket",
+      "TournamentRound",
+      "TournamentRound.fromJson",
+      "TournamentRound",
+      "TournamentMatch",
+      "TournamentMatch.fromJson",
+      "TournamentMatch",
+      "getTournament",
+      "TournamentLibrary"
+    ],
+    "lib/core/providers/auth_provider.dart": [
+      "AuthStatus",
+      "isAuthenticated",
+      "isLoading",
+      "copyWith",
+      "AuthState",
+      "signIn",
+      "signUp",
+      "signOut",
+      "signInWithGoogle",
+      "signInWithApple",
+      "AuthNotifier"
+    ],
+    "lib/core/providers/coach_provider.dart": [
+      "LearningPathItem",
+      "LearningPathItem",
+      "WeaknessAnalysis",
+      "WeaknessAnalysis",
+      "PerformanceSummary",
+      "PerformanceSummary",
+      "WeakestDrillInfo",
+      "WeakestDrillInfo",
+      "SimpleDrillProgress",
+      "successRate",
+      "SimpleDrillProgress"
+    ],
+    "lib/core/providers/community_provider.dart": [
+      "copyWith",
+      "CommunityState",
+      "Post",
+      "CommunityUser",
+      "refresh",
+      "likePost",
+      "getPostsByType",
+      "searchPosts",
+      "CommunityNotifier"
+    ],
+    "lib/core/providers/dashboard_provider.dart": [
+      "DashboardContext",
+      "DashboardState",
+      "copyWith",
+      "reset",
+      "DashboardState",
+      "DashboardNotifier",
+      "onMatchCompleted",
+      "onDrillCompleted",
+      "onKnowledgeCompleted",
+      "onStreakWarning",
+      "reset",
+      "updateStreak",
+      "DashboardNotifier",
+      "TodayGoals",
+      "allCompleted",
+      "drillsProgress",
+      "TodayGoals",
+      "OngoingDrill",
+      "isStale",
+      "OngoingDrill"
+    ],
+    "lib/core/providers/notification_provider.dart": [
+      "NotificationState",
+      "copyWith",
+      "NotificationState",
+      "NotificationNotifier",
+      "addNotification",
+      "markAsRead",
+      "markAllAsRead",
+      "removeNotification",
+      "clearAll",
+      "generateStreakWarning",
+      "generateDrillReady",
+      "generateLevelUp",
+      "NotificationNotifier"
+    ],
+    "lib/core/providers/play_provider.dart": [
+      "copyWith",
+      "PlayState",
+      "MatchRecord",
+      "RackRecord",
+      "startMatch",
+      "recordRack",
+      "endMatch",
+      "cancelMatch",
+      "getMatchHistory",
+      "getStats",
+      "PlayNotifier"
+    ],
+    "lib/core/providers/player_provider.dart": [
+      "PlayerInterestsNotifier",
+      "loadInterests",
+      "saveInterests",
+      "PlayerInterestsNotifier"
+    ],
+    "lib/core/providers/training_provider.dart": [
+      "copyWith",
+      "TrainingState",
+      "TrainingSession",
+      "TrainingSession.fromJson",
+      "toJson",
+      "TrainingSession",
+      "addSession",
+      "updateSession",
+      "deleteSession",
+      "refresh",
+      "getStats",
+      "getSessionsByDrill",
+      "getSessionsInRange",
+      "TrainingNotifier"
+    ],
+    "lib/core/router/app_router.dart": [
+      "build",
+      "AssessmentPlaceholder",
+      "build",
+      "RecommendedPlaceholder",
+      "build",
+      "TrainingHistoryPlaceholder"
+    ],
+    "lib/core/services/auth_service.dart": [
+      "AuthService",
+      "currentUser",
+      "isAuthenticated",
+      "userEmail",
+      "userId",
+      "authStateChanges",
+      "signUp",
+      "signIn",
+      "signInWithGoogle",
+      "signInWithApple",
+      "signOut",
+      "resetPassword",
+      "updateUser",
+      "refreshSession",
+      "AuthService"
+    ],
+    "lib/core/services/coach_service.dart": [
+      "generateLearningPath",
+      "analyzeWeaknesses",
+      "getPerformanceSummary",
+      "CoachService"
+    ],
+    "lib/core/services/local_storage_service.dart": [
+      "init",
+      "prefs",
+      "getDrillSessions",
+      "saveDrillSession",
+      "updateDrillSession",
+      "deleteDrillSession",
+      "getMatchRecords",
+      "saveMatchRecord",
+      "updateMatchRecord",
+      "deleteMatchRecord",
+      "getUserProfile",
+      "saveUserProfile",
+      "getSettings",
+      "saveSettings",
+      "getKnowledgeProgress",
+      "saveKnowledgeProgress",
+      "markKnowledgeAsRead",
+      "getStats",
+      "clearAllData",
+      "LocalStorageService"
+    ],
+    "lib/core/services/notification_service.dart": [
+      "PoolNotification",
+      "PoolNotification.fromJson",
+      "toJson",
+      "copyWith",
+      "PoolNotification",
+      "streakWarning",
+      "drillReady",
+      "levelUp",
+      "testAvailable",
+      "matchAnalysis",
+      "streakMilestone",
+      "NotificationTemplates"
+    ],
+    "lib/core/services/player_service.dart": [
+      "PlayerService",
+      "currentUser",
+      "getCurrentPlayer",
+      "createPlayer",
+      "updatePlayer",
+      "getPlayerById",
+      "getPlayerInterests",
+      "savePlayerInterests",
+      "PlayerService"
+    ],
+    "lib/core/services/training_service.dart": [
+      "TrainingService",
+      "startSession",
+      "completeSession",
+      "getSession",
+      "getPlayerSessions",
+      "getRecentSessions",
+      "addDrillRun",
+      "updateDrillRun",
+      "getSessionDrillRuns",
+      "getDrillRunHistory",
+      "getDrillProgress",
+      "getAllDrillProgress",
+      "initializeDrillProgress",
+      "updateDrillProgress",
+      "recordLevelAttempt",
+      "getLevelAttempts",
+      "TrainingService"
+    ],
+    "lib/core/theme/app_theme.dart": [
+      "lightTheme",
+      "darkTheme",
+      "AppTheme"
+    ],
+    "lib/core/theme/theme.dart": [
+      "app_theme.dart"
+    ],
+    "lib/core/utils/drills_library.dart": [
+      "getAllDrills",
+      "getDrill",
+      "getDrillsByCategory",
+      "getDrillsByDifficulty",
+      "searchDrills",
+      "getRecommendedDrills",
+      "DrillLibrary",
+      "DrillCategory",
+      "currentLevel",
+      "isLevelUnlocked",
+      "getLevel",
+      "Drill",
+      "criteriaText",
+      "DrillLevel"
+    ],
+    "lib/core/utils/pool_rating_calculator.dart": [
+      "calculateFromAssessment",
+      "calculateFromMatches",
+      "getLevelFromRating",
+      "getLevelInfo",
+      "calculateConfidence",
+      "PoolRatingCalculator"
+    ],
+    "lib/data/datasources/supabase_service.dart": [
+      "SupabaseService",
+      "SupabaseService._internal",
+      "client",
+      "initialize",
+      "signUp",
+      "signIn",
+      "signOut",
+      "currentUser",
+      "getPlayer",
+      "createPlayer",
+      "updatePlayer",
+      "getSessions",
+      "createSession",
+      "updateSession",
+      "createMatch",
+      "updateMatch",
+      "createRack",
+      "updateRack",
+      "createShot",
+      "getRecommendations",
+      "updateRecommendationStatus",
+      "watchSessions",
+      "watchRecommendations",
+      "SupabaseService"
+    ],
+    "lib/data/models/coach_recommendation_model.dart": [
+      "CoachRecommendationModel",
+      "CoachRecommendationModel.fromJson",
+      "toJson",
+      "CoachRecommendationModel"
+    ],
+    "lib/data/models/match_model.dart": [
+      "MatchModel",
+      "MatchModel.fromJson",
+      "toJson",
+      "MatchModel"
+    ],
+    "lib/data/models/models.dart": [
+      "player_model.dart",
+      "session_model.dart",
+      "match_model.dart",
+      "rack_model.dart",
+      "shot_model.dart",
+      "coach_recommendation_model.dart"
+    ],
+    "lib/data/models/player_model.dart": [
+      "PlayerModel",
+      "PlayerModel.fromJson",
+      "toJson",
+      "copyWith",
+      "PlayerModel"
+    ],
+    "lib/data/models/rack_model.dart": [
+      "RackModel",
+      "RackModel.fromJson",
+      "toJson",
+      "RackModel"
+    ],
+    "lib/data/models/session_model.dart": [
+      "SessionModel",
+      "SessionModel.fromJson",
+      "toJson",
+      "SessionModel"
+    ],
+    "lib/data/models/shot_model.dart": [
+      "ShotModel",
+      "ShotModel.fromJson",
+      "toJson",
+      "ShotModel"
+    ],
+    "lib/domain/entities/coach_recommendation.dart": [
+      "copyWith",
+      "props",
+      "CoachRecommendation"
+    ],
+    "lib/domain/entities/entities.dart": [
+      "player.dart",
+      "session.dart",
+      "match.dart",
+      "rack.dart",
+      "shot.dart",
+      "coach_recommendation.dart"
+    ],
+    "lib/domain/entities/match.dart": [
+      "copyWith",
+      "props",
+      "Match"
+    ],
+    "lib/domain/entities/player.dart": [
+      "copyWith",
+      "props",
+      "Player"
+    ],
+    "lib/domain/entities/rack.dart": [
+      "copyWith",
+      "props",
+      "Rack"
+    ],
+    "lib/domain/entities/session.dart": [
+      "copyWith",
+      "props",
+      "Session"
+    ],
+    "lib/domain/entities/shot.dart": [
+      "copyWith",
+      "props",
+      "Shot"
+    ],
+    "lib/knowledge/knowledge_data.dart": [],
+    "lib/knowledge/knowledge_models.dart": [
+      "KnowledgeItem.fromJson",
+      "toJson",
+      "KnowledgeItem",
+      "DifficultyLevel",
+      "KnowledgeCategory.fromJson",
+      "KnowledgeCategory",
+      "KnowledgeTag.fromJson",
+      "KnowledgeTag",
+      "DrillKnowledgeMapping.fromJson",
+      "DrillKnowledgeMapping"
+    ],
+    "lib/knowledge/knowledge_provider.dart": [
+      "copyWith",
+      "KnowledgeState",
+      "getById",
+      "getBySlug",
+      "getByCategory",
+      "getKnowledgeForDrill",
+      "search",
+      "getCategoryById",
+      "getTagById",
+      "KnowledgeNotifier"
+    ],
+    "lib/knowledge/knowledge_service.dart": [
+      "initialize",
+      "getAllKnowledge",
+      "getKnowledgeById",
+      "getKnowledgeBySlug",
+      "getKnowledgeByCategory",
+      "getKnowledgeByTag",
+      "search",
+      "getAllCategories",
+      "getCategoryById",
+      "getAllTags",
+      "getDrillKnowledgeMapping",
+      "getKnowledgeForDrill",
+      "getDrillsForKnowledge",
+      "KnowledgeService"
+    ],
+    "lib/presentation/screens/auth/login_screen.dart": [
+      "createState",
+      "LoginScreen",
+      "dispose",
+      "build"
+    ],
+    "lib/presentation/screens/auth/register_screen.dart": [
+      "createState",
+      "RegisterScreen",
+      "dispose",
+      "build"
+    ],
+    "lib/presentation/screens/coach/analysis_screen.dart": [
+      "build",
+      "AnalysisScreen",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/coach/coach_screen.dart": [
+      "build",
+      "CoachScreen",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/coach/training_plan_screen.dart": [
+      "build",
+      "TrainingPlanScreen",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/community/community_screen.dart": [
+      "build",
+      "CommunityScreen",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/home/home_screen.dart": [
+      "build",
+      "HomeScreen",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/home/notification_screen.dart": [
+      "build",
+      "NotificationScreen",
+      "build"
+    ],
+    "lib/presentation/screens/onboarding/interest_selection_screen.dart": [
+      "createState",
+      "InterestSelectionScreen",
+      "build",
+      "InterestOption",
+      "build"
+    ],
+    "lib/presentation/screens/onboarding/onboarding_screen.dart": [
+      "createState",
+      "OnboardingScreen",
+      "dispose",
+      "build",
+      "build",
+      "WelcomePage",
+      "build",
+      "LevelSystemIntroPage",
+      "build",
+      "build",
+      "AssessmentIntroPage",
+      "createState",
+      "build",
+      "build",
+      "ResultPage"
+    ],
+    "lib/presentation/screens/onboarding/welcome_screen.dart": [
+      "build",
+      "WelcomeScreen"
+    ],
+    "lib/presentation/screens/play/friendly_match_screen.dart": [
+      "createState",
+      "FriendlyMatchScreen",
+      "dispose",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/play/match_history_screen.dart": [
+      "createState",
+      "MatchHistoryScreen",
+      "initState",
+      "dispose",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/play/match_recording_screen.dart": [
+      "createState",
+      "MatchRecordingScreen",
+      "dispose",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/play/play_screen.dart": [
+      "build",
+      "PlayScreen",
+      "build",
+      "build",
+      "build",
+      "build",
+      "resultColor",
+      "resultLabel",
+      "build",
+      "build",
+      "QuickMatchPlaceholder",
+      "build",
+      "FriendlyMatchPlaceholder",
+      "build",
+      "MatchRecordingPlaceholder",
+      "build",
+      "MatchHistoryPlaceholder"
+    ],
+    "lib/presentation/screens/play/quick_match_screen.dart": [
+      "createState",
+      "QuickMatchScreen",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/play/tournament_detail_screen.dart": [
+      "build",
+      "TournamentDetailScreen",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/play/tournament_list_screen.dart": [
+      "build",
+      "TournamentListScreen",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/play/vision_recording_screen.dart": [
+      "createState",
+      "VisionRecordingScreen",
+      "build"
+    ],
+    "lib/presentation/screens/profile/edit_profile_screen.dart": [
+      "createState",
+      "EditProfileScreen",
+      "initState",
+      "dispose",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/profile/equipment_screen.dart": [
+      "Equipment",
+      "Equipment",
+      "build",
+      "EquipmentScreen",
+      "build",
+      "createState",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/profile/profile_screen.dart": [
+      "build",
+      "ProfileScreen",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/profile/settings_screen.dart": [
+      "build",
+      "SettingsScreen",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/session/create_session_screen.dart": [
+      "createState",
+      "CreateSessionScreen",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/session/session_list_screen.dart": [
+      "build",
+      "SessionListScreen"
+    ],
+    "lib/presentation/screens/shell/main_shell.dart": [
+      "build",
+      "MainShell",
+      "build"
+    ],
+    "lib/presentation/screens/training/assessment_screen.dart": [
+      "createState",
+      "AssessmentScreen",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/training/certification_detail_screen.dart": [
+      "build",
+      "CertificationDetailScreen",
+      "build"
+    ],
+    "lib/presentation/screens/training/certification_list_screen.dart": [
+      "build",
+      "CertificationListScreen",
+      "build"
+    ],
+    "lib/presentation/screens/training/drill_detail_screen.dart": [
+      "createState",
+      "DrillDetailScreen",
+      "build"
+    ],
+    "lib/presentation/screens/training/drill_list_screen.dart": [
+      "createState",
+      "DrillListScreen",
+      "initState",
+      "dispose",
+      "build",
+      "build",
+      "build",
+      "DrillCategoriesScreen"
+    ],
+    "lib/presentation/screens/training/drill_result_screen.dart": [
+      "successRate",
+      "rating",
+      "ratingColor",
+      "build",
+      "DrillResultScreen",
+      "build"
+    ],
+    "lib/presentation/screens/training/drill_session_screen.dart": [
+      "createState",
+      "DrillSessionScreen",
+      "initState",
+      "successRate",
+      "build",
+      "build",
+      "ShotResult"
+    ],
+    "lib/presentation/screens/training/knowledge_detail_screen.dart": [
+      "build",
+      "KnowledgeDetailScreen",
+      "build"
+    ],
+    "lib/presentation/screens/training/knowledge_screen.dart": [
+      "createState",
+      "KnowledgeScreen",
+      "build",
+      "build",
+      "build",
+      "build",
+      "buildActions",
+      "buildLeading",
+      "buildResults",
+      "buildSuggestions"
+    ],
+    "lib/presentation/screens/training/learning_path_screen.dart": [
+      "build",
+      "LearningPathScreen",
+      "build"
+    ],
+    "lib/presentation/screens/training/progress_screen.dart": [
+      "build",
+      "ProgressScreen",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/training/recommended_screen.dart": [
+      "createState",
+      "RecommendedScreen",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/training/training_center_screen.dart": [
+      "build",
+      "TrainingCenterScreen",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "lib/presentation/screens/training/training_history_screen.dart": [
+      "createState",
+      "TrainingHistoryScreen",
+      "build",
+      "build",
+      "build",
+      "build"
+    ],
+    "ios/Runner/AppDelegate.swift": [
+      "application",
+      "didInitializeImplicitFlutterEngine",
+      "AppDelegate"
+    ],
+    "ios/Runner/SceneDelegate.swift": [
+      "SceneDelegate"
+    ],
+    "ios/RunnerTests/RunnerTests.swift": [
+      "testExample",
+      "RunnerTests"
+    ],
+    "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Sources/FlutterGeneratedPluginSwiftPackage/FlutterGeneratedPluginSwiftPackage.swift": [],
+    "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift": []
+  },
+  "batches": [
+    {
+      "batchIndex": 1,
+      "files": [
+        {
+          "path": ".github/workflows/playwright.yml",
+          "fileCategory": "config",
+          "sizeLines": 60,
+          "language": "yaml"
+        }
+      ],
+      "batchImportData": {
+        ".github/workflows/playwright.yml": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 2,
+      "files": [
+        {
+          "path": "FUTURE_FEATURES.md",
+          "fileCategory": "docs",
+          "sizeLines": 200,
+          "language": "markdown"
+        },
+        {
+          "path": "README.md",
+          "fileCategory": "docs",
+          "sizeLines": 100,
+          "language": "markdown"
+        },
+        {
+          "path": "SPEC.md",
+          "fileCategory": "docs",
+          "sizeLines": 300,
+          "language": "markdown"
+        },
+        {
+          "path": "TRAINING_CENTER_FINAL_SPEC.md",
+          "fileCategory": "docs",
+          "sizeLines": 300,
+          "language": "markdown"
+        },
+        {
+          "path": "TRAINING_CENTER_SPEC.md",
+          "fileCategory": "docs",
+          "sizeLines": 250,
+          "language": "markdown"
+        },
+        {
+          "path": "analysis_options.yaml",
+          "fileCategory": "config",
+          "sizeLines": 40,
+          "language": "yaml"
+        },
+        {
+          "path": "pubspec.yaml",
+          "fileCategory": "config",
+          "sizeLines": 80,
+          "language": "yaml"
+        }
+      ],
+      "batchImportData": {
+        "FUTURE_FEATURES.md": [],
+        "README.md": [],
+        "SPEC.md": [],
+        "TRAINING_CENTER_FINAL_SPEC.md": [],
+        "TRAINING_CENTER_SPEC.md": [],
+        "analysis_options.yaml": [],
+        "pubspec.yaml": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 3,
+      "files": [
+        {
+          "path": "Understand-Anything/CLAUDE.md",
+          "fileCategory": "docs",
+          "sizeLines": 200,
+          "language": "markdown"
+        },
+        {
+          "path": "Understand-Anything/CODE_OF_CONDUCT.md",
+          "fileCategory": "docs",
+          "sizeLines": 50,
+          "language": "markdown"
+        },
+        {
+          "path": "Understand-Anything/CONTRIBUTING.md",
+          "fileCategory": "docs",
+          "sizeLines": 100,
+          "language": "markdown"
+        },
+        {
+          "path": "Understand-Anything/README.md",
+          "fileCategory": "docs",
+          "sizeLines": 150,
+          "language": "markdown"
+        },
+        {
+          "path": "Understand-Anything/SECURITY.md",
+          "fileCategory": "docs",
+          "sizeLines": 40,
+          "language": "markdown"
+        }
+      ],
+      "batchImportData": {
+        "Understand-Anything/CLAUDE.md": [],
+        "Understand-Anything/CODE_OF_CONDUCT.md": [],
+        "Understand-Anything/CONTRIBUTING.md": [],
+        "Understand-Anything/README.md": [],
+        "Understand-Anything/SECURITY.md": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 4,
+      "files": [
+        {
+          "path": "knowledge/Normalized/kn_basic-safety.json",
+          "fileCategory": "data",
+          "sizeLines": 100,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_closed-bridge.json",
+          "fileCategory": "data",
+          "sizeLines": 80,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_cut-shots.json",
+          "fileCategory": "data",
+          "sizeLines": 120,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_draw-shot.json",
+          "fileCategory": "data",
+          "sizeLines": 100,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_follow-shot.json",
+          "fileCategory": "data",
+          "sizeLines": 90,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_ghost-ball.json",
+          "fileCategory": "data",
+          "sizeLines": 110,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_open-bridge.json",
+          "fileCategory": "data",
+          "sizeLines": 85,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/kn_position-play.json",
+          "fileCategory": "data",
+          "sizeLines": 95,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Normalized/v1_import.json",
+          "fileCategory": "data",
+          "sizeLines": 200,
+          "language": "json"
+        }
+      ],
+      "batchImportData": {
+        "knowledge/Normalized/kn_basic-safety.json": [],
+        "knowledge/Normalized/kn_closed-bridge.json": [],
+        "knowledge/Normalized/kn_cut-shots.json": [],
+        "knowledge/Normalized/kn_draw-shot.json": [],
+        "knowledge/Normalized/kn_follow-shot.json": [],
+        "knowledge/Normalized/kn_ghost-ball.json": [],
+        "knowledge/Normalized/kn_open-bridge.json": [],
+        "knowledge/Normalized/kn_position-play.json": [],
+        "knowledge/Normalized/v1_import.json": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 5,
+      "files": [
+        {
+          "path": "Understand-Anything/.github/PULL_REQUEST_TEMPLATE.md",
+          "fileCategory": "docs",
+          "sizeLines": 30,
+          "language": "markdown"
+        },
+        {
+          "path": "android/app/src/debug/AndroidManifest.xml",
+          "fileCategory": "config",
+          "sizeLines": 30,
+          "language": "xml"
+        },
+        {
+          "path": "android/app/src/main/AndroidManifest.xml",
+          "fileCategory": "config",
+          "sizeLines": 50,
+          "language": "xml"
+        },
+        {
+          "path": "android/app/src/main/res/drawable-v21/launch_background.xml",
+          "fileCategory": "config",
+          "sizeLines": 25,
+          "language": "xml"
+        },
+        {
+          "path": "android/app/src/main/res/drawable/launch_background.xml",
+          "fileCategory": "config",
+          "sizeLines": 20,
+          "language": "xml"
+        },
+        {
+          "path": "android/app/src/main/res/values-night/styles.xml",
+          "fileCategory": "config",
+          "sizeLines": 40,
+          "language": "xml"
+        },
+        {
+          "path": "android/app/src/main/res/values/styles.xml",
+          "fileCategory": "config",
+          "sizeLines": 40,
+          "language": "xml"
+        },
+        {
+          "path": "android/app/src/profile/AndroidManifest.xml",
+          "fileCategory": "config",
+          "sizeLines": 30,
+          "language": "xml"
+        },
+        {
+          "path": "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift",
+          "fileCategory": "code",
+          "sizeLines": 40,
+          "language": "swift"
+        },
+        {
+          "path": "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Sources/FlutterGeneratedPluginSwiftPackage/FlutterGeneratedPluginSwiftPackage.swift",
+          "fileCategory": "code",
+          "sizeLines": 30,
+          "language": "swift"
+        },
+        {
+          "path": "ios/Runner/AppDelegate.swift",
+          "fileCategory": "code",
+          "sizeLines": 50,
+          "language": "swift"
+        },
+        {
+          "path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+          "fileCategory": "config",
+          "sizeLines": 30,
+          "language": "json"
+        },
+        {
+          "path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json",
+          "fileCategory": "config",
+          "sizeLines": 25,
+          "language": "json"
+        },
+        {
+          "path": "ios/Runner/SceneDelegate.swift",
+          "fileCategory": "code",
+          "sizeLines": 40,
+          "language": "swift"
+        },
+        {
+          "path": "ios/RunnerTests/RunnerTests.swift",
+          "fileCategory": "code",
+          "sizeLines": 60,
+          "language": "swift"
+        },
+        {
+          "path": "knowledge/Mapping/drill_knowledge.json",
+          "fileCategory": "data",
+          "sizeLines": 150,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Search/index.json",
+          "fileCategory": "data",
+          "sizeLines": 300,
+          "language": "json"
+        },
+        {
+          "path": "knowledge/Version/migration_v1.json",
+          "fileCategory": "data",
+          "sizeLines": 50,
+          "language": "json"
+        },
+        {
+          "path": "lib/core/constants/app_constants.dart",
+          "fileCategory": "code",
+          "sizeLines": 100,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/constants/constants.dart",
+          "fileCategory": "code",
+          "sizeLines": 20,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/constants/supabase_config.dart",
+          "fileCategory": "code",
+          "sizeLines": 40,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/certification.dart",
+          "fileCategory": "code",
+          "sizeLines": 80,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/drill_progress.dart",
+          "fileCategory": "code",
+          "sizeLines": 70,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/knowledge.dart",
+          "fileCategory": "code",
+          "sizeLines": 60,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/match.dart",
+          "fileCategory": "code",
+          "sizeLines": 120,
+          "language": "dart"
+        }
+      ],
+      "batchImportData": {
+        "Understand-Anything/.github/PULL_REQUEST_TEMPLATE.md": [],
+        "android/app/src/debug/AndroidManifest.xml": [],
+        "android/app/src/main/AndroidManifest.xml": [],
+        "android/app/src/main/res/drawable-v21/launch_background.xml": [],
+        "android/app/src/main/res/drawable/launch_background.xml": [],
+        "android/app/src/main/res/values-night/styles.xml": [],
+        "android/app/src/main/res/values/styles.xml": [],
+        "android/app/src/profile/AndroidManifest.xml": [],
+        "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift": [],
+        "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Sources/FlutterGeneratedPluginSwiftPackage/FlutterGeneratedPluginSwiftPackage.swift": [],
+        "ios/Runner/AppDelegate.swift": [],
+        "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json": [],
+        "ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json": [],
+        "ios/Runner/SceneDelegate.swift": [],
+        "ios/RunnerTests/RunnerTests.swift": [],
+        "knowledge/Mapping/drill_knowledge.json": [],
+        "knowledge/Search/index.json": [],
+        "knowledge/Version/migration_v1.json": [],
+        "lib/core/constants/app_constants.dart": [],
+        "lib/core/constants/constants.dart": [],
+        "lib/core/constants/supabase_config.dart": [],
+        "lib/core/models/certification.dart": [],
+        "lib/core/models/drill_progress.dart": [],
+        "lib/core/models/knowledge.dart": [],
+        "lib/core/models/match.dart": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 6,
+      "files": [
+        {
+          "path": "lib/core/models/player.dart",
+          "fileCategory": "code",
+          "sizeLines": 90,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/player_interests.dart",
+          "fileCategory": "code",
+          "sizeLines": 50,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/tournament.dart",
+          "fileCategory": "code",
+          "sizeLines": 110,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/models/training_session.dart",
+          "fileCategory": "code",
+          "sizeLines": 100,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/auth_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 60,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/coach_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 80,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/community_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 70,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/dashboard_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 90,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/notification_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 50,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/play_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 85,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/player_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 75,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/providers/training_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 95,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/router/app_router.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/services/auth_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 80,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/services/coach_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 100,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/services/local_storage_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 40,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/services/notification_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 60,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/services/player_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 90,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/services/training_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 110,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/theme/app_theme.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/theme/theme.dart",
+          "fileCategory": "code",
+          "sizeLines": 30,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/utils/drills_library.dart",
+          "fileCategory": "code",
+          "sizeLines": 300,
+          "language": "dart"
+        },
+        {
+          "path": "lib/core/utils/pool_rating_calculator.dart",
+          "fileCategory": "code",
+          "sizeLines": 80,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/datasources/supabase_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 120,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/models/coach_recommendation_model.dart",
+          "fileCategory": "code",
+          "sizeLines": 90,
+          "language": "dart"
+        }
+      ],
+      "batchImportData": {
+        "lib/core/models/player.dart": [],
+        "lib/core/models/player_interests.dart": [],
+        "lib/core/models/tournament.dart": [],
+        "lib/core/models/training_session.dart": [],
+        "lib/core/providers/auth_provider.dart": [],
+        "lib/core/providers/coach_provider.dart": [],
+        "lib/core/providers/community_provider.dart": [],
+        "lib/core/providers/dashboard_provider.dart": [],
+        "lib/core/providers/notification_provider.dart": [],
+        "lib/core/providers/play_provider.dart": [],
+        "lib/core/providers/player_provider.dart": [],
+        "lib/core/providers/training_provider.dart": [],
+        "lib/core/router/app_router.dart": [],
+        "lib/core/services/auth_service.dart": [],
+        "lib/core/services/coach_service.dart": [],
+        "lib/core/services/local_storage_service.dart": [],
+        "lib/core/services/notification_service.dart": [],
+        "lib/core/services/player_service.dart": [],
+        "lib/core/services/training_service.dart": [],
+        "lib/core/theme/app_theme.dart": [],
+        "lib/core/theme/theme.dart": [],
+        "lib/core/utils/drills_library.dart": [],
+        "lib/core/utils/pool_rating_calculator.dart": [],
+        "lib/data/datasources/supabase_service.dart": [],
+        "lib/data/models/coach_recommendation_model.dart": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 7,
+      "files": [
+        {
+          "path": "lib/data/models/match_model.dart",
+          "fileCategory": "code",
+          "sizeLines": 100,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/models/models.dart",
+          "fileCategory": "code",
+          "sizeLines": 15,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/models/player_model.dart",
+          "fileCategory": "code",
+          "sizeLines": 85,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/models/rack_model.dart",
+          "fileCategory": "code",
+          "sizeLines": 70,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/models/session_model.dart",
+          "fileCategory": "code",
+          "sizeLines": 95,
+          "language": "dart"
+        },
+        {
+          "path": "lib/data/models/shot_model.dart",
+          "fileCategory": "code",
+          "sizeLines": 80,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/coach_recommendation.dart",
+          "fileCategory": "code",
+          "sizeLines": 75,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/entities.dart",
+          "fileCategory": "code",
+          "sizeLines": 10,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/match.dart",
+          "fileCategory": "code",
+          "sizeLines": 90,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/player.dart",
+          "fileCategory": "code",
+          "sizeLines": 85,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/rack.dart",
+          "fileCategory": "code",
+          "sizeLines": 60,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/session.dart",
+          "fileCategory": "code",
+          "sizeLines": 95,
+          "language": "dart"
+        },
+        {
+          "path": "lib/domain/entities/shot.dart",
+          "fileCategory": "code",
+          "sizeLines": 70,
+          "language": "dart"
+        },
+        {
+          "path": "lib/knowledge/knowledge_data.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/knowledge/knowledge_models.dart",
+          "fileCategory": "code",
+          "sizeLines": 120,
+          "language": "dart"
+        },
+        {
+          "path": "lib/knowledge/knowledge_provider.dart",
+          "fileCategory": "code",
+          "sizeLines": 100,
+          "language": "dart"
+        },
+        {
+          "path": "lib/knowledge/knowledge_service.dart",
+          "fileCategory": "code",
+          "sizeLines": 130,
+          "language": "dart"
+        },
+        {
+          "path": "lib/main.dart",
+          "fileCategory": "code",
+          "sizeLines": 50,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/auth/login_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/auth/register_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/coach/analysis_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/coach/coach_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 250,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/coach/training_plan_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 220,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/community/community_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/home/home_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        }
+      ],
+      "batchImportData": {
+        "lib/data/models/match_model.dart": [],
+        "lib/data/models/models.dart": [],
+        "lib/data/models/player_model.dart": [],
+        "lib/data/models/rack_model.dart": [],
+        "lib/data/models/session_model.dart": [],
+        "lib/data/models/shot_model.dart": [],
+        "lib/domain/entities/coach_recommendation.dart": [],
+        "lib/domain/entities/entities.dart": [],
+        "lib/domain/entities/match.dart": [],
+        "lib/domain/entities/player.dart": [],
+        "lib/domain/entities/rack.dart": [],
+        "lib/domain/entities/session.dart": [],
+        "lib/domain/entities/shot.dart": [],
+        "lib/knowledge/knowledge_data.dart": [],
+        "lib/knowledge/knowledge_models.dart": [],
+        "lib/knowledge/knowledge_provider.dart": [],
+        "lib/knowledge/knowledge_service.dart": [],
+        "lib/main.dart": [],
+        "lib/presentation/screens/auth/login_screen.dart": [],
+        "lib/presentation/screens/auth/register_screen.dart": [],
+        "lib/presentation/screens/coach/analysis_screen.dart": [],
+        "lib/presentation/screens/coach/coach_screen.dart": [],
+        "lib/presentation/screens/coach/training_plan_screen.dart": [],
+        "lib/presentation/screens/community/community_screen.dart": [],
+        "lib/presentation/screens/home/home_screen.dart": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 8,
+      "files": [
+        {
+          "path": "lib/presentation/screens/home/notification_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 120,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/onboarding/interest_selection_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/onboarding/onboarding_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/onboarding/welcome_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/friendly_match_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 220,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/match_history_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/match_recording_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 300,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/play_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 250,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/quick_match_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/tournament_detail_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/tournament_list_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/play/vision_recording_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 350,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/profile/edit_profile_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/profile/equipment_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/profile/profile_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 220,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/profile/settings_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/session/create_session_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/session/session_list_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/shell/main_shell.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/assessment_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 250,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/certification_detail_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/certification_list_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 150,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/drill_detail_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 220,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/drill_list_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/drill_result_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        }
+      ],
+      "batchImportData": {
+        "lib/presentation/screens/home/notification_screen.dart": [],
+        "lib/presentation/screens/onboarding/interest_selection_screen.dart": [],
+        "lib/presentation/screens/onboarding/onboarding_screen.dart": [],
+        "lib/presentation/screens/onboarding/welcome_screen.dart": [],
+        "lib/presentation/screens/play/friendly_match_screen.dart": [],
+        "lib/presentation/screens/play/match_history_screen.dart": [],
+        "lib/presentation/screens/play/match_recording_screen.dart": [],
+        "lib/presentation/screens/play/play_screen.dart": [],
+        "lib/presentation/screens/play/quick_match_screen.dart": [],
+        "lib/presentation/screens/play/tournament_detail_screen.dart": [],
+        "lib/presentation/screens/play/tournament_list_screen.dart": [],
+        "lib/presentation/screens/play/vision_recording_screen.dart": [],
+        "lib/presentation/screens/profile/edit_profile_screen.dart": [],
+        "lib/presentation/screens/profile/equipment_screen.dart": [],
+        "lib/presentation/screens/profile/profile_screen.dart": [],
+        "lib/presentation/screens/profile/settings_screen.dart": [],
+        "lib/presentation/screens/session/create_session_screen.dart": [],
+        "lib/presentation/screens/session/session_list_screen.dart": [],
+        "lib/presentation/screens/shell/main_shell.dart": [],
+        "lib/presentation/screens/training/assessment_screen.dart": [],
+        "lib/presentation/screens/training/certification_detail_screen.dart": [],
+        "lib/presentation/screens/training/certification_list_screen.dart": [],
+        "lib/presentation/screens/training/drill_detail_screen.dart": [],
+        "lib/presentation/screens/training/drill_list_screen.dart": [],
+        "lib/presentation/screens/training/drill_result_screen.dart": []
+      },
+      "neighborMap": {}
+    },
+    {
+      "batchIndex": 9,
+      "files": [
+        {
+          "path": "lib/presentation/screens/training/drill_session_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 250,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/knowledge_detail_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/knowledge_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 200,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/learning_path_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 250,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/progress_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 220,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/recommended_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/training_center_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 280,
+          "language": "dart"
+        },
+        {
+          "path": "lib/presentation/screens/training/training_history_screen.dart",
+          "fileCategory": "code",
+          "sizeLines": 180,
+          "language": "dart"
+        },
+        {
+          "path": "lib/supabase.dart",
+          "fileCategory": "code",
+          "sizeLines": 30,
+          "language": "dart"
+        },
+        {
+          "path": "macos/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json",
+          "fileCategory": "config",
+          "sizeLines": 30,
+          "language": "json"
+        },
+        {
+          "path": "web/index.html",
+          "fileCategory": "markup",
+          "sizeLines": 30,
+          "language": "html"
+        },
+        {
+          "path": "web/manifest.json",
+          "fileCategory": "config",
+          "sizeLines": 25,
+          "language": "json"
+        }
+      ],
+      "batchImportData": {
+        "lib/presentation/screens/training/drill_session_screen.dart": [],
+        "lib/presentation/screens/training/knowledge_detail_screen.dart": [],
+        "lib/presentation/screens/training/knowledge_screen.dart": [],
+        "lib/presentation/screens/training/learning_path_screen.dart": [],
+        "lib/presentation/screens/training/progress_screen.dart": [],
+        "lib/presentation/screens/training/recommended_screen.dart": [],
+        "lib/presentation/screens/training/training_center_screen.dart": [],
+        "lib/presentation/screens/training/training_history_screen.dart": [],
+        "lib/supabase.dart": [],
+        "macos/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json": [],
+        "web/index.html": [],
+        "web/manifest.json": []
+      },
+      "neighborMap": {}
+    }
+  ]
+}

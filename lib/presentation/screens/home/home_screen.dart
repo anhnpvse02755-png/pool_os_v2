@@ -223,7 +223,7 @@ class HomeScreen extends ConsumerWidget {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                '${item.drill.nameVi} Lv${item.suggestedLevel}',
+                                '${item.drillNameVi}',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -253,7 +253,7 @@ class HomeScreen extends ConsumerWidget {
                 if (path != null && path.isNotEmpty) {
                   final first = path.first;
                   context.push(
-                    '/training/session/new?drill=${first.drill.code}&level=${first.suggestedLevel}',
+                    '/training/session/new?drill=${first.drillCode}',
                   );
                 } else {
                   context.go('/training');

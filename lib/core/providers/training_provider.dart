@@ -1,222 +1,179 @@
+// ============================================================================
+// TRAINING PROVIDER - Với Local Storage
+// ============================================================================
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/training_session.dart';
-import '../models/drill_progress.dart';
-import '../services/training_service.dart';
-import 'auth_provider.dart';
+import 'package:uuid/uuid.dart';
+import '../services/local_storage_service.dart';
 
-/// Training Service Provider
-final trainingServiceProvider = Provider<TrainingService>((ref) {
-  final client = ref.watch(supabaseClientProvider);
-  return TrainingService(client);
-});
+class TrainingState {
+  final List<TrainingSession> sessions;
+  final bool isLoading;
+  final String? error;
 
-// ============================================
-// TRAINING SESSION PROVIDERS
-// ============================================
-
-/// Current Training Session State
-class TrainingSessionState {
-  final TrainingSession? currentSession;
-  final DrillRun? currentDrillRun;
-  final int attempts;
-  final int successes;
-  final bool isActive;
-
-  const TrainingSessionState({
-    this.currentSession,
-    this.currentDrillRun,
-    this.attempts = 0,
-    this.successes = 0,
-    this.isActive = false,
+  const TrainingState({
+    this.sessions = const [],
+    this.isLoading = false,
+    this.error,
   });
 
-  double get successRate => attempts > 0 ? (successes / attempts) * 100 : 0;
-
-  TrainingSessionState copyWith({
-    TrainingSession? currentSession,
-    DrillRun? currentDrillRun,
-    int? attempts,
-    int? successes,
-    bool? isActive,
+  TrainingState copyWith({
+    List<TrainingSession>? sessions,
+    bool? isLoading,
+    String? error,
   }) {
-    return TrainingSessionState(
-      currentSession: currentSession ?? this.currentSession,
-      currentDrillRun: currentDrillRun ?? this.currentDrillRun,
-      attempts: attempts ?? this.attempts,
-      successes: successes ?? this.successes,
-      isActive: isActive ?? this.isActive,
+    return TrainingState(
+      sessions: sessions ?? this.sessions,
+      isLoading: isLoading ?? this.isLoading,
+      error: error,
     );
   }
 }
 
-class TrainingSessionNotifier extends StateNotifier<TrainingSessionState> {
-  final TrainingService _trainingService;
-  final String? _playerId;
+class TrainingSession {
+  final String id;
+  final String drillCode;
+  final String drillName;
+  final int score;
+  final int shotsAttempted;
+  final int shotsMade;
+  final int duration;
+  final DateTime date;
+  final int? improvement;
 
-  TrainingSessionNotifier(this._trainingService, this._playerId)
-      : super(const TrainingSessionState());
+  TrainingSession({
+    required this.id,
+    required this.drillCode,
+    required this.drillName,
+    required this.score,
+    required this.shotsAttempted,
+    required this.shotsMade,
+    required this.duration,
+    required this.date,
+    this.improvement,
+  });
 
-  /// Start a new training session
-  Future<void> startSession() async {
-    if (_playerId == null) return;
-
-    try {
-      final session = await _trainingService.startSession(_playerId!);
-      state = TrainingSessionState(
-        currentSession: session,
-        isActive: true,
-      );
-    } catch (e) {
-      // Handle error
-    }
-  }
-
-  /// Start a drill within the session
-  Future<void> startDrill({
-    required String drillCode,
-    required String drillName,
-    String? category,
-    int? targetReps,
-  }) async {
-    if (state.currentSession == null) {
-      await startSession();
-    }
-
-    try {
-      final drillRun = await _trainingService.addDrillRun(
-        sessionId: state.currentSession!.id,
-        drillCode: drillCode,
-        drillName: drillName,
-        category: category,
-        targetReps: targetReps,
-      );
-      state = state.copyWith(
-        currentDrillRun: drillRun,
-        attempts: 0,
-        successes: 0,
-      );
-    } catch (e) {
-      // Handle error
-    }
-  }
-
-  /// Record a shot result
-  void recordShot(bool success) {
-    state = state.copyWith(
-      attempts: state.attempts + 1,
-      successes: success ? state.successes + 1 : state.successes,
+  factory TrainingSession.fromJson(Map<String, dynamic> json) {
+    return TrainingSession(
+      id: json['id'] ?? const Uuid().v4(),
+      drillCode: json['drillCode'] ?? '',
+      drillName: json['drillName'] ?? '',
+      score: json['score'] ?? 0,
+      shotsAttempted: json['shotsAttempted'] ?? 0,
+      shotsMade: json['shotsMade'] ?? 0,
+      duration: json['duration'] ?? 0,
+      date: json['date'] != null ? DateTime.parse(json['date']) : DateTime.now(),
+      improvement: json['improvement'],
     );
   }
 
-  /// Finish the current drill
-  Future<DrillRun?> finishDrill({String? notes}) async {
-    if (state.currentDrillRun == null) return null;
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'drillCode': drillCode,
+    'drillName': drillName,
+    'score': score,
+    'shotsAttempted': shotsAttempted,
+    'shotsMade': shotsMade,
+    'duration': duration,
+    'date': date.toIso8601String(),
+    'improvement': improvement,
+  };
+}
 
+class TrainingNotifier extends StateNotifier<TrainingState> {
+  TrainingNotifier() : super(const TrainingState()) {
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    state = state.copyWith(isLoading: true);
     try {
-      final updatedRun = await _trainingService.updateDrillRun(
-        runId: state.currentDrillRun!.id,
-        attempts: state.attempts,
-        successes: state.successes,
-        notes: notes,
-      );
-
-      // Update drill progress
-      if (_playerId != null) {
-        await _trainingService.updateDrillProgress(
-          playerId: _playerId!,
-          drillCode: state.currentDrillRun!.drillCode,
-          attempts: state.attempts,
-          successes: state.successes,
-          successRate: state.successRate,
-        );
-      }
-
-      state = state.copyWith(
-        currentDrillRun: null,
-        attempts: 0,
-        successes: 0,
-      );
-
-      return updatedRun;
+      final data = await LocalStorageService.getDrillSessions();
+      final sessions = data.map((json) => TrainingSession.fromJson(json)).toList();
+      state = state.copyWith(sessions: sessions, isLoading: false);
     } catch (e) {
-      return null;
+      state = state.copyWith(error: e.toString(), isLoading: false);
     }
   }
 
-  /// End the training session
-  Future<void> endSession() async {
-    if (state.currentSession == null) return;
-
+  Future<void> addSession(TrainingSession session) async {
     try {
-      await _trainingService.completeSession(state.currentSession!.id);
-      state = const TrainingSessionState();
+      await LocalStorageService.saveDrillSession(session.toJson());
+      state = state.copyWith(sessions: [session, ...state.sessions]);
     } catch (e) {
-      // Handle error
+      state = state.copyWith(error: e.toString());
     }
+  }
+
+  Future<void> updateSession(TrainingSession session) async {
+    try {
+      await LocalStorageService.updateDrillSession(session.id, session.toJson());
+      final sessions = state.sessions.map((s) {
+        return s.id == session.id ? session : s;
+      }).toList();
+      state = state.copyWith(sessions: sessions);
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> deleteSession(String id) async {
+    try {
+      await LocalStorageService.deleteDrillSession(id);
+      final sessions = state.sessions.where((s) => s.id != id).toList();
+      state = state.copyWith(sessions: sessions);
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> refresh() async {
+    await _loadData();
+  }
+
+  // Stats
+  Map<String, dynamic> getStats() {
+    final sessions = state.sessions;
+    if (sessions.isEmpty) {
+      return {
+        'totalSessions': 0,
+        'totalMinutes': 0,
+        'avgScore': 0,
+        'totalShots': 0,
+      };
+    }
+
+    final totalSessions = sessions.length;
+    final totalMinutes = sessions.fold<int>(0, (sum, s) => sum + s.duration);
+    final avgScore = sessions.fold<int>(0, (sum, s) => sum + s.score) ~/ totalSessions;
+    final totalShots = sessions.fold<int>(0, (sum, s) => sum + s.shotsMade);
+
+    return {
+      'totalSessions': totalSessions,
+      'totalMinutes': totalMinutes,
+      'avgScore': avgScore,
+      'totalShots': totalShots,
+    };
+  }
+
+  // Filter
+  List<TrainingSession> getSessionsByDrill(String drillCode) {
+    return state.sessions.where((s) => s.drillCode == drillCode).toList();
+  }
+
+  List<TrainingSession> getSessionsInRange(DateTime start, DateTime end) {
+    return state.sessions.where((s) {
+      return s.date.isAfter(start) && s.date.isBefore(end);
+    }).toList();
   }
 }
 
-final trainingSessionProvider =
-    StateNotifierProvider<TrainingSessionNotifier, TrainingSessionState>((ref) {
-  final trainingService = ref.watch(trainingServiceProvider);
-
-  // Get playerId from auth
-  final authState = ref.watch(authProvider);
-  String? playerId;
-
-  return TrainingSessionNotifier(trainingService, authState.userId);
+final trainingProvider = StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
+  return TrainingNotifier();
 });
 
-/// Recent Training Sessions
-final recentTrainingSessionsProvider = FutureProvider<List<TrainingSession>>((ref) async {
-  final trainingService = ref.watch(trainingServiceProvider);
-  final authState = ref.watch(authProvider);
-
-  if (authState.userId == null) return [];
-
-  return await trainingService.getRecentSessions(authState.userId!, limit: 10);
-});
-
-// ============================================
-// DRILL PROGRESS PROVIDERS
-// ============================================
-
-/// Get drill progress for a specific drill
-final drillProgressProvider = FutureProvider.family<DrillProgress?, String>((ref, drillCode) async {
-  final trainingService = ref.watch(trainingServiceProvider);
-  final authState = ref.watch(authProvider);
-
-  if (authState.userId == null) return null;
-
-  return await trainingService.getDrillProgress(authState.userId!, drillCode);
-});
-
-/// Get all drill progress
-final allDrillProgressProvider = FutureProvider<List<DrillProgress>>((ref) async {
-  final trainingService = ref.watch(trainingServiceProvider);
-  final authState = ref.watch(authProvider);
-
-  if (authState.userId == null) return [];
-
-  return await trainingService.getAllDrillProgress(authState.userId!);
-});
-
-/// Get drill level attempts
-final drillLevelAttemptsProvider = FutureProvider.family<List<DrillLevelAttempt>, String>((ref, drillCode) async {
-  final trainingService = ref.watch(trainingServiceProvider);
-  final authState = ref.watch(authProvider);
-
-  if (authState.userId == null) return [];
-
-  return await trainingService.getLevelAttempts(authState.userId!, drillCode);
-});
-
-/// Get drill run history
-final drillRunHistoryProvider = FutureProvider.family<List<DrillRun>, String>((ref, drillCode) async {
-  final trainingService = ref.watch(trainingServiceProvider);
-  final authState = ref.watch(authProvider);
-
-  if (authState.userId == null) return [];
-
-  return await trainingService.getDrillRunHistory(authState.userId!, drillCode);
+// Stats provider
+final trainingStatsProvider = Provider<Map<String, dynamic>>((ref) {
+  final notifier = ref.read(trainingProvider.notifier);
+  return notifier.getStats();
 });

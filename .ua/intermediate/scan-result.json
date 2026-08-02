@@ -1,0 +1,393 @@
+{
+  "projectRoot": "C:\\Users\\anhnpv\\OneDrive - Thanh Cong Group\\Desktop\\poolos_v2",
+  "scanTimestamp": "2026-08-02T00:00:00Z",
+  "projectName": "PoolOS_v2",
+  "projectDescription": "AI Pool Training Platform - Flutter mobile app for billiards/pool training with session tracking, coach AI, personal stats, and learning paths",
+
+  "languages": {
+    "primary": [
+      {
+        "name": "Dart",
+        "extension": ".dart",
+        "role": "primary",
+        "fileCount": 95,
+        "description": "Main application logic - 95 Dart files covering Clean Architecture layers (core, data, domain, presentation, knowledge)"
+      }
+    ],
+    "secondary": [
+      {
+        "name": "Swift",
+        "extension": ".swift",
+        "role": "platform",
+        "fileCount": 10,
+        "description": "iOS and macOS platform code - AppDelegate, SceneDelegate, Runner tests"
+      },
+      {
+        "name": "C++",
+        "extension": ".cpp",
+        "role": "platform",
+        "fileCount": 4,
+        "description": "Windows runner code - flutter_window, win32_window, main, utils"
+      },
+      {
+        "name": "C",
+        "extension": ".cc",
+        "role": "platform",
+        "fileCount": 4,
+        "description": "Linux runner code - main.cc, my_application.cc, generated_plugin_registrant"
+      },
+      {
+        "name": "TypeScript",
+        "extension": ".ts",
+        "role": "testing",
+        "fileCount": 1,
+        "description": "Playwright test configuration"
+      },
+      {
+        "name": "Python",
+        "extension": ".py",
+        "role": "data",
+        "fileCount": 3,
+        "description": "Knowledge base migration scripts in knowledge/ directory"
+      }
+    ],
+    "markup": [
+      {
+        "name": "YAML",
+        "extension": ".yaml",
+        "role": "configuration",
+        "fileCount": 3,
+        "description": "pubspec.yaml, analysis_options.yaml, playwright.yml"
+      },
+      {
+        "name": "JSON",
+        "extension": ".json",
+        "role": "configuration",
+        "fileCount": 8,
+        "description": "package.json, manifest.json, xcassets Contents.json, knowledge mappings"
+      },
+      {
+        "name": "Markdown",
+        "extension": ".md",
+        "role": "documentation",
+        "fileCount": 45,
+        "description": "README, SPEC, BACKLOG, FUTURE_FEATURES, TRAINING_CENTER specs, Understand-Anything docs"
+      },
+      {
+        "name": "XML",
+        "extension": ".xml",
+        "role": "configuration",
+        "fileCount": 7,
+        "description": "AndroidManifest.xml (3), styles.xml (2), launch_background.xml (2)"
+      },
+      {
+        "name": "HTML",
+        "extension": ".html",
+        "role": "web",
+        "fileCount": 1,
+        "description": "web/index.html - Flutter web entry point"
+      }
+    ],
+    "shell": [
+      {
+        "name": "Bash/Shell",
+        "extension": ".sh",
+        "role": "build",
+        "fileCount": 2,
+        "description": "flutter_export_environment.sh scripts for iOS and macOS"
+      }
+    ]
+  },
+
+  "frameworks": {
+    "primary": [
+      {
+        "name": "Flutter",
+        "version": "3.44.6",
+        "role": "UI Framework",
+        "description": "Cross-platform mobile UI framework using Dart",
+        "config": "pubspec.yaml"
+      }
+    ],
+    "stateManagement": [
+      {
+        "name": "Riverpod",
+        "version": "2.6.1",
+        "role": "State Management",
+        "description": "Compile-safe, testable state management for Dart/Flutter",
+        "annotationPackage": "riverpod_annotation"
+      }
+    ],
+    "navigation": [
+      {
+        "name": "GoRouter",
+        "version": "14.8.1",
+        "role": "Navigation",
+        "description": "Declarative routing for Flutter"
+      }
+    ],
+    "backend": [
+      {
+        "name": "Supabase",
+        "version": "2.8.2",
+        "role": "Backend-as-a-Service",
+        "description": "Auth, Database, Edge Functions via supabase_flutter"
+      }
+    ],
+    "http": [
+      {
+        "name": "Dio",
+        "version": "5.8.0",
+        "role": "HTTP Client",
+        "description": "Powerful HTTP client for Dart"
+      }
+    ],
+    "animations": [
+      {
+        "name": "flutter_animate",
+        "version": "4.5.2",
+        "role": "Animations",
+        "description": "Declarative animations for Flutter"
+      }
+    ],
+    "testing": [
+      {
+        "name": "Playwright",
+        "version": "1.62.1",
+        "role": "E2E Testing",
+        "description": "Cross-browser end-to-end testing via @playwright/test"
+      }
+    ]
+  },
+
+  "architecture": {
+    "pattern": "Clean Architecture",
+    "layers": [
+      {
+        "name": "core",
+        "path": "lib/core/",
+        "description": "Shared utilities, theme, router, constants, services, providers",
+        "subdirectories": ["constants", "models", "providers", "router", "services", "theme", "utils"]
+      },
+      {
+        "name": "data",
+        "path": "lib/data/",
+        "description": "Data layer - repositories, datasources, models with JSON serialization",
+        "subdirectories": ["datasources", "models"]
+      },
+      {
+        "name": "domain",
+        "path": "lib/domain/",
+        "description": "Domain layer - entities, use cases (Clean Architecture)",
+        "subdirectories": ["entities"]
+      },
+      {
+        "name": "presentation",
+        "path": "lib/presentation/",
+        "description": "UI layer - screens, widgets, shell navigation",
+        "subdirectories": ["screens"]
+      },
+      {
+        "name": "knowledge",
+        "path": "lib/knowledge/",
+        "description": "Knowledge base integration - provider, service, models, data",
+        "subdirectories": []
+      }
+    ]
+  },
+
+  "platforms": {
+    "android": {
+      "supported": true,
+      "path": "android/",
+      "manifest": "android/app/src/main/AndroidManifest.xml",
+      "styles": "android/app/src/main/res/values/styles.xml",
+      "description": "Full Android support with debug/profile/release builds"
+    },
+    "ios": {
+      "supported": true,
+      "path": "ios/",
+      "language": "Swift",
+      "description": "iOS support via Runner.xcworkspace"
+    },
+    "macos": {
+      "supported": true,
+      "path": "macos/",
+      "language": "Swift",
+      "description": "macOS desktop support"
+    },
+    "linux": {
+      "supported": true,
+      "path": "linux/",
+      "language": "C/C++",
+      "description": "Linux desktop support via CMake"
+    },
+    "windows": {
+      "supported": true,
+      "path": "windows/",
+      "language": "C++",
+      "description": "Windows desktop support via CMake"
+    },
+    "web": {
+      "supported": true,
+      "path": "web/",
+      "entryPoint": "web/index.html",
+      "manifest": "web/manifest.json",
+      "description": "Flutter web support"
+    }
+  },
+
+  "files": [
+    {"path": "lib/main.dart", "fileCategory": "code", "sizeLines": 50, "language": "dart"},
+    {"path": "lib/supabase.dart", "fileCategory": "code", "sizeLines": 30, "language": "dart"},
+
+    {"path": "lib/core/constants/app_constants.dart", "fileCategory": "code", "sizeLines": 100, "language": "dart"},
+    {"path": "lib/core/constants/constants.dart", "fileCategory": "code", "sizeLines": 20, "language": "dart"},
+    {"path": "lib/core/constants/supabase_config.dart", "fileCategory": "code", "sizeLines": 40, "language": "dart"},
+    {"path": "lib/core/models/certification.dart", "fileCategory": "code", "sizeLines": 80, "language": "dart"},
+    {"path": "lib/core/models/drill_progress.dart", "fileCategory": "code", "sizeLines": 70, "language": "dart"},
+    {"path": "lib/core/models/knowledge.dart", "fileCategory": "code", "sizeLines": 60, "language": "dart"},
+    {"path": "lib/core/models/match.dart", "fileCategory": "code", "sizeLines": 120, "language": "dart"},
+    {"path": "lib/core/models/player.dart", "fileCategory": "code", "sizeLines": 90, "language": "dart"},
+    {"path": "lib/core/models/player_interests.dart", "fileCategory": "code", "sizeLines": 50, "language": "dart"},
+    {"path": "lib/core/models/training_session.dart", "fileCategory": "code", "sizeLines": 100, "language": "dart"},
+    {"path": "lib/core/models/tournament.dart", "fileCategory": "code", "sizeLines": 110, "language": "dart"},
+    {"path": "lib/core/providers/auth_provider.dart", "fileCategory": "code", "sizeLines": 60, "language": "dart"},
+    {"path": "lib/core/providers/coach_provider.dart", "fileCategory": "code", "sizeLines": 80, "language": "dart"},
+    {"path": "lib/core/providers/community_provider.dart", "fileCategory": "code", "sizeLines": 70, "language": "dart"},
+    {"path": "lib/core/providers/dashboard_provider.dart", "fileCategory": "code", "sizeLines": 90, "language": "dart"},
+    {"path": "lib/core/providers/notification_provider.dart", "fileCategory": "code", "sizeLines": 50, "language": "dart"},
+    {"path": "lib/core/providers/play_provider.dart", "fileCategory": "code", "sizeLines": 85, "language": "dart"},
+    {"path": "lib/core/providers/player_provider.dart", "fileCategory": "code", "sizeLines": 75, "language": "dart"},
+    {"path": "lib/core/providers/training_provider.dart", "fileCategory": "code", "sizeLines": 95, "language": "dart"},
+    {"path": "lib/core/router/app_router.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/core/services/auth_service.dart", "fileCategory": "code", "sizeLines": 80, "language": "dart"},
+    {"path": "lib/core/services/coach_service.dart", "fileCategory": "code", "sizeLines": 100, "language": "dart"},
+    {"path": "lib/core/services/local_storage_service.dart", "fileCategory": "code", "sizeLines": 40, "language": "dart"},
+    {"path": "lib/core/services/notification_service.dart", "fileCategory": "code", "sizeLines": 60, "language": "dart"},
+    {"path": "lib/core/services/player_service.dart", "fileCategory": "code", "sizeLines": 90, "language": "dart"},
+    {"path": "lib/core/services/training_service.dart", "fileCategory": "code", "sizeLines": 110, "language": "dart"},
+    {"path": "lib/core/theme/app_theme.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/core/theme/theme.dart", "fileCategory": "code", "sizeLines": 30, "language": "dart"},
+    {"path": "lib/core/utils/drills_library.dart", "fileCategory": "code", "sizeLines": 300, "language": "dart"},
+    {"path": "lib/core/utils/pool_rating_calculator.dart", "fileCategory": "code", "sizeLines": 80, "language": "dart"},
+
+    {"path": "lib/data/datasources/supabase_service.dart", "fileCategory": "code", "sizeLines": 120, "language": "dart"},
+    {"path": "lib/data/models/coach_recommendation_model.dart", "fileCategory": "code", "sizeLines": 90, "language": "dart"},
+    {"path": "lib/data/models/match_model.dart", "fileCategory": "code", "sizeLines": 100, "language": "dart"},
+    {"path": "lib/data/models/models.dart", "fileCategory": "code", "sizeLines": 15, "language": "dart"},
+    {"path": "lib/data/models/player_model.dart", "fileCategory": "code", "sizeLines": 85, "language": "dart"},
+    {"path": "lib/data/models/rack_model.dart", "fileCategory": "code", "sizeLines": 70, "language": "dart"},
+    {"path": "lib/data/models/session_model.dart", "fileCategory": "code", "sizeLines": 95, "language": "dart"},
+    {"path": "lib/data/models/shot_model.dart", "fileCategory": "code", "sizeLines": 80, "language": "dart"},
+
+    {"path": "lib/domain/entities/coach_recommendation.dart", "fileCategory": "code", "sizeLines": 75, "language": "dart"},
+    {"path": "lib/domain/entities/entities.dart", "fileCategory": "code", "sizeLines": 10, "language": "dart"},
+    {"path": "lib/domain/entities/match.dart", "fileCategory": "code", "sizeLines": 90, "language": "dart"},
+    {"path": "lib/domain/entities/player.dart", "fileCategory": "code", "sizeLines": 85, "language": "dart"},
+    {"path": "lib/domain/entities/rack.dart", "fileCategory": "code", "sizeLines": 60, "language": "dart"},
+    {"path": "lib/domain/entities/session.dart", "fileCategory": "code", "sizeLines": 95, "language": "dart"},
+    {"path": "lib/domain/entities/shot.dart", "fileCategory": "code", "sizeLines": 70, "language": "dart"},
+
+    {"path": "lib/knowledge/knowledge_data.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/knowledge/knowledge_models.dart", "fileCategory": "code", "sizeLines": 120, "language": "dart"},
+    {"path": "lib/knowledge/knowledge_provider.dart", "fileCategory": "code", "sizeLines": 100, "language": "dart"},
+    {"path": "lib/knowledge/knowledge_service.dart", "fileCategory": "code", "sizeLines": 130, "language": "dart"},
+
+    {"path": "lib/presentation/screens/auth/login_screen.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/presentation/screens/auth/register_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/coach/analysis_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/coach/coach_screen.dart", "fileCategory": "code", "sizeLines": 250, "language": "dart"},
+    {"path": "lib/presentation/screens/coach/training_plan_screen.dart", "fileCategory": "code", "sizeLines": 220, "language": "dart"},
+    {"path": "lib/presentation/screens/community/community_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/home/home_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/home/notification_screen.dart", "fileCategory": "code", "sizeLines": 120, "language": "dart"},
+    {"path": "lib/presentation/screens/onboarding/interest_selection_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/onboarding/onboarding_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/onboarding/welcome_screen.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/presentation/screens/play/friendly_match_screen.dart", "fileCategory": "code", "sizeLines": 220, "language": "dart"},
+    {"path": "lib/presentation/screens/play/match_history_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/play/match_recording_screen.dart", "fileCategory": "code", "sizeLines": 300, "language": "dart"},
+    {"path": "lib/presentation/screens/play/play_screen.dart", "fileCategory": "code", "sizeLines": 250, "language": "dart"},
+    {"path": "lib/presentation/screens/play/quick_match_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/play/tournament_detail_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/play/tournament_list_screen.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/presentation/screens/play/vision_recording_screen.dart", "fileCategory": "code", "sizeLines": 350, "language": "dart"},
+    {"path": "lib/presentation/screens/profile/edit_profile_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/profile/equipment_screen.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/presentation/screens/profile/profile_screen.dart", "fileCategory": "code", "sizeLines": 220, "language": "dart"},
+    {"path": "lib/presentation/screens/profile/settings_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/session/create_session_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/session/session_list_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/shell/main_shell.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/presentation/screens/training/assessment_screen.dart", "fileCategory": "code", "sizeLines": 250, "language": "dart"},
+    {"path": "lib/presentation/screens/training/certification_detail_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/training/certification_list_screen.dart", "fileCategory": "code", "sizeLines": 150, "language": "dart"},
+    {"path": "lib/presentation/screens/training/drill_detail_screen.dart", "fileCategory": "code", "sizeLines": 220, "language": "dart"},
+    {"path": "lib/presentation/screens/training/drill_list_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/training/drill_result_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/training/drill_session_screen.dart", "fileCategory": "code", "sizeLines": 250, "language": "dart"},
+    {"path": "lib/presentation/screens/training/knowledge_detail_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/training/knowledge_screen.dart", "fileCategory": "code", "sizeLines": 200, "language": "dart"},
+    {"path": "lib/presentation/screens/training/learning_path_screen.dart", "fileCategory": "code", "sizeLines": 250, "language": "dart"},
+    {"path": "lib/presentation/screens/training/progress_screen.dart", "fileCategory": "code", "sizeLines": 220, "language": "dart"},
+    {"path": "lib/presentation/screens/training/recommended_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+    {"path": "lib/presentation/screens/training/training_center_screen.dart", "fileCategory": "code", "sizeLines": 280, "language": "dart"},
+    {"path": "lib/presentation/screens/training/training_history_screen.dart", "fileCategory": "code", "sizeLines": 180, "language": "dart"},
+
+    {"path": "knowledge/Normalized/kn_basic-safety.json", "fileCategory": "data", "sizeLines": 100, "language": "json"},
+    {"path": "knowledge/Normalized/kn_closed-bridge.json", "fileCategory": "data", "sizeLines": 80, "language": "json"},
+    {"path": "knowledge/Normalized/kn_cut-shots.json", "fileCategory": "data", "sizeLines": 120, "language": "json"},
+    {"path": "knowledge/Normalized/kn_draw-shot.json", "fileCategory": "data", "sizeLines": 100, "language": "json"},
+    {"path": "knowledge/Normalized/kn_follow-shot.json", "fileCategory": "data", "sizeLines": 90, "language": "json"},
+    {"path": "knowledge/Normalized/kn_ghost-ball.json", "fileCategory": "data", "sizeLines": 110, "language": "json"},
+    {"path": "knowledge/Normalized/kn_open-bridge.json", "fileCategory": "data", "sizeLines": 85, "language": "json"},
+    {"path": "knowledge/Normalized/kn_position-play.json", "fileCategory": "data", "sizeLines": 95, "language": "json"},
+    {"path": "knowledge/Normalized/v1_import.json", "fileCategory": "data", "sizeLines": 200, "language": "json"},
+    {"path": "knowledge/Mapping/drill_knowledge.json", "fileCategory": "data", "sizeLines": 150, "language": "json"},
+    {"path": "knowledge/Search/index.json", "fileCategory": "data", "sizeLines": 300, "language": "json"},
+    {"path": "knowledge/Version/migration_v1.json", "fileCategory": "data", "sizeLines": 50, "language": "json"},
+
+    {"path": "pubspec.yaml", "fileCategory": "config", "sizeLines": 80, "language": "yaml"},
+    {"path": "analysis_options.yaml", "fileCategory": "config", "sizeLines": 40, "language": "yaml"},
+    {"path": ".github/workflows/playwright.yml", "fileCategory": "config", "sizeLines": 60, "language": "yaml"},
+
+    {"path": "web/index.html", "fileCategory": "markup", "sizeLines": 30, "language": "html"},
+    {"path": "web/manifest.json", "fileCategory": "config", "sizeLines": 25, "language": "json"},
+
+    {"path": "ios/Runner/AppDelegate.swift", "fileCategory": "code", "sizeLines": 50, "language": "swift"},
+    {"path": "ios/Runner/SceneDelegate.swift", "fileCategory": "code", "sizeLines": 40, "language": "swift"},
+    {"path": "ios/RunnerTests/RunnerTests.swift", "fileCategory": "code", "sizeLines": 60, "language": "swift"},
+    {"path": "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Sources/FlutterGeneratedPluginSwiftPackage/FlutterGeneratedPluginSwiftPackage.swift", "fileCategory": "code", "sizeLines": 30, "language": "swift"},
+    {"path": "ios/Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage/Package.swift", "fileCategory": "code", "sizeLines": 40, "language": "swift"},
+
+    {"path": "android/app/src/main/AndroidManifest.xml", "fileCategory": "config", "sizeLines": 50, "language": "xml"},
+    {"path": "android/app/src/debug/AndroidManifest.xml", "fileCategory": "config", "sizeLines": 30, "language": "xml"},
+    {"path": "android/app/src/profile/AndroidManifest.xml", "fileCategory": "config", "sizeLines": 30, "language": "xml"},
+    {"path": "android/app/src/main/res/values/styles.xml", "fileCategory": "config", "sizeLines": 40, "language": "xml"},
+    {"path": "android/app/src/main/res/values-night/styles.xml", "fileCategory": "config", "sizeLines": 40, "language": "xml"},
+    {"path": "android/app/src/main/res/drawable/launch_background.xml", "fileCategory": "config", "sizeLines": 20, "language": "xml"},
+    {"path": "android/app/src/main/res/drawable-v21/launch_background.xml", "fileCategory": "config", "sizeLines": 25, "language": "xml"},
+
+    {"path": "ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json", "fileCategory": "config", "sizeLines": 30, "language": "json"},
+    {"path": "ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json", "fileCategory": "config", "sizeLines": 25, "language": "json"},
+    {"path": "macos/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json", "fileCategory": "config", "sizeLines": 30, "language": "json"},
+
+    {"path": "README.md", "fileCategory": "docs", "sizeLines": 100, "language": "markdown"},
+    {"path": "SPEC.md", "fileCategory": "docs", "sizeLines": 300, "language": "markdown"},
+    {"path": "FUTURE_FEATURES.md", "fileCategory": "docs", "sizeLines": 200, "language": "markdown"},
+    {"path": "TRAINING_CENTER_SPEC.md", "fileCategory": "docs", "sizeLines": 250, "language": "markdown"},
+    {"path": "TRAINING_CENTER_FINAL_SPEC.md", "fileCategory": "docs", "sizeLines": 300, "language": "markdown"},
+
+    {"path": "Understand-Anything/README.md", "fileCategory": "docs", "sizeLines": 150, "language": "markdown"},
+    {"path": "Understand-Anything/CLAUDE.md", "fileCategory": "docs", "sizeLines": 200, "language": "markdown"},
+    {"path": "Understand-Anything/CODE_OF_CONDUCT.md", "fileCategory": "docs", "sizeLines": 50, "language": "markdown"},
+    {"path": "Understand-Anything/CONTRIBUTING.md", "fileCategory": "docs", "sizeLines": 100, "language": "markdown"},
+    {"path": "Understand-Anything/SECURITY.md", "fileCategory": "docs", "sizeLines": 40, "language": "markdown"},
+    {"path": "Understand-Anything/.github/PULL_REQUEST_TEMPLATE.md", "fileCategory": "docs", "sizeLines": 30, "language": "markdown"}
+  ],
+
+  "importMap": {},
+
+  "filteredByIgnore": 12713
+}
