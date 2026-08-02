@@ -16,6 +16,10 @@ import '../../presentation/screens/training/knowledge_detail_screen.dart';
 import '../../presentation/screens/training/certification_list_screen.dart';
 import '../../presentation/screens/training/certification_detail_screen.dart';
 import '../../presentation/screens/play/match_recording_screen.dart';
+import '../../presentation/screens/play/match_history_screen.dart';
+import '../../presentation/screens/training/training_history_screen.dart';
+import '../../presentation/screens/training/progress_screen.dart';
+import '../../presentation/screens/coach/analysis_screen.dart';
 import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
@@ -140,6 +144,26 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/play/recording',
             name: 'matchRecording',
             builder: (context, state) => const MatchRecordingScreen(),
+          ),
+          GoRoute(
+            path: '/play/history',
+            name: 'matchHistory',
+            builder: (context, state) => const MatchHistoryScreen(),
+          ),
+          GoRoute(
+            path: '/training/history',
+            name: 'trainingHistory',
+            builder: (context, state) => const TrainingHistoryScreen(),
+          ),
+          GoRoute(
+            path: '/training/progress',
+            name: 'progress',
+            builder: (context, state) => const ProgressScreen(),
+          ),
+          GoRoute(
+            path: '/coach/analysis',
+            name: 'analysis',
+            builder: (context, state) => const AnalysisScreen(),
           ),
           GoRoute(
             path: '/training/session/new',
