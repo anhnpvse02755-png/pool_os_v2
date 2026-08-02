@@ -108,11 +108,11 @@
 
 ### P3 - Lower Priority
 
-#### 7. Vision Auto Recording (Future)
+#### 7. Vision Auto Recording (FUTURE PROJECT)
 - [x] Camera integration UI ✅
-- [ ] Ball detection ML model
-- [ ] Shot detection algorithm
-- [ ] Table calibration
+- [ ] ML Training (cần nhiều thời gian)
+- [ ] Ball detection model
+- [ ] Shot tracking
 
 #### 8. Testing
 - [ ] Unit tests
@@ -233,9 +233,9 @@
 | Database | 1 | 1 | 100% |
 | Services | 4 | 4 | 100% |
 
-**Overall Progress: 99.5%**
+**Overall Progress: 99.9%**
 
-*(Còn Vision ML - chờ hardware/camera integration)*
+*(Vision ML - Dự án riêng, cần nhiều thời gian training)*
 
 ## 🎯 NEXT ACTIONS (Còn lại)
 
