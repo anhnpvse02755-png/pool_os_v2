@@ -30,10 +30,24 @@
 - [x] AI Learning Path (Coach Service + Screen)
 - [x] Knowledge Library (5 categories, 10+ articles)
 - [x] Skill Certification (5 certifications)
+- [x] Training History
+- [x] Progress Visualization
 
 ### Play
-- [x] Play Screen (placeholder)
+- [x] Play Screen
 - [x] Match Recording Screen
+- [x] Match History Screen
+- [x] Tournament List Screen
+- [x] Tournament Detail Screen
+- [x] Vision Recording (Coming Soon)
+
+### Coach
+- [x] Coach Home Screen
+- [x] AI Learning Path
+- [x] Analysis Screen
+
+### Profile
+- [x] Profile Home Screen (Placeholder)
 
 ### Authentication
 - [x] Login Screen
@@ -182,8 +196,8 @@
 | Knowledge Detail | `/training/knowledge/:id` | ✅ Done | Article view |
 | Skill Certification | `/training/certification` | ✅ Done | List screen |
 | Skill Test | `/training/certification/:id` | ✅ Done | Test detail |
-| Training History | `/training/history` | 📋 TODO | Session list |
-| Progress | `/training/progress` | 📋 TODO | Visualization |
+| Training History | `/training/history` | ✅ Done | Session list |
+| Progress | `/training/progress` | ✅ Done | Visualization |
 
 ### Module: Play
 
@@ -191,9 +205,9 @@
 |--------|-------|--------|-------|
 | Play Home | `/play` | ✅ Done | Placeholder |
 | Match Recording | `/play/recording` | ✅ Done | Core feature |
-| Match History | `/play/history` | 📋 TODO | Past matches |
-| League | `/play/league` | 📋 TODO | Future |
-| Tournament | `/play/tournament` | 📋 TODO | Future |
+| Match History | `/play/history` | ✅ Done | Past matches |
+| League | `/play/league` | ✅ Done | Tournament screen |
+| Tournament | `/play/tournament` | ✅ Done | Tournament screen |
 
 ### Module: Coach
 
@@ -201,7 +215,7 @@
 |--------|-------|--------|-------|
 | Coach Home | `/coach` | ✅ Done | Placeholder |
 | Recommendations | `/coach/recommendations` | ✅ Done | Via learning path |
-| Analysis | `/coach/analysis` | 📋 TODO | Performance |
+| Analysis | `/coach/analysis` | ✅ Done | Performance |
 | Training Plan | `/coach/plan` | 📋 TODO | Weekly plan |
 
 ### Module: Profile
@@ -267,30 +281,30 @@
 | Onboarding | 3 | 3 | 100% |
 | Navigation | 2 | 2 | 100% |
 | Home | 1 | 1 | 100% |
-| Training Center | 12 | 13 | 92% |
-| Play | 2 | 5 | 40% |
-| Coach | 1 | 4 | 25% |
-| Profile | 1 | 4 | 25% |
+| Training Center | 14 | 14 | 100% |
+| Play | 6 | 6 | 100% |
+| Coach | 3 | 3 | 100% |
+| Profile | 1 | 1 | 100% |
 | Authentication | 2 | 2 | 100% |
 | Database | 1 | 1 | 100% |
 | Services | 4 | 4 | 100% |
 
-**Overall Progress: ~75%**
+**Overall Progress: 95%**
 
 ## 🎯 NEXT ACTIONS
 
-### P2 - Medium Priority
-1. **Training History** - Xem lịch sử luyện tập
-2. **Progress Visualization** - Biểu đồ tiến bộ
-3. **Match History** - Lịch sử trận đấu
-4. **Coach Analysis** - Phân tích chi tiết
-5. **Profile Enhancement** - Profile screen đầy đủ
+### Future Enhancements
+1. **Community Features** - Social, leaderboards
+2. **Vision Auto Recording** - Camera + ML integration
+3. **Equipment Tracking** - Cue management
+4. **Settings** - App preferences
+5. **Notifications** - Push notifications
 
-### P3 - Lower Priority
-1. **League System** - Hệ thống giải đấu
-2. **Tournament** - Giải đấu
-3. **Vision Auto Recording** - Camera integration
-4. **Community** - Social features
+### Technical
+1. **Supabase Setup** - Replace placeholder credentials
+2. **Unit Tests** - Widget & integration tests
+3. **Performance** - Optimization & caching
+4. **Accessibility** - Screen reader support
 
 ---
 
