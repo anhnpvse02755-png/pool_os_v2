@@ -1029,10 +1029,10 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _QuickActionButton(
-                icon: Icons.bar_chart,
-                label: 'Thống kê',
+                icon: Icons.people,
+                label: 'Cộng đồng',
                 color: Colors.purple,
-                onTap: () => context.go('/coach/analysis'),
+                onTap: () => context.push('/community'),
               ),
             ),
           ],

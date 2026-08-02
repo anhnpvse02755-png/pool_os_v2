@@ -34,6 +34,7 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/profile/settings_screen.dart';
 import '../../presentation/screens/profile/edit_profile_screen.dart';
 import '../../presentation/screens/profile/equipment_screen.dart';
+import '../../presentation/screens/community/community_screen.dart';
 import '../../presentation/screens/shell/main_shell.dart';
 import '../../presentation/screens/auth/login_screen.dart';
 import '../../presentation/screens/auth/register_screen.dart';
@@ -203,6 +204,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/play/vision',
             name: 'visionRecording',
             builder: (context, state) => const VisionRecordingScreen(),
+          ),
+          GoRoute(
+            path: '/community',
+            name: 'community',
+            builder: (context, state) => const CommunityScreen(),
           ),
           GoRoute(
             path: '/training/session/new',
