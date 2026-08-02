@@ -1,0 +1,14 @@
+{
+  "id": "kn_basic-safety",
+  "slug": "basic-safety",
+  "title": "Basic Safety",
+  "titleVi": "An toàn cơ bản",
+  "content": "# An toàn cơ bản\n\n## Mục tiêu\nĐánh safety sao cho đối thủ khó ghi điểm.\n\n## Nguyên tắc\n1. **Để bi đối thủ xa lỗ**: Tạo khoảng cách\n2. **Kiểm soát bi cái**: Không tạo cơ hội cho đối thủ\n3. **Tạo thế khó**: Buộc đối thủ đánh cú khó\n\n## Kỹ thuật\n1. **Đọc bàn**: Quan sát vị trí các bi và lỗ\n2. **Tính góc**: Xác định điểm đánh trên băng\n3. **Kiểm soát lực**: Bi cái dừng ở vị trí mong muốn\n\n## Các loại safety\n- **Hook**: Để bi đối thủ bị kẹp\n- **Side safety**: Để bi đối thủ ở bên\n- **Long safety**: Đẩy bi đối thủ ra xa",
+  "categoryId": "cat_strategy",
+  "tagIds": ["tag_advanced", "tag_strategy", "tag_defense"],
+  "aliases": ["safety", "an toan", "choi an toan"],
+  "keywords": ["safety", "defensive", "strategy"],
+  "difficulty": "advanced",
+  "relatedKnowledgeIds": ["kn_position-play"],
+  "relatedDrillCodes": ["SAFETY_LV1", "SAFETY_LV2"]
+}

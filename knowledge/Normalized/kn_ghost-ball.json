@@ -1,0 +1,14 @@
+{
+  "id": "kn_ghost-ball",
+  "slug": "ghost-ball",
+  "title": "Ghost Ball Method",
+  "titleVi": "Phương pháp Ghost Ball",
+  "content": "# Phương pháp Ghost Ball\n\n## Giới thiệu\nGhost Ball là phương pháp ngắm phổ biến nhất, giúp xác định điểm ngắm chính xác.\n\n## Cách thực hiện\n1. **Hình dung bi cái**: Tưởng tượng một bi cái \"ma\" (ghost ball) đặt ngay vị trí bi cái cần đến\n2. **Xác định điểm tiếp xúc**: Điểm mà bi mục tiêu cần chạm bi cái\n3. **Ngắm điểm**: Aim vào điểm đó\n\n## Áp dụng cho các cú đánh\n- **Cú thẳng**: Điểm ngắm là tâm lỗ\n- **Cú cắt**: Điểm ngắm là điểm tiếp xúc\n- **Cú bank**: Cần tính góc phản xạ\n\n## Luyện tập\n1. Đặt 2 bi thẳng hàng với lỗ\n2. Ngắm bi \"ma\" bằng mắt\n3. Thực hành nhiều lần",
+  "categoryId": "cat_aiming",
+  "tagIds": ["tag_basic", "tag_aiming"],
+  "aliases": ["ghost ball", "bi ao", "phuong phap bi ao"],
+  "keywords": ["ghost ball", "aiming", "contact point"],
+  "difficulty": "beginner",
+  "relatedKnowledgeIds": ["kn_cut-shots"],
+  "relatedDrillCodes": ["STRAIGHT_LV1", "STRAIGHT_LV2"]
+}

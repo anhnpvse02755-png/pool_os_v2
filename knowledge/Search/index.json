@@ -1,0 +1,53 @@
+{
+  "knowledge": [
+    {"id": "kn_stop-shot", "slug": "stop-shot", "title": "Stop Shot", "titleVi": "Dừng bi cái"},
+    {"id": "kn_draw-shot", "slug": "draw-shot", "title": "Draw Shot", "titleVi": "Draw"},
+    {"id": "kn_follow-shot", "slug": "follow-shot", "title": "Follow Shot", "titleVi": "Follow"},
+    {"id": "kn_ghost-ball", "slug": "ghost-ball", "title": "Ghost Ball Method", "titleVi": "Phương pháp Ghost Ball"},
+    {"id": "kn_cut-shots", "slug": "cut-shots", "title": "Cut Shots", "titleVi": "Cú cắt"},
+    {"id": "kn_basic-safety", "slug": "basic-safety", "title": "Basic Safety", "titleVi": "An toàn cơ bản"},
+    {"id": "kn_open-bridge", "slug": "open-bridge", "title": "Open Bridge", "titleVi": "Gác cơ mở"},
+    {"id": "kn_closed-bridge", "slug": "closed-bridge", "title": "Closed Bridge", "titleVi": "Gác cơ kín"},
+    {"id": "kn_position-play", "slug": "position-play", "title": "Position Play", "titleVi": "Vị trí"}
+  ],
+  "aliases": {
+    "stop shot": "kn_stop-shot",
+    "dừng bi cái": "kn_stop-shot",
+    "stop": "kn_stop-shot",
+    "dung": "kn_stop-shot",
+    "draw shot": "kn_draw-shot",
+    "draw": "kn_draw-shot",
+    "backspin": "kn_draw-shot",
+    "lui": "kn_draw-shot",
+    "follow shot": "kn_follow-shot",
+    "follow": "kn_follow-shot",
+    "topspin": "kn_follow-shot",
+    "theo": "kn_follow-shot",
+    "ghost ball": "kn_ghost-ball",
+    "bi ao": "kn_ghost-ball",
+    "cut shots": "kn_cut-shots",
+    "cu cat": "kn_cut-shots",
+    "safety": "kn_basic-safety",
+    "an toan": "kn_basic-safety",
+    "open bridge": "kn_open-bridge",
+    "gac co mo": "kn_open-bridge",
+    "bridge": "kn_open-bridge",
+    "closed bridge": "kn_closed-bridge",
+    "gac co kin": "kn_closed-bridge",
+    "position play": "kn_position-play",
+    "vi tri": "kn_position-play"
+  },
+  "keywords": {
+    "stop shot": ["kn_stop-shot"],
+    "draw shot": ["kn_draw-shot"],
+    "backspin": ["kn_draw-shot"],
+    "follow shot": ["kn_follow-shot"],
+    "topspin": ["kn_follow-shot"],
+    "ghost ball": ["kn_ghost-ball"],
+    "aiming": ["kn_ghost-ball", "kn_cut-shots"],
+    "cut shot": ["kn_cut-shots"],
+    "safety": ["kn_basic-safety"],
+    "bridge": ["kn_open-bridge", "kn_closed-bridge"],
+    "position play": ["kn_position-play"]
+  }
+}

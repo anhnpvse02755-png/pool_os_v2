@@ -1,0 +1,14 @@
+{
+  "id": "kn_open-bridge",
+  "slug": "open-bridge",
+  "title": "Open Bridge",
+  "titleVi": "Gác cơ mở",
+  "content": "# Gác cơ mở (Open Bridge)\n\n## Mô tả\nĐây là kiểu gác cơ phổ biến nhất, dễ thực hiện.\n\n## Cách thực hiện\n1. Đặt tay lên bàn, ngón cái hướng về phía trước\n2. Ngón trỏ quấn xuống, tạo vòng\n3. Các ngón còn lại đặt trên bàn\n4. Khoảng trống giữa ngón cái và ngón trỏ là nơi cơ đi qua\n\n## Lưu ý\n- Tay phải chắc chắn, không rung\n- Khoảng trống đủ rộng cho cơ\n- Cánh tay tạo đường thẳng với cơ",
+  "categoryId": "cat_fundamentals",
+  "tagIds": ["tag_basic", "tag_technique"],
+  "aliases": ["open bridge", "gac co mo", "bridge"],
+  "keywords": ["bridge", "grip", "stability"],
+  "difficulty": "beginner",
+  "relatedKnowledgeIds": ["kn_closed-bridge"],
+  "relatedDrillCodes": ["STRAIGHT_LV1"]
+}
