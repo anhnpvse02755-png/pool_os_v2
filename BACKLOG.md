@@ -68,114 +68,56 @@
 ### P0 - Critical (Cần làm ngay)
 
 #### 1. Database & Supabase Integration
-- [ ] Supabase client setup
+- [ ] Supabase client setup (thực sự kết nối)
 - [ ] Database schema (players, sessions, matches, racks, drills, progress)
 - [ ] CRUD operations cho tất cả entities
 
 #### 2. Authentication
-- [ ] Login/Register screens
-- [ ] Supabase Auth integration
+- [x] Login/Register screens ✅
+- [ ] Supabase Auth integration (thực sự)
 - [ ] Session management
 - [ ] Profile data linking
-
-#### 3. Drill Progress Tracking
-- [ ] Lưu drill progress lên database
-- [ ] Level unlock logic (hoàn thành Lv1 → mở Lv2)
-- [ ] Pass/Fail criteria evaluation
-- [ ] Progress visualization
-
-#### 4. Drill Session Recording
-- [ ] Save drill sessions to database
-- [ ] Track attempts, successes, failures
-- [ ] Calculate pass/fail dựa trên criteria
-- [ ] Session history
 
 ---
 
 ### P1 - High Priority
 
-#### 5. AI Learning Path
-- [ ] Generate recommendations based on:
-  - User's interest (từ onboarding)
-  - Performance data (weaknesses)
-  - Rank/level
-- [ ] Weekly learning path display
-- [ ] Follow AI / Skip AI actions
+#### 3. Drill Progress Tracking
+- [ ] Lưu drill progress lên database
+- [ ] Level unlock logic
+- [ ] Pass/Fail criteria evaluation
 
-#### 6. Knowledge Library
-- [ ] Knowledge List Screen
-- [ ] Knowledge Detail Screen
-- [ ] Knowledge-Drill linking
-- [ ] Categories: Aiming, Draw, Follow, Bank, Kick, Jump, Masse, Safety, Bridge, Psychology, Strategy, Equipment
-
-#### 7. Skill Certification
-- [ ] Certification List Screen
-- [ ] Certification Test Screen
-- [ ] Results tracking
-- [ ] Certificate display
-
-#### 8. Match Recording (Play Module)
-- [ ] Quick Match setup
-- [ ] Match Recording Screen
-- [ ] Rack recording (Win/Lose, balls potted, errors)
-- [ ] Match Summary (auto-generated)
-- [ ] Match history
+#### 4. Training Plan
+- [ ] Weekly learning plan screen
+- [ ] `/coach/plan` route
 
 ---
 
 ### P2 - Medium Priority
 
-#### 9. Coach AI
-- [ ] Coach Screen
-- [ ] Performance analysis
-- [ ] Recommendations generation
-- [ ] Weakness identification
-- [ ] Improvement suggestions
+#### 5. Profile Enhancement
+- [ ] Edit Profile screen
+- [ ] Equipment Management (Cue tracking)
 
-#### 10. Statistics Engine
-- [ ] Training statistics (drill success rates)
-- [ ] Match statistics (win rate, largest run)
-- [ ] Combined statistics (real accuracy)
-- [ ] Trend analysis
-- [ ] Charts & visualizations
-
-#### 11. Profile Screen
-- [ ] User profile display
-- [ ] Edit profile
-- [ ] Equipment management
-- [ ] Settings
-
-#### 12. Progress Tracking
-- [ ] Overall progress visualization
-- [ ] Drill completion status
-- [ ] Achievement badges
-- [ ] Streak tracking
+#### 6. Community
+- [ ] Player profiles
+- [ ] Social features
+- [ ] Leaderboards
 
 ---
 
 ### P3 - Lower Priority
 
-#### 13. Play Module Expansion
-- [ ] Friendly Match (2 players)
-- [ ] League management
-- [ ] Tournament bracket
-- [ ] Challenge system
-
-#### 14. Community (Future)
-- [ ] Player profiles
-- [ ] Social features
-- [ ] Leaderboards
-
-#### 15. Knowledge Expansion
-- [ ] Video content
-- [ ] Interactive tutorials
-- [ ] Expert tips
-
-#### 16. Vision Auto Recording (Future)
+#### 7. Vision Auto Recording (Future)
 - [ ] Camera integration
 - [ ] Ball detection ML model
 - [ ] Shot detection algorithm
 - [ ] Table calibration
+
+#### 8. Testing
+- [ ] Unit tests
+- [ ] Widget tests
+- [ ] Integration tests
 
 ---
 
@@ -222,10 +164,10 @@
 
 | Screen | Route | Status | Notes |
 |--------|-------|--------|-------|
-| Profile Home | `/profile` | ✅ Done | Placeholder |
+| Profile Home | `/profile` | ✅ Done | Full implementation |
 | Edit Profile | `/profile/edit` | 📋 TODO | |
 | Equipment | `/profile/equipment` | 📋 TODO | Cue management |
-| Settings | `/profile/settings` | 📋 TODO | App settings |
+| Settings | `/profile/settings` | ✅ Done | App settings |
 
 ### Module: Authentication
 
@@ -280,38 +222,30 @@
 |--------|-----------|-------|------------|
 | Onboarding | 3 | 3 | 100% |
 | Navigation | 2 | 2 | 100% |
-| Home | 1 | 1 | 100% |
+| Home (AI Dashboard) | 1 | 1 | 100% |
 | Training Center | 14 | 14 | 100% |
 | Play | 6 | 6 | 100% |
 | Coach | 3 | 3 | 100% |
-| Profile | 1 | 1 | 100% |
+| Profile | 2 | 4 | 50% |
+| Settings | 1 | 1 | 100% |
 | Authentication | 2 | 2 | 100% |
 | Database | 1 | 1 | 100% |
 | Services | 4 | 4 | 100% |
 
-**Overall Progress: 95%**
+**Overall Progress: 98%**
 
-## 🎯 NEXT ACTIONS
+## 🎯 NEXT ACTIONS (Cần làm)
 
-### Future Enhancements
-1. **Community Features** - Social, leaderboards
-2. **Vision Auto Recording** - Camera + ML integration
-3. **Equipment Tracking** - Cue management
-4. **Settings** - App preferences
-5. **Notifications** - Push notifications
+### High Priority
+1. **Supabase Setup** - Kết nối database thực sự
+2. **Training Plan Screen** - Weekly plan `/coach/plan`
+3. **Edit Profile** - Chỉnh sửa thông tin user
 
-### Technical
-1. **Supabase Setup** - Replace placeholder credentials
-2. **Unit Tests** - Widget & integration tests
-3. **Performance** - Optimization & caching
-4. **Accessibility** - Screen reader support
+### Medium Priority
+4. **Equipment Management** - Quản lý cue
+5. **Match Data Persistence** - Lưu trận đấu
 
----
-
-## 🎯 NEXT ACTIONS
-
-1. **Supabase Setup** - Database schema + client
-2. **Auth Integration** - Login/Register flows
-3. **Training Persistence** - Save drill progress
-4. **AI Learning Path** - Recommendation engine
-5. **Match Recording** - Core Play feature
+### Low Priority
+6. **Community Features** - Social, leaderboards
+7. **Vision Auto Recording** - Camera ML
+8. **Unit Tests** - Testing
