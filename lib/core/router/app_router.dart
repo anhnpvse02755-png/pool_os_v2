@@ -8,6 +8,7 @@ import '../../presentation/screens/onboarding/interest_selection_screen.dart';
 import '../../presentation/screens/home/home_screen.dart';
 import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
+import '../../presentation/screens/training/drill_detail_screen.dart';
 import '../../presentation/screens/training/drill_session_screen.dart';
 import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
@@ -74,6 +75,14 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final categoryId = state.pathParameters['categoryId']!;
               return DrillListScreen(categoryId: categoryId);
+            },
+          ),
+          GoRoute(
+            path: '/training/drill/:drillCode',
+            name: 'drillDetail',
+            builder: (context, state) {
+              final drillCode = state.pathParameters['drillCode']!;
+              return DrillDetailScreen(drillCode: drillCode);
             },
           ),
           GoRoute(

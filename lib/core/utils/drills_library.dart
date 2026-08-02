@@ -1,302 +1,401 @@
 import '../constants/app_constants.dart';
 
 /// Drill Library for Training Center
-/// Based on RFC-014 Training Drill Library
+/// Based on FINAL Training Center Specification v2
 class DrillLibrary {
-  // Categories of drills
   static const List<DrillCategory> categories = [
     DrillCategory(
-      id: 'shots',
-      name: 'Cú đánh cơ bản',
-      icon: 'sports',
+      id: 'potting',
+      name: 'Potting',
+      nameVi: 'Đánh bóng',
+      icon: 'center_focus_strong',
       drills: [
         Drill(
           code: 'STRAIGHT_POT',
-          name: 'Đánh thẳng',
+          name: 'Straight Shot',
           nameVi: 'Đánh thẳng',
-          category: 'shots',
-          difficulty: 'beginner',
+          category: 'potting',
+          difficulty: 'easy',
           description: 'Đánh bi vào lỗ theo đường thẳng',
-          instructions: [
-            'Đặt bi mục tiêu cách lỗ khoảng 30cm',
+          setup: 'Đặt bi mục tiêu cách lỗ 30cm',
+          steps: [
             'Ngắm thẳng từ bi đến lỗ',
-            'Đánh thẳng, không xoáy',
-            'Giữ tốc độ đều',
+            'Tư thế vững vàng',
+            'Đánh thẳng, nhắm điểm chính xác',
+            'Follow through đầy đủ',
           ],
-          targetReps: 10,
+          goal: 'Đánh trúng 10 lần trong 12 lần thử',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 8, distance: '20cm'),
+            DrillLevel(level: 2, attempts: 10, passCount: 8, distance: '30cm'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, distance: '50cm'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, distance: '70cm'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, distance: 'Full table'),
+          ],
+          knowledgeIds: ['aiming', 'bridge', 'stroke'],
         ),
         Drill(
           code: 'THIN_CUT',
-          name: 'Cắt mỏng',
+          name: 'Thin Cut',
           nameVi: 'Cắt mỏng',
-          category: 'shots',
-          difficulty: 'intermediate',
+          category: 'potting',
+          difficulty: 'medium',
           description: 'Đánh bi với góc cắt mỏng (< 30°)',
-          instructions: [
-            'Đặt bi ở góc bàn',
+          setup: 'Đặt bi ở góc bàn',
+          steps: [
+            'Xác định góc cắt',
             'Ngắm điểm ngắm chính xác',
             'Kiểm soát lực vừa phải',
             'Follow through thẳng',
           ],
-          targetReps: 10,
+          goal: 'Đánh trúng 8 lần trong 10 lần thử',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, angle: '15°'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, angle: '20°'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, angle: '25°'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, angle: '30°'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, angle: '35°'),
+          ],
+          knowledgeIds: ['cut_shots', 'aiming', 'english'],
         ),
         Drill(
           code: 'THICK_CUT',
-          name: 'Cắt dày',
+          name: 'Thick Cut',
           nameVi: 'Cắt dày',
-          category: 'shots',
-          difficulty: 'beginner',
+          category: 'potting',
+          difficulty: 'easy',
           description: 'Đánh bi với góc cắt dày (> 45°)',
-          instructions: [
-            'Đặt bi gần lỗ',
-            'Ngắm góc rộng',
-            'Điều khiển lực tốt',
+          setup: 'Đặt bi gần lỗ',
+          steps: [
+            'Xác định góc cắt',
+            'Ngắm điểm ngắm',
+            'Điều khiển lực phù hợp',
           ],
-          targetReps: 10,
+          goal: 'Đánh trúng 8 lần trong 10 lần thử',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, angle: '45°'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, angle: '50°'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, angle: '55°'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, angle: '60°'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, angle: '65°'),
+          ],
+          knowledgeIds: ['cut_shots', 'aiming'],
+        ),
+      ],
+    ),
+    DrillCategory(
+      id: 'cueball',
+      name: 'Cue Ball',
+      nameVi: 'Kiểm soát bi cái',
+      icon: 'circle',
+      drills: [
+        Drill(
+          code: 'STOP_BALL',
+          name: 'Stop Ball',
+          nameVi: 'Dừng bi',
+          category: 'cueball',
+          difficulty: 'medium',
+          description: 'Dừng bi cái tại vị trí chỉ định sau cú đánh',
+          setup: 'Đánh draw để dừng',
+          steps: [
+            'Điểm đánh dưới tâm bi cái',
+            'Đánh mạnh vừa phải',
+            'Giữ cổ tay cố định',
+            'Follow through đầy đủ',
+          ],
+          goal: 'Dừng trong vòng 10cm 8 lần trong 10 lần thử',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, distance: '20cm'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, distance: '15cm'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, distance: '10cm'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, distance: '5cm'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, distance: '2cm'),
+          ],
+          knowledgeIds: ['draw', 'tip_placement', 'acceleration'],
         ),
         Drill(
           code: 'FOLLOW_SHOT',
-          name: 'Follow',
+          name: 'Follow Shot',
           nameVi: 'Follow',
-          category: 'shots',
-          difficulty: 'intermediate',
-          description: 'Đánh bi đi tới sau khi chạm bi mục tiêu',
-          instructions: [
-            'Sử dụng xoáy trên (top spin)',
+          category: 'cueball',
+          difficulty: 'medium',
+          description: 'Bi cái đi tới sau khi chạm bi mục tiêu',
+          setup: 'Sử dụng xoáy trên (top spin)',
+          steps: [
+            'Điểm đánh trên tâm bi cái',
             'Đánh mạnh hơn bình thường 20%',
             'Bi cái đi cùng hướng bi mục tiêu',
           ],
-          targetReps: 10,
+          goal: 'Follow đến vị trí trong 10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, distance: '30cm'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, distance: '50cm'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, distance: '80cm'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, distance: '1m'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, distance: 'Full table'),
+          ],
+          knowledgeIds: ['follow', 'top_spin', 'tip_placement'],
         ),
         Drill(
           code: 'DRAW_SHOT',
-          name: 'Draw',
+          name: 'Draw Shot',
           nameVi: 'Draw',
-          category: 'shots',
-          difficulty: 'intermediate',
-          description: 'Đánh bi quay ngược lại',
-          instructions: [
-            'Sử dụng xoáy dưới (back spin)',
-            'Đánh từ dưới bi cái',
+          category: 'cueball',
+          difficulty: 'medium',
+          description: 'Bi cái quay ngược lại sau khi chạm bi mục tiêu',
+          setup: 'Sử dụng xoáy dưới (back spin)',
+          steps: [
+            'Điểm đánh dưới tâm bi cái',
+            'Đánh mạnh vừa phải',
             'Bi cái quay về sau khi chạm',
           ],
-          targetReps: 10,
+          goal: 'Draw về vị trí trong 10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, distance: '20cm'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, distance: '40cm'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, distance: '60cm'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, distance: '80cm'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, distance: '1m+'),
+          ],
+          knowledgeIds: ['draw', 'back_spin', 'tip_placement'],
         ),
         Drill(
           code: 'STUN_SHOT',
-          name: 'Stun',
+          name: 'Stun Shot',
           nameVi: 'Stun',
-          category: 'shots',
-          difficulty: 'intermediate',
+          category: 'cueball',
+          difficulty: 'medium',
           description: 'Bi cái đi thẳng sau khi chạm, không xoáy',
-          instructions: [
+          setup: 'Đánh vào tâm bi cái, không xoáy',
+          steps: [
             'Đánh vào tâm bi cái',
             'Không có xoáy trên/dưới',
             'Bi cái đi thẳng về hướng ngắm',
           ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'BANK_SHOT',
-          name: 'Bank',
-          nameVi: 'Bank',
-          category: 'shots',
-          difficulty: 'advanced',
-          description: 'Đánh bi chạm băng trước khi vào lỗ',
-          instructions: [
-            'Tính góc phản xạ',
-            'Đánh chạm băng vuông góc',
-            'Kiểm soát lực để bi không dội ra',
+          goal: 'Stun chính xác 8 lần trong 10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, accuracy: '10cm'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, accuracy: '7cm'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, accuracy: '5cm'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, accuracy: '3cm'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, accuracy: '1cm'),
           ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'KICK_SHOT',
-          name: 'Kick',
-          nameVi: 'Kick',
-          category: 'shots',
-          difficulty: 'advanced',
-          description: 'Đánh từ băng vào bi mục tiêu',
-          instructions: [
-            'Đá từ băng đến bi',
-            'Tính toán góc đá',
-            'Kiểm soát lực chính xác',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'JUMP_SHOT',
-          name: 'Jump',
-          nameVi: 'Jump',
-          category: 'shots',
-          difficulty: 'advanced',
-          description: 'Nhảy bi cái qua chướng ngại vật',
-          instructions: [
-            'Đánh mạnh từ dưới lên',
-            'Bi cái nhảy lên cao',
-            'Hạ cánh chính xác',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'MASSE_SHOT',
-          name: 'Masse',
-          nameVi: 'Masse',
-          category: 'shots',
-          difficulty: 'expert',
-          description: 'Đánh xoáy ngược với độ cong lớn',
-          instructions: [
-            'Nâng đầu cơ lên cao',
-            'Đánh mạnh theo hướng mong muốn',
-            'Tạo đường cong cho bi cái',
-          ],
-          targetReps: 5,
+          knowledgeIds: ['stun', 'tip_placement', 'stroke'],
         ),
       ],
     ),
     DrillCategory(
       id: 'position',
-      name: 'Kiểm soát vị trí',
+      name: 'Position',
+      nameVi: 'Vị trí',
       icon: 'gps_fixed',
       drills: [
         Drill(
-          code: 'POSITION_STOP',
-          name: 'Stop Ball',
-          nameVi: 'Dừng bi',
+          code: 'POSITION_BASIC',
+          name: 'Basic Position',
+          nameVi: 'Vị trí cơ bản',
           category: 'position',
-          difficulty: 'beginner',
-          description: 'Dừng bi cái tại vị trí chỉ định sau cú đánh',
-          instructions: [
-            'Đánh draw để dừng',
+          difficulty: 'medium',
+          description: 'Điều bi cái đến vị trí chỉ định',
+          setup: 'Đặt bi mục tiêu, đánh đến vùng chỉ định',
+          steps: [
+            'Quan sát khoảng cách',
             'Tính toán lực và xoáy',
-            'Practice nhiều lần',
+            'Thực hiện cú đánh',
           ],
-          targetReps: 10,
+          goal: 'Bi cái dừng trong vùng chỉ định 8/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6, zone: '30cm'),
+            DrillLevel(level: 2, attempts: 10, passCount: 7, zone: '20cm'),
+            DrillLevel(level: 3, attempts: 10, passCount: 8, zone: '15cm'),
+            DrillLevel(level: 4, attempts: 10, passCount: 8, zone: '10cm'),
+            DrillLevel(level: 5, attempts: 10, passCount: 9, zone: '5cm'),
+          ],
+          knowledgeIds: ['position_play', 'speed_control', 'spin_control'],
         ),
         Drill(
-          code: 'POSITION_FOLLOW',
-          name: 'Position Follow',
-          nameVi: 'Vị trí Follow',
+          code: 'POSITION_3BALL',
+          name: '3-Ball Position',
+          nameVi: 'Position 3 bi',
           category: 'position',
-          difficulty: 'intermediate',
-          description: 'Điều bi cái đến vị trí mong muốn sau cú follow',
-          instructions: [
-            'Đánh follow với xoáy trên',
-            'Tính toán vị trí dừng',
-            'Practice với nhiều khoảng cách',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'POSITION_DRAW',
-          name: 'Position Draw',
-          nameVi: 'Vị trí Draw',
-          category: 'position',
-          difficulty: 'intermediate',
-          description: 'Điều bi cái quay về vị trí mong muốn',
-          instructions: [
-            'Sử dụng draw shot',
-            'Tính toán điểm dừng',
-            'Kiểm soát lực chính xác',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'PATTERN_3BALL',
-          name: 'Pattern 3 Balls',
-          nameVi: 'Pattern 3 bi',
-          category: 'position',
-          difficulty: 'intermediate',
-          description: 'Đánh 3 bi theo thứ tự và kết thúc ở vị trí chỉ định',
-          instructions: [
+          difficulty: 'hard',
+          description: 'Đánh 3 bi theo thứ tự, kết thúc ở vị trí chỉ định',
+          setup: 'Đặt 3 bi, đánh lần lượt',
+          steps: [
             'Quan sát toàn bộ bàn',
             'Lên kế hoạch đường đi',
-            'Thực hiện từng cú',
+            'Position cho từng cú',
           ],
-          targetReps: 5,
-        ),
-        Drill(
-          code: 'PATTERN_5BALL',
-          name: 'Pattern 5 Balls',
-          nameVi: 'Pattern 5 bi',
-          category: 'position',
-          difficulty: 'advanced',
-          description: 'Đánh 5 bi theo thứ tự với kiểm soát vị trí',
-          instructions: [
-            'Lên pattern hoàn chỉnh',
-            'Tính toán mọi cú đánh',
-            'Position chính xác cho cú tiếp theo',
+          goal: 'Hoàn thành pattern 3 bi 5/5 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 5, passCount: 3, balls: 3),
+            DrillLevel(level: 2, attempts: 5, passCount: 4, balls: 3),
+            DrillLevel(level: 3, attempts: 5, passCount: 4, balls: 3),
+            DrillLevel(level: 4, attempts: 5, passCount: 5, balls: 3),
+            DrillLevel(level: 5, attempts: 5, passCount: 5, balls: 3),
           ],
-          targetReps: 3,
+          knowledgeIds: ['pattern', 'position_play', 'speed_control'],
         ),
       ],
     ),
     DrillCategory(
       id: 'safety',
-      name: 'An toàn',
+      name: 'Safety',
+      nameVi: 'An toàn',
       icon: 'shield',
       drills: [
         Drill(
           code: 'SAFETY_BASIC',
-          name: 'Safety cơ bản',
+          name: 'Basic Safety',
           nameVi: 'An toàn cơ bản',
           category: 'safety',
-          difficulty: 'beginner',
+          difficulty: 'easy',
           description: 'Đánh an toàn không để đối thủ dễ đánh',
-          instructions: [
+          setup: 'Đặt bi đối thủ, đánh safety',
+          steps: [
             'Đánh bi cái chạm băng',
             'Để bi đối thủ ở vị trí khó',
             'Không tạo cơ hội cho đối thủ',
           ],
-          targetReps: 10,
+          goal: 'Tạo thế an toàn 8/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 6),
+            DrillLevel(level: 2, attempts: 10, passCount: 7),
+            DrillLevel(level: 3, attempts: 10, passCount: 8),
+            DrillLevel(level: 4, attempts: 10, passCount: 8),
+            DrillLevel(level: 5, attempts: 10, passCount: 9),
+          ],
+          knowledgeIds: ['safety', 'angles', 'position_play'],
         ),
         Drill(
           code: 'SAFETY_FORCE',
           name: 'Force Safety',
           nameVi: 'Ép lực an toàn',
           category: 'safety',
-          difficulty: 'intermediate',
+          difficulty: 'hard',
           description: 'Buộc đối thủ đánh cú khó',
-          instructions: [
-            'Để bi đối thủ sát băng',
-            'Tạo khoảng cách xa đến bi mục tiêu',
-            'Ép đối thủ vào thế bất lợi',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'SAFETY_PINCH',
-          name: 'Pinch Safety',
-          nameVi: 'Kẹp an toàn',
-          category: 'safety',
-          difficulty: 'advanced',
-          description: 'Kẹp bi đối thủ vào băng và khoá bi mục tiêu',
-          instructions: [
-            'Đánh bi cái chạm 2 băng',
-            'Kẹp bi đối thủ vào góc',
-            'Tạo thế bất khả thi',
-          ],
-          targetReps: 5,
-        ),
-        Drill(
-          code: 'SAFETY_JAWS',
-          name: 'Jaws Safety',
-          nameVi: 'Kẹp hàm',
-          category: 'safety',
-          difficulty: 'advanced',
-          description: 'Tạo thế kẹp bi đối thủ giữa băng và bi mục tiêu',
-          instructions: [
-            'Tính toán vị trí kẹp',
+          setup: 'Để bi đối thủ sát băng',
+          steps: [
+            'Tính toán góc đánh',
             'Điều khiển lực chính xác',
             'Tạo khoảng cách bất lợi',
           ],
-          targetReps: 5,
+          goal: 'Ép đối thủ vào thế khó 6/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 4),
+            DrillLevel(level: 2, attempts: 10, passCount: 5),
+            DrillLevel(level: 3, attempts: 10, passCount: 6),
+            DrillLevel(level: 4, attempts: 10, passCount: 7),
+            DrillLevel(level: 5, attempts: 10, passCount: 8),
+          ],
+          knowledgeIds: ['safety', 'angles', 'english'],
+        ),
+      ],
+    ),
+    DrillCategory(
+      id: 'special',
+      name: 'Special',
+      nameVi: 'Kỹ năng đặc biệt',
+      icon: 'star',
+      drills: [
+        Drill(
+          code: 'BANK_SHOT',
+          name: 'Bank Shot',
+          nameVi: 'Bank',
+          category: 'special',
+          difficulty: 'hard',
+          description: 'Đánh bi chạm băng trước khi vào lỗ',
+          setup: 'Đặt bi cách băng, nhắm vào lỗ đối diện',
+          steps: [
+            'Tính góc phản xạ',
+            'Đánh chạm băng vuông góc',
+            'Kiểm soát lực',
+          ],
+          goal: 'Bank thành công 6/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 4),
+            DrillLevel(level: 2, attempts: 10, passCount: 5),
+            DrillLevel(level: 3, attempts: 10, passCount: 6),
+            DrillLevel(level: 4, attempts: 10, passCount: 7),
+            DrillLevel(level: 5, attempts: 10, passCount: 8),
+          ],
+          knowledgeIds: ['bank', 'angles', 'speed_control'],
+        ),
+        Drill(
+          code: 'KICK_SHOT',
+          name: 'Kick Shot',
+          nameVi: 'Kick',
+          category: 'special',
+          difficulty: 'expert',
+          description: 'Đánh từ băng vào bi mục tiêu',
+          setup: 'Đá từ băng đến bi',
+          steps: [
+            'Tính toán góc đá',
+            'Điểm đánh chính xác',
+            'Kiểm soát lực',
+          ],
+          goal: 'Kick thành công 4/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 2),
+            DrillLevel(level: 2, attempts: 10, passCount: 3),
+            DrillLevel(level: 3, attempts: 10, passCount: 4),
+            DrillLevel(level: 4, attempts: 10, passCount: 5),
+            DrillLevel(level: 5, attempts: 10, passCount: 6),
+          ],
+          knowledgeIds: ['kick', 'angles', 'math'],
+        ),
+        Drill(
+          code: 'JUMP_SHOT',
+          name: 'Jump Shot',
+          nameVi: 'Jump',
+          category: 'special',
+          difficulty: 'expert',
+          description: 'Bi cái nhảy qua chướng ngại vật',
+          setup: 'Đặt bi cách bi khác',
+          steps: [
+            'Nâng đầu cơ cao',
+            'Đánh mạnh từ dưới lên',
+            'Hạ cánh chính xác',
+          ],
+          goal: 'Jump thành công 3/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 2),
+            DrillLevel(level: 2, attempts: 10, passCount: 2),
+            DrillLevel(level: 3, attempts: 10, passCount: 3),
+            DrillLevel(level: 4, attempts: 10, passCount: 4),
+            DrillLevel(level: 5, attempts: 10, passCount: 5),
+          ],
+          knowledgeIds: ['jump', 'bridging', 'power'],
+        ),
+        Drill(
+          code: 'MASSE',
+          name: 'Masse',
+          nameVi: 'Masse',
+          category: 'special',
+          difficulty: 'expert',
+          description: 'Đánh xoáy ngược với độ cong lớn',
+          setup: 'Nâng đầu cơ, đánh mạnh',
+          steps: [
+            'Xác định điểm đánh',
+            'Nâng đầu cơ cao',
+            'Đánh mạnh theo hướng',
+          ],
+          goal: 'Masse thành công 2/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 1),
+            DrillLevel(level: 2, attempts: 10, passCount: 1),
+            DrillLevel(level: 3, attempts: 10, passCount: 2),
+            DrillLevel(level: 4, attempts: 10, passCount: 2),
+            DrillLevel(level: 5, attempts: 10, passCount: 3),
+          ],
+          knowledgeIds: ['masse', 'english', 'power'],
         ),
       ],
     ),
     DrillCategory(
       id: 'break',
-      name: 'Khai cuộc',
+      name: 'Break',
+      nameVi: 'Khai cuộc',
       icon: 'flash_on',
       drills: [
         Drill(
@@ -304,125 +403,59 @@ class DrillLibrary {
           name: 'Power Break',
           nameVi: 'Khai cuộc lực mạnh',
           category: 'break',
-          difficulty: 'intermediate',
+          difficulty: 'medium',
           description: 'Phá bi với lực mạnh để phết bóng',
-          instructions: [
-            'Đặt cơ ở góc thấp',
-            'Đánh mạnh vào điểm 1/4 dưới bi',
-            'Theo dõi sự phân tán của bóng',
+          setup: 'Đặt cơ ở góc thấp',
+          steps: [
+            'Điểm đánh 1/4 dưới bi',
+            'Đánh mạnh và nhanh',
+            'Follow through đầy đủ',
           ],
-          targetReps: 10,
+          goal: 'Phết được 4+ bi 6/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 4),
+            DrillLevel(level: 2, attempts: 10, passCount: 5),
+            DrillLevel(level: 3, attempts: 10, passCount: 6),
+            DrillLevel(level: 4, attempts: 10, passCount: 7),
+            DrillLevel(level: 5, attempts: 10, passCount: 8),
+          ],
+          knowledgeIds: ['break', 'tip_placement', 'power'],
         ),
         Drill(
           code: 'BREAK_CONTROL',
           name: 'Control Break',
           nameVi: 'Khai cuộc kiểm soát',
           category: 'break',
-          difficulty: 'intermediate',
+          difficulty: 'hard',
           description: 'Phá bi với kiểm soát để tạo cơ hội',
-          instructions: [
+          setup: 'Nhắm vào vị trí tối ưu',
+          steps: [
+            'Xác định điểm ngắm',
             'Điều khiển lực vừa phải',
-            'Nhắm vào vị trí tối ưu',
-            'Tạo layout thuận lợi cho cú tiếp theo',
+            'Follow through kiểm soát',
           ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'BREAK_SPREAD',
-          name: 'Spread Break',
-          nameVi: 'Khai cuộc phết',
-          category: 'break',
-          difficulty: 'advanced',
-          description: 'Phá bi để bóng phân tán đều khắp bàn',
-          instructions: [
-            'Tính toán góc và lực',
-            'Điểm đánh chính xác',
-            'Follow through đầy đủ',
+          goal: 'Tạo cơ hội đánh 5/10 lần',
+          levels: [
+            DrillLevel(level: 1, attempts: 10, passCount: 3),
+            DrillLevel(level: 2, attempts: 10, passCount: 4),
+            DrillLevel(level: 3, attempts: 10, passCount: 5),
+            DrillLevel(level: 4, attempts: 10, passCount: 6),
+            DrillLevel(level: 5, attempts: 10, passCount: 7),
           ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'BREAK_9BALL',
-          name: '9-Ball Break',
-          nameVi: 'Khai cuộc 9-ball',
-          category: 'break',
-          difficulty: 'advanced',
-          description: 'Khai cuộc 9-ball để đánh bi số thấp',
-          instructions: [
-            'Nhắm vào bóng 1',
-            'Lực mạnh vừa phải',
-            'Tạo cơ hội cho bi tiếp theo',
-          ],
-          targetReps: 10,
-        ),
-      ],
-    ),
-    DrillCategory(
-      id: 'special',
-      name: 'Kỹ năng đặc biệt',
-      icon: 'star',
-      drills: [
-        Drill(
-          code: 'COMBO_SHOT',
-          name: 'Combo',
-          nameVi: 'Combo',
-          category: 'special',
-          difficulty: 'intermediate',
-          description: 'Đánh bi mục tiêu chạm bi khác vào lỗ',
-          instructions: [
-            'Ngắm điểm trên bi trung gian',
-            'Tính toán góc phản xạ',
-            'Kiểm soát lực để bi không dừng sớm',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'CAROM_SHOT',
-          name: 'Carom',
-          nameVi: 'Carom',
-          category: 'special',
-          difficulty: 'advanced',
-          description: 'Bi cái chạm 2 bi khác mà không có bi nào vào lỗ',
-          instructions: [
-            'Ngắm điểm trên bi trung gian',
-            'Tính toán góc chạm',
-            'Không đẩy bi vào lỗ',
-          ],
-          targetReps: 10,
-        ),
-        Drill(
-          code: 'RUNOUT_8BALL',
-          name: '8-Ball Runout',
-          nameVi: 'Chấm 8-ball',
-          category: 'special',
-          difficulty: 'advanced',
-          description: 'Đi tất cả bi của mình vào lỗ liên tiếp',
-          instructions: [
-            'Quan sát toàn bộ bàn',
-            'Lên kế hoạch thứ tự',
-            'Kiểm soát position cho từng cú',
-          ],
-          targetReps: 3,
-        ),
-        Drill(
-          code: 'RUNOUT_9BALL',
-          name: '9-Ball Runout',
-          nameVi: 'Chấm 9-ball',
-          category: 'special',
-          difficulty: 'advanced',
-          description: 'Đánh bi số thấp nhất trên bàn',
-          instructions: [
-            'Luôn nhắm bi số thấp nhất',
-            'Nhanh chóng kết thúc',
-            'Position cho cú tiếp theo',
-          ],
-          targetReps: 5,
+          knowledgeIds: ['break', 'position', 'control'],
         ),
       ],
     ),
   ];
 
-  /// Get drill by code
+  static List<Drill> getAllDrills() {
+    final List<Drill> all = [];
+    for (final category in categories) {
+      all.addAll(category.drills);
+    }
+    return all;
+  }
+
   static Drill? getDrill(String code) {
     for (final category in categories) {
       for (final drill in category.drills) {
@@ -432,7 +465,6 @@ class DrillLibrary {
     return null;
   }
 
-  /// Get drills by category
   static List<Drill> getDrillsByCategory(String categoryId) {
     for (final category in categories) {
       if (category.id == categoryId) {
@@ -442,39 +474,47 @@ class DrillLibrary {
     return [];
   }
 
-  /// Get drill difficulty color
-  static String getDifficultyColor(String difficulty) {
-    switch (difficulty) {
-      case 'beginner':
-        return 'green';
-      case 'intermediate':
-        return 'orange';
-      case 'advanced':
-        return 'red';
-      case 'expert':
-        return 'purple';
-      default:
-        return 'grey';
-    }
+  static List<Drill> getDrillsByDifficulty(String difficulty) {
+    return getAllDrills().where((d) => d.difficulty == difficulty).toList();
+  }
+
+  static List<Drill> searchDrills(String query) {
+    final lowerQuery = query.toLowerCase();
+    return getAllDrills().where((d) {
+      return d.name.toLowerCase().contains(lowerQuery) ||
+          d.nameVi.toLowerCase().contains(lowerQuery) ||
+          d.description.toLowerCase().contains(lowerQuery);
+    }).toList();
+  }
+
+  static List<Drill> getRecommendedDrills() {
+    // Placeholder - AI sẽ generate sau
+    return [
+      getDrill('DRAW_SHOT')!,
+      getDrill('FOLLOW_SHOT')!,
+      getDrill('STOP_BALL')!,
+      getDrill('STRAIGHT_POT')!,
+      getDrill('POSITION_BASIC')!,
+    ];
   }
 }
 
-/// Drill Category
 class DrillCategory {
   final String id;
   final String name;
+  final String nameVi;
   final String icon;
   final List<Drill> drills;
 
   const DrillCategory({
     required this.id,
     required this.name,
+    required this.nameVi,
     required this.icon,
     required this.drills,
   });
 }
 
-/// Drill Definition
 class Drill {
   final String code;
   final String name;
@@ -482,8 +522,11 @@ class Drill {
   final String category;
   final String difficulty;
   final String description;
-  final List<String> instructions;
-  final int targetReps;
+  final String setup;
+  final List<String> steps;
+  final String goal;
+  final List<DrillLevel> levels;
+  final List<String> knowledgeIds;
 
   const Drill({
     required this.code,
@@ -492,7 +535,60 @@ class Drill {
     required this.category,
     required this.difficulty,
     required this.description,
-    required this.instructions,
-    required this.targetReps,
+    required this.setup,
+    required this.steps,
+    required this.goal,
+    required this.levels,
+    required this.knowledgeIds,
   });
+
+  int get currentLevel {
+    // Placeholder - sẽ lấy từ user progress
+    return 1;
+  }
+
+  bool isLevelUnlocked(int level) {
+    if (level == 1) return true;
+    // Level unlocked if previous level passed
+    // Placeholder logic
+    return true;
+  }
+
+  DrillLevel? getLevel(int level) {
+    return levels.firstWhere(
+      (l) => l.level == level,
+      orElse: () => levels.first,
+    );
+  }
+}
+
+class DrillLevel {
+  final int level;
+  final int attempts;
+  final int passCount;
+  // Optional difficulty parameters
+  final String? distance;
+  final String? angle;
+  final String? accuracy;
+  final String? zone;
+  final int? balls;
+
+  const DrillLevel({
+    required this.level,
+    required this.attempts,
+    required this.passCount,
+    this.distance,
+    this.angle,
+    this.accuracy,
+    this.zone,
+    this.balls,
+  });
+
+  String get criteriaText {
+    if (distance != null) return '$attempts attempts → $passCount success ($distance)';
+    if (angle != null) return '$attempts attempts → $passCount success ($angle)';
+    if (accuracy != null) return '$attempts attempts → $passCount success ($accuracy)';
+    if (zone != null) return '$attempts attempts → $passCount success (zone: $zone)';
+    return '$attempts attempts → $passCount success';
+  }
 }

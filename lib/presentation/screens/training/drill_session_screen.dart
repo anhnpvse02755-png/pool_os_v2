@@ -123,15 +123,15 @@ class _DrillSessionScreenState extends State<DrillSessionScreen> {
 
           const SizedBox(height: 24),
 
-          // Instructions
+          // Steps
           Text(
-            'Hướng dẫn',
+            'Các bước',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 12),
-          ...drill.instructions.asMap().entries.map((entry) {
+          ...drill.steps.asMap().entries.map((entry) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
@@ -188,7 +188,7 @@ class _DrillSessionScreenState extends State<DrillSessionScreen> {
                       ),
                     ),
                     Text(
-                      '${drill.targetReps} lần thành công',
+                      '${drill.levels.first.attempts} lần thành công',
                       style: TextStyle(color: AppTheme.textSecondary),
                     ),
                   ],
@@ -216,7 +216,7 @@ class _DrillSessionScreenState extends State<DrillSessionScreen> {
               _StatItem(
                 label: 'Lần',
                 value: '$currentRep',
-                total: '/ ${drill.targetReps}',
+                total: '/ ${drill.levels.first.attempts}',
               ),
               _StatItem(
                 label: 'Thành công',
