@@ -20,6 +20,9 @@ import '../../presentation/screens/play/match_history_screen.dart';
 import '../../presentation/screens/training/training_history_screen.dart';
 import '../../presentation/screens/training/progress_screen.dart';
 import '../../presentation/screens/coach/analysis_screen.dart';
+import '../../presentation/screens/play/tournament_list_screen.dart';
+import '../../presentation/screens/play/tournament_detail_screen.dart';
+import '../../presentation/screens/play/vision_recording_screen.dart';
 import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
@@ -164,6 +167,24 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/coach/analysis',
             name: 'analysis',
             builder: (context, state) => const AnalysisScreen(),
+          ),
+          GoRoute(
+            path: '/play/tournament',
+            name: 'tournamentList',
+            builder: (context, state) => const TournamentListScreen(),
+          ),
+          GoRoute(
+            path: '/play/tournament/:tournamentId',
+            name: 'tournamentDetail',
+            builder: (context, state) {
+              final id = state.pathParameters['tournamentId']!;
+              return TournamentDetailScreen(tournamentId: id);
+            },
+          ),
+          GoRoute(
+            path: '/play/vision',
+            name: 'visionRecording',
+            builder: (context, state) => const VisionRecordingScreen(),
           ),
           GoRoute(
             path: '/training/session/new',
