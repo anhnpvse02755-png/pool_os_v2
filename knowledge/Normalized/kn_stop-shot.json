@@ -1,0 +1,15 @@
+{
+  "id": "kn_stop-shot",
+  "slug": "stop-shot",
+  "title": "Stop Shot",
+  "titleVi": "Dừng bi cái",
+  "content": "# Dừng bi cái (Stop Shot)\n\n## Mục tiêu\nBi cái dừng ngay tại điểm chạm với bi mục tiêu, không đi xa hơn.\n\n## Kỹ thuật\n1. **Điểm đánh**: Đánh vào tâm bi cái (hoặc hơi dưới tâm một chút)\n2. **Lực đánh**: Vừa phải đến mạnh\n3. **Follow through**: Đầy đủ, không dừng đột ngột\n\n## Lưu ý\n- Đánh mạnh hơn bình thường một chút để overcome friction\n- Giữ cổ tay cố định\n- Follow through phải dài để truyền đủ lực\n\n## Sai lầm thường gặp\n- Đánh quá nhẹ\n- Điểm đánh quá cao (tạo follow)\n- Follow through không đủ dài",
+  "contentVi": "# Dừng bi cái (Stop Shot)\n\n## Mục tiêu\nBi cái dừng ngay tại điểm chạm với bi mục tiêu, không đi xa hơn.\n\n## Kỹ thuật\n1. **Điểm đánh**: Đánh vào tâm bi cái (hoặc hơi dưới tâm một chút)\n2. **Lực đánh**: Vừa phải đến mạnh\n3. **Follow through**: Đầy đủ, không dừng đột ngột\n\n## Lưu ý\n- Đánh mạnh hơn bình thường một chút để overcome friction\n- Giữ cổ tay cố định\n- Follow through phải dài để truyền đủ lực\n\n## Sai lầm thường gặp\n- Đánh quá nhẹ\n- Điểm đánh quá cao (tạo follow)\n- Follow through không đủ dài",
+  "categoryId": "cat_shotmaking",
+  "tagIds": ["tag_basic", "tag_shotmaking", "tag_cueball"],
+  "aliases": ["stop shot", "dừng bi cái", "stop", "dung", "stop ball"],
+  "keywords": ["stop shot", "dừng bi cái", "cue ball control", "center ball", "follow through"],
+  "difficulty": "beginner",
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": ["STOP_LV1", "STOP_LV2", "STOP_LV3"]
+}
