@@ -1,4 +1,3 @@
-import '../models/player_interests.dart';
 import '../utils/drills_library.dart';
 import '../providers/coach_provider.dart';
 
@@ -28,11 +27,6 @@ class CoachService {
         .where((e) => e.value.successRate < 60)
         .map((e) => DrillLibrary.getDrill(e.key))
         .whereType<Drill>()
-        .toList();
-
-    // 3. Get drills not yet started
-    final notStartedDrills = allDrills
-        .where((d) => !drillProgress.containsKey(d.code))
         .toList();
 
     // Sort by interest match first, then by difficulty (easy first)

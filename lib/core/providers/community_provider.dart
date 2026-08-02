@@ -203,7 +203,7 @@ final communityFilterProvider = StateProvider<String>((ref) => 'all');
 // Filtered posts provider
 final filteredPostsProvider = Provider<List<Post>>((ref) {
   final filter = ref.watch(communityFilterProvider);
-  final community = ref.watch(communityProvider);
+  ref.watch(communityProvider); // Subscribe to changes
   final notifier = ref.read(communityProvider.notifier);
   return notifier.getPostsByType(filter);
 });

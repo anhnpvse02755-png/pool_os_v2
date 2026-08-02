@@ -1,0 +1,141 @@
+{
+  "graphNodes": [
+    {
+      "id": "playwright-workflow-github-actions",
+      "type": "concept",
+      "data": {
+        "path": ".github/workflows/playwright.yml",
+        "title": "Playwright CI Workflow",
+        "summary": "GitHub Actions workflow for automated Playwright end-to-end testing on main and master branches",
+        "description": "A CI/CD pipeline that triggers on push and pull request events to main/master branches. It sets up Node.js LTS, installs project dependencies via npm ci, installs Playwright browsers with system dependencies, runs the Playwright test suite, and uploads test reports as artifacts with 30-day retention.",
+        "language": "yaml",
+        "fileCategory": "config",
+        "sizeLines": 60,
+        "tags": [
+          "github-actions",
+          "playwright",
+          "e2e-testing",
+          "ci-cd",
+          "workflow",
+          "automation"
+        ],
+        "symbols": [
+          "workflow: Playwright Tests",
+          "trigger: push (main, master)",
+          "trigger: pull_request (main, master)",
+          "job: test",
+          "step: actions/checkout@v4",
+          "step: actions/setup-node@v4",
+          "step: Install dependencies (npm ci)",
+          "step: Install Playwright Browsers (npx playwright install --with-deps)",
+          "step: Run Playwright tests (npx playwright test)",
+          "step: actions/upload-artifact@v4"
+        ],
+        "relationships": [
+          {
+            "target": "playwright-testing-concept",
+            "type": "uses",
+            "description": "Executes Playwright test suite"
+          },
+          {
+            "target": "github-actions-concept",
+            "type": "runs-on",
+            "description": "Executes on GitHub Actions CI/CD platform"
+          }
+        ],
+        "languageNotes": "YAML-based GitHub Actions workflow syntax with conditional artifact upload using expression syntax"
+      }
+    },
+    {
+      "id": "playwright-testing-concept",
+      "type": "concept",
+      "data": {
+        "title": "Playwright E2E Testing",
+        "summary": "End-to-end testing framework for web applications",
+        "description": "Playwright is a Node.js library providing cross-browser automation for testing web applications. It supports Chromium, Firefox, and WebKit browsers with auto-waiting, network interception, and powerful debugging capabilities.",
+        "tags": [
+          "testing",
+          "e2e",
+          "automation",
+          "cross-browser",
+          "playwright"
+        ],
+        "languageNotes": "Invoked via npx playwright commands; browser installation handled by 'playwright install --with-deps'"
+      }
+    },
+    {
+      "id": "github-actions-concept",
+      "type": "concept",
+      "data": {
+        "title": "GitHub Actions CI/CD",
+        "summary": "GitHub's built-in CI/CD and automation platform",
+        "description": "GitHub Actions enables automated building, testing, and deployment pipelines directly within GitHub repositories. Workflows are defined in YAML files and triggered by repository events.",
+        "tags": [
+          "github",
+          "ci-cd",
+          "automation",
+          "workflows"
+        ],
+        "languageNotes": "Uses 'uses' for reusable actions, 'run' for shell commands, and expression syntax '{{ }}' for conditionals"
+      }
+    },
+    {
+      "id": "npm-dependencies-concept",
+      "type": "concept",
+      "data": {
+        "title": "npm Dependency Management",
+        "summary": "Node.js package manager for installing project dependencies",
+        "description": "npm ci performs a clean install of dependencies from package-lock.json, ensuring reproducible builds. Used in CI environments for faster, more reliable dependency installation.",
+        "tags": [
+          "npm",
+          "nodejs",
+          "dependencies",
+          "package-management"
+        ],
+        "languageNotes": "npm ci used instead of npm install for CI reliability and speed"
+      }
+    }
+  ],
+  "graphEdges": [
+    {
+      "id": "edge-workflow-to-playwright",
+      "source": "playwright-workflow-github-actions",
+      "target": "playwright-testing-concept",
+      "relationship": "uses",
+      "description": "Workflow executes Playwright testing framework",
+      "confidence": 0.95
+    },
+    {
+      "id": "edge-workflow-to-github-actions",
+      "source": "playwright-workflow-github-actions",
+      "target": "github-actions-concept",
+      "relationship": "runs-on",
+      "description": "Workflow runs on GitHub Actions CI/CD platform",
+      "confidence": 0.95
+    },
+    {
+      "id": "edge-workflow-to-npm",
+      "source": "playwright-workflow-github-actions",
+      "target": "npm-dependencies-concept",
+      "relationship": "uses",
+      "description": "Workflow uses npm ci to install dependencies",
+      "confidence": 0.9
+    },
+    {
+      "id": "edge-playwright-to-browsers",
+      "source": "playwright-testing-concept",
+      "target": "browser-automation-concept",
+      "relationship": "leverages",
+      "description": "Playwright automates Chromium, Firefox, and WebKit browsers",
+      "confidence": 0.85
+    }
+  ],
+  "metadata": {
+    "batchNumber": 1,
+    "totalBatches": 9,
+    "projectRoot": "C:\\Users\\anhnpv\\OneDrive - Thanh Cong Group\\Desktop\\poolos_v2",
+    "project": "PoolOS_v2",
+    "filesProcessed": 1,
+    "generatedAt": "2026-08-02T00:00:00Z"
+  }
+}

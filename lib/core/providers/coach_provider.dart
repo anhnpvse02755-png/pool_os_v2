@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/coach_service.dart';
-import '../models/player_interests.dart';
 import 'auth_provider.dart';
 import 'player_provider.dart';
 import 'training_provider.dart';
