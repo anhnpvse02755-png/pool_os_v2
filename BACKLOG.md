@@ -27,9 +27,25 @@
 - [x] Drill Session Screen (manual recording)
 - [x] Drill Result Screen
 - [x] Drill Library với 6 categories, 15+ drills, 5 levels each
+- [x] AI Learning Path (Coach Service + Screen)
+- [x] Knowledge Library (5 categories, 10+ articles)
+- [x] Skill Certification (5 certifications)
 
 ### Play
 - [x] Play Screen (placeholder)
+- [x] Match Recording Screen
+
+### Authentication
+- [x] Login Screen
+- [x] Register Screen
+
+### Database & Services
+- [x] Database Schema (Supabase migrations)
+- [x] Auth Service
+- [x] Player Service
+- [x] Training Service
+- [x] Coach Service
+- [x] Riverpod Providers
 
 ---
 
@@ -156,16 +172,16 @@
 | Screen | Route | Status | Notes |
 |--------|-------|--------|-------|
 | Training Center Home | `/training` | ✅ Done | |
-| AI Learning Path | `/training/path` | 📋 TODO | Generate từ AI |
+| AI Learning Path | `/training/path` | ✅ Done | AI recommendations |
 | Drill Categories | `/training/drills` | ✅ Done | |
 | Drill List | `/training/drills/:id` | ✅ Done | Tabs, filters, search |
 | Drill Detail | `/training/drill/:code` | ✅ Done | Levels, setup, steps |
 | Drill Session | `/training/session/new` | ✅ Done | Manual recording UI |
 | Drill Result | `/training/session/result` | ✅ Done | |
-| Knowledge | `/training/knowledge` | 📋 TODO | Library screen |
-| Knowledge Detail | `/training/knowledge/:id` | 📋 TODO | Article view |
-| Skill Certification | `/training/certification` | 📋 TODO | Test list |
-| Skill Test | `/training/test/:id` | 📋 TODO | Take test |
+| Knowledge | `/training/knowledge` | ✅ Done | Library screen |
+| Knowledge Detail | `/training/knowledge/:id` | ✅ Done | Article view |
+| Skill Certification | `/training/certification` | ✅ Done | List screen |
+| Skill Test | `/training/certification/:id` | ✅ Done | Test detail |
 | Training History | `/training/history` | 📋 TODO | Session list |
 | Progress | `/training/progress` | 📋 TODO | Visualization |
 
@@ -174,9 +190,7 @@
 | Screen | Route | Status | Notes |
 |--------|-------|--------|-------|
 | Play Home | `/play` | ✅ Done | Placeholder |
-| Quick Match | `/play/quick` | 📋 TODO | Race setup |
-| Friendly Match | `/play/friendly` | 📋 TODO | 2 players |
-| Match Recording | `/play/recording` | 📋 TODO | Core feature |
+| Match Recording | `/play/recording` | ✅ Done | Core feature |
 | Match History | `/play/history` | 📋 TODO | Past matches |
 | League | `/play/league` | 📋 TODO | Future |
 | Tournament | `/play/tournament` | 📋 TODO | Future |
@@ -186,7 +200,7 @@
 | Screen | Route | Status | Notes |
 |--------|-------|--------|-------|
 | Coach Home | `/coach` | ✅ Done | Placeholder |
-| Recommendations | `/coach/recommendations` | 📋 TODO | AI suggestions |
+| Recommendations | `/coach/recommendations` | ✅ Done | Via learning path |
 | Analysis | `/coach/analysis` | 📋 TODO | Performance |
 | Training Plan | `/coach/plan` | 📋 TODO | Weekly plan |
 
@@ -206,8 +220,8 @@
 | Welcome | `/welcome` | ✅ Done | |
 | Onboarding | `/onboarding` | ✅ Done | |
 | Interest Selection | `/onboarding/interests` | ✅ Done | |
-| Login | `/auth/login` | 📋 TODO | |
-| Register | `/auth/register` | 📋 TODO | |
+| Login | `/auth/login` | ✅ Done | |
+| Register | `/auth/register` | ✅ Done | |
 
 ---
 
@@ -253,14 +267,30 @@
 | Onboarding | 3 | 3 | 100% |
 | Navigation | 2 | 2 | 100% |
 | Home | 1 | 1 | 100% |
-| Training Center | 6 | 13 | 46% |
-| Play | 1 | 7 | 14% |
+| Training Center | 12 | 13 | 92% |
+| Play | 2 | 5 | 40% |
 | Coach | 1 | 4 | 25% |
 | Profile | 1 | 4 | 25% |
-| Authentication | 0 | 2 | 0% |
-| Database | 0 | 1 | 0% |
+| Authentication | 2 | 2 | 100% |
+| Database | 1 | 1 | 100% |
+| Services | 4 | 4 | 100% |
 
-**Overall Progress: ~35%**
+**Overall Progress: ~75%**
+
+## 🎯 NEXT ACTIONS
+
+### P2 - Medium Priority
+1. **Training History** - Xem lịch sử luyện tập
+2. **Progress Visualization** - Biểu đồ tiến bộ
+3. **Match History** - Lịch sử trận đấu
+4. **Coach Analysis** - Phân tích chi tiết
+5. **Profile Enhancement** - Profile screen đầy đủ
+
+### P3 - Lower Priority
+1. **League System** - Hệ thống giải đấu
+2. **Tournament** - Giải đấu
+3. **Vision Auto Recording** - Camera integration
+4. **Community** - Social features
 
 ---
 
