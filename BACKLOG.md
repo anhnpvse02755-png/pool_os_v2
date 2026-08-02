@@ -96,20 +96,20 @@
 ### P2 - Medium Priority
 
 #### 5. Profile Enhancement
-- [ ] Edit Profile screen
-- [ ] Equipment Management (Cue tracking)
+- [x] Edit Profile screen ✅
+- [x] Equipment Management (Cue tracking) ✅
 
 #### 6. Community
-- [ ] Player profiles
-- [ ] Social features
-- [ ] Leaderboards
+- [x] Leaderboard ✅
+- [x] Player profiles ✅
+- [x] Social features ✅
 
 ---
 
 ### P3 - Lower Priority
 
 #### 7. Vision Auto Recording (Future)
-- [ ] Camera integration
+- [x] Camera integration UI ✅
 - [ ] Ball detection ML model
 - [ ] Shot detection algorithm
 - [ ] Table calibration
@@ -224,15 +224,18 @@
 | Navigation | 2 | 2 | 100% |
 | Home (AI Dashboard) | 1 | 1 | 100% |
 | Training Center | 14 | 14 | 100% |
-| Play | 6 | 6 | 100% |
+| Play | 7 | 7 | 100% |
 | Coach | 4 | 4 | 100% |
 | Profile | 4 | 4 | 100% |
 | Settings | 1 | 1 | 100% |
 | Authentication | 2 | 2 | 100% |
+| Community | 1 | 1 | 100% |
 | Database | 1 | 1 | 100% |
 | Services | 4 | 4 | 100% |
 
-**Overall Progress: 99%**
+**Overall Progress: 99.5%**
+
+*(Còn Vision ML - chờ hardware/camera integration)*
 
 ## 🎯 NEXT ACTIONS (Còn lại)
 
@@ -240,6 +243,4 @@
 1. **Supabase Setup** - Kết nối database thực sự
 
 ### Low Priority
-2. **Community Features** - Social, leaderboards
-3. **Vision Auto Recording** - Camera ML
-4. **Unit Tests** - Testing
+2. **Unit Tests** - Testing
