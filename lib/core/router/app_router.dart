@@ -30,6 +30,7 @@ import '../../presentation/screens/session/session_list_screen.dart';
 import '../../presentation/screens/session/create_session_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
+import '../../presentation/screens/profile/settings_screen.dart';
 import '../../presentation/screens/shell/main_shell.dart';
 import '../../presentation/screens/auth/login_screen.dart';
 import '../../presentation/screens/auth/register_screen.dart';
@@ -257,6 +258,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'profile',
             builder: (context, state) => const ProfileScreen(),
           ),
+          GoRoute(
+            path: '/profile/settings',
+            name: 'settings',
+            builder: (context, state) => const SettingsScreen(),
+          ),
         ],
       ),
 
@@ -269,90 +275,6 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
-
-class MainShell extends StatelessWidget {
-  final Widget child;
-
-  const MainShell({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: child,
-      bottomNavigationBar: const MainBottomNav(),
-    );
-  }
-}
-
-class MainBottomNav extends StatelessWidget {
-  const MainBottomNav({super.key});
-
-  int _getCurrentIndex(BuildContext context) {
-    final location = GoRouterState.of(context).uri.path;
-
-    if (location.startsWith('/home')) return 0;
-    if (location.startsWith('/training')) return 1;
-    if (location.startsWith('/play')) return 2;
-    if (location.startsWith('/coach')) return 3;
-    if (location.startsWith('/profile')) return 4;
-    return 0;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final currentIndex = _getCurrentIndex(context);
-
-    return NavigationBar(
-      selectedIndex: currentIndex,
-      onDestinationSelected: (index) {
-        switch (index) {
-          case 0:
-            context.goNamed('home');
-            break;
-          case 1:
-            context.goNamed('training');
-            break;
-          case 2:
-            context.goNamed('play');
-            break;
-          case 3:
-            context.goNamed('coach');
-            break;
-          case 4:
-            context.goNamed('profile');
-            break;
-        }
-      },
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: 'Home',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.fitness_center_outlined),
-          selectedIcon: Icon(Icons.fitness_center),
-          label: 'Tập',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.sports_outlined),
-          selectedIcon: Icon(Icons.sports),
-          label: 'Chơi',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.psychology_outlined),
-          selectedIcon: Icon(Icons.psychology),
-          label: 'Coach',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: 'Cá nhân',
-        ),
-      ],
-    );
-  }
-}
 
 // Placeholder screens for features not yet implemented
 class AssessmentPlaceholder extends StatelessWidget {
