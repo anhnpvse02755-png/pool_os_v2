@@ -12,7 +12,7 @@ import '../../presentation/screens/training/drill_list_screen.dart';
 import '../../presentation/screens/training/drill_detail_screen.dart';
 import '../../presentation/screens/training/drill_session_screen.dart';
 import '../../presentation/screens/training/learning_path_screen.dart';
-import '../../presentation/screens/training/knowledge_list_screen.dart';
+import '../../presentation/screens/training/knowledge_screen.dart';
 import '../../presentation/screens/training/knowledge_detail_screen.dart';
 import '../../presentation/screens/training/certification_list_screen.dart';
 import '../../presentation/screens/training/certification_detail_screen.dart';
@@ -134,14 +134,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/training/knowledge',
             name: 'knowledgeList',
-            builder: (context, state) => const KnowledgeListScreen(),
+            builder: (context, state) => const KnowledgeScreen(),
           ),
           GoRoute(
-            path: '/training/knowledge/:articleId',
+            path: '/training/knowledge/:slug',
             name: 'knowledgeDetail',
             builder: (context, state) {
-              final articleId = state.pathParameters['articleId']!;
-              return KnowledgeDetailScreen(articleId: articleId);
+              final slug = state.pathParameters['slug']!;
+              return KnowledgeDetailScreen(slug: slug);
             },
           ),
           GoRoute(

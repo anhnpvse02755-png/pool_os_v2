@@ -154,36 +154,6 @@ class KnowledgeTag {
   }
 }
 
-/// Glossary Term
-class GlossaryTerm {
-  final String id;
-  final String term;
-  final String? termVi;
-  final String definition;
-  final String? definitionVi;
-  final String? category;
-
-  const GlossaryTerm({
-    required this.id,
-    required this.term,
-    this.termVi,
-    required this.definition,
-    this.definitionVi,
-    this.category,
-  });
-
-  factory GlossaryTerm.fromJson(Map<String, dynamic> json) {
-    return GlossaryTerm(
-      id: json['id'],
-      term: json['term'],
-      termVi: json['termVi'],
-      definition: json['definition'],
-      definitionVi: json['definitionVi'],
-      category: json['category'],
-    );
-  }
-}
-
 /// Drill - Knowledge Mapping
 class DrillKnowledgeMapping {
   final String drillCode;

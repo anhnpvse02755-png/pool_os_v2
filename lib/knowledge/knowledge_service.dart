@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../models/knowledge_models.dart';
+import 'knowledge_models.dart';
 
 /// Service để load và query Knowledge data
 class KnowledgeService {
