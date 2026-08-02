@@ -16,6 +16,8 @@ import '../../presentation/screens/session/session_list_screen.dart';
 import '../../presentation/screens/session/create_session_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
+import '../../presentation/screens/auth/login_screen.dart';
+import '../../presentation/screens/auth/register_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -36,6 +38,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/onboarding/interests',
         name: 'interests',
         builder: (context, state) => const InterestSelectionScreen(),
+      ),
+
+      // Auth Routes
+      GoRoute(
+        path: '/auth/login',
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/auth/register',
+        name: 'register',
+        builder: (context, state) => const RegisterScreen(),
       ),
 
       // Main App (Bottom Navigation)
