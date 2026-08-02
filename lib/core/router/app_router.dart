@@ -29,8 +29,11 @@ import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
 import '../../presentation/screens/session/create_session_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
+import '../../presentation/screens/coach/training_plan_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/profile/settings_screen.dart';
+import '../../presentation/screens/profile/edit_profile_screen.dart';
+import '../../presentation/screens/profile/equipment_screen.dart';
 import '../../presentation/screens/shell/main_shell.dart';
 import '../../presentation/screens/auth/login_screen.dart';
 import '../../presentation/screens/auth/register_screen.dart';
@@ -179,6 +182,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const AnalysisScreen(),
           ),
           GoRoute(
+            path: '/coach/plan',
+            name: 'trainingPlan',
+            builder: (context, state) => const TrainingPlanScreen(),
+          ),
+          GoRoute(
             path: '/play/tournament',
             name: 'tournamentList',
             builder: (context, state) => const TournamentListScreen(),
@@ -262,6 +270,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/profile/settings',
             name: 'settings',
             builder: (context, state) => const SettingsScreen(),
+          ),
+          GoRoute(
+            path: '/profile/edit',
+            name: 'editProfile',
+            builder: (context, state) => const EditProfileScreen(),
+          ),
+          GoRoute(
+            path: '/profile/equipment',
+            name: 'equipment',
+            builder: (context, state) => const EquipmentScreen(),
           ),
         ],
       ),

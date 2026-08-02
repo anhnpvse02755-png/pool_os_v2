@@ -59,36 +59,60 @@ class ProfileScreen extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          // Avatar
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppTheme.primaryGreen,
-                  AppTheme.primaryGreen.withValues(alpha: 0.7),
-                ],
-              ),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                authState.user?.name?.substring(0, 1).toUpperCase() ?? 'U',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+          // Avatar with Edit button
+          Stack(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.primaryGreen,
+                      AppTheme.primaryGreen.withValues(alpha: 0.7),
+                    ],
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Text(
+                    'U',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () => context.push('/profile/edit'),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryGreen,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
 
           // Name
-          Text(
-            authState.user?.name ?? 'User',
-            style: const TextStyle(
+          const Text(
+            'Người dùng',
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 22,
             ),
@@ -97,7 +121,7 @@ class ProfileScreen extends ConsumerWidget {
 
           // Email
           Text(
-            authState.user?.email ?? 'user@email.com',
+            'user@email.com',
             style: TextStyle(
               color: Colors.grey.shade600,
               fontSize: 14,
@@ -224,6 +248,12 @@ class ProfileScreen extends ConsumerWidget {
             icon: Icons.bookmark_outline,
             label: 'Bài viết đã lưu',
             onTap: () => context.push('/training/knowledge'),
+          ),
+          const Divider(height: 1),
+          _MenuItem(
+            icon: Icons.straighten,
+            label: 'Dụng cụ của tôi',
+            onTap: () => context.push('/profile/equipment'),
           ),
         ],
       ),
