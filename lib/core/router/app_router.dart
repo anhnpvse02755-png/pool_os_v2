@@ -10,6 +10,9 @@ import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
 import '../../presentation/screens/training/drill_detail_screen.dart';
 import '../../presentation/screens/training/drill_session_screen.dart';
+import '../../presentation/screens/training/learning_path_screen.dart';
+import '../../presentation/screens/training/knowledge_list_screen.dart';
+import '../../presentation/screens/training/knowledge_detail_screen.dart';
 import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
@@ -97,6 +100,24 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final drillCode = state.pathParameters['drillCode']!;
               return DrillDetailScreen(drillCode: drillCode);
+            },
+          ),
+          GoRoute(
+            path: '/training/path',
+            name: 'learningPath',
+            builder: (context, state) => const LearningPathScreen(),
+          ),
+          GoRoute(
+            path: '/training/knowledge',
+            name: 'knowledgeList',
+            builder: (context, state) => const KnowledgeListScreen(),
+          ),
+          GoRoute(
+            path: '/training/knowledge/:articleId',
+            name: 'knowledgeDetail',
+            builder: (context, state) {
+              final articleId = state.pathParameters['articleId']!;
+              return KnowledgeDetailScreen(articleId: articleId);
             },
           ),
           GoRoute(
