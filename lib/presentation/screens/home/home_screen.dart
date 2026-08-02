@@ -5,15 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
+import '../../../core/providers/dashboard_provider.dart';
 import '../../../core/services/coach_service.dart';
 
 /// AI Home - Dashboard chính
 /// Trả lời: "Hôm nay tôi nên làm gì?"
+/// Context thay đổi theo hành động người dùng
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final dashboardState = ref.watch(dashboardProvider);
     final learningPathAsync = ref.watch(learningPathProvider);
 
     return Scaffold(
@@ -27,23 +30,19 @@ class HomeScreen extends ConsumerWidget {
               _buildHeader(context),
               const SizedBox(height: 24),
 
-              // 1. AI Coach - Quan trọng nhất
-              _buildAICoachSection(context, ref, learningPathAsync),
+              // Context-based content
+              _buildContextContent(context, ref, dashboardState, learningPathAsync),
               const SizedBox(height: 24),
 
-              // 2. Continue - Nếu đang tập dở
-              _buildContinueSection(context),
+              // Today's Goal - Luôn hiển thị
+              _buildTodayGoalSection(context, ref),
               const SizedBox(height: 24),
 
-              // 3. Today's Goal - Giống Duolingo
-              _buildTodayGoalSection(context),
-              const SizedBox(height: 24),
-
-              // 4. Progress - Đơn giản
+              // Progress - Luôn hiển thị
               _buildProgressSection(context),
               const SizedBox(height: 24),
 
-              // 5. Quick Actions - Chỉ 3 nút
+              // Quick Actions - Luôn hiển thị
               _buildQuickActionsSection(context),
               const SizedBox(height: 100),
             ],
@@ -105,6 +104,28 @@ class HomeScreen extends ConsumerWidget {
     ).animate().fadeIn();
   }
 
+  Widget _buildContextContent(
+    BuildContext context,
+    WidgetRef ref,
+    DashboardState dashboardState,
+    AsyncValue<List<LearningPathItem>> learningPathAsync,
+  ) {
+    switch (dashboardState.context) {
+      case DashboardContext.afterMatch:
+        return _buildAfterMatchCard(context, ref, dashboardState);
+      case DashboardContext.afterDrill:
+        return _buildAfterDrillCard(context, ref, dashboardState);
+      case DashboardContext.afterKnowledge:
+        return _buildAfterKnowledgeCard(context, ref, dashboardState);
+      case DashboardContext.streakWarning:
+        return _buildStreakWarningCard(context, ref);
+      case DashboardContext.normal:
+      default:
+        return _buildAICoachSection(context, ref, learningPathAsync);
+    }
+  }
+
+  /// AI Coach - Context mặc định
   Widget _buildAICoachSection(
     BuildContext context,
     WidgetRef ref,
@@ -202,7 +223,7 @@ class HomeScreen extends ConsumerWidget {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                '${item!.drill.nameVi} Lv${item.suggestedLevel}',
+                                '${item.drill.nameVi} Lv${item.suggestedLevel}',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,
@@ -228,11 +249,11 @@ class HomeScreen extends ConsumerWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Navigate to AI recommended drill
                 final path = learningPathAsync.valueOrNull;
                 if (path != null && path.isNotEmpty) {
+                  final first = path.first;
                   context.push(
-                    '/training/session/new?drill=${path.first.drill.code}&level=${path.first.suggestedLevel}',
+                    '/training/session/new?drill=${first.drill.code}&level=${first.suggestedLevel}',
                   );
                 } else {
                   context.go('/training');
@@ -268,6 +289,536 @@ class HomeScreen extends ConsumerWidget {
     ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1, end: 0);
   }
 
+  /// Context: Sau khi chơi Match
+  Widget _buildAfterMatchCard(
+    BuildContext context,
+    WidgetRef ref,
+    DashboardState state,
+  ) {
+    final missAnalysis = state.missAnalysis ?? {};
+    final totalMisses = missAnalysis.values.fold(0, (a, b) => a + b);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.blue.shade700,
+            Colors.blue.shade500,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.sports_cricket, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Phân tích sau trận',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          Text(
+            'Hôm nay bạn miss $totalMisses cú.',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Miss breakdown
+          if (missAnalysis.isNotEmpty) ...[
+            Text(
+              'Trong đó:',
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.8),
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ...missAnalysis.entries.map((e) => Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.circle, color: Colors.white70, size: 8),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${_getCategoryName(e.key)}: ${e.value} cú',
+                        style: const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
+
+          const SizedBox(height: 16),
+
+          Text(
+            'AI đề xuất:',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // AI recommendation based on miss analysis
+          if (missAnalysis.containsKey('position'))
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.arrow_right, color: Colors.white70),
+                  const SizedBox(width: 8),
+                  const Expanded(
+                    child: Text(
+                      'Position Recovery Lv2',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          const SizedBox(height: 16),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                ref.read(dashboardProvider.notifier).reset();
+                context.push('/training/session/new?drill=position_recovery&level=2');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.blue.shade700,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Tiếp tục',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: 0.1, end: 0);
+  }
+
+  /// Context: Sau khi hoàn thành Drill
+  Widget _buildAfterDrillCard(
+    BuildContext context,
+    WidgetRef ref,
+    DashboardState state,
+  ) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.green.shade700,
+            Colors.green.shade500,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.celebration, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Chúc mừng!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          const Text(
+            'Bạn đã hoàn thành',
+            style: TextStyle(color: Colors.white, fontSize: 15),
+          ),
+          Text(
+            'Position Lv2',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Text(
+            'Tiếp theo:',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.arrow_right, color: Colors.white70),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Position Lv3',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                ref.read(dashboardProvider.notifier).reset();
+                context.push('/training/session/new?drill=position&level=3');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.green.shade700,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Tiếp tục Lv3',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: 0.1, end: 0);
+  }
+
+  /// Context: Sau khi hoàn thành Knowledge
+  Widget _buildAfterKnowledgeCard(
+    BuildContext context,
+    WidgetRef ref,
+    DashboardState state,
+  ) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.purple.shade700,
+            Colors.purple.shade500,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.purple.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.auto_stories, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Tuyệt vời!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          Text(
+            'Bạn vừa học:',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 13,
+            ),
+          ),
+          const Text(
+            'Cue Ball Control',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          Text(
+            'Hãy luyện:',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.arrow_right, color: Colors.white70),
+                const SizedBox(width: 8),
+                const Expanded(
+                  child: Text(
+                    'Drill 21, Drill 25',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                ref.read(dashboardProvider.notifier).reset();
+                context.go('/training');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.purple.shade700,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Đi luyện tập',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: 0.1, end: 0);
+  }
+
+  /// Context: Cảnh báo Streak
+  Widget _buildStreakWarningCard(BuildContext context, WidgetRef ref) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.orange.shade700,
+            Colors.orange.shade500,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orange.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.local_fire_department, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Cảnh báo Streak',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          const Text(
+            'Bạn đã bỏ tập 4 ngày.',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          Text(
+            'Hãy quay lại với bài Follow Shot Lv1 để không mất streak.',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.8),
+              fontSize: 14,
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                ref.read(dashboardProvider.notifier).reset();
+                context.push('/training/session/new?drill=follow&level=1');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.orange.shade700,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Quay lại tập',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn().slideY(begin: 0.1, end: 0);
+  }
+
   Widget _buildEmptyRecommendations() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -292,74 +843,26 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContinueSection(BuildContext context) {
-    // TODO: Check if user has ongoing drill from yesterday
-    final hasOngoingDrill = false; // Placeholder
+  Widget _buildTodayGoalSection(BuildContext context, WidgetRef ref) {
+    final goals = ref.watch(todayGoalsProvider);
 
-    if (!hasOngoingDrill) return const SizedBox();
-
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.orange.shade200),
+    final goalItems = [
+      _GoalItem(
+        icon: Icons.fitness_center,
+        label: '${goals.drillsCompleted}/${goals.drillsTarget} drills',
+        isDone: goals.drillsCompleted >= goals.drillsTarget,
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.orange.shade100,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              Icons.play_circle_outline,
-              color: Colors.orange.shade700,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Tiếp tục bài đang dở',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange.shade900,
-                  ),
-                ),
-                Text(
-                  'Position Lv2 - 60% hoàn thành',
-                  style: TextStyle(
-                    color: Colors.orange.shade700,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => context.push('/training/session/continue'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-            child: const Text('Tiếp tục'),
-          ),
-        ],
+      _GoalItem(
+        icon: Icons.article,
+        label: 'Đọc bài kiến thức',
+        isDone: goals.knowledgeRead,
       ),
-    ).animate().fadeIn(delay: 200.ms);
-  }
-
-  Widget _buildTodayGoalSection(BuildContext context) {
-    // TODO: Get from user progress
-    final goals = [
-      _GoalItem(icon: Icons.fitness_center, label: '2 drills', completed: 1, total: 2),
-      _GoalItem(icon: Icons.article, label: '1 bài kiến thức', completed: 0, total: 1),
-      _GoalItem(icon: Icons.quiz, label: 'Pass Level Test', completed: 0, total: 1, isSpecial: true),
+      _GoalItem(
+        icon: Icons.quiz,
+        label: 'Pass Level Test',
+        isDone: goals.testPassed,
+        isSpecial: true,
+      ),
     ];
 
     return Column(
@@ -374,11 +877,23 @@ class HomeScreen extends ConsumerWidget {
                   ),
             ),
             const Spacer(),
-            Text(
-              'Hôm nay',
-              style: TextStyle(
-                color: Colors.grey.shade500,
-                fontSize: 12,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: goals.allCompleted
+                    ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                    : Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                goals.allCompleted ? '✓ Hoàn thành!' : 'Hôm nay',
+                style: TextStyle(
+                  color: goals.allCompleted
+                      ? AppTheme.primaryGreen
+                      : Colors.grey.shade500,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -397,10 +912,10 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           child: Column(
-            children: goals.asMap().entries.map((entry) {
+            children: goalItems.asMap().entries.map((entry) {
               final index = entry.key;
               final goal = entry.value;
-              final isLast = index == goals.length - 1;
+              final isLast = index == goalItems.length - 1;
 
               return Column(
                 children: [
@@ -412,7 +927,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ],
-    ).animate().fadeIn(delay: 300.ms);
+    ).animate().fadeIn(delay: 200.ms);
   }
 
   Widget _buildProgressSection(BuildContext context) {
@@ -478,7 +993,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ],
-    ).animate().fadeIn(delay: 400.ms);
+    ).animate().fadeIn(delay: 300.ms);
   }
 
   Widget _buildQuickActionsSection(BuildContext context) {
@@ -523,7 +1038,7 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
       ],
-    ).animate().fadeIn(delay: 500.ms);
+    ).animate().fadeIn(delay: 400.ms);
   }
 
   String _getCoachGreeting() {
@@ -536,24 +1051,33 @@ class HomeScreen extends ConsumerWidget {
       return 'Tối nay vẫn còn thời gian để tập. Hoàn thành mục tiêu hôm nay nhé!';
     }
   }
+
+  String _getCategoryName(String key) {
+    switch (key) {
+      case 'position':
+        return 'Position';
+      case 'stop':
+        return 'Stop Shot';
+      case 'follow':
+        return 'Follow';
+      default:
+        return 'Khác';
+    }
+  }
 }
 
 class _GoalItem {
   final IconData icon;
   final String label;
-  final int completed;
-  final int total;
+  final bool isDone;
   final bool isSpecial;
 
   _GoalItem({
     required this.icon,
     required this.label,
-    required this.completed,
-    required this.total,
+    required this.isDone,
     this.isSpecial = false,
   });
-
-  bool get isDone => completed >= total;
 }
 
 class _GoalRow extends StatelessWidget {
@@ -607,14 +1131,10 @@ class _GoalRow extends StatelessWidget {
               ),
             ),
           )
+        else if (goal.isDone)
+          Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 20)
         else
-          Text(
-            '${goal.completed}/${goal.total}',
-            style: TextStyle(
-              color: goal.isDone ? AppTheme.primaryGreen : Colors.grey.shade500,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          const SizedBox(width: 20),
       ],
     );
   }
