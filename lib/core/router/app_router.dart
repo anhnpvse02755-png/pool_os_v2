@@ -6,6 +6,7 @@ import '../../presentation/screens/onboarding/welcome_screen.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
 import '../../presentation/screens/onboarding/interest_selection_screen.dart';
 import '../../presentation/screens/home/home_screen.dart';
+import '../../presentation/screens/home/notification_screen.dart';
 import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
 import '../../presentation/screens/training/drill_detail_screen.dart';
@@ -63,6 +64,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/auth/register',
         name: 'register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+
+      // Notification
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        builder: (context, state) => const NotificationScreen(),
       ),
 
       // Main App (Bottom Navigation)
