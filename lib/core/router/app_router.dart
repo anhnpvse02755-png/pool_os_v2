@@ -19,6 +19,7 @@ import '../../presentation/screens/training/certification_detail_screen.dart';
 import '../../presentation/screens/play/match_recording_screen.dart';
 import '../../presentation/screens/play/match_history_screen.dart';
 import '../../presentation/screens/training/training_history_screen.dart';
+import '../../presentation/screens/training/recommended_screen.dart';
 import '../../presentation/screens/training/progress_screen.dart';
 import '../../presentation/screens/coach/analysis_screen.dart';
 import '../../presentation/screens/play/tournament_list_screen.dart';
@@ -28,11 +29,9 @@ import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/play/quick_match_screen.dart';
 import '../../presentation/screens/play/friendly_match_screen.dart';
-import '../../presentation/screens/play/match_history_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
 import '../../presentation/screens/session/create_session_screen.dart';
 import '../../presentation/screens/training/assessment_screen.dart';
-import '../../presentation/screens/training/training_history_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
 import '../../presentation/screens/coach/training_plan_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
@@ -108,7 +107,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/training/recommended',
             name: 'recommended',
-            builder: (context, state) => const RecommendedPlaceholder(),
+            builder: (context, state) => const RecommendedScreen(),
           ),
           GoRoute(
             path: '/training/drills',
