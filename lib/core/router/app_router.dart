@@ -26,8 +26,13 @@ import '../../presentation/screens/play/tournament_detail_screen.dart';
 import '../../presentation/screens/play/vision_recording_screen.dart';
 import '../../presentation/screens/training/drill_result_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
+import '../../presentation/screens/play/quick_match_screen.dart';
+import '../../presentation/screens/play/friendly_match_screen.dart';
+import '../../presentation/screens/play/match_history_screen.dart';
 import '../../presentation/screens/session/session_list_screen.dart';
 import '../../presentation/screens/session/create_session_screen.dart';
+import '../../presentation/screens/training/assessment_screen.dart';
+import '../../presentation/screens/training/training_history_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
 import '../../presentation/screens/coach/training_plan_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
@@ -98,7 +103,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/training/assessment',
             name: 'assessment',
-            builder: (context, state) => const AssessmentPlaceholder(),
+            builder: (context, state) => const AssessmentScreen(),
           ),
           GoRoute(
             path: '/training/recommended',
@@ -173,6 +178,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const TrainingHistoryScreen(),
           ),
           GoRoute(
+            path: '/training/session/new',
+            name: 'newDrillSession',
+            builder: (context, state) {
+              final drillCode = state.uri.queryParameters['drill'] ?? 'STRAIGHT_POT';
+              return DrillSessionScreen(drillCode: drillCode);
+            },
+          ),
+          GoRoute(
+            path: '/training/session/active',
+            name: 'activeDrillSession',
+            builder: (context, state) {
+              // Default drill for daily training
+              return const DrillSessionScreen(drillCode: 'DRAW_SHOT');
+            },
+          ),
+          GoRoute(
             path: '/training/progress',
             name: 'progress',
             builder: (context, state) => const ProgressScreen(),
@@ -210,29 +231,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'community',
             builder: (context, state) => const CommunityScreen(),
           ),
-          GoRoute(
-            path: '/training/session/new',
-            name: 'newDrillSession',
-            builder: (context, state) {
-              final drillCode = state.uri.queryParameters['drill'] ?? 'STRAIGHT_POT';
-              return DrillSessionScreen(drillCode: drillCode);
-            },
-          ),
-          GoRoute(
-            path: '/training/session/active',
-            name: 'activeDrillSession',
-            builder: (context, state) {
-              // Default drill for daily training
-              return const DrillSessionScreen(drillCode: 'DRAW_SHOT');
-            },
-          ),
-          GoRoute(
-            path: '/training/history',
-            name: 'trainingHistory',
-            builder: (context, state) => const TrainingHistoryPlaceholder(),
-          ),
-
-          // Play (Match Recording)
+          // Play
           GoRoute(
             path: '/play',
             name: 'play',
@@ -241,22 +240,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/play/quick',
             name: 'quickMatch',
-            builder: (context, state) => const QuickMatchPlaceholder(),
+            builder: (context, state) => const QuickMatchScreen(),
           ),
           GoRoute(
             path: '/play/friendly',
             name: 'friendlyMatch',
-            builder: (context, state) => const FriendlyMatchPlaceholder(),
-          ),
-          GoRoute(
-            path: '/play/recording',
-            name: 'matchRecording',
-            builder: (context, state) => const MatchRecordingPlaceholder(),
+            builder: (context, state) => const FriendlyMatchScreen(),
           ),
           GoRoute(
             path: '/play/history',
             name: 'matchHistory',
-            builder: (context, state) => const MatchHistoryPlaceholder(),
+            builder: (context, state) => const MatchHistoryScreen(),
           ),
 
           // Coach

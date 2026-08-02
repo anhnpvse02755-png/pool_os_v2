@@ -4,91 +4,293 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 
-class MatchHistoryScreen extends StatelessWidget {
+class MatchHistoryScreen extends StatefulWidget {
   const MatchHistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: Load from database
-    final matches = <dynamic>[];
+  State<MatchHistoryScreen> createState() => _MatchHistoryScreenState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lịch sử trận đấu'),
-      ),
-      body: matches.isEmpty
-          ? _buildEmptyState(context)
-          : _buildMatchList(context, matches),
-    );
+class _MatchHistoryScreenState extends State<MatchHistoryScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  String _selectedFilter = 'all';
+
+  final List<Map<String, dynamic>> _demoMatches = [
+    {
+      'id': '1',
+      'opponent': 'Nguyễn Văn A',
+      'result': 'win',
+      'score': '5-3',
+      'gameType': '8-ball',
+      'date': DateTime.now().subtract(const Duration(hours: 2)),
+      'duration': const Duration(minutes: 45),
+    },
+    {
+      'id': '2',
+      'opponent': 'Trần Văn B',
+      'result': 'lose',
+      'score': '3-5',
+      'gameType': '8-ball',
+      'date': DateTime.now().subtract(const Duration(days: 1)),
+      'duration': const Duration(minutes: 52),
+    },
+    {
+      'id': '3',
+      'opponent': 'Lê Văn C',
+      'result': 'win',
+      'score': '5-2',
+      'gameType': '9-ball',
+      'date': DateTime.now().subtract(const Duration(days: 2)),
+      'duration': const Duration(minutes: 38),
+    },
+    {
+      'id': '4',
+      'opponent': 'Phạm Văn D',
+      'result': 'draw',
+      'score': '4-4',
+      'gameType': '8-ball',
+      'date': DateTime.now().subtract(const Duration(days: 3)),
+      'duration': const Duration(minutes: 60),
+    },
+    {
+      'id': '5',
+      'opponent': 'Hoàng Văn E',
+      'result': 'win',
+      'score': '5-1',
+      'gameType': 'straight',
+      'date': DateTime.now().subtract(const Duration(days: 5)),
+      'duration': const Duration(minutes: 35),
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.sports_cricket, size: 64, color: Colors.grey.shade300),
-            const SizedBox(height: 16),
-            Text(
-              'Chưa có trận đấu nào',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Bắt đầu ghi lại trận đấu để xem lịch sử',
-              style: TextStyle(color: Colors.grey.shade500),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () => context.push('/play/recording'),
-              icon: const Icon(Icons.add),
-              label: const Text('Record Match'),
-            ),
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  List<Map<String, dynamic>> get _filteredMatches {
+    if (_selectedFilter == 'all') return _demoMatches;
+    return _demoMatches.where((m) => m['result'] == _selectedFilter).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Lịch sử đấu'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: 'Tất cả'),
+            Tab(text: 'Thắng'),
+            Tab(text: 'Thua'),
           ],
         ),
       ),
+      body: Column(
+        children: [
+          // Stats Summary
+          _buildStatsSummary(),
+
+          // Filter
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                const Text('Bộ lọc: '),
+                const SizedBox(width: 8),
+                ChoiceChip(
+                  label: const Text('Tất cả'),
+                  selected: _selectedFilter == 'all',
+                  onSelected: (_) => setState(() => _selectedFilter = 'all'),
+                ),
+                const SizedBox(width: 8),
+                ChoiceChip(
+                  label: const Text('8-Ball'),
+                  selected: _selectedFilter == '8-ball',
+                  onSelected: (_) => setState(() => _selectedFilter = '8-ball'),
+                ),
+                const SizedBox(width: 8),
+                ChoiceChip(
+                  label: const Text('9-Ball'),
+                  selected: _selectedFilter == '9-ball',
+                  onSelected: (_) => setState(() => _selectedFilter = '9-ball'),
+                ),
+              ],
+            ),
+          ),
+
+          // Match List
+          Expanded(
+            child: _filteredMatches.isEmpty
+                ? _buildEmptyState()
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _filteredMatches.length,
+                    itemBuilder: (context, index) {
+                      final match = _filteredMatches[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _MatchCard(
+                          match: match,
+                          onTap: () => context.push('/play/match/${match['id']}'),
+                        ).animate().fadeIn(delay: (index * 50).ms),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildMatchList(BuildContext context, List<dynamic> matches) {
-    return ListView.builder(
+  Widget _buildStatsSummary() {
+    final wins = _demoMatches.where((m) => m['result'] == 'win').length;
+    final losses = _demoMatches.where((m) => m['result'] == 'lose').length;
+    final total = _demoMatches.length;
+    final winRate = total > 0 ? (wins / total * 100).round() : 0;
+
+    return Container(
+      margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
-      itemCount: matches.length,
-      itemBuilder: (context, index) {
-        final match = matches[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _MatchCard(match: match).animate().fadeIn(delay: (index * 50).ms),
-        );
-      },
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryGreen,
+            AppTheme.primaryGreen.withValues(alpha: 0.8),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _StatItem(label: 'Trận', value: '$total'),
+          Container(width: 1, height: 40, color: Colors.white30),
+          _StatItem(label: 'Thắng', value: '$wins', color: Colors.lightGreenAccent),
+          Container(width: 1, height: 40, color: Colors.white30),
+          _StatItem(label: 'Thua', value: '$losses', color: Colors.redAccent),
+          Container(width: 1, height: 40, color: Colors.white30),
+          _StatItem(label: 'Win Rate', value: '$winRate%'),
+        ],
+      ),
+    ).animate().fadeIn();
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.sports_cricket, size: 64, color: Colors.grey.shade300),
+          const SizedBox(height: 16),
+          Text(
+            'Chưa có trận đấu nào',
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Bắt đầu một trận đấu để xem lịch sử',
+            style: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? color;
+
+  const _StatItem({
+    required this.label,
+    required this.value,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            color: color ?? Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.8),
+            fontSize: 12,
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _MatchCard extends StatelessWidget {
-  final dynamic match;
+  final Map<String, dynamic> match;
+  final VoidCallback onTap;
 
-  const _MatchCard({required this.match});
+  const _MatchCard({
+    required this.match,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isWin = match.result == 'win';
+    final result = match['result'] as String;
+    final isWin = result == 'win';
+
+    Color resultColor;
+    IconData resultIcon;
+    String resultText;
+
+    switch (result) {
+      case 'win':
+        resultColor = Colors.green;
+        resultIcon = Icons.emoji_events;
+        resultText = 'Thắng';
+        break;
+      case 'lose':
+        resultColor = Colors.red;
+        resultIcon = Icons.close;
+        resultText = 'Thua';
+        break;
+      default:
+        resultColor = Colors.orange;
+        resultIcon = Icons.remove;
+        resultText = 'Hòa';
+    }
 
     return InkWell(
-      onTap: () {
-        // TODO: Navigate to match detail
-      },
-      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -96,116 +298,73 @@ class _MatchCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
+        child: Row(
           children: [
-            Row(
-              children: [
-                // Result badge
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: isWin
-                        ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-                        : Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+            // Result indicator
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: resultColor.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(resultIcon, color: resultColor),
+            ),
+            const SizedBox(width: 16),
+
+            // Match info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      Icon(
-                        isWin ? Icons.emoji_events : Icons.sentiment_dissatisfied,
-                        size: 16,
-                        color: isWin ? AppTheme.primaryGreen : Colors.red,
-                      ),
-                      const SizedBox(width: 4),
                       Text(
-                        isWin ? 'Thắng' : 'Thua',
-                        style: TextStyle(
-                          color: isWin ? AppTheme.primaryGreen : Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                        'vs ${match['opponent']}',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          match['gameType'] as String,
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 11,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                const Spacer(),
-                // Match type
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        match['score'] as String,
+                        style: TextStyle(
+                          color: resultColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        _formatDate(match['date'] as DateTime),
+                        style: TextStyle(
+                          color: Colors.grey.shade500,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(Icons.chevron_right, color: Colors.grey.shade400),
+                    ],
                   ),
-                  child: Text(
-                    match.matchType ?? 'Friendly',
-                    style: TextStyle(
-                      color: Colors.grey.shade700,
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Score
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '${match.playerScore}',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: isWin ? AppTheme.primaryGreen : Colors.grey.shade600,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    '-',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                ),
-                Text(
-                  '${match.opponentScore}',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: isWin ? Colors.grey.shade600 : Colors.red,
-                  ),
-                ),
-              ],
-            ),
-            if (match.opponent != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                'vs ${match.opponent}',
-                style: TextStyle(color: Colors.grey.shade600),
+                ],
               ),
-            ],
-            const SizedBox(height: 12),
-            // Info row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _InfoChip(
-                  icon: Icons.timer,
-                  label: _formatDuration(match.duration),
-                ),
-                _InfoChip(
-                  icon: Icons.calendar_today,
-                  label: _formatDate(match.createdAt),
-                ),
-                if (match.racks != null)
-                  _InfoChip(
-                    icon: Icons.layers,
-                    label: '${match.racks.length} racks',
-                  ),
-              ],
             ),
           ],
         ),
@@ -213,44 +372,18 @@ class _MatchCard extends StatelessWidget {
     );
   }
 
-  String _formatDuration(Duration? duration) {
-    if (duration == null) return '--';
-    if (duration.inHours > 0) {
-      return '${duration.inHours}h ${duration.inMinutes % 60}m';
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final diff = now.difference(date);
+
+    if (diff.inMinutes < 60) {
+      return '${diff.inMinutes}p trước';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours}h trước';
+    } else if (diff.inDays < 7) {
+      return '${diff.inDays} ngày trước';
+    } else {
+      return '${date.day}/${date.month}';
     }
-    return '${duration.inMinutes}m';
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '--';
-    return '${date.day}/${date.month}';
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _InfoChip({
-    required this.icon,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14, color: Colors.grey.shade600),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
   }
 }
