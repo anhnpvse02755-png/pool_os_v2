@@ -14,15 +14,8 @@
 //   6. tags non-empty   12. UTF-8 (no replacement chars)
 //
 // Each rule implements ArticleValidator and returns ValidationOutcome
-// with passed/warnings/errors.
-//
-// Output of the registry:
-//   - per-article ValidationOutcome
-//   - per-rule aggregate stats
-//   - report input ready for ReportGenerator
+// (defined in src/migration_dto.dart).
 // ============================================================================
-
-import 'dart:convert';
 
 import 'src/migration_dto.dart';
 
@@ -30,37 +23,12 @@ abstract class ArticleValidator {
   String get ruleId;
   String get description;
 
-  /// Returns a ValidationOutcome. Outcomes:
-  ///   - passed: true, errors empty
-  ///   - warning: passed: true, warnings non-empty
-  ///   - failed: passed: false, errors non-empty
-  ValidationOutcome validate(
-      String articleId, Map<String, dynamic> article);
+  ValidationOutcome validate(String articleId, Map<String, dynamic> article);
 }
 
-class ValidationOutcome {
-  ValidationOutcome({
-    required this.articleId,
-    required this.passed,
-    this.errors = const [],
-    this.warnings = const [],
-  });
-
-  final String articleId;
-  final bool passed;
-  final List<String> errors;
-  final List<String> warnings;
-}
-
-// ============================================================================
-// Individual rules
-// ============================================================================
-
-/// Rule 1: id unique. Caller must provide all article ids to detect duplicates.
+/// Rule 1: id unique.
 class IdUniqueValidator implements ArticleValidator {
   IdUniqueValidator(this.allIds);
-
-  /// All V2 article ids across the corpus.
   final List<String> allIds;
 
   @override
@@ -106,7 +74,6 @@ class TitleNonEmptyValidator implements ArticleValidator {
 /// Rule 3: category valid.
 class CategoryValidValidator implements ArticleValidator {
   CategoryValidValidator(this.validCategoryIds);
-
   final Set<String> validCategoryIds;
 
   @override
@@ -193,10 +160,9 @@ class TagsNonEmptyValidator implements ArticleValidator {
   }
 }
 
-/// Rule 7: relatedDrillCodes valid (when present).
+/// Rule 7: relatedDrillCodes valid.
 class RelatedDrillCodesValidator implements ArticleValidator {
   RelatedDrillCodesValidator(this.validDrillCodes);
-
   final Set<String> validDrillCodes;
 
   @override
@@ -210,9 +176,7 @@ class RelatedDrillCodesValidator implements ArticleValidator {
     final codes = ((article['relatedDrillCodes'] as List<dynamic>?) ?? const [])
         .map((e) => e.toString())
         .toList();
-    if (codes.isEmpty) {
-      return ValidationOutcome(articleId: articleId, passed: true);
-    }
+    if (codes.isEmpty) return ValidationOutcome(articleId: articleId, passed: true);
     final broken = codes.where((c) => !validDrillCodes.contains(c)).toList();
     if (broken.isNotEmpty) {
       return ValidationOutcome(
@@ -228,7 +192,6 @@ class RelatedDrillCodesValidator implements ArticleValidator {
 /// Rule 8: relatedKnowledgeIds valid (warning only).
 class RelatedKnowledgeIdsValidator implements ArticleValidator {
   RelatedKnowledgeIdsValidator(this.validKnowledgeIds);
-
   final Set<String> validKnowledgeIds;
 
   @override
@@ -242,14 +205,12 @@ class RelatedKnowledgeIdsValidator implements ArticleValidator {
     final ids = ((article['relatedKnowledgeIds'] as List<dynamic>?) ?? const [])
         .map((e) => e.toString())
         .toList();
-    if (ids.isEmpty) {
-      return ValidationOutcome(articleId: articleId, passed: true);
-    }
+    if (ids.isEmpty) return ValidationOutcome(articleId: articleId, passed: true);
     final broken = ids.where((i) => !validKnowledgeIds.contains(i)).toList();
     if (broken.isNotEmpty) {
       return ValidationOutcome(
         articleId: articleId,
-        passed: true, // Warning, not failure.
+        passed: true,
         warnings: ['relatedKnowledgeIds not found: ${broken.join(", ")}'],
       );
     }
@@ -278,11 +239,9 @@ class ReadingTimeValidator implements ArticleValidator {
   }
 }
 
-/// Rule 10: search index generated. Caller runs SearchIndexBuilder; this
-/// validator checks that the article's id appears in the index.
+/// Rule 10: search index entry.
 class SearchIndexEntryValidator implements ArticleValidator {
   SearchIndexEntryValidator(this.indexedIds);
-
   final Set<String> indexedIds;
 
   @override
@@ -303,8 +262,7 @@ class SearchIndexEntryValidator implements ArticleValidator {
   }
 }
 
-/// Rule 11: markdown valid. Cheap checks: balanced fences, no broken
-/// headings.
+/// Rule 11: markdown valid.
 class MarkdownValidValidator implements ArticleValidator {
   @override
   String get ruleId => 'markdown-valid';
@@ -322,7 +280,6 @@ class MarkdownValidValidator implements ArticleValidator {
       errors.add('Unbalanced code fences: $fenceCount');
     }
 
-    // Headings: lines starting with `#` followed by space.
     final lines = content.split('\n');
     for (var i = 0; i < lines.length; i++) {
       final l = lines[i];
@@ -378,11 +335,8 @@ class Utf8ValidValidator implements ArticleValidator {
 
 class ValidatorRegistry {
   ValidatorRegistry(this.validators);
-
   final List<ArticleValidator> validators;
 
-  /// Aggregates a single validation pass for all articles.
-  /// Returns per-article outcomes + per-rule stats.
   ValidationRunResult runAll(List<Map<String, dynamic>> articles) {
     final articleIds = articles.map((a) => a['id'] as String).toList();
     final outcomes = <ValidationOutcome>[];
@@ -433,31 +387,6 @@ class ValidatorRegistry {
   }
 }
 
-class RuleStats {
-  RuleStats({required this.ruleId});
-  final String ruleId;
-  int passed = 0;
-  int warned = 0;
-  int failed = 0;
-}
-
-class ValidationRunResult {
-  ValidationRunResult({
-    required this.outcomes,
-    required this.ruleStats,
-    required this.articleIds,
-  });
-
-  final List<ValidationOutcome> outcomes;
-  final List<RuleStats> ruleStats;
-  final List<String> articleIds;
-
-  int get totalArticles => outcomes.length;
-  int get passedArticles => outcomes.where((o) => o.passed).length;
-  int get failedArticles => outcomes.where((o) => !o.passed).length;
-  int get warningCount => outcomes.fold<int>(0, (s, o) => s + o.warnings.length);
-}
-
 /// Builds a set of valid drill codes from a JSON drill catalog file.
 Set<String> buildValidDrillCodes(dynamic drillCatalog) {
   final out = <String>{};
@@ -486,7 +415,6 @@ Set<String> buildValidCategoryIds(dynamic categoriesJson) {
   return out;
 }
 
-// Helper used by MarkdownValidValidator
 extension _AllMatchesExt on String {
   Iterable<Match> allMatches(String pattern) =>
       RegExp(pattern).allMatches(this);

@@ -1,0 +1,29 @@
+{
+  "id": "mental.attention_control",
+  "slug": "mental-attention_control",
+  "title": "Attention Control",
+  "titleVi": "Kiểm Soát Chú Ý",
+  "content": "# Attention Control\n\nAttention Control explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Kiểm Soát Chú Ý\n\nGiải thích về Kiểm Soát Chú Ý.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_psychology",
+  "tagIds": [
+    "tag_strategy",
+    "tag_advanced"
+  ],
+  "difficulty": "advanced",
+  "aliases": [
+    "attention control",
+    "mental.attention_control"
+  ],
+  "keywords": [
+    "attention control",
+    "mental.attention_control"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}

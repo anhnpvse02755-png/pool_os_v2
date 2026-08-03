@@ -1,0 +1,29 @@
+{
+  "id": "mental.pressure",
+  "slug": "mental-pressure",
+  "title": "Playing Under Pressure",
+  "titleVi": "Thi Đấu Dưới Áp Lực",
+  "content": "# Playing Under Pressure\n\nPlaying Under Pressure explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Thi Đấu Dưới Áp Lực\n\nGiải thích về Thi Đấu Dưới Áp Lực.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_psychology",
+  "tagIds": [
+    "tag_strategy",
+    "tag_advanced"
+  ],
+  "difficulty": "advanced",
+  "aliases": [
+    "mental.pressure",
+    "playing under pressure"
+  ],
+  "keywords": [
+    "mental.pressure",
+    "playing under pressure"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}

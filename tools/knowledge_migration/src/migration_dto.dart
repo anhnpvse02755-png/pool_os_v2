@@ -1,29 +1,19 @@
 // ============================================================================
 // migration_dto.dart — data transfer objects for the migration pipeline
 // ============================================================================
-//
-// Sprint 1, Commit 1 — SKELETON ONLY.
-//
-// DTOs are the contracts between pipeline stages. Concrete fields will
-// be filled in as Commits 2-4 land. Today: shape only.
-// ============================================================================
 
-/// V1 article input (read from `Knowledge/<domain>/`).
+/// V1 article input.
 class V1Article {
   V1Article({
     required this.id,
     required this.rawJsonPath,
   });
 
-  /// V1 article id (e.g. "technique.stroke.fundamentals").
   final String id;
-
-  /// Absolute path to the V1 source file (used for SHA256 byte-equality
-  /// verification in Commit 4).
   final String rawJsonPath;
 }
 
-/// V2 article output (written to `assets/knowledge/_staging/<domain>/`).
+/// V2 article output (metadata only — actual JSON lives in staging dir).
 class V2Article {
   V2Article({
     required this.id,
@@ -33,9 +23,50 @@ class V2Article {
 
   final String id;
   final String slug;
-
-  /// Path under staging output dir.
   final String destinationPath;
+}
+
+/// Outcome of a single article validation.
+class ValidationOutcome {
+  ValidationOutcome({
+    required this.articleId,
+    required this.passed,
+    this.errors = const [],
+    this.warnings = const [],
+  });
+
+  final String articleId;
+  final bool passed;
+  final List<String> errors;
+  final List<String> warnings;
+}
+
+/// Per-rule stats across a validation run.
+class RuleStats {
+  RuleStats({required this.ruleId});
+  final String ruleId;
+  int passed = 0;
+  int warned = 0;
+  int failed = 0;
+}
+
+/// Aggregated validation run result.
+class ValidationRunResult {
+  ValidationRunResult({
+    required this.outcomes,
+    required this.ruleStats,
+    required this.articleIds,
+  });
+
+  final List<ValidationOutcome> outcomes;
+  final List<RuleStats> ruleStats;
+  final List<String> articleIds;
+
+  int get totalArticles => outcomes.length;
+  int get passedArticles => outcomes.where((o) => o.passed).length;
+  int get failedArticles => outcomes.where((o) => !o.passed).length;
+  int get warningCount =>
+      outcomes.fold<int>(0, (s, o) => s + o.warnings.length);
 }
 
 /// Aggregate migration report.
@@ -57,6 +88,8 @@ class MigrationReport {
   final int brokenDrillRefs;
   final int brokenKnowledgeRefs;
   final List<String> warnings;
+
+  ValidationRunResult? validation;
 
   bool get isClean =>
       articlesFailed == 0 && brokenDrillRefs == 0 && brokenKnowledgeRefs == 0;

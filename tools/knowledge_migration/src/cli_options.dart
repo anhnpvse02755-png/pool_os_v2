@@ -1,11 +1,6 @@
 // ============================================================================
 // cli_options.dart — parsed CLI options for the migration tool
 // ============================================================================
-//
-// Sprint 1, Commit 1 — SKELETON ONLY.
-//
-// Hand-rolled parser (no `args` package) — flags are simple enough.
-// ============================================================================
 
 class CliOptions {
   CliOptions({
@@ -25,6 +20,10 @@ class CliOptions {
   final String input;
   final String output;
   final String? domain;
+
+  static const String defaultInput =
+      'C:/Users/anhnpv/OneDrive - Thanh Cong Group/Desktop/code/Pool OS/Knowledge';
+  static const String defaultOutput = 'assets/knowledge/_staging';
 
   static CliOptions parse(List<String> argv) {
     var help = false;
@@ -54,32 +53,34 @@ class CliOptions {
           break;
         case '-i':
         case '--input':
-          if (i + 1 >= argv.length) {
-            throw const FormatException('--input requires a value.');
+          {
+            final r = _readInlineOrNext(arg, argv, i, '--input');
+            input = r.value;
+            if (r.consumeNext) i++;
           }
-          input = argv[++i];
           break;
         case '-o':
         case '--output':
-          if (i + 1 >= argv.length) {
-            throw const FormatException('--output requires a value.');
+          {
+            final r = _readInlineOrNext(arg, argv, i, '--output');
+            output = r.value;
+            if (r.consumeNext) i++;
           }
-          output = argv[++i];
           break;
         case '--domain':
-          if (i + 1 >= argv.length) {
-            throw const FormatException('--domain requires a value.');
-          }
-          domain = argv[++i];
-          if (domain.isEmpty) {
-            throw const FormatException('--domain must be non-empty.');
+          {
+            final r = _readInlineOrNext(arg, argv, i, '--domain');
+            domain = r.value;
+            if (r.consumeNext) i++;
+            if (domain.isEmpty) {
+              throw const FormatException('--domain must be non-empty.');
+            }
           }
           break;
         default:
           if (arg.startsWith('-')) {
             throw FormatException('Unknown flag: $arg');
           }
-          // Positional argument → domain.
           if (domain == null) {
             domain = arg;
           } else {
@@ -99,12 +100,20 @@ class CliOptions {
     );
   }
 
-  static const String defaultInput =
-      'C:/Users/anhnpv/OneDrive - Thanh Cong Group/Desktop/code/Pool OS/Knowledge';
-  static const String defaultOutput = 'assets/knowledge/_staging';
+  static _ValueRead _readInlineOrNext(
+      String arg, List<String> argv, int i, String flagName) {
+    final eq = arg.indexOf('=');
+    if (eq >= 0) {
+      return _ValueRead(arg.substring(eq + 1), false);
+    }
+    if (i + 1 >= argv.length) {
+      throw FormatException('$flagName requires a value.');
+    }
+    return _ValueRead(argv[i + 1], true);
+  }
 
   static String usage() => '''
-migrate_v1_to_v2 — V1 → V2 Knowledge migration tool (Sprint 1 skeleton)
+migrate_v1_to_v2 — V1 → V2 Knowledge migration tool (Sprint 1)
 
 Usage:
   dart run tools/knowledge_migration/migrate_v1_to_v2.dart [options] [<domain>]
@@ -114,8 +123,14 @@ Options:
   -V, --version           Show version.
   --check                 Dry-run. Validate but do not write output.
   --promote               Promote staging to assets/knowledge/ (after clean report).
-  -i, --input <dir>       V1 input directory (default: ${defaultInput}).
-  -o, --output <dir>      Staging output directory (default: ${defaultOutput}).
-  --domain <name>         V1 domain (bridge/, pattern/, safety/, mental/).
+  -i, --input <dir>       V1 input directory (default: $defaultInput).
+  -o, --output <dir>      Staging output directory (default: $defaultOutput).
+  --domain <name>         V1 domain (bridge, pattern, safety, mental).
 ''';
+}
+
+class _ValueRead {
+  _ValueRead(this.value, this.consumeNext);
+  final String value;
+  final bool consumeNext;
 }

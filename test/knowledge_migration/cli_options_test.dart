@@ -20,6 +20,7 @@ import '../../tools/knowledge_migration/src/cli_options.dart';
 import '../../tools/knowledge_migration/src/migration_dto.dart';
 import '../../tools/knowledge_migration/src/migration_pipeline.dart';
 import '../../tools/knowledge_migration/src/io.dart';
+import '../../tools/knowledge_migration/report_generator.dart';
 
 void main() {
   group('CliOptions', () {
@@ -95,8 +96,11 @@ void main() {
   });
 
   group('MigrationPipeline (skeleton)', () {
-    test('returns success with skeleton warning', () async {
-      final pipeline = MigrationPipeline(fs: FileSystemAdapter());
+    test('requires domain', () async {
+      final pipeline = MigrationPipeline(
+        fs: FileSystemAdapter(),
+        reportGenerator: ReportGenerator(),
+      );
       final options = CliOptions(
         help: false,
         version: false,
@@ -104,15 +108,11 @@ void main() {
         promote: false,
         input: '/tmp/v1',
         output: '/tmp/staging',
-        domain: 'bridge/',
+        domain: null,
       );
       final result = await pipeline.run(options);
-      expect(result.exitCode, equals(0));
-      expect(result.report.warnings, isNotEmpty);
-      expect(
-        result.report.warnings.any((w) => w.contains('Skeleton run')),
-        isTrue,
-      );
+      expect(result.exitCode, equals(2));
+      expect(result.report.warnings, contains('--domain required'));
     });
   });
 }

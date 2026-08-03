@@ -1,0 +1,107 @@
+[
+  {
+    "article_id": "mental.arousal_control",
+    "body_hash": "895c1167c3209869d31bba40379c14c78496fd6638ef5d0362cc2a86e0700ee0",
+    "full_file_hash": "92e38ad5786ec3ed0c3ebdb897a239336b97bec11844ebaa1e26bf680852142f"
+  },
+  {
+    "article_id": "mental.attention_control",
+    "body_hash": "9be69407f552878deed96bfdb9af0fad50e2ce37a7df8a95f53bfe6f818b2b76",
+    "full_file_hash": "874fb209710e906f1a1960fc65ea87335670b7c03aca62253d5374d5607b9635"
+  },
+  {
+    "article_id": "mental.bounce_back",
+    "body_hash": "197d5acbc1b2931c8ed8f4a6e96db821deac3f7bf8abd2b0a1e3eaa23fd0d380",
+    "full_file_hash": "25d00c8e2f7d06b90e998da27381a35cb02feafed6cc9c26c070857a117017b8"
+  },
+  {
+    "article_id": "mental.breathing",
+    "body_hash": "f54671576e0d4c1faf3689ed8b056596f354af06e8fd71796de600e6a8ffc414",
+    "full_file_hash": "5c9b5954f94054ef38ace3464b7be447d8169b3d9eb943fa61277e8f9168f82b"
+  },
+  {
+    "article_id": "mental.competitive_mental",
+    "body_hash": "2a42a4fef5dc1d68d31231d14811ed1662d5bb000546224942696693682f49cf",
+    "full_file_hash": "ef7bebab4010226841dea5700ba74f308ac858f1881bbc2b0ed3d48e26da2323"
+  },
+  {
+    "article_id": "mental.composure",
+    "body_hash": "7d00029452d9f0e43e2aa51f91236fcc359ce983e67557177ab43bacb0d706cf",
+    "full_file_hash": "95bc6107cacd08ee2bdf4b6aecb743bd18b5c9d5b788cba1c2b506896c19bbb3"
+  },
+  {
+    "article_id": "mental.concentration",
+    "body_hash": "b45bcc1008342ec0e7958c39eaf3c6775b18e0ae9a703640285284aed87191dd",
+    "full_file_hash": "f9f46c5fef8ecf12dc3c0f9264b3e9d1b84c0ea66cd06fedffd978e90778e0ba"
+  },
+  {
+    "article_id": "mental.confidence",
+    "body_hash": "8e1c5fb732e5a5ec88b3141d19227dce0ca21ea38104b21eab5e361d83d7f88e",
+    "full_file_hash": "bdc41083f66c572eaf64d24b1d4f0a564644ce89fb63db46b63d781212843701"
+  },
+  {
+    "article_id": "mental.errors_recovery",
+    "body_hash": "78a0abadf2a3783ff449914a740abbda0bb2e54f8c63cba743081a5e481225a5",
+    "full_file_hash": "5ef19d19a20d3fe278800f89f1f721a5552b18ead61e8865b41d12910deea4d8"
+  },
+  {
+    "article_id": "mental.focus_recovery",
+    "body_hash": "470a5e20d242b9b0eb4203458299b5d221474858f1f2058ab5f71175d482e8a2",
+    "full_file_hash": "fc1cc6c85919d8423bbd766055e5ff2ec0f5ed39794a88e489490afb0dcdba6e"
+  },
+  {
+    "article_id": "mental.frustration",
+    "body_hash": "79f448a06d0f7aa6a516a445a9bbc98303c693cd1f09255e14efe821e4ee5d6f",
+    "full_file_hash": "e059e9bff0289bc601b0f8b65271eb35e1adcd4710c8af2ae856cf985ee2033e"
+  },
+  {
+    "article_id": "mental.fundamentals",
+    "body_hash": "f601c8ecb29203d77e36e64ef051fd6f48b2b6b71820237eb92b64143547906d",
+    "full_file_hash": "5ebff40b4abf03e4128ffcbf1ac377c7a256cc3aedd216448181b198635b5436"
+  },
+  {
+    "article_id": "mental.goal_setting",
+    "body_hash": "5e2b88d62b0739e838ff4c73497fcbf511ca7abb8eb543755567776f79ca6823",
+    "full_file_hash": "127e02628d89f72fdc87736e201ab28024b8aae4eeb1b96df866f486037a9d19"
+  },
+  {
+    "article_id": "mental.match_rhythm",
+    "body_hash": "59a6796828938287f1df14e14287d6ec638f4d12eb26b10d5150bbf11a7c6190",
+    "full_file_hash": "f589655ca8dba68ba465962334a73ba79bfffe345da8e1e38c280f27a7097147"
+  },
+  {
+    "article_id": "mental.mental_assets",
+    "body_hash": "ea0f1d229de481aa655958a46b66889a334f61185cb637b838a1870afd69daee",
+    "full_file_hash": "42a5b7a497b1d5f1927185858fbf715ebb7d3ae7fc5e1bb7d676740553badd3a"
+  },
+  {
+    "article_id": "mental.positive_self_talk",
+    "body_hash": "d31807f70d3559d3293b2bba179f2f628fa4a086046cb261f96f3b6933bda390",
+    "full_file_hash": "3dd7dbadf9a787b4e697b4e5d2b49f03e36e2312c1e00b6c95b3afc698e56506"
+  },
+  {
+    "article_id": "mental.pre_match_routine",
+    "body_hash": "2b5947cf9cf4437ed740a3dfb68bee46b196ae3f5a46b8c3c3bc9c77f2166f2f",
+    "full_file_hash": "285243388ba16bf4ec4af232cb8386aea0d6aeb422aa26f4548889d0ef14e6d4"
+  },
+  {
+    "article_id": "mental.pressure",
+    "body_hash": "c537b12b68ff0bb5eb5fc136713116738326418c58fe0e777de66657002786df",
+    "full_file_hash": "e3bb580c660db7772c98017ed93585e5f6bacbbfcaf944f68f522cf6dbe3ee33"
+  },
+  {
+    "article_id": "mental.routine",
+    "body_hash": "1d8af8ead4f9c213f177e2055d4ec08f716bbe9af4f995a0019fbfc58ca888bd",
+    "full_file_hash": "831b392f1be8244c2cdefe7340005dab5ae404c8ad7f82f016617092e05f34c4"
+  },
+  {
+    "article_id": "mental.sport_psychology",
+    "body_hash": "8edcecb10ecbe121f8cb06294195b769a677030e70cf1250993f2dfcd8ed4b6d",
+    "full_file_hash": "32a481ce67575e5aabb3eef6726d4da4f99bd8e297f782e04340066e18d668de"
+  },
+  {
+    "article_id": "mental.visualization",
+    "body_hash": "2d3268d0c07b62b6a4752845a3ecfcd687998bf296dfc4b70decba1171fba89a",
+    "full_file_hash": "58f0ef1ab13082d3e170f8f9ae7c69bb3223453e4891085029a9860a3fb295f2"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "id": "pattern.transition_zones",
+  "slug": "pattern-transition_zones",
+  "title": "Transition Zones",
+  "titleVi": "Vùng Chuyển Tiếp",
+  "content": "# Transition Zones\n\nTransition Zones explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Vùng Chuyển Tiếp\n\nGiải thích về Vùng Chuyển Tiếp.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_strategy",
+  "tagIds": [
+    "tag_strategy",
+    "tag_advanced"
+  ],
+  "difficulty": "advanced",
+  "aliases": [
+    "pattern.transition_zones",
+    "transition zones"
+  ],
+  "keywords": [
+    "pattern.transition_zones",
+    "transition zones"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}

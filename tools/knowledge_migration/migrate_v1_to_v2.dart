@@ -30,6 +30,7 @@ import 'src/cli_options.dart';
 import 'src/migration_dto.dart';
 import 'src/migration_pipeline.dart';
 import 'src/io.dart';
+import 'report_generator.dart';
 
 Future<int> main(List<String> args) async {
   CliOptions options;
@@ -61,7 +62,7 @@ Future<int> main(List<String> args) async {
   stdout.writeln('[skeleton] promote: ${options.promote}');
 
   final fs = FileSystemAdapter();
-  final pipeline = MigrationPipeline(fs: fs);
+  final pipeline = MigrationPipeline(fs: fs, reportGenerator: ReportGenerator());
 
   final result = await pipeline.run(options);
   stdout.writeln(result.toString());

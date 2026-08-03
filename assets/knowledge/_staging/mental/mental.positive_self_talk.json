@@ -1,0 +1,29 @@
+{
+  "id": "mental.positive_self_talk",
+  "slug": "mental-positive_self_talk",
+  "title": "Positive Self-Talk",
+  "titleVi": "Tự Nói Chuyện Tích Cực",
+  "content": "# Positive Self-Talk\n\nPositive Self-Talk explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Tự Nói Chuyện Tích Cực\n\nGiải thích về Tự Nói Chuyện Tích Cực.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_psychology",
+  "tagIds": [
+    "tag_strategy",
+    "tag_basic"
+  ],
+  "difficulty": "beginner",
+  "aliases": [
+    "mental.positive_self_talk",
+    "positive self-talk"
+  ],
+  "keywords": [
+    "mental.positive_self_talk",
+    "positive self-talk"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}
