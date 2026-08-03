@@ -386,7 +386,130 @@ Each commit has:
 
 ---
 
-## 7. Sprint structure (4 phases)
+## 7. Idempotency & Deterministic Migration
+
+The migration tool MUST produce **identical output** across runs
+when input is unchanged. This is essential because Sprint 2, 3, 4
+will reuse the tool to import hundreds more articles. Without
+deterministic output:
+
+- Git diffs become noisy (false changes).
+- PR review breaks down (cannot tell real changes from tool noise).
+- Reproducibility claims are false.
+
+### Why this section
+
+Migration pipelines that produce different output each run are a
+common source of regressions. The cost of debugging a "did the
+content actually change, or did the tool re-emit it differently?"
+question is enormous. Better to lock down determinism at Sprint 1.
+
+### Acceptance criteria
+
+| KPI | Description |
+|-----|-------------|
+| **IDM-1** | Running migration twice on the same V1 input produces **byte-identical output**. |
+| **IDM-2** | Output file order is deterministic (no OS/filesystem dependency). |
+| **IDM-3** | `migration_summary.json` is identical across runs if input is unchanged. |
+| **IDM-4** | SHA256 hash of the entire output directory is unchanged across runs. |
+
+### Verification command
+
+```bash
+# Run 1
+dart run migrate_v1_to_v2.dart bridge/ --output=out1/
+find out1/ -type f | sort | xargs sha256sum > hash1.txt
+
+# Run 2
+dart run migrate_v1_to_v2.dart bridge/ --output=out2/
+find out2/ -type f | sort | xargs sha256sum > hash2.txt
+
+# Compare
+diff hash1.txt hash2.txt
+# Empty diff = PASS
+# Non-empty diff = FAIL
+```
+
+### Determinism guarantees (what the tool MUST do)
+
+| Concern | Guarantee |
+|---------|-----------|
+| **File order** | Output files are sorted by article id before write. |
+| **Map iteration** | All `Map<String, ...>` accesses use ordered iteration (`SplayTreeMap` or sorted keys). |
+| **Date / time** | No `DateTime.now()` in output. If a timestamp is needed (e.g. `updatedAt`), it comes from V1 input. |
+| **Set iteration** | All `Set` conversions to list sort first. |
+| **Random / UUID** | No `Random.next*()` or generated UUIDs in output. All ids come from V1. |
+| **JSON formatting** | Use a deterministic JSON encoder: `jsonEncode` (Dart's stdlib, alphabetical key order). |
+| **Whitespace** | No trailing newlines or trailing whitespace inside JSON values. |
+| **Line endings** | LF (`\n`) only. No CRLF. |
+| **File encoding** | UTF-8 without BOM. |
+
+### Determinism guarantees (what the tool MUST NOT do)
+
+- Read environment variables (timestamps, paths, user names) into
+  output.
+- Include absolute paths in output.
+- Include build metadata (version, branch, commit hash) in output.
+- Use the current locale for sorting (always use `en_US.UTF-8`
+  collation or codepoint order).
+
+### CI integration (recommended, Sprint 1.5+)
+
+Once the tool is in CI, add a determinism check:
+
+```yaml
+- name: Migration determinism check
+  run: |
+    dart run migrate_v1_to_v2.dart bridge/ --output=ci_out/
+    sha256sum ci_out/ > ci_hash.txt
+    git show HEAD:tools/knowledge_migration/lockfile.sha256 > lockfile.txt
+    diff ci_hash.txt lockfile.txt
+```
+
+Lockfile `lockfile.sha256` is updated only when content changes
+intentionally. CI fails if the tool re-emits differently.
+
+### Testing
+
+Add a unit test that exercises determinism:
+
+```dart
+test('migration is deterministic', () async {
+  final v1Dir = fixture('bridge_v1/');
+  final out1 = await runMigration(v1Dir);
+  final out2 = await runMigration(v1Dir);
+  expect(hashDir(out1), equals(hashDir(out2)));
+});
+```
+
+This test runs as part of `flutter test` and fails immediately if
+the tool regresses.
+
+### Failure mode
+
+If migration is non-deterministic:
+
+```
+FAIL
+
+Reason:
+Non-deterministic output detected
+
+Run #1 SHA256: abc123...
+Run #2 SHA256: def456...
+
+Investigate:
+- Map iteration order
+- Date/time injection
+- File write order
+- Locale-dependent sorting
+```
+
+No merge until determinism is restored.
+
+---
+
+## 8. Sprint structure (4 phases)
 
 ### Phase A — Schema Migration Tool (permanent)
 
@@ -447,7 +570,7 @@ Disallowed: AI rewriting, manual copy-editing, body reformatting.
 
 ---
 
-## 8. Out of Scope (Sprint 1)
+## 9. Out of Scope (Sprint 1)
 
 - AI expansion of V1 inventory stubs (Phase 2 = Sprint 2).
 - Knowledge Graph Visualization UI (Sprint 1.5+).
@@ -459,7 +582,7 @@ Disallowed: AI rewriting, manual copy-editing, body reformatting.
 
 ---
 
-## 9. Technical scope
+## 10. Technical scope
 
 ### Touch points
 
@@ -492,7 +615,7 @@ Disallowed: AI rewriting, manual copy-editing, body reformatting.
 
 ---
 
-## 10. Definition of Done checklist
+## 11. Definition of Done checklist
 
 - [ ] Migration tool implemented (`tools/knowledge_migration/`).
 - [ ] 92 V1 articles imported (Bridge/Pattern/Safety/Mental).
