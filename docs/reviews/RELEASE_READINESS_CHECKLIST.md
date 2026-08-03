@@ -18,8 +18,12 @@
 | **Content** | ⚠️ | 300/300 drills; **10/500** knowledge articles; known gap |
 | **AI** | ⚠️ | AI explain is a stub; known limitation |
 
-> Overall: 🟢 **PASS** with documented waivers on Performance,
-> Content, and AI.
+> Overall: 🟢 **PASS (Engineering RC1)** — codebase is suitable for
+> engineering reference and Phase D branch creation.
+>
+> ❌ **NOT PASS for distribution to internal users.** The Beta release
+> is gated on the Feature Parity Sprint (Knowledge, Equipment,
+> Match Summary, AI Coach).
 
 ---
 

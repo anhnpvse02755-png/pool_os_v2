@@ -2,6 +2,7 @@
 
 **Date:** 2026-08-03 (final snapshot)
 **Status:** 🟢 **Green (Conditional)** — Stabilization Sprint complete.
+**Tag:** `v2.0.0-rc1-eng` (Engineering RC1 — engineering reference only).
 
 ---
 

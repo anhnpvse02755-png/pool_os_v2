@@ -1,11 +1,36 @@
 # Known Limitations (Post-Stabilization)
 
-**Date:** 2026-08-03 (Day 2C)
+**Date:** 2026-08-03 (Day 2C, updated after tag decision)
 **Audience:** Phase D developers, internal users, QA
 **Status:** These items are **not bugs** and are **not regressions**.
 They are documented gaps that the Stabilization Sprint intentionally
 did not address. They will be tracked through Phase D or a dedicated
 Content Sprint.
+
+---
+
+## Release plan (2-tier)
+
+The codebase is tagged **`v2.0.0-rc1-eng`** (Engineering RC1) at
+the end of the Stabilization Sprint. This tag is for engineering
+reference and Phase D branch creation only.
+
+| Tier | Audience | Distribution |
+|------|----------|--------------|
+| **Engineering RC1** (`v2.0.0-rc1-eng`) | Internal engineering only | NOT distributed to users |
+| **Beta / Internal Preview** (`v2.0.0-beta1`, planned) | ~100 internal users | After Feature Parity Sprint closes |
+| **Release** (`v2.0.0`, planned) | Public | After internal feedback closes |
+
+The **Feature Parity Sprint** must close 4 modules before Beta:
+
+1. Knowledge Library parity (target: match V1).
+2. Equipment Module parity.
+3. Match Summary parity (full post-match analysis).
+4. AI Coach (rule-based first, LLM later).
+
+These are **product-value gaps**, not stability gaps. The Stabilization
+Sprint closed all stability gaps; the Parity Sprint closes product-value
+gaps.
 
 ---
 

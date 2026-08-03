@@ -8,10 +8,16 @@
 
 ## Verdict
 
-🟢 **PASS** (with documented limitations, see `KNOWN_LIMITATIONS.md`).
+🟢 **PASS (Engineering RC1)** — codebase is suitable for engineering
+reference and Phase D branch creation only.
 
-The codebase is suitable for an internal-release build (RC1).
-Phase D can start on a separate branch.
+❌ **NOT PASS for distribution to internal users.** The Beta release
+is gated on the Feature Parity Sprint (Knowledge, Equipment,
+Match Summary, AI Coach).
+
+The codebase has been tagged **`v2.0.0-rc1-eng`**. See
+`KNOWN_LIMITATIONS.md` § "Release plan" for the 2-tier release
+plan.
 
 ---
 
@@ -148,6 +154,16 @@ There are **no remaining stability gaps**.
 
 ## Day 2C Recommendation
 
-🟢 **Ship RC1 to internal users on the current `main` branch.** Begin
-Phase D development on `feature/phase-d/*` branches, do not merge
-into `main` until Day 2C deliverables are signed off.
+🟢 **Tag Engineering RC1** (`v2.0.0-rc1-eng`) — for engineering
+reference and Phase D branch creation.
+
+❌ **DO NOT** distribute to internal users yet.
+
+**Next step:** Feature Parity Sprint — close 4 modules
+(Knowledge, Equipment, Match Summary, AI Coach). After that, tag
+`v2.0.0-beta1` for internal preview.
+
+Phase D branches (`feature/phase-d/*`) may be created from
+`v2.0.0-rc1-eng` and developed in parallel with the Parity Sprint,
+but should NOT merge into `main` until Beta is distributed and
+feedback closes.
