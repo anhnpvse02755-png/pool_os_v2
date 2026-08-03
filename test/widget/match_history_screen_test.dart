@@ -7,7 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pool_os_v2/core/providers/repository_providers.dart';
 import 'package:pool_os_v2/data/models/match.dart';
-import 'package:pool_os_v2/data/repositories/match_repository.dart';
 import 'package:pool_os_v2/presentation/screens/play/match_history_screen.dart';
 
 import '../helpers/fake_match_repository.dart';
