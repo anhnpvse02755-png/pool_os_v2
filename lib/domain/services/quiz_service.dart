@@ -1,16 +1,19 @@
 import 'dart:convert';
 
-import '../../core/services/local_storage_service.dart';
+import '../../data/repositories/cache_repository.dart';
 import '../../data/models/quiz.dart';
 
 /// Phase B: Quiz scoring + persistence.
+///
+/// Day 2A: depends on [ICacheRepository].
 class QuizService {
-  QuizService();
+  QuizService(this._cache);
+  final ICacheRepository _cache;
   static const _kQuizKey = 'poolos_v2.quizzes';
   static const _kAttemptKey = 'poolos_v2.quiz_attempts';
 
   Future<List<Quiz>> all() async {
-    final raw = LocalStorageService.prefs.getString(_kQuizKey);
+    final raw = _cache.getString(_kQuizKey);
     if (raw == null || raw.isEmpty) return [];
     return (jsonDecode(raw) as List)
         .cast<Map<String, dynamic>>()
@@ -35,7 +38,7 @@ class QuizService {
     } else {
       all.add(q);
     }
-    await LocalStorageService.prefs.setString(
+    await _cache.setString(
         _kQuizKey, jsonEncode(all.map((x) => x.toJson()).toList()));
   }
 
@@ -58,17 +61,17 @@ class QuizService {
       takenAt: DateTime.now(),
       score: computedScore,
     );
-    final raw = LocalStorageService.prefs.getString(_kAttemptKey);
+    final raw = _cache.getString(_kAttemptKey);
     final list = (raw == null || raw.isEmpty)
         ? <Map<String, dynamic>>[]
         : (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     list.add(attempt.toJson());
-    await LocalStorageService.prefs.setString(_kAttemptKey, jsonEncode(list));
+    await _cache.setString(_kAttemptKey, jsonEncode(list));
     return attempt;
   }
 
   Future<List<QuizAttempt>> attemptsFor(String quizId) async {
-    final raw = LocalStorageService.prefs.getString(_kAttemptKey);
+    final raw = _cache.getString(_kAttemptKey);
     if (raw == null || raw.isEmpty) return [];
     final all = (jsonDecode(raw) as List)
         .cast<Map<String, dynamic>>()

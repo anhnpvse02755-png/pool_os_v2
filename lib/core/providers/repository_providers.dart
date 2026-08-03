@@ -6,6 +6,12 @@ import '../../data/repositories/match_repository.dart' as match_repo;
 import '../../data/repositories/notification_repository.dart' as notification_repo;
 import '../../data/repositories/community_repository.dart' as community_repo;
 import '../../data/repositories/settings_repository.dart' as settings_repo;
+import '../../data/repositories/cache_repository.dart' as cache_repo;
+import '../../domain/services/drill_library_service.dart' as drill_lib;
+import '../../domain/services/knowledge_graph_service.dart' as kg_svc;
+import '../../domain/services/learning_streak_service.dart' as ls_svc;
+import '../../domain/services/quiz_service.dart' as quiz_svc;
+import '../../domain/services/spaced_repetition_service.dart' as sr_svc;
 import '../../data/repositories/ai_coach_repository.dart' as ai_repo;
 import '../../data/repositories/equipment_repository.dart' as equipment_repo;
 import '../../data/models/player.dart';
@@ -175,6 +181,38 @@ final tournamentsProvider = FutureProvider<List<Tournament>>((ref) async {
 
 final upcomingTournamentsProvider = FutureProvider<List<Tournament>>((ref) async {
   return <Tournament>[];
+});
+
+// ============================================================================
+// Cache Repository (Day 2A — Repository Dependency Enforcement)
+// ============================================================================
+//
+// Domain services that need to cache parsed assets (drills, knowledge, etc.)
+// MUST go through this provider, not import LocalStorageService directly.
+//
+// Tracked as: STAB-031 (P0 arch bypass closure).
+// ============================================================================
+final cacheRepositoryProvider = Provider<cache_repo.ICacheRepository>((ref) {
+  return cache_repo.LocalCacheRepository();
+});
+
+// Service providers — Day 2A.
+// Each service is constructed via the cache provider, so that no
+// consumer ever instantiates the service directly with `new XxxService()`.
+final drillLibraryServiceProvider = Provider<drill_lib.DrillLibraryService>((ref) {
+  return drill_lib.DrillLibraryService(ref.watch(cacheRepositoryProvider));
+});
+final knowledgeGraphServiceProvider = Provider<kg_svc.KnowledgeGraphService>((ref) {
+  return kg_svc.KnowledgeGraphService(ref.watch(cacheRepositoryProvider));
+});
+final learningStreakServiceProvider = Provider<ls_svc.LearningStreakService>((ref) {
+  return ls_svc.LearningStreakService(ref.watch(cacheRepositoryProvider));
+});
+final quizServiceProvider = Provider<quiz_svc.QuizService>((ref) {
+  return quiz_svc.QuizService(ref.watch(cacheRepositoryProvider));
+});
+final spacedRepetitionServiceProvider = Provider<sr_svc.SpacedRepetitionService>((ref) {
+  return sr_svc.SpacedRepetitionService(ref.watch(cacheRepositoryProvider));
 });
 
 // ============================================================================
