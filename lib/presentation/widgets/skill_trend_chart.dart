@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/providers/repository_providers.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/repositories/match_repository.dart';
 
 /// Per-skill trend chart — line chart derived from match history.
 ///
 /// X axis: time (date), Y axis: rolling-window win %.
-class SkillTrendChart extends StatefulWidget {
+class SkillTrendChart extends ConsumerStatefulWidget {
   const SkillTrendChart({
     super.key,
     this.playerId = '',
@@ -20,10 +22,10 @@ class SkillTrendChart extends StatefulWidget {
   final double height;
 
   @override
-  State<SkillTrendChart> createState() => _SkillTrendChartState();
+  ConsumerState<SkillTrendChart> createState() => _SkillTrendChartState();
 }
 
-class _SkillTrendChartState extends State<SkillTrendChart> {
+class _SkillTrendChartState extends ConsumerState<SkillTrendChart> {
   List<_Point> _points = [];
   bool _loading = true;
 
@@ -34,7 +36,7 @@ class _SkillTrendChartState extends State<SkillTrendChart> {
   }
 
   Future<void> _load() async {
-    final matches = await LocalMatchRepository().getAllMatches();
+    final matches = await ref.read(matchRepositoryProvider).getAllMatches();
     final recent = matches.take(20).toList().reversed.toList();
     final pts = <_Point>[];
     int win = 0, total = 0;

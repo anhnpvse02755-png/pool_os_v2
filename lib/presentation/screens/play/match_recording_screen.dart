@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/match.dart';
 import '../../../data/models/match_analysis.dart';
 import '../../../data/repositories/match_repository.dart';
 import '../../../domain/services/match_statistics_service.dart';
 
-class MatchRecordingScreen extends StatefulWidget {
+class MatchRecordingScreen extends ConsumerStatefulWidget {
   const MatchRecordingScreen({super.key});
 
   @override
-  State<MatchRecordingScreen> createState() => _MatchRecordingScreenState();
+  ConsumerState<MatchRecordingScreen> createState() => _MatchRecordingScreenState();
 }
 
-class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
+class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _opponentController = TextEditingController();
 
@@ -65,7 +67,7 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
       _opponentScore = 0;
       _racks = [];
     });
-    await LocalMatchRepository().saveMatch(m);
+    await ref.read(matchRepositoryProvider).saveMatch(m);
   }
 
   void _recordRackResult(String result) {
@@ -123,7 +125,7 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
       _currentMatch = updated;
     });
 
-    await LocalMatchRepository().saveMatch(updated);
+    await ref.read(matchRepositoryProvider).saveMatch(updated);
 
     // Save default player state snapshot if not yet captured.
     final state = PlayerStateSnapshot(
@@ -135,7 +137,7 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
       tilt: 1,
       capturedAt: DateTime.now(),
     );
-    await LocalMatchRepository().savePlayerState(state);
+    await ref.read(matchRepositoryProvider).savePlayerState(state);
 
     _showMatchSummary();
   }
@@ -157,7 +159,7 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
         },
         onDiscard: () async {
           Navigator.pop(context);
-          await LocalMatchRepository().deleteMatch(_currentMatch!.id);
+          await ref.read(matchRepositoryProvider).deleteMatch(_currentMatch!.id);
           _resetMatch();
         },
       ),

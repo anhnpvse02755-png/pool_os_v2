@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/match.dart';
 import '../../../data/models/match_analysis.dart';
@@ -8,21 +10,22 @@ import '../../../data/repositories/match_repository.dart';
 
 /// Player State screen — shows aggregated mental + physical axes from the
 /// last N matches, plus an editable snapshot for "now".
-class PlayerStateScreen extends StatefulWidget {
+class PlayerStateScreen extends ConsumerStatefulWidget {
   const PlayerStateScreen({super.key});
 
   @override
-  State<PlayerStateScreen> createState() => _PlayerStateScreenState();
+  ConsumerState<PlayerStateScreen> createState() => _PlayerStateScreenState();
 }
 
-class _PlayerStateScreenState extends State<PlayerStateScreen> {
-  final _matchRepo = LocalMatchRepository();
+class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
+  late final IMatchRepository _matchRepo;
   List<PlayerStateSnapshot> _states = [];
   bool _loading = true;
 
   @override
   void initState() {
     super.initState();
+    _matchRepo = ref.read(matchRepositoryProvider);
     _load();
   }
 
