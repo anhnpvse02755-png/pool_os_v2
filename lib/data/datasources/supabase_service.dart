@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/models.dart';
-import '../../core/constants/supabase_config.dart';
+import '../../core/config/supabase_config.dart';
 
 class SupabaseService {
   static final SupabaseService _instance = SupabaseService._internal();
@@ -9,14 +9,39 @@ class SupabaseService {
 
   late SupabaseClient _client;
 
-  SupabaseClient get client => _client;
+  /// True iff [initialize] successfully bootstrapped a Supabase client.
+  /// When false, the app must use local repositories and not call
+  /// [client].
+  bool _isReady = false;
+  bool get isReady => _isReady;
+
+  SupabaseClient get client {
+    if (!_isReady) {
+      throw StateError(
+        'SupabaseService not ready. Either SupabaseConfig env vars are '
+        'missing or initialize() failed. Check --dart-define values.',
+      );
+    }
+    return _client;
+  }
 
   Future<void> initialize() async {
-    await Supabase.initialize(
-      url: SupabaseConfig.supabaseUrl,
-      anonKey: SupabaseConfig.supabaseAnonKey,
-    );
-    _client = Supabase.instance.client;
+    if (_isReady) return;
+    if (!SupabaseConfig.isConfigured) {
+      // Offline mode — app continues with local storage only.
+      return;
+    }
+    try {
+      await Supabase.initialize(
+        url: SupabaseConfig.supabaseUrl,
+        publishableKey: SupabaseConfig.supabaseAnonKey,
+      );
+      _client = Supabase.instance.client;
+      _isReady = true;
+    } catch (_) {
+      // Swallow; app continues in offline mode.
+      _isReady = false;
+    }
   }
 
   // Auth
