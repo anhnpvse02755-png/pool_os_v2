@@ -1,7 +1,5 @@
-import 'dart:convert';
-
-import '../../core/services/local_storage_service.dart';
 import '../models/drill_progress.dart';
+import 'local_json_store.dart';
 
 /// Repository for DrillProgress (camelCase JSON — matches DrillProgress).
 abstract class IDrillProgressRepository {
@@ -16,25 +14,18 @@ abstract class IDrillProgressRepository {
 }
 
 class LocalDrillProgressRepository implements IDrillProgressRepository {
-  LocalDrillProgressRepository();
+  LocalDrillProgressRepository()
+      : _store = LocalJsonStore<DrillProgress>(
+          key: 'poolos_v2.drill_progress',
+          fromJson: DrillProgress.fromJson,
+          toJson: (p) => p.toJson(),
+        );
 
-  static const _kKey = 'poolos_v2.drill_progress';
-
-  Future<List<DrillProgress>> _readAll() async {
-    final raw = LocalStorageService.prefs.getString(_kKey);
-    if (raw == null || raw.isEmpty) return [];
-    final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
-    return list.map((j) => DrillProgress.fromJson(j)).toList();
-  }
-
-  Future<void> _writeAll(List<DrillProgress> all) async {
-    await LocalStorageService.prefs.setString(
-        _kKey, jsonEncode(all.map((p) => p.toJson()).toList()));
-  }
+  final LocalJsonStore<DrillProgress> _store;
 
   @override
   Future<List<DrillProgress>> getAll(String playerId) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     return all.where((p) => p.playerId == playerId).toList();
   }
 
@@ -50,7 +41,7 @@ class LocalDrillProgressRepository implements IDrillProgressRepository {
 
   @override
   Future<void> save(DrillProgress progress) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     final idx = all.indexWhere((p) =>
         p.playerId == progress.playerId && p.drillCode == progress.drillCode);
     if (idx >= 0) {
@@ -58,7 +49,7 @@ class LocalDrillProgressRepository implements IDrillProgressRepository {
     } else {
       all.add(progress);
     }
-    await _writeAll(all);
+    await _store.writeAll(all);
   }
 
   @override

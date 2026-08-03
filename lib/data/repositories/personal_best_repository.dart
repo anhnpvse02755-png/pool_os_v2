@@ -1,7 +1,5 @@
-import 'dart:convert';
-
-import '../../core/services/local_storage_service.dart';
 import '../models/personal_best.dart';
+import 'local_json_store.dart';
 
 abstract class IPersonalBestRepository {
   Future<List<PersonalBest>> getAll(String playerId);
@@ -10,24 +8,18 @@ abstract class IPersonalBestRepository {
 }
 
 class LocalPersonalBestRepository implements IPersonalBestRepository {
-  LocalPersonalBestRepository();
-  static const _kKey = 'poolos_v2.personal_bests';
+  LocalPersonalBestRepository()
+      : _store = LocalJsonStore<PersonalBest>(
+          key: 'poolos_v2.personal_bests',
+          fromJson: PersonalBest.fromJson,
+          toJson: (p) => p.toJson(),
+        );
 
-  Future<List<PersonalBest>> _readAll() async {
-    final raw = LocalStorageService.prefs.getString(_kKey);
-    if (raw == null || raw.isEmpty) return [];
-    final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
-    return list.map((j) => PersonalBest.fromJson(j)).toList();
-  }
-
-  Future<void> _writeAll(List<PersonalBest> all) async {
-    await LocalStorageService.prefs.setString(
-        _kKey, jsonEncode(all.map((b) => b.toJson()).toList()));
-  }
+  final LocalJsonStore<PersonalBest> _store;
 
   @override
   Future<List<PersonalBest>> getAll(String playerId) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     return all.where((b) => b.playerId == playerId).toList();
   }
 
@@ -40,7 +32,7 @@ class LocalPersonalBestRepository implements IPersonalBestRepository {
 
   @override
   Future<void> save(PersonalBest pb) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     final idx = all.indexWhere((b) =>
         b.playerId == pb.playerId &&
         b.drillCode == pb.drillCode &&
@@ -51,6 +43,6 @@ class LocalPersonalBestRepository implements IPersonalBestRepository {
     } else {
       all.add(pb);
     }
-    await _writeAll(all);
+    await _store.writeAll(all);
   }
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../core/services/local_storage_service.dart';
 import '../models/drill_attempt.dart';
 import '../models/drill_session.dart';
+import 'local_json_store.dart';
 
 /// Repository interface for drill sessions — offline-first.
 abstract class IDrillSessionRepository {
@@ -17,23 +18,17 @@ abstract class IDrillSessionRepository {
 }
 
 class LocalDrillSessionRepository implements IDrillSessionRepository {
-  LocalDrillSessionRepository();
+  LocalDrillSessionRepository()
+      : _store = LocalJsonStore<DrillSession>(
+          key: 'poolos_v2.drill_sessions',
+          fromJson: DrillSession.fromJson,
+          toJson: (s) => s.toJson(),
+        );
 
-  static const _kSessionsKey = 'poolos_v2.drill_sessions';
+  final LocalJsonStore<DrillSession> _store;
+
   static const _kAttemptsPrefix = 'poolos_v2.drill_attempts.';
   static const _kActiveKey = 'poolos_v2.active_drill_session.';
-
-  Future<List<DrillSession>> _readAll() async {
-    final raw = LocalStorageService.prefs.getString(_kSessionsKey);
-    if (raw == null || raw.isEmpty) return [];
-    final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
-    return list.map((j) => DrillSession.fromJson(j)).toList();
-  }
-
-  Future<void> _writeAll(List<DrillSession> sessions) async {
-    await LocalStorageService.prefs.setString(
-        _kSessionsKey, jsonEncode(sessions.map((s) => s.toJson()).toList()));
-  }
 
   @override
   Future<DrillSession?> getActiveSession(String playerId) async {
@@ -48,14 +43,14 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
 
   @override
   Future<List<DrillSession>> getAll(String playerId) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     return all.where((s) => s.playerId == playerId).toList()
       ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
   }
 
   @override
   Future<DrillSession?> getById(String id) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     try {
       return all.firstWhere((s) => s.id == id);
     } catch (_) {
@@ -65,14 +60,14 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
 
   @override
   Future<void> save(DrillSession session) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     final idx = all.indexWhere((s) => s.id == session.id);
     if (idx >= 0) {
       all[idx] = session;
     } else {
       all.add(session);
     }
-    await _writeAll(all);
+    await _store.writeAll(all);
     if (session.isActive) {
       await LocalStorageService.prefs.setString(
           '$_kActiveKey${session.playerId}', session.id);
@@ -83,9 +78,9 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
 
   @override
   Future<void> delete(String id) async {
-    final all = await _readAll();
+    final all = await _store.readAll();
     all.removeWhere((s) => s.id == id);
-    await _writeAll(all);
+    await _store.writeAll(all);
     await LocalStorageService.prefs.remove('$_kAttemptsPrefix$id');
   }
 

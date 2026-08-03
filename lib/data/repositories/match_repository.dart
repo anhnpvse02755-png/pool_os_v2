@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../../core/services/local_storage_service.dart';
 import '../models/match.dart';
 import '../models/match_analysis.dart';
+import 'local_json_store.dart';
 
 /// Repository interface for matches.
 ///
@@ -47,7 +48,14 @@ abstract class IMatchRepository {
 ///
 /// Stores everything in SharedPreferences under JSON-encoded keys.
 class LocalMatchRepository implements IMatchRepository {
-  LocalMatchRepository();
+  LocalMatchRepository()
+      : _matchesStore = LocalJsonStore<Match>(
+          key: 'poolos_v2.matches',
+          fromJson: Match.fromJson,
+          toJson: (m) => m.toJson(),
+        );
+
+  final LocalJsonStore<Match> _matchesStore;
 
   static const _kMatchesKey = 'poolos_v2.matches';
   static const _kRacksPrefix = 'poolos_v2.racks.';
@@ -58,17 +66,9 @@ class LocalMatchRepository implements IMatchRepository {
 
   // -- Top-level ----------------------------------------------------------
 
-  Future<List<Match>> _readAll() async {
-    final raw = LocalStorageService.prefs.getString(_kMatchesKey);
-    if (raw == null || raw.isEmpty) return [];
-    final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
-    return list.map((j) => Match.fromJson(j)).toList();
-  }
+  Future<List<Match>> _readAll() => _matchesStore.readAll();
 
-  Future<void> _writeAll(List<Match> matches) async {
-    final raw = jsonEncode(matches.map((m) => m.toJson()).toList());
-    await LocalStorageService.prefs.setString(_kMatchesKey, raw);
-  }
+  Future<void> _writeAll(List<Match> matches) => _matchesStore.writeAll(matches);
 
   @override
   Future<List<Match>> getAllMatches() async {
