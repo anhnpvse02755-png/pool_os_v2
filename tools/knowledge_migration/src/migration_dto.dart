@@ -38,21 +38,6 @@ class V2Article {
   final String destinationPath;
 }
 
-/// Validation outcome for a single article.
-class ValidationOutcome {
-  ValidationOutcome({
-    required this.articleId,
-    required this.passed,
-    this.errors = const [],
-    this.warnings = const [],
-  });
-
-  final String articleId;
-  final bool passed;
-  final List<String> errors;
-  final List<String> warnings;
-}
-
 /// Aggregate migration report.
 class MigrationReport {
   MigrationReport({
