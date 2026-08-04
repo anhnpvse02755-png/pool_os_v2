@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../knowledge/knowledge_provider.dart';
 import '../../../knowledge/knowledge_models.dart';
+import '../../../knowledge/drill_code_bridge.dart';
 
 class KnowledgeDetailScreen extends ConsumerWidget {
   final String slug;
@@ -14,7 +15,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final knowledgeState = ref.watch(knowledgeProvider);
     final knowledge = ref.read(knowledgeProvider.notifier).getBySlug(slug);
 
     if (knowledge == null) {
@@ -219,7 +219,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
     final lines = content.split('\n');
 
     List<String>? currentList;
-    String? currentHeader;
 
     for (var line in lines) {
       line = line.trim();
@@ -311,7 +310,10 @@ class KnowledgeDetailScreen extends ConsumerWidget {
               avatar: Icon(Icons.play_arrow, size: 18, color: AppTheme.primaryGreen),
               label: Text(drill.titleVi ?? drill.title),
               onPressed: () {
-                // Navigate to drill
+                final v2code = resolveDrillCodes(drill.relatedDrillCodes).firstOrNull;
+                if (v2code != null) {
+                  context.push('/training/session/new?drill=$v2code');
+                }
               },
             );
           }).toList(),
@@ -430,7 +432,10 @@ class KnowledgeDetailScreen extends ConsumerWidget {
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  context.push('/training/session/new?drill=${knowledge.relatedDrillCodes.firstOrNull}');
+                  final v2code = resolveDrillCodes(knowledge.relatedDrillCodes).firstOrNull;
+                  if (v2code != null) {
+                    context.push('/training/session/new?drill=$v2code');
+                  }
                 },
                 icon: const Icon(Icons.play_arrow),
                 label: const Text('Luyện tập'),

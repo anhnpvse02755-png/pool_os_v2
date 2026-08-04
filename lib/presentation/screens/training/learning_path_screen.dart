@@ -5,8 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
-import '../../../core/providers/training_provider.dart';
-import '../../../core/services/coach_service.dart';
+import '../../../knowledge/knowledge_provider.dart';
 
 class LearningPathScreen extends ConsumerWidget {
   const LearningPathScreen({super.key});
@@ -235,7 +234,7 @@ class LearningPathScreen extends ConsumerWidget {
   }
 }
 
-class _LearningPathCard extends StatelessWidget {
+class _LearningPathCard extends ConsumerWidget {
   final LearningPathItem item;
   final int order;
   final VoidCallback onStart;
@@ -271,7 +270,7 @@ class _LearningPathCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -404,6 +403,8 @@ class _LearningPathCard extends StatelessWidget {
 
           const Divider(height: 1),
 
+          _buildKnowledgeChips(context, ref),
+
           // Actions
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -452,6 +453,54 @@ class _LearningPathCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  Widget _buildKnowledgeChips(BuildContext context, WidgetRef ref) {
+    final related = ref.watch(learningKnowledgeProvider(item));
+    if (related.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.menu_book, size: 14, color: AppTheme.primaryGreen),
+              const SizedBox(width: 4),
+              Text(
+                'Đọc trước khi tập',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: AppTheme.primaryGreen,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Wrap(
+            spacing: 6,
+            runSpacing: 4,
+            children: related.map((k) {
+              return ActionChip(
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                padding: EdgeInsets.zero,
+                labelPadding: const EdgeInsets.symmetric(horizontal: 6),
+                label: Text(
+                  k.titleVi ?? k.title,
+                  style: const TextStyle(fontSize: 11),
+                ),
+                avatar: const Icon(Icons.article_outlined, size: 12),
+                onPressed: () {
+                  context.push('/training/knowledge/${k.slug}');
+                },
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
   }
 
   String _getDifficultyLabel() {
