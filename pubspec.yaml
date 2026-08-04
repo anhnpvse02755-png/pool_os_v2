@@ -39,6 +39,9 @@ dependencies:
   # JSON Serialization
   json_annotation: ^4.9.0
 
+  # Crypto (knowledge migration tool)
+  crypto: ^3.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -54,3 +57,5 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/data/
+    - assets/knowledge/

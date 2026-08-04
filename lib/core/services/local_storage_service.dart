@@ -178,13 +178,8 @@ class LocalStorageService {
     };
   }
 
-  // ==========================================================================
-  // CLEAR ALL DATA
-  // ==========================================================================
-
-  static Future<void> clearAllData() async {
-    await prefs.remove(_keyDrillSessions);
-    await prefs.remove(_keyMatchRecords);
-    await prefs.remove(_keyKnowledgeProgress);
-  }
+  // Note: a `clearAllData()` method was removed on Day 1.2 (STAB-002).
+  // Wiping local data is intentionally not exposed on the V2 storage layer.
+  // See `LocalStorageDataSource.wipeAllLocalData` for the documented
+  // developer-only entry point.
 }

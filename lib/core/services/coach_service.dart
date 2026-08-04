@@ -61,6 +61,7 @@ class CoachService {
         category: drill.category,
         difficulty: drill.difficulty,
         currentProgress: progress?.successRate ?? 0.0,
+        knowledgeIds: const [],
       ));
     }
 
@@ -79,6 +80,7 @@ class CoachService {
           category: drill.category,
           difficulty: drill.difficulty,
           currentProgress: progress?.successRate ?? 0.0,
+          knowledgeIds: const [],
         ));
       }
     }

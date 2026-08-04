@@ -16,6 +16,7 @@ class LearningPathItem {
   final String category;
   final String difficulty;
   final double currentProgress;
+  final List<String> knowledgeIds;
 
   LearningPathItem({
     required this.drillCode,
@@ -28,6 +29,7 @@ class LearningPathItem {
     required this.category,
     required this.difficulty,
     this.currentProgress = 0,
+    this.knowledgeIds = const [],
   });
 }
 

@@ -1,72 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../data/models/match.dart';
+import '../../../data/repositories/match_repository.dart';
 
-class MatchHistoryScreen extends StatefulWidget {
+class MatchHistoryScreen extends ConsumerStatefulWidget {
   const MatchHistoryScreen({super.key});
 
   @override
-  State<MatchHistoryScreen> createState() => _MatchHistoryScreenState();
+  ConsumerState<MatchHistoryScreen> createState() => _MatchHistoryScreenState();
 }
 
-class _MatchHistoryScreenState extends State<MatchHistoryScreen> with SingleTickerProviderStateMixin {
+class _MatchHistoryScreenState extends ConsumerState<MatchHistoryScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String _selectedFilter = 'all';
-
-  final List<Map<String, dynamic>> _demoMatches = [
-    {
-      'id': '1',
-      'opponent': 'Nguyễn Văn A',
-      'result': 'win',
-      'score': '5-3',
-      'gameType': '8-ball',
-      'date': DateTime.now().subtract(const Duration(hours: 2)),
-      'duration': const Duration(minutes: 45),
-    },
-    {
-      'id': '2',
-      'opponent': 'Trần Văn B',
-      'result': 'lose',
-      'score': '3-5',
-      'gameType': '8-ball',
-      'date': DateTime.now().subtract(const Duration(days: 1)),
-      'duration': const Duration(minutes: 52),
-    },
-    {
-      'id': '3',
-      'opponent': 'Lê Văn C',
-      'result': 'win',
-      'score': '5-2',
-      'gameType': '9-ball',
-      'date': DateTime.now().subtract(const Duration(days: 2)),
-      'duration': const Duration(minutes: 38),
-    },
-    {
-      'id': '4',
-      'opponent': 'Phạm Văn D',
-      'result': 'draw',
-      'score': '4-4',
-      'gameType': '8-ball',
-      'date': DateTime.now().subtract(const Duration(days: 3)),
-      'duration': const Duration(minutes: 60),
-    },
-    {
-      'id': '5',
-      'opponent': 'Hoàng Văn E',
-      'result': 'win',
-      'score': '5-1',
-      'gameType': 'straight',
-      'date': DateTime.now().subtract(const Duration(days: 5)),
-      'duration': const Duration(minutes: 35),
-    },
-  ];
+  List<Match> _matches = [];
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _load();
   }
 
   @override
@@ -75,9 +36,59 @@ class _MatchHistoryScreenState extends State<MatchHistoryScreen> with SingleTick
     super.dispose();
   }
 
-  List<Map<String, dynamic>> get _filteredMatches {
-    if (_selectedFilter == 'all') return _demoMatches;
-    return _demoMatches.where((m) => m['result'] == _selectedFilter).toList();
+  Future<void> _load() async {
+    // Day 2A.5: use Riverpod provider instead of LocalMatchRepository().
+    final repo = ref.read(matchRepositoryProvider);
+    final ms = await repo.getAllMatches();
+    if (!mounted) return;
+    setState(() {
+      _matches = ms;
+      _loading = false;
+    });
+  }
+
+  Future<void> _seedDemo() async {
+    final repo = ref.read(matchRepositoryProvider);
+    final now = DateTime.now();
+    final demo = Match(
+      id: 'demo-1',
+      gameType: 'race_to_5',
+      raceTo: 5,
+      opponent: 'Nguyễn Văn A',
+      opponentName: 'Nguyễn Văn A',
+      opponentLevel: 'intermediate',
+      venue: 'Billiards Club Q1',
+      table: 'Bàn 3',
+      result: 'win',
+      winner: 'player',
+      resultSummary: '5-3',
+      playerScore: 5,
+      opponentScore: 3,
+      duration: 45,
+      notes: 'Demo seeded match.',
+      racks: const [],
+      createdAt: now.subtract(const Duration(hours: 2)),
+      updatedAt: now.subtract(const Duration(hours: 2)),
+    );
+    await repo.saveMatch(demo);
+    await _load();
+  }
+
+  List<Match> get _filtered {
+    if (_selectedFilter == 'all') return _matches;
+    return _matches.where((m) => m.result == _selectedFilter).toList();
+  }
+
+  Map<String, int> get _aggregates {
+    final wins = _matches.where((m) => m.isWin).length;
+    final losses = _matches.where((m) => m.isLoss).length;
+    final draws = _matches.where((m) => m.isDraw).length;
+    return {
+      'total': _matches.length,
+      'wins': wins,
+      'losses': losses,
+      'draws': draws,
+    };
   }
 
   @override
@@ -85,8 +96,19 @@ class _MatchHistoryScreenState extends State<MatchHistoryScreen> with SingleTick
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lịch sử đấu'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Bắt đầu trận đấu',
+            onPressed: () => context.push('/play/match/new'),
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
+          onTap: (i) {
+            setState(() => _selectedFilter =
+                i == 0 ? 'all' : (i == 1 ? 'win' : 'lose'));
+          },
           tabs: const [
             Tab(text: 'Tất cả'),
             Tab(text: 'Thắng'),
@@ -94,296 +116,154 @@ class _MatchHistoryScreenState extends State<MatchHistoryScreen> with SingleTick
           ],
         ),
       ),
-      body: Column(
-        children: [
-          // Stats Summary
-          _buildStatsSummary(),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _matches.isEmpty
+              ? _buildEmpty()
+              : Column(
+                  children: [
+                    _buildStatsSummary(),
+                    const Divider(height: 1),
+                    Expanded(child: _buildList()),
+                  ],
+                ),
+    );
+  }
 
-          // Filter
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
+  Widget _buildEmpty() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.history,
+                size: 64, color: AppTheme.primary.withOpacity(0.4)),
+            const SizedBox(height: 16),
+            const Text(
+              'Chưa có trận đấu nào',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Bắt đầu một trận đấu hoặc seed dữ liệu mẫu để thử nghiệm.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Wrap(
+              spacing: 12,
               children: [
-                const Text('Bộ lọc: '),
-                const SizedBox(width: 8),
-                ChoiceChip(
-                  label: const Text('Tất cả'),
-                  selected: _selectedFilter == 'all',
-                  onSelected: (_) => setState(() => _selectedFilter = 'all'),
+                FilledButton.icon(
+                  onPressed: () => context.push('/play/match/new'),
+                  icon: const Icon(Icons.sports),
+                  label: const Text('Bắt đầu trận'),
                 ),
-                const SizedBox(width: 8),
-                ChoiceChip(
-                  label: const Text('8-Ball'),
-                  selected: _selectedFilter == '8-ball',
-                  onSelected: (_) => setState(() => _selectedFilter = '8-ball'),
-                ),
-                const SizedBox(width: 8),
-                ChoiceChip(
-                  label: const Text('9-Ball'),
-                  selected: _selectedFilter == '9-ball',
-                  onSelected: (_) => setState(() => _selectedFilter = '9-ball'),
+                OutlinedButton.icon(
+                  onPressed: _seedDemo,
+                  icon: const Icon(Icons.science),
+                  label: const Text('Seed dữ liệu mẫu'),
                 ),
               ],
             ),
-          ),
-
-          // Match List
-          Expanded(
-            child: _filteredMatches.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _filteredMatches.length,
-                    itemBuilder: (context, index) {
-                      final match = _filteredMatches[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: _MatchCard(
-                          match: match,
-                          onTap: () => context.push('/play/match/${match['id']}'),
-                        ).animate().fadeIn(delay: (index * 50).ms),
-                      );
-                    },
-                  ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildStatsSummary() {
-    final wins = _demoMatches.where((m) => m['result'] == 'win').length;
-    final losses = _demoMatches.where((m) => m['result'] == 'lose').length;
-    final total = _demoMatches.length;
-    final winRate = total > 0 ? (wins / total * 100).round() : 0;
-
+    final agg = _aggregates;
     return Container(
-      margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryGreen,
-            AppTheme.primaryGreen.withValues(alpha: 0.8),
-          ],
+          colors: [AppTheme.primary, AppTheme.primary.withOpacity(0.7)],
         ),
-        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _StatItem(label: 'Trận', value: '$total'),
-          Container(width: 1, height: 40, color: Colors.white30),
-          _StatItem(label: 'Thắng', value: '$wins', color: Colors.lightGreenAccent),
-          Container(width: 1, height: 40, color: Colors.white30),
-          _StatItem(label: 'Thua', value: '$losses', color: Colors.redAccent),
-          Container(width: 1, height: 40, color: Colors.white30),
-          _StatItem(label: 'Win Rate', value: '$winRate%'),
+          _buildStatItem('Tổng', agg['total'] ?? 0, Icons.sports),
+          _buildStatItem('Thắng', agg['wins'] ?? 0, Icons.emoji_events,
+              color: Colors.greenAccent),
+          _buildStatItem('Thua', agg['losses'] ?? 0, Icons.cancel,
+              color: Colors.redAccent),
+          _buildStatItem('Hòa', agg['draws'] ?? 0, Icons.balance),
         ],
       ),
-    ).animate().fadeIn();
+    ).animate().fadeIn(duration: 400.ms);
   }
 
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.sports_cricket, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
-          Text(
-            'Chưa có trận đấu nào',
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Bắt đầu một trận đấu để xem lịch sử',
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: 13,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatItem extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color? color;
-
-  const _StatItem({
-    required this.label,
-    required this.value,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStatItem(
+      String label, int value, IconData icon, {Color? color}) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          value,
-          style: TextStyle(
-            color: color ?? Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Icon(icon, color: color ?? Colors.white),
         const SizedBox(height: 4),
         Text(
-          label,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
-            fontSize: 12,
-          ),
+          '$value',
+          style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
+        Text(label,
+            style: const TextStyle(color: Colors.white70, fontSize: 12)),
       ],
     );
   }
-}
 
-class _MatchCard extends StatelessWidget {
-  final Map<String, dynamic> match;
-  final VoidCallback onTap;
-
-  const _MatchCard({
-    required this.match,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final result = match['result'] as String;
-    final isWin = result == 'win';
-
-    Color resultColor;
-    IconData resultIcon;
-    String resultText;
-
-    switch (result) {
-      case 'win':
-        resultColor = Colors.green;
-        resultIcon = Icons.emoji_events;
-        resultText = 'Thắng';
-        break;
-      case 'lose':
-        resultColor = Colors.red;
-        resultIcon = Icons.close;
-        resultText = 'Thua';
-        break;
-      default:
-        resultColor = Colors.orange;
-        resultIcon = Icons.remove;
-        resultText = 'Hòa';
+  Widget _buildList() {
+    final filtered = _filtered;
+    if (filtered.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Text('Không có trận đấu ${_selectedFilter == 'win' ? 'thắng' : 'thua'}.',
+              style: const TextStyle(fontSize: 16)),
+        ),
+      );
     }
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Result indicator
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: resultColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(resultIcon, color: resultColor),
-            ),
-            const SizedBox(width: 16),
-
-            // Match info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'vs ${match['opponent']}',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          match['gameType'] as String,
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        match['score'] as String,
-                        style: TextStyle(
-                          color: resultColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        _formatDate(match['date'] as DateTime),
-                        style: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const Spacer(),
-                      Icon(Icons.chevron_right, color: Colors.grey.shade400),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+    return ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: filtered.length,
+      itemBuilder: (context, i) => _buildMatchCard(filtered[i]),
     );
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final diff = now.difference(date);
-
-    if (diff.inMinutes < 60) {
-      return '${diff.inMinutes}p trước';
-    } else if (diff.inHours < 24) {
-      return '${diff.inHours}h trước';
-    } else if (diff.inDays < 7) {
-      return '${diff.inDays} ngày trước';
-    } else {
-      return '${date.day}/${date.month}';
-    }
+  Widget _buildMatchCard(Match m) {
+    final fmt = DateFormat('dd/MM/yyyy HH:mm');
+    final color = m.isWin
+        ? Colors.green
+        : (m.isLoss ? Colors.red : Colors.orange);
+    final icon = m.isWin
+        ? Icons.emoji_events
+        : (m.isLoss ? Icons.cancel : Icons.balance);
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: color.withOpacity(0.15),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(
+          'vs ${m.opponentName ?? m.opponent ?? 'Unknown'}',
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 2),
+            Text(
+                '${MatchTypes.labels[m.gameType] ?? m.gameType} • ${m.resultSummary ?? '${m.playerScore}-${m.opponentScore}'}'),
+            Text(fmt.format(m.createdAt),
+                style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          ],
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => context.push('/play/match/${m.id}/summary'),
+      ),
+    ).animate().fadeIn(duration: 200.ms).slideY(begin: 0.05);
   }
 }

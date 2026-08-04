@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../core/models/match.dart';
+import '../../../data/models/match.dart';
+import '../../../data/models/match_analysis.dart';
+import '../../../data/repositories/match_repository.dart';
+import '../../../domain/services/match_statistics_service.dart';
 
-class MatchRecordingScreen extends StatefulWidget {
+class MatchRecordingScreen extends ConsumerStatefulWidget {
   const MatchRecordingScreen({super.key});
 
   @override
-  State<MatchRecordingScreen> createState() => _MatchRecordingScreenState();
+  ConsumerState<MatchRecordingScreen> createState() => _MatchRecordingScreenState();
 }
 
-class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
+class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   final _formKey = GlobalKey<FormState>();
   final _opponentController = TextEditingController();
 
@@ -34,33 +39,46 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
     super.dispose();
   }
 
-  void _startMatch() {
+  Future<void> _startMatch() async {
+    final now = DateTime.now();
+    final id = const Uuid().v4();
+    final m = Match(
+      id: id,
+      gameType: _matchType == 'friendly'
+          ? MatchTypes.raceTo
+          : _matchType == 'practice'
+              ? MatchTypes.practiceMatch
+              : MatchTypes.tournamentMatch,
+      raceTo: _raceTo,
+      opponent: _opponentController.text.isNotEmpty ? _opponentController.text : null,
+      opponentName: _opponentController.text.isNotEmpty ? _opponentController.text : null,
+      opponentLevel: _opponentLevel,
+      table: _tableCondition == 'familiar' ? 'Home' : 'Away',
+      venue: _environment == 'home' ? 'Home' : 'Club',
+      result: 'in_progress',
+      startTime: now,
+      createdAt: now,
+      updatedAt: now,
+    );
     setState(() {
-      _currentMatch = Match(
-        id: const Uuid().v4(),
-        opponent: _opponentController.text.isNotEmpty ? _opponentController.text : null,
-        raceTo: _raceTo,
-        result: 'in_progress',
-        matchType: _matchType,
-        opponentLevel: _opponentLevel,
-        tableCondition: _tableCondition,
-        environment: _environment,
-        startTime: DateTime.now(),
-        createdAt: DateTime.now(),
-      );
+      _currentMatch = m;
       _currentRack = 1;
       _playerScore = 0;
       _opponentScore = 0;
       _racks = [];
     });
+    await ref.read(matchRepositoryProvider).saveMatch(m);
   }
 
   void _recordRackResult(String result) {
     setState(() {
       final rack = Rack(
+        id: const Uuid().v4(),
         rackNumber: _currentRack,
         result: result,
-        totalBallsPotted: result == 'win' ? 8 : 0, // Simplified
+        resultBool: result == 'win',
+        totalBallsPotted: result == 'win' ? 8 : 0,
+        createdAt: DateTime.now(),
       );
       _racks.add(rack);
 
@@ -79,22 +97,47 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
     });
   }
 
-  void _endMatch() {
+  Future<void> _endMatch() async {
     if (_currentMatch == null) return;
 
+    final endTime = DateTime.now();
+    final duration =
+        _currentMatch!.startTime != null
+            ? endTime.difference(_currentMatch!.startTime!).inMinutes
+            : null;
+    final result = _playerScore > _opponentScore
+        ? 'win'
+        : _playerScore < _opponentScore
+            ? 'lose'
+            : 'draw';
+    final updated = _currentMatch!.copyWith(
+      endTime: endTime,
+      playerScore: _playerScore,
+      opponentScore: _opponentScore,
+      result: result,
+      resultSummary: '$_playerScore-$_opponentScore',
+      winner: result == 'win' ? 'player' : 'opponent',
+      duration: duration,
+      racks: _racks,
+    );
+
     setState(() {
-      _currentMatch = _currentMatch!.copyWith(
-        endTime: DateTime.now(),
-        playerScore: _playerScore,
-        opponentScore: _opponentScore,
-        result: _playerScore > _opponentScore
-            ? 'win'
-            : _playerScore < _opponentScore
-                ? 'lose'
-                : 'draw',
-        racks: _racks,
-      );
+      _currentMatch = updated;
     });
+
+    await ref.read(matchRepositoryProvider).saveMatch(updated);
+
+    // Save default player state snapshot if not yet captured.
+    final state = PlayerStateSnapshot(
+      id: const Uuid().v4(),
+      matchId: updated.id,
+      confidence: 3,
+      focus: 3,
+      pressure: 3,
+      tilt: 1,
+      capturedAt: DateTime.now(),
+    );
+    await ref.read(matchRepositoryProvider).savePlayerState(state);
 
     _showMatchSummary();
   }
@@ -110,10 +153,13 @@ class _MatchRecordingScreenState extends State<MatchRecordingScreen> {
         match: _currentMatch!,
         onSave: () {
           Navigator.pop(context);
-          _resetMatch();
+          Navigator.of(this.context).pushReplacementNamed(
+            '/play/match/${_currentMatch!.id}/summary',
+          );
         },
-        onDiscard: () {
+        onDiscard: () async {
           Navigator.pop(context);
+          await ref.read(matchRepositoryProvider).deleteMatch(_currentMatch!.id);
           _resetMatch();
         },
       ),
@@ -649,7 +695,9 @@ class _MatchSummarySheet extends StatelessWidget {
                 Icon(Icons.timer, size: 16, color: Colors.grey.shade600),
                 const SizedBox(width: 4),
                 Text(
-                  '${duration.inMinutes} phút',
+                  // duration is `int` in this screen — number of minutes elapsed. Wrap into
+// a Duration to display in `min` (not seconds).
+'${(duration is int ? Duration(minutes: duration) : duration as Duration).inMinutes} phút',
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
               ],

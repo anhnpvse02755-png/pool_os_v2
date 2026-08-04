@@ -1,0 +1,29 @@
+{
+  "id": "pattern.long_term_planning",
+  "slug": "pattern-long_term_planning",
+  "title": "Long Term Planning",
+  "titleVi": "Kế Hoạch Dài Hạn",
+  "content": "# Long Term Planning\n\nLong Term Planning explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Kế Hoạch Dài Hạn\n\nGiải thích về Kế Hoạch Dài Hạn.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_strategy",
+  "tagIds": [
+    "tag_strategy",
+    "tag_expert"
+  ],
+  "difficulty": "expert",
+  "aliases": [
+    "long term planning",
+    "pattern.long_term_planning"
+  ],
+  "keywords": [
+    "long term planning",
+    "pattern.long_term_planning"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}
