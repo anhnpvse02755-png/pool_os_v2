@@ -1,0 +1,152 @@
+[
+  {
+    "article_id": "bridge.adaptive_bridge",
+    "body_hash": "b99a811dd3d94bb7f63ad22460557f91f3d64c509c6b474525d381c1fba03477",
+    "full_file_hash": "f136db013103468699134d6977f6e01104b558889ca117b14fcfde76ba5fa326"
+  },
+  {
+    "article_id": "bridge.adjustment",
+    "body_hash": "bb52f2b2d17746ab2ce99ff5bfa23b8de38aa401ff1e602313da1be22db6dc7f",
+    "full_file_hash": "c5f2392aec5ae6689433cea64617a35539aa7d57939eae4fcba6490fae1cf04e"
+  },
+  {
+    "article_id": "bridge.closed_bridge",
+    "body_hash": "19de802633a8e871ab3070c5d3f4205114774265e4b1235666ac118dc2b219ba",
+    "full_file_hash": "c9f4fc2799c9b360c1af8f2d469877d366877530f5f18ae7080724648c8d0e30"
+  },
+  {
+    "article_id": "bridge.comfort_check",
+    "body_hash": "6005c71c0cef70ce3b0f389be3b588434ff6f6847061c4a3cc2f108c863795b6",
+    "full_file_hash": "c7301180fe6ff877b0ce3b6915257e4a349d8953167aec4ad0956944ecc86a9d"
+  },
+  {
+    "article_id": "bridge.consistency",
+    "body_hash": "b36067ca65c9457977410364dad4ac397a677d2a8e6408842feec87d41723ddd",
+    "full_file_hash": "8e46dad1502ad5a7548b4e6a2e4142a2a68d4faa5183acc88bfc82cf2016728a"
+  },
+  {
+    "article_id": "bridge.distance",
+    "body_hash": "8a579bdf0192bf36b19fa211ab3dbd9a436f57327aea781d9ffc2ab843481d81",
+    "full_file_hash": "658611e23015e139e43dee6be45dc3919fdfe786b746107cb858be706eefa5e9"
+  },
+  {
+    "article_id": "bridge.dominant_eye",
+    "body_hash": "6c36cc61933a86abd7bbca7fd6a12e0e57f951fceff5cd39dc7d5f41f64fe8ef",
+    "full_file_hash": "df88bf4951a5ea16f5ab5956d35d464dffe0a279b9bd672bd676f24f518fbd20"
+  },
+  {
+    "article_id": "bridge.elevated",
+    "body_hash": "d701cad47af5c15eefd8a0a7dc2fd1fd6f4a320c376cd8f30b5066078e55a827",
+    "full_file_hash": "437c7349630b7e5dbb6b7ea463dd7b5d70ba8ae227c685c0d5447cb808a1b5a6"
+  },
+  {
+    "article_id": "bridge.fatigue_management",
+    "body_hash": "1460b5bd717f7938ef30452a040cb2bf1e80fe2d13a57c2b8e803b07ce98ccef",
+    "full_file_hash": "aa8cf11323b00b2a5409d05b7c749587a46b7d5441949c69c2548610fbc68311"
+  },
+  {
+    "article_id": "bridge.finger_placement",
+    "body_hash": "30b07e9a5ca27ee45f46e1e493fc463cc0ffdde7b3a5ac24deeabf1ecf1d829f",
+    "full_file_hash": "253f73b352d8ff4fd4fe1eafedda8fa5cd853b6c3d77cca6682ea95394d39c9f"
+  },
+  {
+    "article_id": "bridge.finger_spread",
+    "body_hash": "c017b4511457318b359c7eff10920006b0c2b7fb54772aa3563609a3e6ca156e",
+    "full_file_hash": "298ae90aed3042e2f5af6596035d4ec6f50de360aa42f8b251066c8697431265"
+  },
+  {
+    "article_id": "bridge.fundamentals",
+    "body_hash": "e725ec6c612d0aaa87c4a810cfd6bb74f19960e6ddecdb33b5e16ceb080c5905",
+    "full_file_hash": "4c6395a96df6adf5c222111c75f9923decee9bde97fd6195ccbb5e07a1692a08"
+  },
+  {
+    "article_id": "bridge.hand_position",
+    "body_hash": "4a64f383a6da5a3c20d1939428fa77f982c937de63c8fa078aea97f741bd805b",
+    "full_file_hash": "4133329e78498aea43506aa29d501378588c5fc5e06d95fc794bec0f53f0d8d0"
+  },
+  {
+    "article_id": "bridge.high",
+    "body_hash": "592b3a4080806149800716c3a82fe413d0b86849669da0925f971f7ddc314bf5",
+    "full_file_hash": "abd570c337bbdede20e298890155e0c02e3944e432b8593ca38caaea42ebc76f"
+  },
+  {
+    "article_id": "bridge.index_finger_hook",
+    "body_hash": "dbf1cb0b63706b06982fda33a134688172641d1d607bef30da93d3368ef187c5",
+    "full_file_hash": "c278d7195456593a642e2866f360a5ba6090ed0be0d890dd0a10fee139079e04"
+  },
+  {
+    "article_id": "bridge.jump_bridge",
+    "body_hash": "3e96d756974d70db92e6c77b6fbaa8158271a51dd724ffbdea42936d499fe2c6",
+    "full_file_hash": "0f517f2015ec148155d0406a7963a7e276083160af118a36844ad5837185a57e"
+  },
+  {
+    "article_id": "bridge.length",
+    "body_hash": "27898f60d07d77051c4e98c283de17f77b31930a06acc3377241d9ddb14acaa1",
+    "full_file_hash": "aa99ff7a72dde60d043e321f7f0b27218dd4b22dd508d7beda0cb8550ae8f4f4"
+  },
+  {
+    "article_id": "bridge.level_check",
+    "body_hash": "a6b97ca874cba50879c525c6953678bc9dd50f7e7a37cc722544a2a9c0fda684",
+    "full_file_hash": "3b3ce7bb455e725c26e7b5c414fc81b03cc9b2cd7d3e7b5eb9d057154cec7ade"
+  },
+  {
+    "article_id": "bridge.low",
+    "body_hash": "dd8cb7c1df7fcc99845c893961462736e567d7b0271a1df2cfbe4c09c91b614b",
+    "full_file_hash": "c73657a588e6fa339219a3430c06d6a5403855783222da40480f6cd2843cc7c6"
+  },
+  {
+    "article_id": "bridge.mastery_checklist",
+    "body_hash": "0c1ebc8736d34103357d3350a571f9e0a9db52513a5c75085c5db87ff8f1e586",
+    "full_file_hash": "08f7b69accf9c4eb2ba490003e2702394f4ad1615937e1f1afb44180044fb413"
+  },
+  {
+    "article_id": "bridge.mechanical_bridge",
+    "body_hash": "06b18e884fa19eabc5234ed2459b57a1e1daa7cfcf0e364ce2c51b6a05b0c97f",
+    "full_file_hash": "9bfb50730d806fa199fbe76632b822bd6a02fbed9bb89a3fabf94e8e9d0b64af"
+  },
+  {
+    "article_id": "bridge.open_bridge",
+    "body_hash": "83730a3d87c4113d1b9fdf63d435e0a120fb139e260c8dc94497d5965f584cc2",
+    "full_file_hash": "1f86e34e4ead0838ff27a0b785e3f0e4f3e677ed5cb4b1b91e1e824580320509"
+  },
+  {
+    "article_id": "bridge.pressure",
+    "body_hash": "8ce40dd0892ba6a48d50f46d2d7f1b70b15a960cbdcc1fba005fcba89703a59f",
+    "full_file_hash": "cf41115a4eb553beea6499f5e47b550f20328c6a40a6ec7a729ff74a8be4f34f"
+  },
+  {
+    "article_id": "bridge.rail_bridge",
+    "body_hash": "ab64419132d613a86e6e818fd94c24a85cfc4839c1fdc4988430364de86d54f1",
+    "full_file_hash": "e81f68d16df5954fac8f77a5db470611f9d9b9db23da2c83c4481a3073cab166"
+  },
+  {
+    "article_id": "bridge.spider_bridge",
+    "body_hash": "a3e1b853e8b93776c1b523217739f5775a0da7f084c299a06095eece31dd6e17",
+    "full_file_hash": "287c5c991c25297aac596f6ce5cf460a7dfafd4e77cb08aa366c9f33f74ee2cc"
+  },
+  {
+    "article_id": "bridge.stability",
+    "body_hash": "ab93d03541cbd7f1d33740ef9b758a1d11b40dd23235905d6bb49ce1f1f204b1",
+    "full_file_hash": "5bb7243bab3bf2f04c85872b426ddc0e4848ea73ad889235f2ca080d4b40d80c"
+  },
+  {
+    "article_id": "bridge.tension_release",
+    "body_hash": "0c2ea053b37544401878fedfd227b72bf42fab058a8f5f3d16957d1fd09f9cc0",
+    "full_file_hash": "ad281c79046e805bb40c58a9c833e1edf7fa3658583419156d93fdfdc6804705"
+  },
+  {
+    "article_id": "bridge.thumb_channel",
+    "body_hash": "99afbeba42965123fde17934c58285b50f996091b56a5e2ee66a1b905067ef03",
+    "full_file_hash": "994f618d7dc8eabc8427e57e50e4bd9b84659171b730f4ba66413f1d1971e785"
+  },
+  {
+    "article_id": "bridge.transition",
+    "body_hash": "4bebb3be3dd208e5c34f12cc49c5a6c94dec0911a7db92944ad1007e1f72fd0f",
+    "full_file_hash": "454dc25e383c3377346fb362837b090bdaef567431653c7612a351b47189aafc"
+  },
+  {
+    "article_id": "bridge.wrist_position",
+    "body_hash": "c001fb30033926bd6af3847b23302f0800b97859d44434d878787cef4fef4261",
+    "full_file_hash": "e6086eeb7b6acce791a3188aafa5a7518761d97886e64b5510b26ec2511da51d"
+  }
+]

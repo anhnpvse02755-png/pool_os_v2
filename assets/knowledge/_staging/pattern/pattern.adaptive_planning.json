@@ -1,0 +1,29 @@
+{
+  "id": "pattern.adaptive_planning",
+  "slug": "pattern-adaptive_planning",
+  "title": "Adaptive Planning",
+  "titleVi": "Kế Hoạch Thích Ứng",
+  "content": "# Adaptive Planning\n\nAdaptive Planning explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Kế Hoạch Thích Ứng\n\nGiải thích về Kế Hoạch Thích Ứng.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_strategy",
+  "tagIds": [
+    "tag_strategy",
+    "tag_advanced"
+  ],
+  "difficulty": "advanced",
+  "aliases": [
+    "adaptive planning",
+    "pattern.adaptive_planning"
+  ],
+  "keywords": [
+    "adaptive planning",
+    "pattern.adaptive_planning"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}

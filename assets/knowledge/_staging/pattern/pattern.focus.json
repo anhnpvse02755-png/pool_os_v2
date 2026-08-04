@@ -1,0 +1,29 @@
+{
+  "id": "pattern.focus",
+  "slug": "pattern-focus",
+  "title": "Pattern Focus",
+  "titleVi": "Tập Trung Mẫu",
+  "content": "# Pattern Focus\n\nPattern Focus explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+  "contentVi": "# Tập Trung Mẫu\n\nGiải thích về Tập Trung Mẫu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+  "categoryId": "cat_strategy",
+  "tagIds": [
+    "tag_strategy",
+    "tag_basic"
+  ],
+  "difficulty": "beginner",
+  "aliases": [
+    "pattern focus",
+    "pattern.focus"
+  ],
+  "keywords": [
+    "pattern focus",
+    "pattern.focus"
+  ],
+  "relatedKnowledgeIds": [],
+  "relatedDrillCodes": [],
+  "readingTimeMinutes": 10,
+  "media": {},
+  "sources": [
+    "Pool OS V1 Verified"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "mental.goal_setting",
+  "title": "Goal Setting",
+  "titleVi": "Đặt Mục Tiêu",
+  "category": "mental",
+  "difficulty": "beginner",
+  "summary": "Goal Setting explained.",
+  "summaryVi": "Giải thích về Đặt Mục Tiêu.",
+  "purpose": "A core mental concept for billiards players.",
+  "purposeVi": "Khái niệm mental cốt lõi cho người chơi billiards.",
+  "setup": [
+    "Establish a stable baseline.",
+    "Position cue and body for the technique."
+  ],
+  "execution": [
+    "Apply the technique step by step.",
+    "Verify alignment before contact."
+  ],
+  "successCriteria": [
+    "Smooth execution.",
+    "Predictable result."
+  ],
+  "failureCriteria": [
+    "Jerky motion.",
+    "Inconsistent result."
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Rushing the technique.",
+      "mistakeVi": "Vội vàng khi thực hiện.",
+      "correction": "Slow down and focus on form.",
+      "correctionVi": "Chậm lại và tập trung vào tư thế."
+    }
+  ],
+  "tags": [
+    "mental",
+    "beginner"
+  ],
+  "keywords": [
+    "mental.goal_setting",
+    "goal setting"
+  ],
+  "sources": [
+    "Pool OS V1 Verified"
+  ],
+  "estLearningMinutes": 10,
+  "relatedKnowledge": []
+}

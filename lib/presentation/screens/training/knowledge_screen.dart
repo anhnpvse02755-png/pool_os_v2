@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -15,8 +17,8 @@ class KnowledgeScreen extends ConsumerStatefulWidget {
 }
 
 class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
-  String _searchQuery = '';
   String? _selectedCategoryId;
+  DifficultyLevel? _selectedDifficulty;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,9 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
         children: [
           // Categories
           _buildCategoryTabs(knowledgeState.categories),
+
+          // Difficulty filter
+          _buildDifficultyFilter(),
 
           // Content
           Expanded(
@@ -74,6 +79,34 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
     );
   }
 
+  Widget _buildDifficultyFilter() {
+    return Container(
+      height: 50,
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: DifficultyLevel.values.length + 1,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _CategoryChip(
+              label: 'Tất cả',
+              isSelected: _selectedDifficulty == null,
+              onTap: () => setState(() => _selectedDifficulty = null),
+            );
+          }
+
+          final diff = DifficultyLevel.values[index - 1];
+          return _CategoryChip(
+            label: diff.label,
+            isSelected: _selectedDifficulty == diff,
+            onTap: () => setState(() => _selectedDifficulty = diff),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildContent(KnowledgeState state) {
     // Filter knowledge
     var knowledge = state.allKnowledge;
@@ -84,8 +117,10 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
           .toList();
     }
 
-    if (_searchQuery.isNotEmpty) {
-      knowledge = ref.read(knowledgeProvider.notifier).search(_searchQuery);
+    if (_selectedDifficulty != null) {
+      knowledge = knowledge
+          .where((k) => k.difficulty == _selectedDifficulty)
+          .toList();
     }
 
     if (knowledge.isEmpty) {
@@ -290,6 +325,8 @@ class _DifficultyBadge extends StatelessWidget {
 
 class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
   final WidgetRef ref;
+  Timer? _debounce;
+  String _lastQueried = '';
 
   _KnowledgeSearchDelegate(this.ref);
 
@@ -298,7 +335,11 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
     return [
       IconButton(
         icon: const Icon(Icons.clear),
-        onPressed: () => query = '',
+        onPressed: () {
+          query = '';
+          _debounce?.cancel();
+          _lastQueried = '';
+        },
       ),
     ];
   }
@@ -307,7 +348,10 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
-      onPressed: () => close(context, null),
+      onPressed: () {
+        _debounce?.cancel();
+        close(context, null);
+      },
     );
   }
 
@@ -318,6 +362,15 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    // Debounce: schedule a refresh 300ms after the last keystroke.
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if (query != _lastQueried) {
+        _lastQueried = query;
+        // Triggers a rebuild with the new query applied.
+        (context as Element).markNeedsBuild();
+      }
+    });
     return _buildSearchResults();
   }
 
@@ -331,7 +384,18 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
       );
     }
 
-    final results = ref.read(knowledgeProvider.notifier).search(query);
+    // Wait until debounce has settled and `_lastQueried` matches current query.
+    if (query != _lastQueried) {
+      return const Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      );
+    }
+
+    final results = ref.watch(knowledgeSearchProvider(query));
 
     if (results.isEmpty) {
       return Center(
@@ -359,6 +423,7 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
           child: _KnowledgeCard(
             knowledge: item,
             onTap: () {
+              _debounce?.cancel();
               close(context, item);
               context.push('/training/knowledge/${item.slug}');
             },
@@ -366,5 +431,11 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
         );
       },
     );
+  }
+
+  @override
+  void close(BuildContext context, KnowledgeItem? result) {
+    _debounce?.cancel();
+    super.close(context, result);
   }
 }
