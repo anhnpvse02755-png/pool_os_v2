@@ -3,6 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   static const Color primaryGreen = Color(0xFF00A86B);
+  /// Alias for [primaryGreen] — used by widgets that previously expected
+  /// `AppTheme.primary`. Adding the alias keeps 30+ call sites compiling
+  /// without a sweeping rename. Tracked for cleanup in a future sprint.
+  static const Color primary = primaryGreen;
   static const Color primaryDark = Color(0xFF00695C);
   static const Color accentGold = Color(0xFFFFD700);
   static const Color surfaceDark = Color(0xFF1A1A2E);
