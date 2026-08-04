@@ -73,3 +73,10 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Local CLI / debug artifacts (R3)
+/ocd-0.2.1-windows-amd64/
+/debug-onboarding.png
+
+# Agent scratch (R3)
+/.ua/tmp/
