@@ -1,0 +1,2 @@
+- [Pool OS Vision & Roadmap](docs/reviews/VISION.md) — V2 is vision-driven, not V1-driven
+- [Phase Conventions](docs/reviews/PHASE_CONVENTIONS.md) — Phase A parity → Phase B content → Phase C AI → Phase D competitive
