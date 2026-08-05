@@ -132,13 +132,19 @@ class DrillSession {
     this.attempts = const [],
   });
 
+  // Sentinel object used by [copyWith] to distinguish "argument not
+  // passed" from "argument explicitly passed as null". Without this,
+  // `copyWith(pausedAt: null)` cannot clear the field because Dart's
+  // `??` operator treats both cases the same.
+  static const Object _undefined = Object();
+
   DrillSession copyWith({
     String? id,
     String? playerId,
     String? title,
     DateTime? startedAt,
-    DateTime? completedAt,
-    DateTime? pausedAt,
+    Object? completedAt = _undefined,
+    Object? pausedAt = _undefined,
     int? totalMinutes,
     int? totalShotsMade,
     int? totalShotsMissed,
@@ -150,8 +156,12 @@ class DrillSession {
         playerId: playerId ?? this.playerId,
         title: title ?? this.title,
         startedAt: startedAt ?? this.startedAt,
-        completedAt: completedAt ?? this.completedAt,
-        pausedAt: pausedAt ?? this.pausedAt,
+        completedAt: identical(completedAt, _undefined)
+            ? this.completedAt
+            : completedAt as DateTime?,
+        pausedAt: identical(pausedAt, _undefined)
+            ? this.pausedAt
+            : pausedAt as DateTime?,
         totalMinutes: totalMinutes ?? this.totalMinutes,
         totalShotsMade: totalShotsMade ?? this.totalShotsMade,
         totalShotsMissed: totalShotsMissed ?? this.totalShotsMissed,

@@ -16,6 +16,18 @@ void main() {
     final p = await agg.generate('p1');
     expect(p.matchesAnalyzed, 0);
     expect(p.tone, 'Steady');
-    expect(p.skillScores.isEmpty, isTrue);
+    // With no matches, the aggregator still seeds the 5 canonical skill
+    // axes at the neutral 50.0 baseline so the UI has a stable rendering
+    // shape. This is a documented behavior — see skillScores in
+    // lib/domain/services/coach_profile_aggregator.dart.
+    expect(p.skillScores, isNotEmpty);
+    expect(p.skillScores.length, 5);
+    // Cutting and Safety default to 50 (neutral midpoint); Break & Run,
+    // Specialty, and Discipline depend on input counts so are 0 here.
+    expect(p.skillScores['Cutting'], 50.0);
+    expect(p.skillScores['Safety'], 50.0);
+    expect(p.skillScores['Break & Run'], 0.0);
+    expect(p.skillScores['Specialty'], 0.0);
+    expect(p.skillScores['Discipline'], 100.0);
   });
 }
