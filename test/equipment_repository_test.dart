@@ -310,6 +310,13 @@ void main() {
     final matches = list.where((e) => e.id == 'dup_id').toList();
     expect(matches.length, 1,
         reason: 'duplicate id must not produce two rows');
+
+    // Idempotent behavior: the row is replaced in place with the new
+    // payload, not preserved as the first creation. This protects
+    // re-import flows where the new payload is the source of truth.
+    final after = await repo.getEquipmentById('dup_id');
+    expect(after!.name, 'Second',
+        reason: 'duplicate create replaces the row in place');
   });
 
   // ===========================================================================
