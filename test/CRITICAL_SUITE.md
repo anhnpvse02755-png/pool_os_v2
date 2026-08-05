@@ -84,13 +84,21 @@ verify membership by reading this file.
 |---|---|
 | `test/equipment_repository_test.dart` | Equipment CRUD, archive, maintenance log, active-role resolution, recommendation, value totals, and duplicate-ID guard are correct and idempotent. Case 9 caught a latent duplicate-row bug on re-import. |
 
+### Match (1 file)
+
+| File | Business rule protected |
+|---|---|
+| `test/match_repository_test.dart` | Match CRUD, cascade delete (racks/timeline/analysis), getMatchesByPlayer newest-first, getPlayerAggregates (wins/losses/draws + winRate formula), score invariants, duplicate-ID guard, invalid-reference safety, and isWin/isLoss/isDraw get consistent. |
+
 ---
 
 ## Inventory at a glance
 
-- **Total files in Critical Suite:** 11
-- **Last reviewed:** 2026-08-05 (Sprint 2A equipment parity)
+- **Total files in Critical Suite:** 12
+- **Last reviewed:** 2026-08-05 (Sprint 2B match parity)
 - **Sprint 1 baseline:** 10/10 PASS
+- **Sprint 2A:** 11/11 PASS
+- **Sprint 2B:** 12/12 PASS (this commit)
 
 ## Non-critical tests (Tier 2 / Tier 3)
 
