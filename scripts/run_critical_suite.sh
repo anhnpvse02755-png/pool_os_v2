@@ -50,6 +50,7 @@ CRITICAL_TESTS=(
   "test/coach_profile_aggregator_test.dart"
   "test/drill_session_recovery_test.dart"
   "test/equipment_repository_test.dart"
+  "test/match_repository_test.dart"
 )
 
 # --- Parse args -------------------------------------------------------------
