@@ -55,7 +55,8 @@ $CriticalTests = @(
     'test/streak_calculator_test.dart',
     'test/weekly_report_generator_test.dart',
     'test/coach_profile_aggregator_test.dart',
-    'test/drill_session_recovery_test.dart'
+    'test/drill_session_recovery_test.dart',
+    'test/equipment_repository_test.dart'
 )
 
 # --- Existence check -------------------------------------------------------

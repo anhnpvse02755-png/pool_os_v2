@@ -265,6 +265,75 @@ is being touched every sprint, the constitution is not doing its job.
 
 ---
 
+## Article 8 — Evidence over Artifacts
+
+Engineering work produces many artifacts: tests, reports, documents,
+scripts, dashboards, kickoff decks. Each one has a maintenance cost.
+When artifacts multiply faster than the value they create, process
+overhead silently consumes the time that should go to features.
+
+The 7 articles above define **what to do** when work is needed. This
+article defines **when not to create new artifacts**.
+
+### Rules
+
+1. **Each artifact must justify its existence.** A test, a report,
+   a document, or a script must contain information that is not
+   already available in another source-of-truth artifact, CI log,
+   PR conversation, or commit message.
+
+2. **No verification report that only restates gate output.** If a
+   document would only rephrase the result of
+   `scripts/run_critical_suite.sh`, `flutter analyze`, or the
+   web/apk build, it does not need to exist. The gate output is the
+   evidence; re-typing "PASS" into a markdown file is not a new
+   signal.
+
+3. **One canonical artifact per concern.** When multiple documents
+   cover the same state (e.g. `SPRINT_X_KICKOFF.md`,
+   `SPRINT_X_VERIFICATION.md`, `SPRINT_X_CLOSURE.md`,
+   `SPRINT_X_SUMMARY.md`), keep the one that plays Source of Truth
+   and remove the rest. Update the keeper in place; do not spawn
+   successor files per phase.
+
+4. **Quality of test > quantity of test.** A 5-test suite that
+   catches a real bug is worth more than a 79-test suite that all
+   pass. Count what each test prevents, not what each test counts.
+
+5. **Process work competes with feature work.** Every hour spent
+   creating, reviewing, and maintaining artifacts is an hour not
+   spent shipping user value. When quality is already secured by
+   existing artifacts, prefer shipping features over inventing
+   more process.
+
+### When this article does NOT apply
+
+- **Release sprint:** release notes, scorecards, and verification
+  reports are required artifacts by external policy (audit, customer
+  communication). They are not optional.
+- **Genuine discovery:** a new finding, an exception, or a
+  technical decision that future maintainers will need to
+  understand — that warrants an artifact. Write the artifact when
+  the discovery happens, in the document that already exists for
+  that sprint, not in a new file.
+- **Pre-RC / pre-Beta gates:** `REPOSITORY_HEALTH_CHECKLIST.md`
+  exists for a reason. Its output is itself an artifact because the
+  evidence lives outside the repo (clean clone build logs).
+
+### Anti-patterns to watch for
+
+- Creating `SPRINT_NN_VERIFICATION.md` that just records "all gates
+  PASS". The gates already recorded that.
+- Creating `SPRINT_NN_SUMMARY.md` to recap what the kickoff already
+  said.
+- Adding a new markdown file per phase ("Final", "Closure",
+  "Completion", "Recap"). Phase is a state of the kickoff, not a
+  new document.
+- Counting tests to prove progress. Test count is a vanity metric;
+  bug-detection rate is the real one.
+
+---
+
 ## Appendix A — Quick reference
 
 | What | Where |
@@ -282,3 +351,11 @@ is being touched every sprint, the constitution is not doing its job.
 - **2026-08-05** — Adopted. Tier 1-4 model, 10-20% test budget,
   Playwright on every PR, explicit Critical Suite manifest. See
   `docs/SPRINT_2_HANDOFF.md` for the originating discussion.
+- **2026-08-05** — Adopted Article 8 — Evidence over Artifacts.
+  Triggered by observation during Sprint 2A spec drafting: process
+  artifacts (kickoff sections, verification docs, scorecards, exit
+  criteria checklists) were growing faster than feature work, and
+  no article in the Constitution defined a stopping condition.
+  Article 8 codifies three rules: report only when new information
+  exists, one canonical document per concern, quality of test over
+  quantity. Sprint 2A kickoff refactored accordingly.

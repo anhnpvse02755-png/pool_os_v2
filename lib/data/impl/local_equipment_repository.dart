@@ -208,7 +208,16 @@ class LocalEquipmentRepository implements EquipmentRepository {
       createdAt: equipment.createdAt,
       updatedAt: now,
     );
-    items.add(created);
+    // Idempotent on duplicate id: replace the existing row in place
+    // rather than appending a duplicate. Protects against import
+    // flows and accidental double-submit. See
+    // docs/SPRINT_2A_KICKOFF.md AC-1 Case 9.
+    final idx = items.indexWhere((e) => e.id == id);
+    if (idx >= 0) {
+      items[idx] = created;
+    } else {
+      items.add(created);
+    }
     await _writeList(items);
     return id;
   }

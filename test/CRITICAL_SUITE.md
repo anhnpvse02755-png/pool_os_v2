@@ -78,13 +78,19 @@ verify membership by reading this file.
 |---|---|
 | `test/drill_session_recovery_test.dart` | In-flight drill sessions can be recovered after app restart without losing recorded shots. |
 
+### Equipment (1 file)
+
+| File | Business rule protected |
+|---|---|
+| `test/equipment_repository_test.dart` | Equipment CRUD, archive, maintenance log, active-role resolution, recommendation, value totals, and duplicate-ID guard are correct and idempotent. Case 9 caught a latent duplicate-row bug on re-import. |
+
 ---
 
 ## Inventory at a glance
 
-- **Total files in Critical Suite:** 10
-- **Last reviewed:** 2026-08-05 (Sprint 2 setup)
-- **Sprint 1 baseline:** all 10 PASS (see `docs/SPRINT_1_FINAL_VERIFICATION.md`)
+- **Total files in Critical Suite:** 11
+- **Last reviewed:** 2026-08-05 (Sprint 2A equipment parity)
+- **Sprint 1 baseline:** 10/10 PASS
 
 ## Non-critical tests (Tier 2 / Tier 3)
 
