@@ -170,13 +170,125 @@ required in AC-1 PR. AC-4 of Sprint 2E will sync Finding A
 
 ## 5. AC-2 — CreateSessionScreen Widget Smoke
 
-(To be filled when AC-2 starts.)
+**Branch:** `feature/parity/consolidation-ac2`
+**Deliverable:** `test/widget/create_session_screen_test.dart` (new file, 65 insertions)
+**Status:** PR #16 merged at `f6bca69`.
+
+### 3 assertions (Article 8)
+1. **Mount** — `expect(find.byType(CreateSessionScreen), findsOneWidget)` — screen is reachable.
+2. **Key UI renders** — `expect(find.widgetWithText(ElevatedButton, 'Bắt đầu buổi chơi'), findsOneWidget)` — start-session CTA present.
+3. **Type-card tap safe** — tap on 'Luyện tập' type card; `expect(tester.takeException(), isNull)`.
+
+### Pattern reuse
+- `MaterialApp(home: CreateSessionScreen())` — no Riverpod, no GoRouter needed (screen holds state locally).
+- `pump() + pump(100ms) × 2` — avoids `pumpAndSettle()` (flutter_animate indefinite tweens).
+- Tap on type card, NOT on start button (which calls `context.go('/sessions')` and would fail without a router).
+
+Same pattern as `drill_session_screen_test.dart` (Sprint 2D AC-2).
+
+### Engineering gates
+- `flutter analyze` on new file: 0 issues
+- Widget test: 1/1 PASS
+- Critical Suite: 14/14 files, 108/108 test cases PASS (no regression)
 
 ## 6. AC-3 — Cross-Domain Dead-Code Audit (4 BLOCKED re-audit)
 
-(To be filled when AC-3 starts. Will include decision log entries
-for `progress_card.dart`, `recommended_screen.dart`, `progress_screen.dart`,
-`training_plan_screen.dart`.)
+**Branch:** `feature/parity/consolidation-ac3`
+**Status:** Audit complete. PR #17 opened (docs only).
+
+### 6.1 Audit method
+For each candidate file:
+1. `Grep` for class name + file name in `lib/`. Count matches outside the file itself.
+2. `Grep` for string-based route references (camelCase route name) in `lib/core/router/app_router.dart`.
+3. `Grep` for class name references in `test/`.
+4. If 0 external references, file qualifies for deletion (report, không delete).
+
+Per locked deletion policy (Sprint 2C): chỉ xóa khi importer absent. Per user decision for Sprint 2E AC-3 (audit-only): **không xóa**, chỉ report.
+
+### 6.2 Findings
+
+#### Candidate 1 — `lib/presentation/widgets/progress_card.dart`
+
+**History:** BLOCKED 2C AC-3 (record: 1 importer via `home_screen.dart`); BLOCKED 2D AC-3 (revisited because Training domain now in scope; finding reaffirmed).
+
+**Current state on `f6bca69`:**
+- `lib/` grep for `progress_card|ProgressCard`: matches in
+  - `lib/presentation/widgets/progress_card.dart:12-13,17,20` (self: class declaration + State class)
+  - `lib/presentation/screens/training/training_center_screen.dart:96,447,450` (private inner class `_ProgressCard` defined in this file at line 447)
+  - `lib/presentation/screens/training/progress_screen.dart:75,255,258` (private inner class `_ProgressCard` defined in this file at line 255)
+
+**Important distinction:** The 2 matches in `training_center_screen.dart` and `progress_screen.dart` are **NOT** imports of the public `ProgressCard` widget — they are **private inner classes** named `_ProgressCard` defined inside those files themselves. These are unrelated to `progress_card.dart`.
+
+**Public widget importer count: 0.**
+
+**`test/` grep:** no matches.
+
+**Verdict:** **STALE.** Public `ProgressCard` widget có 0 importers. The 2C/2D audit conclusions ("1 importer via home_screen.dart" / "active route bindings") appear stale — current grep shows the home_screen reference no longer exists. The 2 inner `_ProgressCard` classes are local definitions, not external imports.
+
+**Decision:** **Audit-only, không xóa** (per user). Re-evaluate trong Sprint 2F nếu Product/Platform cho phép cleanup. Đây là finding quan trọng để track — 3 sprint liên tiếp đã block progress_card, và vẫn không có importer. Recommend cho sprint cleanup tương lai.
+
+#### Candidate 2 — `lib/presentation/screens/training/recommended_screen.dart`
+
+**History:** BLOCKED 2D AC-3.
+
+**Current state on `f6bca69`:**
+- `lib/` grep for `recommended_screen|RecommendedScreen`:
+  - `lib/core/router/app_router.dart:22` (import statement)
+  - `lib/core/router/app_router.dart:108` (route builder: `builder: (context, state) => const RecommendedScreen(),`)
+  - `lib/presentation/screens/training/recommended_screen.dart:7-14` (self)
+
+**Imported by router.** Active route binding `/training/recommended`.
+
+**`test/` grep:** no matches.
+
+**Verdict:** **KEPT.** Active route binding present.
+
+#### Candidate 3 — `lib/presentation/screens/training/progress_screen.dart`
+
+**History:** BLOCKED 2D AC-3.
+
+**Current state on `f6bca69`:**
+- `lib/` grep for `progress_screen|ProgressScreen`:
+  - `lib/core/router/app_router.dart:23` (import statement)
+  - `lib/core/router/app_router.dart:196` (route builder)
+  - `lib/presentation/screens/training/progress_screen.dart:9-10` (self)
+
+**Imported by router.** Active route binding `/training/progress`.
+
+**`test/` grep:** no matches.
+
+**Verdict:** **KEPT.** Active route binding present. (Note: this screen also contains a private inner `_ProgressCard` class — separate from Candidate 1, not an external reference.)
+
+#### Candidate 4 — `lib/presentation/screens/coach/training_plan_screen.dart`
+
+**History:** BLOCKED 2D AC-3 (Coach-side ownership retained per Dependency Boundary from Sprint 2C).
+
+**Current state on `f6bca69`:**
+- `lib/` grep for `training_plan_screen|TrainingPlanScreen`:
+  - `lib/core/router/app_router.dart:34` (import statement)
+  - `lib/core/router/app_router.dart:206` (route builder)
+  - `lib/presentation/screens/coach/training_plan_screen.dart:11-12` (self)
+
+**Imported by router.** Active route binding `/coach/plan`.
+
+**`test/` grep:** no matches.
+
+**Verdict:** **KEPT.** Active route binding present. Coach-side ownership acknowledged.
+
+### 6.3 Summary table
+
+| # | File | Sprint first flagged | lib refs (excl. self) | Router binding | Test refs | Verdict |
+|---|---|---|---|---|---|---|
+| 1 | `progress_card.dart` | 2C | 0 (public widget) | none | 0 | **STALE** (audit-only) |
+| 2 | `recommended_screen.dart` | 2D | 1 (router) | `/training/recommended` | 0 | **KEPT** |
+| 3 | `progress_screen.dart` | 2D | 1 (router) | `/training/progress` | 0 | **KEPT** |
+| 4 | `training_plan_screen.dart` | 2D | 1 (router) | `/coach/plan` | 0 | **KEPT** |
+
+### 6.4 Notable finding
+
+**Candidate 1 `progress_card.dart`** is the only BLOCKED candidate whose status has materially changed since prior audits. The 2C and 2D conclusions referenced "1 importer" but the current grep on `f6bca69` shows **0 importers of the public widget**. The grep matches in `training_center_screen.dart` and `progress_screen.dart` are **private inner classes** (`_ProgressCard`), not external references. This is a stale finding worth tracking for a future cleanup sprint.
+
+No deletion performed. Per user decision: AC-3 is audit-only, deletion is out of scope for parity sprint.
 
 ## 7. AC-4 — Manifest Sync
 
@@ -234,3 +346,22 @@ Sprint 2E **exits** when:
 - **2026-08-06** — AC-1 verdict: 14/14 Tier 1 tests pass,
   rationale aligned, no redundancy, no deprecated code. Sprint
   2E AC-4 will sync manifest count from 13 → 14.
+- **2026-08-06** — AC-2 widget smoke for CreateSessionScreen
+  merged at `f6bca69`. 1/1 test PASS, 3 assertions (mount, CTA
+  renders, type-card tap safe). Critical Suite 14/14 PASS, no
+  regression.
+- **2026-08-06** — AC-3 audit complete on `feature/parity/consolidation-ac3`
+  at `f6bca69`. 4 BLOCKED candidates re-audited:
+  - `progress_card.dart` — **STALE** (public widget has 0
+    importers; 2D/2C "1 importer" finding was conflating with
+    private inner classes). Audit-only, no deletion.
+  - `recommended_screen.dart` — **KEPT** (router binding
+    `/training/recommended`).
+  - `progress_screen.dart` — **KEPT** (router binding
+    `/training/progress`).
+  - `training_plan_screen.dart` — **KEPT** (router binding
+    `/coach/plan`, Coach-side ownership).
+- **2026-08-06** — AC-3 verdict: 3 of 4 BLOCKED candidates remain
+  KEPT (their references are real). 1 (`progress_card.dart`) is
+  STALE — recommend a Cleanup Sprint in Phase 3+ for review and
+  deletion. Do not embed in parity sprint.
