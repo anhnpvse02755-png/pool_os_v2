@@ -70,7 +70,7 @@ verify membership by reading this file.
 
 | File | Business rule protected |
 |---|---|
-| `test/coach_profile_aggregator_test.dart` | Coach profile aggregation produces stable output across re-runs for the same input set. |
+| `test/coach_profile_aggregator_test.dart` | Coach profile aggregation produces stable output across re-runs for the same input set: empty-repo zero-state, 30-day window filter, win/loss tally + winRate formula, rack-level error aggregation, tone classification (Hot/Steady/Slumping/Rising), and cold-start recommendation shape. Sprint 2C expanded the seed case (1 → 6 cases). |
 
 ### Session recovery (1 file)
 
@@ -95,10 +95,11 @@ verify membership by reading this file.
 ## Inventory at a glance
 
 - **Total files in Critical Suite:** 12
-- **Last reviewed:** 2026-08-05 (Sprint 2B match parity)
+- **Last reviewed:** 2026-08-06 (Sprint 2C coach parity)
 - **Sprint 1 baseline:** 10/10 PASS
 - **Sprint 2A:** 11/11 PASS
-- **Sprint 2B:** 12/12 PASS (this commit)
+- **Sprint 2B:** 12/12 PASS
+- **Sprint 2C:** 12/12 PASS (rationale refresh; file count unchanged)
 
 ## Non-critical tests (Tier 2 / Tier 3)
 
