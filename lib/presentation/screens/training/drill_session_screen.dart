@@ -7,7 +7,9 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/drill_session.dart';
+import '../../../data/models/personal_best.dart';
 import '../../../data/repositories/drill_session_repository.dart';
+import '../../../data/repositories/personal_best_repository.dart';
 import '../../../domain/services/drill_session_recovery_service.dart';
 
 class DrillSessionScreen extends ConsumerStatefulWidget {
@@ -91,6 +93,12 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     if (session == null) return;
     final completed = await _recovery.complete(session);
     if (!mounted) return;
+    // Sprint 3A Task 3: commit PersonalBest at the completion boundary.
+    // Completion Experience remains a read-only View — it must not
+    // mutate business data so re-entry / refresh / deep-link stay
+    // side-effect free.
+    await _commitPersonalBest(completed);
+    if (!mounted) return;
     // Sprint 3A Task 2: navigate to the dedicated Completion Experience
     // surface instead of falling back to the instructions view.
     context.push(
@@ -102,6 +110,35 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       _session = completed;
       isSessionActive = false;
     });
+  }
+
+  Future<void> _commitPersonalBest(DrillSession completed) async {
+    final player = await ref.read(currentPlayerProvider.future);
+    if (player == null) return;
+    final pbRepo = LocalPersonalBestRepository();
+    final pbs = await pbRepo.getForDrill(player.id, widget.drillCode);
+    final existing = pbs
+        .where((p) => p.metric == PbMetric.highestAccuracy)
+        .cast<PersonalBest?>()
+        .firstWhere((_) => true, orElse: () => null);
+    final accuracy = completed.accuracy;
+    if (existing == null) {
+      await pbRepo.save(PersonalBest(
+        playerId: player.id,
+        drillCode: widget.drillCode,
+        metric: PbMetric.highestAccuracy,
+        value: accuracy,
+        level: 1,
+        achievedAt: DateTime.now(),
+      ));
+      return;
+    }
+    if (accuracy > existing.value) {
+      await pbRepo.save(existing.copyWith(
+        value: accuracy,
+        achievedAt: DateTime.now(),
+      ));
+    }
   }
 
   double get successRate => currentRep > 0 ? (successCount / currentRep) * 100 : 0;

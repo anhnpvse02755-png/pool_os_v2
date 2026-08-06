@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/drill_session.dart';
+import '../../../data/models/personal_best.dart';
+import '../../../data/repositories/drill_session_repository.dart';
+import '../../../data/repositories/personal_best_repository.dart';
+import '../../widgets/reflection_card.dart';
 
-/// Sprint 3A Task 2 — Completion Experience.
+/// Sprint 3A Task 2 — Completion Experience (Task 3 — Reflection).
 ///
 /// Reached from DrillSessionScreen after `_finishSession()` calls
 /// `DrillSessionRecoveryService.complete()`. The user should perceive this
 /// as a distinct state from the instructions view, not a state-flip on the
 /// same screen.
-class DrillCompletionScreen extends StatelessWidget {
+///
+/// Read-only View: never mutates business data. PB save happens in the
+/// completion boundary (DrillSessionScreen._finishSession()).
+class DrillCompletionScreen extends ConsumerWidget {
   final DrillSession session;
   final String drillCode;
 
@@ -34,8 +43,44 @@ class DrillCompletionScreen extends StatelessWidget {
 
   double get _accuracy => session.accuracy;
 
+  Future<_ReflectionData> _loadReflection(WidgetRef ref) async {
+    final player = await ref.read(currentPlayerProvider.future);
+    if (player == null) {
+      return const _ReflectionData(
+        previousAccuracy: null,
+        pb: null,
+        isFirstSession: true,
+      );
+    }
+
+    final sessionRepo = LocalDrillSessionRepository();
+    final all = await sessionRepo.getAll(player.id);
+    final drillSessions = all
+        .where((s) =>
+            s.id != session.id &&
+            s.drillRuns.any((r) => r.drillCode == drillCode))
+        .toList();
+    double? previous;
+    if (drillSessions.isNotEmpty) {
+      previous = drillSessions.first.accuracy;
+    }
+
+    final pbRepo = LocalPersonalBestRepository();
+    final pbs = await pbRepo.getForDrill(player.id, drillCode);
+    final pb = pbs
+        .where((p) => p.metric == PbMetric.highestAccuracy)
+        .map<double?>((p) => p.value)
+        .firstWhere((_) => true, orElse: () => null);
+
+    return _ReflectionData(
+      previousAccuracy: previous,
+      pb: pb,
+      isFirstSession: previous == null && pb == null,
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final duration = Duration(minutes: session.totalMinutes);
 
@@ -152,6 +197,27 @@ class DrillCompletionScreen extends StatelessWidget {
                 ),
               ).animate().fadeIn(delay: 300.ms),
 
+              const SizedBox(height: 24),
+
+              // Sprint 3A Task 3 — Reflection block (read-only View).
+              FutureBuilder<_ReflectionData>(
+                future: _loadReflection(ref),
+                builder: (context, snapshot) {
+                  final data = snapshot.data ??
+                      const _ReflectionData(
+                        previousAccuracy: null,
+                        pb: null,
+                        isFirstSession: true,
+                      );
+                  return ReflectionCards(
+                    accuracy: _accuracy,
+                    previousAccuracy: data.previousAccuracy,
+                    pb: data.pb,
+                    isFirstSession: data.isFirstSession,
+                  ).animate().fadeIn(delay: 350.ms);
+                },
+              ),
+
               const Spacer(),
 
               // Forward action placeholder. Task 4 will replace this with a
@@ -177,6 +243,19 @@ class DrillCompletionScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Snapshot of the data the Reflection block needs.
+class _ReflectionData {
+  final double? previousAccuracy;
+  final double? pb;
+  final bool isFirstSession;
+
+  const _ReflectionData({
+    required this.previousAccuracy,
+    required this.pb,
+    required this.isFirstSession,
+  });
 }
 
 class _CompletionHero extends StatelessWidget {
