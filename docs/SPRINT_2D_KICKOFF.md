@@ -365,3 +365,11 @@ will be decided in retrospective based on what remains.
   in Sprint 2C AC-3 audit, deletion BLOCKED) will be revisited
   in AC-3 of this sprint — Training domain is now in scope, so
   the file may legitimately belong here.
+- **2026-08-06** — AC-3 audit complete: all 4 candidate
+  surfaces (recommended_screen, progress_screen, coach-side
+  training_plan_screen, plus revisit of progress_card) have
+  active route bindings or importers in `app_router.dart` and
+  `home_screen.dart`. DELETE BLOCKED per locked policy on all
+  4. No orphan `.g.dart` files. Audit-only commit, zero
+  diff. Re-evaluate again in Sprint 2E if Training domain
+  surface contracts change.
