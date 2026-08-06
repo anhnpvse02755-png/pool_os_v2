@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
+import '../../../core/providers/repository_providers.dart';
+import '../../../data/models/drill_session.dart';
+import '../../../data/repositories/drill_session_repository.dart';
+import '../../../domain/services/drill_session_recovery_service.dart';
 
-class DrillSessionScreen extends StatefulWidget {
+class DrillSessionScreen extends ConsumerStatefulWidget {
   final String drillCode;
 
   const DrillSessionScreen({super.key, required this.drillCode});
 
   @override
-  State<DrillSessionScreen> createState() => _DrillSessionScreenState();
+  ConsumerState<DrillSessionScreen> createState() => _DrillSessionScreenState();
 }
 
-class _DrillSessionScreenState extends State<DrillSessionScreen> {
+class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   late Drill drill;
   int currentRep = 0;
   int successCount = 0;
@@ -23,32 +28,71 @@ class _DrillSessionScreenState extends State<DrillSessionScreen> {
   // Shot recording
   ShotResult? lastShotResult;
 
+  // Sprint 3A Task 1: persistence layer state.
+  DrillSession? _session;
+  late final DrillSessionRecoveryService _recovery;
+
   @override
   void initState() {
     super.initState();
     drill = DrillLibrary.getDrill(widget.drillCode) ?? DrillLibrary.categories.first.drills.first;
+    // Local provider (deferred to housekeeping sprint — see task #27).
+    _recovery = DrillSessionRecoveryService(LocalDrillSessionRepository());
   }
 
-  void _startSession() {
+  Future<void> _startSession() async {
+    final player = await ref.read(currentPlayerProvider.future);
+    if (player == null) {
+      // No player profile — cannot persist. Surface failure cleanly.
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cần hoàn tất hồ sơ trước khi tập.')),
+      );
+      return;
+    }
+    final session = DrillSession(
+      id: 'session-${DateTime.now().microsecondsSinceEpoch}',
+      playerId: player.id,
+      title: drill.nameVi,
+      startedAt: DateTime.now(),
+    );
+    await _recovery.pause(session); // creates the active session row.
+    if (!mounted) return;
     setState(() {
+      _session = session;
       isSessionActive = true;
       currentRep = 0;
       successCount = 0;
+      lastShotResult = null;
     });
   }
 
-  void _recordShot(ShotResult result) {
+  Future<void> _recordShot(ShotResult result) async {
+    final session = _session;
+    if (session == null) return;
+    final made = result == ShotResult.success;
+    final updated = await _recovery.recordAttempt(
+      session,
+      drillCode: widget.drillCode,
+      attemptNumber: currentRep + 1,
+      made: made,
+    );
+    if (!mounted) return;
     setState(() {
-      currentRep++;
-      if (result == ShotResult.success) {
-        successCount++;
-      }
+      _session = updated;
+      currentRep = updated.attempts.length;
+      successCount = updated.totalShotsMade;
       lastShotResult = result;
     });
   }
 
-  void _finishSession() {
+  Future<void> _finishSession() async {
+    final session = _session;
+    if (session == null) return;
+    final completed = await _recovery.complete(session);
+    if (!mounted) return;
     setState(() {
+      _session = completed;
       isSessionActive = false;
       showResultDialog = true;
     });
@@ -64,7 +108,7 @@ class _DrillSessionScreenState extends State<DrillSessionScreen> {
         actions: [
           if (isSessionActive)
             TextButton.icon(
-              onPressed: _finishSession,
+              onPressed: () => _finishSession(),
               icon: const Icon(Icons.stop, color: Colors.red),
               label: const Text('Kết thúc', style: TextStyle(color: Colors.red)),
             ),
@@ -75,7 +119,7 @@ class _DrillSessionScreenState extends State<DrillSessionScreen> {
           : _buildActiveSession(),
       floatingActionButton: !isSessionActive
           ? FloatingActionButton.extended(
-              onPressed: _startSession,
+              onPressed: () => _startSession(),
               icon: const Icon(Icons.play_arrow),
               label: const Text('Bắt đầu'),
             )
