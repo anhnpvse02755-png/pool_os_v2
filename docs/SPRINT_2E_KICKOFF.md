@@ -292,9 +292,28 @@ No deletion performed. Per user decision: AC-3 is audit-only, deletion is out of
 
 ## 7. AC-4 — Manifest Sync
 
-Will refresh `Last updated` date in `test/CRITICAL_SUITE.md`,
-add Sprint 2D row to Inventory at a glance, and **fix Finding A
-file count drift** (13 → 14).
+**Branch:** `feature/parity/consolidation-ac4`
+**Status:** PR #18 opened.
+
+### 7.1 Changes (metadata only)
+
+Per user direction (received before AC-3 review): "AC-4 chỉ sửa manifest/runner, **không** nhân cơ hội thay đổi rationale hay cơ cấu Critical Suite."
+
+Applied edits to `test/CRITICAL_SUITE.md`:
+1. **Finding A fixed:** `Total files in Critical Suite: 13` → `14` (line 103).
+2. **Last reviewed** updated: `Sprint 2D training parity` → `Sprint 2E cross-domain consolidation` (line 104).
+3. **Sprint 2E row added** to Inventory at a glance (line 110): `Sprint 2E: 14/14 PASS (AC-1 re-audit; count drift 13 → 14 fixed)`.
+4. **Tier 2 inventory** updated to enumerate current widget smokes (6 in `test/widget/` + `test/presentation/**`).
+
+No changes to:
+- Test file roster (14 entries remain identical).
+- Rationale strings.
+- Runner scripts (both already correct from Sprint 2D AC-4).
+
+### 7.2 Engineering gate
+
+- Critical Suite: 14/14 files, 108/108 test cases PASS (no test count change).
+- Manifest/runner parity: all three list 14 entries consistently.
 
 ## 8. Out of scope (deferred)
 
@@ -365,3 +384,8 @@ Sprint 2E **exits** when:
   KEPT (their references are real). 1 (`progress_card.dart`) is
   STALE — recommend a Cleanup Sprint in Phase 3+ for review and
   deletion. Do not embed in parity sprint.
+- **2026-08-06** — AC-4 manifest sync complete on `feature/parity/consolidation-ac4`
+  at `18dafdc`. Finding A (count drift) fixed: manifest updated
+  13 → 14. Last reviewed refreshed. Sprint 2E row added. Tier 2
+  widget smoke inventory updated. **Metadata-only changes**, no
+  rationale or structural changes per user direction.
