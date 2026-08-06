@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -23,7 +24,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   int currentRep = 0;
   int successCount = 0;
   bool isSessionActive = false;
-  bool showResultDialog = false;
 
   // Shot recording
   ShotResult? lastShotResult;
@@ -91,10 +91,16 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     if (session == null) return;
     final completed = await _recovery.complete(session);
     if (!mounted) return;
+    // Sprint 3A Task 2: navigate to the dedicated Completion Experience
+    // surface instead of falling back to the instructions view.
+    context.push(
+      '/training/session/complete?drill=${widget.drillCode}',
+      extra: completed,
+    );
+    if (!mounted) return;
     setState(() {
       _session = completed;
       isSessionActive = false;
-      showResultDialog = true;
     });
   }
 

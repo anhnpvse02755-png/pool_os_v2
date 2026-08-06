@@ -11,6 +11,8 @@ import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
 import '../../presentation/screens/training/drill_detail_screen.dart';
 import '../../presentation/screens/training/drill_session_screen.dart';
+import '../../presentation/screens/training/drill_completion_screen.dart';
+import '../../data/models/drill_session.dart';
 import '../../presentation/screens/training/learning_path_screen.dart';
 import '../../presentation/screens/training/knowledge_screen.dart';
 import '../../presentation/screens/training/knowledge_detail_screen.dart';
@@ -188,6 +190,22 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               // Default drill for daily training
               return const DrillSessionScreen(drillCode: 'DRAW_SHOT');
+            },
+          ),
+          GoRoute(
+            path: '/training/session/complete',
+            name: 'drillCompletion',
+            builder: (context, state) {
+              final session = state.extra as DrillSession?;
+              final drillCode = state.uri.queryParameters['drill'] ?? '';
+              if (session == null) {
+                // Defensive: if no session extra, fall back to training list.
+                return const DrillCategoriesScreen();
+              }
+              return DrillCompletionScreen(
+                session: session,
+                drillCode: drillCode,
+              );
             },
           ),
           GoRoute(
