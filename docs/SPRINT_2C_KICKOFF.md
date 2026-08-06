@@ -334,6 +334,10 @@ When ALL of the above are checked, sprint is closed. Sprint 2D
   and **zero runtime references**. No `@Deprecated` stub.
 - **2026-08-05** — Coach components consume derived signals
   only. See §14 Dependency Boundary.
+- **2026-08-06** — AC-3 audit complete: `progress_card.dart`
+  has 1 importer (`home_screen.dart`); deletion BLOCKED per
+  locked policy. No `.g.dart` files orphaned — all 3 have
+  source `part` directives. Audit-only commit, zero diff.
 
 ## 14. Dependency Boundary
 
