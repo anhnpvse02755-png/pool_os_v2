@@ -100,13 +100,14 @@ verify membership by reading this file.
 
 ## Inventory at a glance
 
-- **Total files in Critical Suite:** 13
-- **Last reviewed:** 2026-08-06 (Sprint 2D training parity)
+- **Total files in Critical Suite:** 14
+- **Last reviewed:** 2026-08-06 (Sprint 2E cross-domain consolidation)
 - **Sprint 1 baseline:** 10/10 PASS
 - **Sprint 2A:** 11/11 PASS
 - **Sprint 2B:** 12/12 PASS
 - **Sprint 2C:** 12/12 PASS (rationale refresh; file count unchanged)
 - **Sprint 2D:** 13/13 PASS (AC-1 added `drill_attempt_repository_test.dart`)
+- **Sprint 2E:** 14/14 PASS (AC-1 re-audit; count drift 13 → 14 fixed)
 
 ## Non-critical tests (Tier 2 / Tier 3)
 
@@ -120,6 +121,15 @@ business-critical:
 
 New Tier 2 widget tests belong in `test/widget/` or
 `test/presentation/`, NOT in this manifest.
+
+Tier 2 widget smokes (NOT in Critical Suite):
+- `test/widget/equipment_list_flow_test.dart` (Sprint 2A)
+- `test/widget/match_history_screen_test.dart` (Sprint 2A.5)
+- `test/widget/match_summary_flow_test.dart` (Sprint 2B)
+- `test/widget/coach_recommendation_panel_test.dart` (Sprint 2C)
+- `test/widget/drill_session_screen_test.dart` (Sprint 2D)
+- `test/widget/create_session_screen_test.dart` (Sprint 2E)
+- `test/presentation/**` (knowledge/learning-path widget tests)
 
 ## Related
 
