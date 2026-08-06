@@ -2,7 +2,7 @@
 
 > **Authoritative list of Tier 1 tests that gate every release.**
 > **Source of truth:** `docs/engineering-constitution.md` Article 5.
-> **Last updated:** 2026-08-05.
+> **Last updated:** 2026-08-06.
 
 ## What this is
 
@@ -90,16 +90,23 @@ verify membership by reading this file.
 |---|---|
 | `test/match_repository_test.dart` | Match CRUD, cascade delete (racks/timeline/analysis), getMatchesByPlayer newest-first, getPlayerAggregates (wins/losses/draws + winRate formula), score invariants, duplicate-ID guard, invalid-reference safety, and isWin/isLoss/isDraw get consistent. |
 
+### Drill attempt (1 file)
+
+| File | Business rule protected |
+|---|---|
+| `test/drill_attempt_repository_test.dart` | DrillAttempt is the data-loss path that gates session completion. Locks 6 cases: CRUD round-trip, multi-attempt ordering with monotonic `attemptNumber`, session isolation (no cross-session leakage), empty-session case, toJson/fromJson round-trip with nullable fields, and append-only semantics with duplicate-id behavior pinned. Critical because a missed `addAttempt` silently breaks session completion and corrupts training analytics. Sprint 2D AC-1. |
+
 ---
 
 ## Inventory at a glance
 
-- **Total files in Critical Suite:** 12
-- **Last reviewed:** 2026-08-06 (Sprint 2C coach parity)
+- **Total files in Critical Suite:** 13
+- **Last reviewed:** 2026-08-06 (Sprint 2D training parity)
 - **Sprint 1 baseline:** 10/10 PASS
 - **Sprint 2A:** 11/11 PASS
 - **Sprint 2B:** 12/12 PASS
 - **Sprint 2C:** 12/12 PASS (rationale refresh; file count unchanged)
+- **Sprint 2D:** 13/13 PASS (AC-1 added `drill_attempt_repository_test.dart`)
 
 ## Non-critical tests (Tier 2 / Tier 3)
 
