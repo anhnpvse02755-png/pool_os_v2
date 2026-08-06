@@ -11,6 +11,7 @@ import '../../../data/models/personal_best.dart';
 import '../../../data/repositories/drill_session_repository.dart';
 import '../../../data/repositories/personal_best_repository.dart';
 import '../../widgets/reflection_card.dart';
+import '../../widgets/next_action_panel.dart';
 
 /// Sprint 3A Task 2 — Completion Experience (Task 3 — Reflection).
 ///
@@ -46,10 +47,11 @@ class DrillCompletionScreen extends ConsumerWidget {
   Future<_ReflectionData> _loadReflection(WidgetRef ref) async {
     final player = await ref.read(currentPlayerProvider.future);
     if (player == null) {
-      return const _ReflectionData(
+      return _ReflectionData(
         previousAccuracy: null,
         pb: null,
         isFirstSession: true,
+        currentAccuracy: _accuracy,
       );
     }
 
@@ -76,7 +78,18 @@ class DrillCompletionScreen extends ConsumerWidget {
       previousAccuracy: previous,
       pb: pb,
       isFirstSession: previous == null && pb == null,
+      currentAccuracy: _accuracy,
     );
+  }
+
+  NextActionTone _resolveTone(_ReflectionData data) {
+    if (data.isFirstSession) return NextActionTone.first;
+    final prev = data.previousAccuracy;
+    if (prev == null) return NextActionTone.stable;
+    final delta = data.currentAccuracy - prev;
+    if (delta > 0.5) return NextActionTone.improved;
+    if (delta < -0.5) return NextActionTone.declined;
+    return NextActionTone.stable;
   }
 
   @override
@@ -204,10 +217,11 @@ class DrillCompletionScreen extends ConsumerWidget {
                 future: _loadReflection(ref),
                 builder: (context, snapshot) {
                   final data = snapshot.data ??
-                      const _ReflectionData(
+                      _ReflectionData(
                         previousAccuracy: null,
                         pb: null,
                         isFirstSession: true,
+                        currentAccuracy: _accuracy,
                       );
                   return ReflectionCards(
                     accuracy: _accuracy,
@@ -218,25 +232,25 @@ class DrillCompletionScreen extends ConsumerWidget {
                 },
               ),
 
-              const Spacer(),
+              const SizedBox(height: 16),
 
-              // Forward action placeholder. Task 4 will replace this with a
-              // Recommendation-driven Next Action.
-              FilledButton.icon(
-                onPressed: () {
-                  if (context.canPop()) {
-                    context.pop();
-                  } else {
-                    context.go('/training');
-                  }
+              // Sprint 3A Task 4 — Next Action (Forward Path).
+              FutureBuilder<_ReflectionData>(
+                future: _loadReflection(ref),
+                builder: (context, snapshot) {
+                  final data = snapshot.data ??
+                      _ReflectionData(
+                        previousAccuracy: null,
+                        pb: null,
+                        isFirstSession: true,
+                        currentAccuracy: _accuracy,
+                      );
+                  return NextActionPanel(
+                    currentDrillCode: drillCode,
+                    tone: _resolveTone(data),
+                  ).animate().fadeIn(delay: 450.ms);
                 },
-                icon: const Icon(Icons.replay_outlined),
-                label: const Text('Tập lại'),
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: AppTheme.primaryGreen,
-                ),
-              ).animate().fadeIn(delay: 400.ms),
+              ),
             ],
           ),
         ),
@@ -250,11 +264,13 @@ class _ReflectionData {
   final double? previousAccuracy;
   final double? pb;
   final bool isFirstSession;
+  final double currentAccuracy;
 
   const _ReflectionData({
     required this.previousAccuracy,
     required this.pb,
     required this.isFirstSession,
+    required this.currentAccuracy,
   });
 }
 
