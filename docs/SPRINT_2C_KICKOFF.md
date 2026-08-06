@@ -39,14 +39,16 @@ Per the same sign-off pattern as 2A/2B:
   sanity + dead-code cleanup. AI/ML model behavior is out of
   scope (we never had a real model — all recommendations are
   heuristic).
-- **Tier 1:** Add `coach_profile_aggregator_test.dart` to the
-  Critical Suite if AC-1 ships and the empty-repository bug is
-  fixed.
-- **Recommendations:** Cover the `DrillRecommendationV2`
-  scoring path with a small smoke. Cold-start path is implicit
-  via the same test.
-- **Weakness signals:** Promote to Tier 1 if extending the
-  aggregator test already covers it; otherwise leave in Tier 2.
+- **Tier 1:** `coach_profile_aggregator_test.dart` stays in
+  Critical Suite. Expanded during AC-1 to cover the empty-
+  repository bug + additional invariants.
+- **DrillRecommendationV2:** **Tier 2 in this sprint.**
+  No promotion to Critical Suite. Will be reconsidered when
+  Recommendation becomes business-critical (training plan,
+  AI Coach, progress flows).
+- **MatchWeaknessSignals:** **Tier 2 in this sprint.**
+  No promotion to Critical Suite. Coverage stays implicit
+  via the aggregator test that consumes its output.
 
 ## 3. Module inventory (V2 today)
 
@@ -172,6 +174,10 @@ right now:
 - Generated `.g.dart` companions that lost their source
 - Any other dead code surfaced during the audit
 
+**Deletion policy (locked):** Audit trước bằng grep + runtime
+verification. Chỉ xóa khi xác nhận **0 importer** và
+**0 runtime reference**. Không dùng trạng thái `@Deprecated`.
+
 **Preconditions to verify before deletion:**
 
 1. `grep -rn "ProgressCard\|progress_card" lib/ test/` returns
@@ -185,8 +191,9 @@ right now:
 2. Remove barrel exports / unused imports.
 3. Re-run gates.
 
-**If grep is non-empty**, deletion BLOCKED. Mark `@Deprecated`
-with TODO pointing to this AC.
+**If grep is non-empty**, deletion BLOCKED. The file stays —
+no deprecation stub, no soft-removal. Re-evaluate in Sprint 2D
+(Training Parity) where ownership may become clearer.
 
 ### AC-4: Critical Suite manifest sync
 
@@ -299,11 +306,14 @@ When ALL of the above are checked, sprint is closed. Sprint 2D
 
 ## 12. Commit conventions
 
-1. First commit: `test(coach): extend aggregator critical-suite coverage`.
-2. If empty-repo bug is fixed: split into a separate commit
-   `fix(coach): empty-repository returns zero-state` (Article 6).
-3. Subsequent commits scoped to one AC each.
-4. Tag final commit: `chore(sprint2c): close — sprint 2C verification`.
+1. First commit: `test(coach): extend aggregator critical-suite
+   coverage` — includes both the empty-repository regression
+   test and the bug fix in `CoachProfileAggregator`. Per
+   Article 6, the regression test and the fix ship as one
+   atomic commit (not split into a separate hotfix).
+2. Subsequent commits scoped to one AC each.
+3. Tag final commit: `chore(sprint2c): close — sprint 2C
+   verification`.
 
 ## 13. Decision log
 
@@ -315,3 +325,57 @@ When ALL of the above are checked, sprint is closed. Sprint 2D
   flagged as AC-1 highest-value item.
 - **2026-08-05** — `progress_card.dart` flagged as AC-3 audit
   candidate (may be Training-domain, not Coach).
+- **2026-08-05** — Empty-repo fix + regression test ship as a
+  single atomic commit inside AC-1 (no separate hotfix split).
+- **2026-08-05** — `DrillRecommendationV2` and
+  `MatchWeaknessSignals` remain **Tier 2** in Sprint 2C. No
+  promotion to Critical Suite this sprint.
+- **2026-08-05** — Deletion requires verified **zero importers**
+  and **zero runtime references**. No `@Deprecated` stub.
+- **2026-08-05** — Coach components consume derived signals
+  only. See §14 Dependency Boundary.
+
+## 14. Dependency Boundary
+
+The Coach pipeline flows strictly downward. Each layer consumes
+**derived signals**, never the raw source-of-truth.
+
+```
+Match
+  │
+  ▼
+CoachProfileAggregator
+  │
+  ▼
+MatchWeaknessSignals
+  │
+  ▼
+DrillRecommendationV2
+  │
+  ▼
+Coach UI
+```
+
+**Architectural rule:** Coach components consume derived signals,
+never raw `MatchRepository`.
+
+### Allowed inputs
+
+- `CoachProfile` (aggregated view model from
+  `CoachProfileAggregator`)
+- `WeaknessSignals` (drill-tag set from
+  `MatchWeaknessSignals`)
+- `Knowledge` metadata (read-only lookup)
+
+### Forbidden
+
+- `MatchRepository`
+- `MatchStatisticsRepository`
+- `SessionRepository`
+
+Rationale: a dependency cycle `Match → Coach → Recommendation →
+Match` is invisible at the file level but corrupts the domain
+boundary. Locking the rule at spec time prevents the cycle from
+forming during AC-1..4 implementation and keeps the rule stable
+even if class names (`MatchRepository` → `MatchDataSource`) change
+later.
