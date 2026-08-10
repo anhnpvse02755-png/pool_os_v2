@@ -1,5 +1,6 @@
 import '../utils/drills_library.dart';
 import '../providers/coach_provider.dart';
+import 'coach_types.dart';
 
 /// AI Coach Service - Generates recommendations based on:
 /// 1. User's interests (from onboarding)
@@ -130,8 +131,8 @@ class CoachService {
     }
 
     final sessions = progress.values.fold<int>(0, (sum, p) => sum + p.totalAttempts);
-    final totalAccuracy = progress.values.fold<int>(0, (sum, p) => sum + p.averageAccuracy);
-    final avgAccuracy = progress.isNotEmpty ? totalAccuracy ~/ progress.length : 0;
+    final totalAccuracy = progress.values.fold<double>(0, (sum, p) => sum + p.averageAccuracy);
+    final avgAccuracy = progress.isNotEmpty ? (totalAccuracy / progress.length).round() : 0;
 
     // Find strongest and weakest
     String? strongestCode;

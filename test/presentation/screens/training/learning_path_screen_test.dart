@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:pool_os_v2/presentation/screens/training/learning_path_screen.dart';
 import 'package:pool_os_v2/core/providers/coach_provider.dart';
+import 'package:pool_os_v2/core/services/coach_types.dart';
 import 'package:pool_os_v2/knowledge/knowledge_provider.dart';
 import 'package:pool_os_v2/knowledge/knowledge_models.dart';
 
@@ -22,6 +23,7 @@ void main() {
       estimatedMinutes: 15,
       category: 'cueball',
       difficulty: 'medium',
+      currentProgress: 0.0,
       knowledgeIds: const ['kn_stop_shot'],
     ),
   ];
@@ -139,6 +141,8 @@ void main() {
                   estimatedMinutes: 10,
                   category: 'cueball',
                   difficulty: 'hard',
+                  currentProgress: 0.0,
+                  knowledgeIds: const [],
                 ),
               ],
             ),

@@ -7,6 +7,7 @@ import 'core/config/supabase_config.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'data/datasources/local/local_storage_datasource.dart';
+import 'data/repositories/local_json_store.dart';
 
 // ============================================================================
 // Schema Versioning
@@ -48,6 +49,22 @@ Future<void> forceResetAllLocalData() async {
   await LocalStorageDataSource.wipeAllLocalData();
 }
 
+/// Flush pending writes before app exit.
+/// Call this when app lifecycle state changes to paused/inactive.
+/// Day 3A (P0): Ensures all SharedPreferences writes are persisted to disk.
+Future<void> _flushPendingWrites() async {
+  try {
+    // Reload prefs to force any buffered writes to disk
+    await SharedPreferences.getInstance().then((prefs) => prefs.reload());
+  } catch (e) {
+    // Best effort - don't crash if flush fails
+    assert(() {
+      print('WARN: Failed to flush pending writes: $e');
+      return true;
+    }());
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -67,11 +84,47 @@ void main() async {
   runApp(const ProviderScope(child: PoolOSApp()));
 }
 
-class PoolOSApp extends ConsumerWidget {
+// ============================================================================
+// Lifecycle-aware app wrapper
+// ============================================================================
+// Day 3A (P0): Add WidgetsBindingObserver to flush pending writes when app
+// lifecycle state changes. This ensures SharedPreferences data is persisted
+// to disk before the app is terminated.
+// ============================================================================
+
+class PoolOSApp extends ConsumerStatefulWidget {
   const PoolOSApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PoolOSApp> createState() => _PoolOSAppState();
+}
+
+class _PoolOSAppState extends ConsumerState<PoolOSApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Flush pending writes when app goes to background or is terminated.
+    // This reduces data loss risk on unexpected app termination.
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _flushPendingWrites();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(

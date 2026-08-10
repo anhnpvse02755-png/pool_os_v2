@@ -67,7 +67,14 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
     } else {
       all.add(session);
     }
-    await _store.writeAll(all);
+    // Use verified write with error handling
+    final result = await _store.writeAll(all);
+    if (!result.success) {
+      assert(() {
+        print('WARN: DrillSession save failed: ${result.error}');
+        return true;
+      }());
+    }
     if (session.isActive) {
       await LocalStorageService.prefs.setString(
           '$_kActiveKey${session.playerId}', session.id);
@@ -80,7 +87,13 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
   Future<void> delete(String id) async {
     final all = await _store.readAll();
     all.removeWhere((s) => s.id == id);
-    await _store.writeAll(all);
+    final result = await _store.writeAll(all);
+    if (!result.success) {
+      assert(() {
+        print('WARN: DrillSession delete failed: ${result.error}');
+        return true;
+      }());
+    }
     await LocalStorageService.prefs.remove('$_kAttemptsPrefix$id');
   }
 

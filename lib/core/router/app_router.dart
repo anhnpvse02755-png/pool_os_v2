@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../presentation/screens/onboarding/welcome_screen.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
 import '../../presentation/screens/onboarding/interest_selection_screen.dart';
-import '../../presentation/screens/home/home_screen.dart';
 import '../../presentation/screens/home/notification_screen.dart';
+import '../../presentation/screens/home/home_screen.dart';
 import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
 import '../../presentation/screens/training/drill_detail_screen.dart';
@@ -20,12 +20,17 @@ import '../../presentation/screens/training/certification_list_screen.dart';
 import '../../presentation/screens/training/certification_detail_screen.dart';
 import '../../presentation/screens/play/match_recording_screen.dart';
 import '../../presentation/screens/play/match_history_screen.dart';
+import '../../presentation/screens/play/match_summary_screen.dart';
 import '../../presentation/screens/training/training_history_screen.dart';
+import '../../presentation/screens/training/session_detail_screen.dart';
+import '../../presentation/screens/training/unified_timeline_screen.dart';
+import '../../presentation/screens/training/trend_dashboard_screen.dart';
 import '../../presentation/screens/training/recommended_screen.dart';
 import '../../presentation/screens/training/progress_screen.dart';
 import '../../presentation/screens/coach/analysis_screen.dart';
 import '../../presentation/screens/play/tournament_list_screen.dart';
 import '../../presentation/screens/play/tournament_detail_screen.dart';
+import '../../presentation/screens/play/tournament_create_screen.dart';
 import '../../presentation/screens/play/vision_recording_screen.dart';
 import '../../presentation/screens/play/play_screen.dart';
 import '../../presentation/screens/play/quick_match_screen.dart';
@@ -33,6 +38,9 @@ import '../../presentation/screens/play/friendly_match_screen.dart';
 import '../../presentation/screens/session/create_session_screen.dart';
 import '../../presentation/screens/training/assessment_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
+import '../../presentation/screens/coach/coach_chat_screen.dart';
+import '../../presentation/screens/coach/coach_timeline_screen.dart';
+import '../../presentation/screens/coach/coach_entry_survey_screen.dart';
 import '../../presentation/screens/coach/training_plan_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/profile/settings_screen.dart';
@@ -42,6 +50,7 @@ import '../../presentation/screens/community/community_screen.dart';
 import '../../presentation/screens/shell/main_shell.dart';
 import '../../presentation/screens/auth/login_screen.dart';
 import '../../presentation/screens/auth/register_screen.dart';
+import '../../beta/presentation/screens/black_box_export_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -172,9 +181,35 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const MatchHistoryScreen(),
           ),
           GoRoute(
+            path: '/play/match/:matchId/summary',
+            name: 'matchSummary',
+            builder: (context, state) {
+              final matchId = state.pathParameters['matchId']!;
+              return MatchSummaryScreen(matchId: matchId);
+            },
+          ),
+          GoRoute(
             path: '/training/history',
             name: 'trainingHistory',
             builder: (context, state) => const TrainingHistoryScreen(),
+          ),
+          GoRoute(
+            path: '/training/session/:sessionId',
+            name: 'sessionDetail',
+            builder: (context, state) {
+              final sessionId = state.pathParameters['sessionId']!;
+              return SessionDetailScreen(sessionId: sessionId);
+            },
+          ),
+          GoRoute(
+            path: '/training/timeline',
+            name: 'unifiedTimeline',
+            builder: (context, state) => const UnifiedTimelineScreen(),
+          ),
+          GoRoute(
+            path: '/training/trends',
+            name: 'trendDashboard',
+            builder: (context, state) => const TrendDashboardScreen(),
           ),
           GoRoute(
             path: '/training/session/new',
@@ -229,6 +264,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const TournamentListScreen(),
           ),
           GoRoute(
+            path: '/play/tournament/create',
+            name: 'tournamentCreate',
+            builder: (context, state) => const TournamentCreateScreen(),
+          ),
+          GoRoute(
             path: '/play/tournament/:tournamentId',
             name: 'tournamentDetail',
             builder: (context, state) {
@@ -269,6 +309,28 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'coach',
             builder: (context, state) => const CoachScreen(),
           ),
+          GoRoute(
+            path: '/coach/survey',
+            name: 'coachSurvey',
+            builder: (context, state) => const CoachEntrySurveyScreen(),
+          ),
+          GoRoute(
+            path: '/coach/chat',
+            name: 'coachChat',
+            builder: (context, state) {
+              final drillCode = state.uri.queryParameters['drill'];
+              final question = state.uri.queryParameters['question'];
+              return CoachChatScreen(
+                initialDrillCode: drillCode,
+                initialQuestion: question,
+              );
+            },
+          ),
+          GoRoute(
+            path: '/coach/timeline',
+            name: 'coachTimeline',
+            builder: (context, state) => const CoachTimelineScreen(),
+          ),
 
           // Profile
           GoRoute(
@@ -290,6 +352,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/profile/equipment',
             name: 'equipment',
             builder: (context, state) => const EquipmentScreen(),
+          ),
+          // Black Box
+          GoRoute(
+            path: '/settings/black-box',
+            name: 'blackBox',
+            builder: (context, state) => const BlackBoxExportScreen(),
           ),
         ],
       ),

@@ -65,12 +65,7 @@ class TournamentListScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tạo giải đấu mới'),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          context.push('/play/tournament/create');
         },
         icon: const Icon(Icons.add),
         label: const Text('Tạo giải'),

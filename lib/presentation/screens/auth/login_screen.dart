@@ -192,7 +192,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          // TODO: Implement forgot password
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Tính năng đang phát triển'),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
                         },
                         child: const Text('Quên mật khẩu?'),
                       ),

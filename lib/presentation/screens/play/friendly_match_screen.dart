@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -356,10 +357,27 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
   }
 
   void _createRoom() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Tính năng đang phát triển'),
-        behavior: SnackBarBehavior.floating,
+    // Show "Đang phát triển" dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.construction, color: Colors.blue),
+            SizedBox(width: 8),
+            Text('Đang phát triển'),
+          ],
+        ),
+        content: const Text(
+          'Tính năng tạo phòng đang được phát triển.\n\n'
+          'Hiện tại bạn có thể sử dụng "Ghi nhận trận đấu" để ghi lại kết quả thi đấu.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Đóng'),
+          ),
+        ],
       ),
     );
   }
@@ -384,10 +402,26 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Tính năng đang phát triển'),
-                  behavior: SnackBarBehavior.floating,
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.construction, color: Colors.blue),
+                      SizedBox(width: 8),
+                      Text('Đang phát triển'),
+                    ],
+                  ),
+                  content: const Text(
+                    'Tính năng vào phòng đang được phát triển.\n\n'
+                    'Hiện tại bạn có thể sử dụng "Ghi nhận trận đấu" để ghi lại kết quả thi đấu.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Đóng'),
+                    ),
+                  ],
                 ),
               );
             },

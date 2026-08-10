@@ -22,13 +22,12 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
   void _startSession() async {
     setState(() => _isLoading = true);
 
-    // TODO: Call API to create session
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
       setState(() => _isLoading = false);
-      // Navigate to active session
-      context.go('/sessions');
+      // Navigate to drill categories
+      context.go('/training/drills');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Đã tạo buổi chơi!'),

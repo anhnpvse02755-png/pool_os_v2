@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -7,6 +9,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/dashboard_provider.dart';
 import '../../../core/services/coach_service.dart';
+import '../../../core/services/coach_types.dart';
 
 /// AI Home - Dashboard chính
 /// Trả lời: "Hôm nay tôi nên làm gì?"
@@ -39,7 +42,15 @@ class HomeScreen extends ConsumerWidget {
               const SizedBox(height: 24),
 
               // Progress - Luôn hiển thị
-              _buildProgressSection(context),
+              _buildProgressSection(context, ref),
+              const SizedBox(height: 24),
+
+              // Strength/Weakness Analysis - Mới
+              _buildStrengthWeaknessSection(context, ref),
+              const SizedBox(height: 24),
+
+              // Recent Activity Feed - Mới
+              _buildRecentActivitySection(context, ref),
               const SizedBox(height: 24),
 
               // Quick Actions - Luôn hiển thị
@@ -87,17 +98,20 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
-        // Avatar
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.person,
-            color: AppTheme.primaryGreen,
+        // Avatar - Tap to go to Profile
+        GestureDetector(
+          onTap: () => context.push('/profile'),
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.person,
+              color: AppTheme.primaryGreen,
+            ),
           ),
         ),
       ],
@@ -831,7 +845,7 @@ class HomeScreen extends ConsumerWidget {
           Icon(Icons.school, color: Colors.white70, size: 32),
           SizedBox(height: 8),
           Text(
-            'Hoàn thành onboarding để nhận đề xuất từ AI',
+            'Tập bài đầu tiên để nhận đề xuất từ Coach',
             style: TextStyle(
               color: Colors.white70,
               fontSize: 13,
@@ -930,7 +944,10 @@ class HomeScreen extends ConsumerWidget {
     ).animate().fadeIn(delay: 200.ms);
   }
 
-  Widget _buildProgressSection(BuildContext context) {
+  Widget _buildProgressSection(BuildContext context, WidgetRef ref) {
+    final statsAsync = ref.watch(dashboardStatsProvider);
+    final skillAsync = ref.watch(skillAnalysisProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -953,47 +970,434 @@ class HomeScreen extends ConsumerWidget {
               ),
             ],
           ),
-          child: Row(
+          child: statsAsync.when(
+            data: (stats) => Row(
+              children: [
+                Expanded(
+                  child: _ProgressItem(
+                    label: 'Trận đấu',
+                    value: '${stats.totalMatches}',
+                    sublabel: 'Tổng',
+                    color: AppTheme.primaryGreen,
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 50,
+                  color: Colors.grey.shade200,
+                ),
+                Expanded(
+                  child: _ProgressItem(
+                    label: 'Thắng',
+                    value: '${(stats.winRate * 100).toInt()}%',
+                    sublabel: 'Tỷ lệ',
+                    color: Colors.blue,
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 50,
+                  color: Colors.grey.shade200,
+                ),
+                Expanded(
+                  child: _ProgressItem(
+                    label: 'Drill',
+                    value: '${stats.drillsCompleted}',
+                    sublabel: 'Hoàn thành',
+                    color: Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+            loading: () => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+            error: (_, __) => const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text('Không thể tải dữ liệu'),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Progress Ring - Skill Level
+        skillAsync.when(
+          data: (analysis) {
+            final avgScore = analysis.strengths.isNotEmpty
+                ? analysis.strengths.map((s) => s.score).reduce((a, b) => a + b) /
+                    analysis.strengths.length
+                : 0.0;
+            return _buildProgressRing(context, avgScore);
+          },
+          loading: () => _buildProgressRing(context, 0.0, isLoading: true),
+          error: (_, __) => _buildProgressRing(context, 0.0),
+        ),
+      ],
+    ).animate().fadeIn(delay: 300.ms);
+  }
+
+  Widget _buildProgressRing(BuildContext context, double progress, {bool isLoading = false}) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 80,
+            height: 80,
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                : CustomPaint(
+                    painter: _ProgressRingPainter(
+                      progress: progress,
+                      color: AppTheme.primaryGreen,
+                      backgroundColor: Colors.grey.shade200,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${(progress * 100).toInt()}%',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppTheme.primaryGreen,
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Skill Level',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  progress > 0
+                      ? 'Bạn đang tiến bộ!'
+                      : 'Bắt đầu luyện tập để nâng cao skill',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStrengthWeaknessSection(BuildContext context, WidgetRef ref) {
+    final analysisAsync = ref.watch(skillAnalysisProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Phân tích kỹ năng',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        analysisAsync.when(
+          data: (analysis) => Column(
             children: [
-              Expanded(
-                child: _ProgressItem(
-                  label: 'Rank',
-                  value: 'H',
-                  sublabel: 'Level',
-                  color: AppTheme.primaryGreen,
+              // Strengths
+              if (analysis.strengths.isNotEmpty) ...[
+                _buildSkillList(
+                  context,
+                  'Điểm mạnh',
+                  analysis.strengths,
+                  Colors.green,
+                  Icons.trending_up,
                 ),
-              ),
-              Container(
-                width: 1,
-                height: 50,
-                color: Colors.grey.shade200,
-              ),
-              Expanded(
-                child: _ProgressItem(
-                  label: 'Training',
-                  value: '43%',
-                  sublabel: 'Hoàn thành',
-                  color: Colors.blue,
+                const SizedBox(height: 12),
+              ],
+              // Weaknesses
+              if (analysis.weaknesses.isNotEmpty)
+                _buildSkillList(
+                  context,
+                  'Cần cải thiện',
+                  analysis.weaknesses,
+                  Colors.orange,
+                  Icons.trending_down,
                 ),
-              ),
-              Container(
-                width: 1,
-                height: 50,
-                color: Colors.grey.shade200,
-              ),
-              Expanded(
-                child: _ProgressItem(
-                  label: 'Streak',
-                  value: '8',
-                  sublabel: 'ngày',
-                  color: Colors.orange,
+              if (analysis.strengths.isEmpty && analysis.weaknesses.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Center(
+                    child: Column(
+                      children: [
+                        Icon(Icons.bar_chart, size: 48, color: Colors.grey),
+                        SizedBox(height: 8),
+                        Text(
+                          'Chưa có dữ liệu',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        Text(
+                          'Hoàn thành bài tập để xem phân tích',
+                          style: TextStyle(color: Colors.grey, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          loading: () => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+          error: (_, __) => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text('Không thể tải phân tích'),
+            ),
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 400.ms);
+  }
+
+  Widget _buildSkillList(
+    BuildContext context,
+    String title,
+    List<SkillItem> items,
+    Color color,
+    IconData icon,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: color, size: 18),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: color,
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          ...items.take(3).map((item) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item.nameVi,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${(item.score * 100).toInt()}%',
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecentActivitySection(BuildContext context, WidgetRef ref) {
+    final activitiesAsync = ref.watch(recentActivitiesProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Hoạt động gần đây',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        const SizedBox(height: 12),
+        activitiesAsync.when(
+          data: (activities) {
+            if (activities.isEmpty) {
+              return Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Center(
+                  child: Column(
+                    children: [
+                      Icon(Icons.history, size: 48, color: Colors.grey),
+                      SizedBox(height: 8),
+                      Text(
+                        'Chưa có hoạt động',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Column(
+                children: activities
+                    .take(5)
+                    .map((activity) => _buildActivityItem(activity))
+                    .toList(),
+              ),
+            );
+          },
+          loading: () => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+          error: (_, __) => const Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Text('Không thể tải hoạt động'),
+            ),
+          ),
         ),
       ],
-    ).animate().fadeIn(delay: 300.ms);
+    ).animate().fadeIn(delay: 500.ms);
+  }
+
+  Widget _buildActivityItem(RecentActivity activity) {
+    IconData icon;
+    Color color;
+
+    switch (activity.type) {
+      case 'match':
+        icon = Icons.sports_cricket;
+        color = Colors.blue;
+        break;
+      case 'drill':
+        icon = Icons.fitness_center;
+        color = AppTheme.primaryGreen;
+        break;
+      case 'knowledge':
+        icon = Icons.auto_stories;
+        color = Colors.purple;
+        break;
+      default:
+        icon = Icons.circle;
+        color = Colors.grey;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  activity.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+                if (activity.subtitle.isNotEmpty)
+                  Text(
+                    activity.subtitle,
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 12,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Text(
+            activity.timeAgo,
+            style: TextStyle(
+              color: Colors.grey.shade500,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildQuickActionsSection(BuildContext context) {
@@ -1237,5 +1641,59 @@ class _QuickActionButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Progress Ring Custom Painter
+class _ProgressRingPainter extends CustomPainter {
+  final double progress;
+  final Color color;
+  final Color backgroundColor;
+
+  _ProgressRingPainter({
+    required this.progress,
+    required this.color,
+    required this.backgroundColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - 12) / 2;
+    const strokeWidth = 8.0;
+
+    // Background circle
+    final bgPaint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawCircle(center, radius, bgPaint);
+
+    // Progress arc
+    final progressPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    const startAngle = -math.pi / 2; // Start from top
+    final sweepAngle = 2 * math.pi * progress.clamp(0.0, 1.0);
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant _ProgressRingPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.color != color ||
+        oldDelegate.backgroundColor != backgroundColor;
   }
 }

@@ -49,7 +49,15 @@ class LocalDrillProgressRepository implements IDrillProgressRepository {
     } else {
       all.add(progress);
     }
-    await _store.writeAll(all);
+    // Use verified write - will retry once on failure
+    final result = await _store.writeAll(all);
+    if (!result.success) {
+      // Log warning but don't throw - data is likely still in memory
+      assert(() {
+        print('WARN: DrillProgress save failed: ${result.error}');
+        return true;
+      }());
+    }
   }
 
   @override

@@ -15,16 +15,71 @@ class DrillDetailScreen extends StatefulWidget {
 }
 
 class _DrillDetailScreenState extends State<DrillDetailScreen> {
-  int? _selectedLevel;
+  int _selectedLevel = 1; // Default to level 1
 
   @override
   Widget build(BuildContext context) {
     final drill = DrillLibrary.getDrill(widget.drillCode);
 
+    // DEBUG: Log the drill code
+    debugPrint('DrillDetailScreen: Looking for drill code: ${widget.drillCode}');
+    debugPrint('DrillDetailScreen: Found drill: $drill');
+
     if (drill == null) {
       return Scaffold(
-        appBar: AppBar(),
-        body: const Center(child: Text('Drill not found')),
+        appBar: AppBar(
+          title: const Text('Lỗi'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 80,
+                  color: Colors.orange.shade400,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Không tìm thấy bài tập này',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Bài tập với mã "${widget.drillCode}" không tồn tại hoặc đã bị xóa.',
+                  style: TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
+                  onPressed: () => context.go('/training/drills'),
+                  icon: const Icon(Icons.fitness_center),
+                  label: const Text('Quay về thư viện bài tập'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryGreen,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       );
     }
 
@@ -60,7 +115,14 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.share),
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Chia sẻ bài tập - Tính năng đang phát triển'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -568,18 +630,15 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       ),
       child: SafeArea(
         child: ElevatedButton(
-          onPressed: _selectedLevel != null
-              ? () {
-                  context.push(
-                    '/training/session/new?drill=${drill.code}&level=$_selectedLevel',
-                  );
-                }
-              : null,
+          onPressed: () {
+            context.push(
+              '/training/session/new?drill=${drill.code}&level=$_selectedLevel',
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryGreen,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            disabledBackgroundColor: Colors.grey.shade200,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -587,9 +646,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
               const Icon(Icons.play_arrow),
               const SizedBox(width: 8),
               Text(
-                _selectedLevel != null
-                    ? 'Bắt đầu Level $_selectedLevel'
-                    : 'Chọn Level để bắt đầu',
+                'Bắt đầu Level $_selectedLevel',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

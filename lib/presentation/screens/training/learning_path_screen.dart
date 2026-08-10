@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
+import '../../../core/services/coach_types.dart';
 import '../../../knowledge/knowledge_provider.dart';
 
 class LearningPathScreen extends ConsumerWidget {
@@ -218,7 +219,7 @@ class LearningPathScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Hoàn thành onboarding để nhận đề xuất từ AI',
+              'Tập ít nhất 1 bài tập để nhận đề xuất từ Coach',
               style: TextStyle(color: Colors.grey.shade500),
               textAlign: TextAlign.center,
             ),

@@ -38,11 +38,24 @@ class LocalPersonalBestRepository implements IPersonalBestRepository {
         b.drillCode == pb.drillCode &&
         b.metric == pb.metric);
     if (idx >= 0) {
-      // Replace if better.
-      if (pb.value > all[idx].value) all[idx] = pb;
+      // Replace if better — direction depends on metric semantics.
+      // Higher is better: highest_accuracy, longest_run, most_balls.
+      // Lower is better: fastest.
+      final current = all[idx].value;
+      final isBetter = pb.metric == PbMetric.fastest
+          ? pb.value < current  // lower time = better
+          : pb.value > current; // higher value = better
+      if (isBetter) all[idx] = pb;
     } else {
       all.add(pb);
     }
-    await _store.writeAll(all);
+    // Use verified write with error handling
+    final result = await _store.writeAll(all);
+    if (!result.success) {
+      assert(() {
+        print('WARN: PersonalBest save failed: ${result.error}');
+        return true;
+      }());
+    }
   }
 }

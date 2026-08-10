@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
+import '../../../knowledge/knowledge_provider.dart';
 
-class TrainingCenterScreen extends StatelessWidget {
+class TrainingCenterScreen extends ConsumerWidget {
   const TrainingCenterScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final knowledgeState = ref.watch(knowledgeProvider);
+    final knowledgeCount = knowledgeState.allKnowledge.length;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Training Center'),
@@ -30,13 +35,13 @@ class TrainingCenterScreen extends StatelessWidget {
             _buildSectionHeader(
               context,
               'Lộ trình của bạn',
-              subtitle: 'AI cá nhân hóa theo 3 yếu tố',
+              subtitle: 'AI cá nhân hóa',
               icon: Icons.auto_awesome,
               color: AppTheme.accentGold,
             ),
             const SizedBox(height: 12),
             _LearningPathsCard(
-              onTapRecommended: () => context.push('/training/paths'),
+              onTapRecommended: () => context.push('/training/recommended'),
               onStartDrill: (code) => context.push('/training/session/new?drill=$code'),
             ).animate().fadeIn(),
 
@@ -49,7 +54,7 @@ class TrainingCenterScreen extends StatelessWidget {
                   child: _QuickActionTile(
                     icon: Icons.school,
                     title: 'All Drills',
-                    subtitle: '25+ bài tập',
+                    subtitle: '${DrillLibrary.getAllDrills().length} bài tập',
                     color: AppTheme.primaryGreen,
                     onTap: () => context.push('/training/drills'),
                   ),
@@ -59,7 +64,7 @@ class TrainingCenterScreen extends StatelessWidget {
                   child: _QuickActionTile(
                     icon: Icons.menu_book,
                     title: 'Knowledge',
-                    subtitle: 'Kiến thức',
+                    subtitle: '$knowledgeCount bài viết',
                     color: Colors.blue,
                     onTap: () => context.push('/training/knowledge'),
                   ),
@@ -190,7 +195,7 @@ class _LearningPathsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder recommendations - will be AI-generated
+    // Honest message - no data yet
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -202,56 +207,33 @@ class _LearningPathsCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.accentGold.withValues(alpha: 0.3)),
       ),
+      padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Icon(Icons.star, color: AppTheme.accentGold, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  '⭐ Recommended for you',
-                  style: TextStyle(
-                    color: AppTheme.accentGold,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          Icon(Icons.auto_awesome, color: AppTheme.accentGold, size: 40),
+          const SizedBox(height: 12),
+          Text(
+            'Chưa có đề xuất cá nhân hóa',
+            style: TextStyle(
+              color: AppTheme.accentGold,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
           ),
-          const Divider(height: 1),
-          // Draw Shot recommendation
-          _RecommendedDrillTile(
-            icon: Icons.sports,
-            title: 'Draw Shot',
-            stars: 5,
-            reason: 'Phù hợp với sở thích của bạn',
-            color: Colors.orange,
-            onStart: () => onStartDrill('DRAW_SHOT'),
-          ),
-          const Divider(height: 1),
-          // Position recommendation
-          _RecommendedDrillTile(
-            icon: Icons.gps_fixed,
-            title: 'Position Control',
-            stars: 4,
-            reason: 'Dựa trên kết quả tập gần đây',
-            color: Colors.blue,
-            onStart: () => onStartDrill('POSITION_STOP'),
-          ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              'Tất cả bài tập có sẵn trong Drill Library. Đây chỉ là đề xuất từ AI.',
-              style: TextStyle(
-                color: AppTheme.textSecondary,
-                fontSize: 11,
-                fontStyle: FontStyle.italic,
-              ),
+          const SizedBox(height: 8),
+          Text(
+            'Tập ít nhất 1 bài tập để Coach AI phân tích và đưa ra đề xuất phù hợp với bạn.',
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 13,
             ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: () => context.push('/training/drills'),
+            icon: const Icon(Icons.school),
+            label: const Text('Xem bài tập'),
           ),
         ],
       ),
@@ -427,7 +409,7 @@ class _AICoachCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Dựa trên kết quả tập luyện của bạn',
+                    'Xem phân tích chi tiết từ Coach',
                     style: TextStyle(
                       color: AppTheme.textSecondary,
                       fontSize: 12,
@@ -451,7 +433,8 @@ class _ProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder progress data
+    // Real progress data will be loaded from drill sessions
+    // Using default placeholder until data is available
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -469,7 +452,7 @@ class _ProgressCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  '23 drills đã hoàn thành',
+                  'Tiến độ tập luyện',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 Text(
@@ -482,12 +465,16 @@ class _ProgressCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            // Progress bars
-            _ProgressItem(label: 'Draw', progress: 0.8, color: Colors.orange),
-            const SizedBox(height: 8),
-            _ProgressItem(label: 'Position', progress: 0.6, color: Colors.blue),
-            const SizedBox(height: 8),
-            _ProgressItem(label: 'Bank', progress: 0.4, color: Colors.purple),
+            // Placeholder - real data loaded from drill sessions
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'Hoàn thành bài tập để xem tiến độ',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ),
           ],
         ),
       ),

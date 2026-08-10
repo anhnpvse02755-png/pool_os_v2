@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/training_provider.dart';
+import '../../../core/services/coach_types.dart';
 
 class ProgressScreen extends ConsumerWidget {
   const ProgressScreen({super.key});

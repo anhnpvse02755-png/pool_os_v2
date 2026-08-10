@@ -169,12 +169,12 @@ class _DrillListScreenState extends State<DrillListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Recommended Tab
+          // Recommended Tab - show drills from THIS category
           _buildDrillList(
-            DrillLibrary.getRecommendedDrills(),
-            showReason: true,
+            _categoryDrills.take(5).toList(), // First 5 drills from this category
+            showReason: false,
           ),
-          // All Drills Tab
+          // All Drills Tab - show all drills from THIS category
           _buildDrillList(_categoryDrills),
         ],
       ),
@@ -381,37 +381,6 @@ class _DrillCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (showReason) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppTheme.accentGold.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.star,
-                      size: 14,
-                      color: AppTheme.accentGold,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Phù hợp với sở thích của bạn',
-                      style: TextStyle(
-                        color: AppTheme.accentGold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
             const SizedBox(height: 12),
             // Level progress
             Row(

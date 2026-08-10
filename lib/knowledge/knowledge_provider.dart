@@ -4,11 +4,12 @@
 
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart' show visibleForTesting;
+import 'package:flutter/foundation.dart' show debugPrint, visibleForTesting;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/providers/coach_provider.dart';
+import '../core/services/coach_types.dart';
 import 'knowledge_models.dart';
 import 'knowledge_data.dart';
 
@@ -71,6 +72,10 @@ class KnowledgeNotifier extends StateNotifier<KnowledgeState> {
       final jsonString =
           await rootBundle.loadString('assets/knowledge/knowledge.json');
       final List<dynamic> items = json.decode(jsonString) as List<dynamic>;
+
+      // DEBUG: Log item count
+      debugPrint('[KnowledgeProvider] Loaded ${items.length} items from assets/knowledge/knowledge.json');
+
       if (items.isNotEmpty) {
         final parsed = items
             .map((e) => KnowledgeItem.fromJson(e as Map<String, dynamic>))
@@ -83,9 +88,13 @@ class KnowledgeNotifier extends StateNotifier<KnowledgeState> {
           isLoading: false,
           fromAssets: true,
         );
+        debugPrint('[KnowledgeProvider] SUCCESS: Using ${parsed.length} items from assets');
         return;
       }
-    } catch (_) {
+
+      debugPrint('[KnowledgeProvider] WARNING: JSON loaded but items is empty, falling back');
+    } catch (e) {
+      debugPrint('[KnowledgeProvider] ERROR loading JSON: $e');
       // Fall through to fallback below.
     }
 

@@ -12,9 +12,8 @@
 // No score assertions, no timer simulation, no manual tap-through.
 // Manual QA on a real device covers the rest.
 //
-// DrillSessionScreen is a plain StatefulWidget — no Riverpod injection
-// needed. State (currentRep / successCount / isSessionActive) is local
-// to the screen; no fake repositories required for this smoke.
+// DrillSessionScreen is a ConsumerStatefulWidget — requires ProviderScope
+// with drillSessionRepositoryProvider override.
 //
 // Implementation note: this test renders the screen in its initial
 // (pre-active) state and asserts visible widgets only. Driving the
@@ -26,16 +25,51 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pool_os_v2/presentation/screens/training/drill_session_screen.dart';
+import 'package:pool_os_v2/core/providers/repository_providers.dart' as repo;
+import 'package:pool_os_v2/data/repositories/drill_session_repository.dart';
+import 'package:pool_os_v2/data/models/drill_session.dart';
+import 'package:pool_os_v2/data/models/drill_attempt.dart';
+import 'package:pool_os_v2/core/models/training_session.dart' hide DrillRun;
+
+/// Minimal fake for drill session repository
+class FakeDrillSessionRepository implements IDrillSessionRepository {
+  @override
+  Future<DrillSession?> getActiveSession(String playerId) async => null;
+
+  @override
+  Future<List<DrillSession>> getAll(String playerId) async => [];
+
+  @override
+  Future<DrillSession?> getById(String id) async => null;
+
+  @override
+  Future<void> save(DrillSession session) async {}
+
+  @override
+  Future<void> delete(String id) async {}
+
+  @override
+  Future<void> addAttempt(DrillAttempt attempt) async {}
+
+  @override
+  Future<void> updateRun(DrillRun run) async {}
+}
 
 void main() {
   testWidgets('Drill session screen mounts and shows instructions view',
       (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
-        home: DrillSessionScreen(drillCode: 'STRAIGHT_POT'),
+      ProviderScope(
+        overrides: [
+          repo.drillSessionRepositoryProvider.overrideWithValue(FakeDrillSessionRepository()),
+        ],
+        child: const MaterialApp(
+          home: DrillSessionScreen(drillCode: 'STRAIGHT_POT'),
+        ),
       ),
     );
 
