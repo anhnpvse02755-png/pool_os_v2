@@ -66,7 +66,7 @@ DrillSession _sampleSession() => DrillSession(
         DrillAttempt(
           id: 'a1',
           sessionId: 'test-session',
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'STRAIGHT_NEAR',
           attemptNumber: 1,
           made: true,
           createdAt: DateTime(2026, 1, 1, 10),
@@ -74,7 +74,7 @@ DrillSession _sampleSession() => DrillSession(
         DrillAttempt(
           id: 'a2',
           sessionId: 'test-session',
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'STRAIGHT_NEAR',
           attemptNumber: 2,
           made: true,
           createdAt: DateTime(2026, 1, 1, 10, 1),
@@ -97,7 +97,7 @@ void main() {
               .overrideWithValue(_FakePlayerRepository()),
         ],
         child: const MaterialApp(
-          home: DrillSessionScreen(drillCode: 'STRAIGHT_POT'),
+          home: DrillSessionScreen(drillCode: 'STRAIGHT_NEAR'),
         ),
       ),
     );
@@ -131,7 +131,7 @@ void main() {
         child: MaterialApp(
           home: DrillCompletionScreen(
             session: session,
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'STRAIGHT_NEAR',
           ),
         ),
       ),

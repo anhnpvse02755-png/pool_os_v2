@@ -68,7 +68,7 @@ void main() {
           repo.drillSessionRepositoryProvider.overrideWithValue(FakeDrillSessionRepository()),
         ],
         child: const MaterialApp(
-          home: DrillSessionScreen(drillCode: 'STRAIGHT_POT'),
+          home: DrillSessionScreen(drillCode: 'STRAIGHT_NEAR'),
         ),
       ),
     );
@@ -85,7 +85,7 @@ void main() {
     // Assertion 2: instructions view shows the drill header.
     // Note: the same drill name appears in AppBar title AND in the
     // header card, so we expect at least one match.
-    expect(find.text('Đánh thẳng'), findsAtLeastNWidgets(1),
+    expect(find.text('Đánh thẳng gần'), findsAtLeastNWidgets(1),
         reason: 'drill header should be visible from instructions view');
 
     // Assertion 3: start FAB is present, signaling the pre-active state
