@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_service.dart';
+import '../../../core/services/coach_types.dart';
 
 /// Training Plan Screen - Weekly Plan
 class TrainingPlanScreen extends ConsumerWidget {

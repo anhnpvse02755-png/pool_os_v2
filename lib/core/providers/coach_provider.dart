@@ -14,6 +14,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../knowledge/player_intelligence.dart';
 import '../services/session_memory_service.dart';
+import '../services/coach_types.dart';
+import '../services/match_analysis_service.dart';
+import '../models/match_analysis.dart';
 import '../../knowledge/knowledge_graph_service.dart';
 import '../../knowledge/priority_engine.dart';
 import '../../knowledge/coach_service.dart' hide CoachRecommendation;
@@ -269,6 +272,27 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     await _savePlayerIntelligence();
   }
 
+  /// Update Coach with match analysis from Match Recording
+  /// This is called after a match is completed to feed data into Coach AI
+  Future<void> updateWithMatchAnalysis(MatchAnalysis analysis) async {
+    // Update PlayerIntelligence with match data
+    final matchData = MatchData(
+      opponentName: 'Unknown',
+      won: analysis.wins > analysis.losses,
+      playerScore: analysis.wins,
+      opponentScore: analysis.losses,
+      durationMinutes: 0,
+      playedAt: analysis.analyzedAt,
+      mistakes: analysis.commonMistakes,
+    );
+
+    final updatedPI = state.playerIntelligence.updateWithMatch(matchData);
+
+    state = state.copyWith(playerIntelligence: updatedPI);
+    await refreshCoachPlan();
+    await _savePlayerIntelligence();
+  }
+
   /// Save PlayerIntelligence to storage
   Future<void> _savePlayerIntelligence() async {
     // TODO: Save to SharedPreferences or Supabase
@@ -396,6 +420,70 @@ final coachLoadingProvider = Provider<bool>((ref) {
 /// Coach Error
 final coachErrorProvider = Provider<String?>((ref) {
   return ref.watch(coachStateProvider).error;
+});
+
+/// Learning Path Provider (derived from CoachService)
+final learningPathProvider = FutureProvider<List<LearningPathItem>>((ref) async {
+  // Return empty list for now - Coach AI will populate this when user has data
+  // This prevents showing fake "Hoàn thành onboarding" message
+  return <LearningPathItem>[];
+});
+
+/// Performance Summary Provider
+final performanceSummaryProvider = FutureProvider<PerformanceSummary>((ref) async {
+  return PerformanceSummary.empty();
+});
+
+/// Weakness Analysis Provider
+final weaknessAnalysisProvider = FutureProvider<List<WeaknessAnalysis>>((ref) async {
+  return <WeaknessAnalysis>[];
+});
+
+/// All Drill Progress Provider
+final allDrillProgressProvider = Provider<Map<String, SimpleDrillProgress>>((ref) {
+  return <String, SimpleDrillProgress>{};
+});
+
+// ========================================================================
+// MATCH ANALYSIS PROVIDER - Phase 8
+// ========================================================================
+
+/// Match Analysis Service Provider
+final matchAnalysisServiceProvider = Provider<MatchAnalysisService>((ref) {
+  return MatchAnalysisService();
+});
+
+/// Latest Match Analysis Provider
+/// Stores the most recent match analysis for Coach Home display
+final latestMatchAnalysisProvider = StateProvider<MatchAnalysis?>((ref) {
+  return null;
+});
+
+/// Latest Match Analysis Summary Provider
+final latestMatchAnalysisSummaryProvider = Provider<MatchAnalysisSummary?>((ref) {
+  final analysis = ref.watch(latestMatchAnalysisProvider);
+  if (analysis == null) return null;
+
+  final service = ref.read(matchAnalysisServiceProvider);
+  return service.getSummary(analysis);
+});
+
+/// Match Analysis Recommendations Provider
+final matchAnalysisRecommendationsProvider = Provider<List<DrillRecommendation>>((ref) {
+  final analysis = ref.watch(latestMatchAnalysisProvider);
+  if (analysis == null) return [];
+
+  final service = ref.read(matchAnalysisServiceProvider);
+  return service.getRecommendations(analysis);
+});
+
+/// Coach Insight from Match Provider
+final coachMatchInsightProvider = Provider<String?>((ref) {
+  final analysis = ref.watch(latestMatchAnalysisProvider);
+  if (analysis == null) return null;
+
+  final service = ref.read(matchAnalysisServiceProvider);
+  return service.generateCoachInsight(analysis);
 });
 
 // Note: CoachRecommendation is defined in recommendation_card.dart

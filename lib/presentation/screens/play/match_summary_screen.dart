@@ -149,7 +149,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () =>
-                      context.go('/play/match'),
+                      context.go('/play/history'),
                   icon: const Icon(Icons.list),
                   label: const Text('Trận khác'),
                 ),

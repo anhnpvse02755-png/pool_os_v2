@@ -1,4 +1,9 @@
+import 'dart:ui';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../data/repositories/player_repository.dart' as player_repo;
 import '../../data/repositories/drill_repository.dart' as drill_repo;
 import '../../data/repositories/knowledge_repository.dart' as knowledge_repo;
@@ -7,6 +12,7 @@ import '../../data/repositories/notification_repository.dart' as notification_re
 import '../../data/repositories/community_repository.dart' as community_repo;
 import '../../data/repositories/settings_repository.dart' as settings_repo;
 import '../../data/repositories/cache_repository.dart' as cache_repo;
+import '../../data/repositories/drill_session_repository.dart';
 import '../../domain/services/drill_library_service.dart' as drill_lib;
 import '../../domain/services/knowledge_graph_service.dart' as kg_svc;
 import '../../domain/services/learning_streak_service.dart' as ls_svc;
@@ -39,6 +45,10 @@ final playerRepositoryProvider = Provider<player_repo.PlayerRepository>((ref) {
 
 final drillRepositoryProvider = Provider<drill_repo.DrillRepository>((ref) {
   return LocalDrillRepository();
+});
+
+final drillSessionRepositoryProvider = Provider<IDrillSessionRepository>((ref) {
+  return LocalDrillSessionRepository();
 });
 
 final knowledgeRepositoryProvider = Provider<knowledge_repo.KnowledgeRepository>((ref) {
@@ -304,4 +314,85 @@ final equipmentStatsProvider =
     FutureProvider.family<EquipmentStats, String>((ref, cueId) async {
   final repository = ref.watch(equipmentRepositoryProvider);
   return repository.getStatsForCue(cueId);
+});
+
+// ============================================================================
+// Theme Provider (localization + theme)
+// ============================================================================
+
+/// Theme mode notifier - persists to SharedPreferences
+class ThemeNotifier extends StateNotifier<ThemeMode> {
+  static const String _key = 'poolos_v2.theme';
+  final SharedPreferences _prefs;
+
+  ThemeNotifier(this._prefs) : super(ThemeMode.light) {
+    _loadTheme();
+  }
+
+  void _loadTheme() {
+    final saved = _prefs.getString(_key);
+    if (saved != null) {
+      state = ThemeMode.values.firstWhere(
+        (m) => m.name == saved,
+        orElse: () => ThemeMode.light,
+      );
+    }
+  }
+
+  Future<void> setTheme(ThemeMode mode) async {
+    state = mode;
+    await _prefs.setString(_key, mode.name);
+  }
+
+  Future<void> toggleTheme() async {
+    final newMode = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    await setTheme(newMode);
+  }
+
+  bool get isDarkMode => state == ThemeMode.dark;
+}
+
+final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
+  throw UnimplementedError('Must be overridden in main.dart');
+});
+
+final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return ThemeNotifier(prefs);
+});
+
+/// Locale notifier - persists language preference
+class LocaleNotifier extends StateNotifier<Locale> {
+  static const String _key = 'poolos_v2.locale';
+  final SharedPreferences _prefs;
+
+  LocaleNotifier(this._prefs) : super(const Locale('vi')) {
+    _loadLocale();
+  }
+
+  void _loadLocale() {
+    final saved = _prefs.getString(_key);
+    if (saved != null) {
+      state = Locale(saved);
+    }
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    state = locale;
+    await _prefs.setString(_key, locale.languageCode);
+  }
+
+  Future<void> toggleLocale() async {
+    final newLocale = state.languageCode == 'vi'
+        ? const Locale('en')
+        : const Locale('vi');
+    await setLocale(newLocale);
+  }
+
+  bool get isVietnamese => state.languageCode == 'vi';
+}
+
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) {
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return LocaleNotifier(prefs);
 });

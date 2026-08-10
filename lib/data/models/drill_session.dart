@@ -1,4 +1,5 @@
 import 'drill_attempt.dart';
+import 'training_session.dart';
 
 /// Drill run inside a session (one attempt at a specific drill +
 /// level + outcome).
@@ -211,4 +212,34 @@ class DrillSession {
                 .toList() ??
             const [],
       );
+
+  /// Convert to TrainingSession for history display.
+  /// Takes the first drill run's data if available, otherwise uses session aggregates.
+  TrainingSession toTrainingSession() {
+    if (drillRuns.isNotEmpty) {
+      final run = drillRuns.first;
+      return TrainingSession(
+        id: id,
+        drillCode: run.drillCode,
+        drillName: run.drillName,
+        level: run.level,
+        score: run.successRate.round(),
+        shotsMade: run.successes,
+        shotsMissed: run.attempts - run.successes,
+        duration: totalMinutes > 0 ? totalMinutes : run.durationSeconds ~/ 60,
+        completedAt: completedAt ?? DateTime.now(),
+      );
+    }
+    return TrainingSession(
+      id: id,
+      drillCode: '',
+      drillName: title,
+      level: 1,
+      score: accuracy.round(),
+      shotsMade: totalShotsMade,
+      shotsMissed: totalShotsMissed,
+      duration: totalMinutes,
+      completedAt: completedAt ?? DateTime.now(),
+    );
+  }
 }

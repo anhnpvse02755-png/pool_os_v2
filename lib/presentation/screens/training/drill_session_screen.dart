@@ -7,8 +7,10 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/drill_session.dart';
+import '../../../data/models/drill_progress.dart';
 import '../../../data/models/personal_best.dart';
-import '../../../data/repositories/drill_session_repository.dart';
+// ignore: unused_import — used via ref.read(drillRepositoryProvider) and toTrainingSession()
+import '../../../data/repositories/drill_repository.dart';
 import '../../../data/repositories/personal_best_repository.dart';
 import '../../../domain/services/drill_session_recovery_service.dart';
 
@@ -22,10 +24,11 @@ class DrillSessionScreen extends ConsumerStatefulWidget {
 }
 
 class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
-  late Drill drill;
   int currentRep = 0;
   int successCount = 0;
   bool isSessionActive = false;
+  String? _error;
+  Drill? _drill;
 
   // Shot recording
   ShotResult? lastShotResult;
@@ -37,12 +40,30 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   @override
   void initState() {
     super.initState();
-    drill = DrillLibrary.getDrill(widget.drillCode) ?? DrillLibrary.categories.first.drills.first;
-    // Local provider (deferred to housekeeping sprint — see task #27).
-    _recovery = DrillSessionRecoveryService(LocalDrillSessionRepository());
+    // Sprint 3A housekeeping: injected via provider (task #27).
+    _recovery = DrillSessionRecoveryService(ref.read(drillSessionRepositoryProvider));
+    _loadDrill();
+  }
+
+  void _loadDrill() {
+    final drill = DrillLibrary.getDrill(widget.drillCode);
+    if (drill == null) {
+      setState(() {
+        _error = 'Bài tập với mã "${widget.drillCode}" không tồn tại.';
+        _drill = null;
+      });
+    } else {
+      setState(() {
+        _drill = drill;
+        _error = null;
+      });
+    }
   }
 
   Future<void> _startSession() async {
+    final drill = _drill;
+    if (drill == null) return;
+
     final player = await ref.read(currentPlayerProvider.future);
     if (player == null) {
       // No player profile — cannot persist. Surface failure cleanly.
@@ -98,6 +119,8 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     // mutate business data so re-entry / refresh / deep-link stay
     // side-effect free.
     await _commitPersonalBest(completed);
+    // Sprint 4A Task 10: sync to TrainingSession for history display.
+    await _syncToTrainingHistory(completed);
     if (!mounted) return;
     // Sprint 3A Task 2: navigate to the dedicated Completion Experience
     // surface instead of falling back to the instructions view.
@@ -141,13 +164,108 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     }
   }
 
+  /// Sprint 4A Task 10: sync completed session to TrainingSession for history.
+  /// Sprint 4A Task 13: update DrillProgress for Coach AI.
+  Future<void> _syncToTrainingHistory(DrillSession completed) async {
+    final drillRepo = ref.read(drillRepositoryProvider);
+
+    // Save to training history.
+    final trainingSession = completed.toTrainingSession();
+    await drillRepo.saveTrainingSession(trainingSession);
+
+    // Update drill progress for Coach AI to read skill progression.
+    final progressList = await drillRepo.getUserProgress();
+    final existingProgress = progressList
+        .where((p) => p.drillCode == widget.drillCode)
+        .firstOrNull;
+
+    final updatedProgress = DrillProgress(
+      playerId: completed.playerId,
+      drillCode: widget.drillCode,
+      currentLevel: existingProgress?.currentLevel ?? 1,
+      bestScore: completed.accuracy > (existingProgress?.bestScore ?? 0)
+          ? completed.accuracy.round()
+          : existingProgress?.bestScore ?? 0,
+      attempts: (existingProgress?.attempts ?? 0) + 1,
+      lastAttemptAt: DateTime.now(),
+    );
+    await drillRepo.updateDrillProgress(updatedProgress);
+  }
+
   double get successRate => currentRep > 0 ? (successCount / currentRep) * 100 : 0;
 
   @override
   Widget build(BuildContext context) {
+    // Show error screen if drill not found
+    if (_error != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Lỗi'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 80,
+                  color: Colors.orange.shade400,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Không tìm thấy bài tập này',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  _error!,
+                  style: TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                ElevatedButton.icon(
+                  onPressed: () => context.go('/training/drills'),
+                  icon: const Icon(Icons.fitness_center),
+                  label: const Text('Quay về thư viện bài tập'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryGreen,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Show loading if drill not loaded yet
+    if (_drill == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(drill.nameVi),
+        title: Text(_drill!.nameVi),
         actions: [
           if (isSessionActive)
             TextButton.icon(
@@ -172,6 +290,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   Widget _buildInstructions() {
+    final drill = _drill!;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -291,6 +410,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   Widget _buildActiveSession() {
+    final drill = _drill!;
     return Column(
       children: [
         // Progress

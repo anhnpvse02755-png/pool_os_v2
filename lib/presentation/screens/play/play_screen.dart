@@ -71,7 +71,7 @@ class PlayScreen extends StatelessWidget {
               title: 'Giải đấu',
               subtitle: 'Tournament',
               color: Colors.purple,
-              onTap: () => context.push('/play/recording'),
+              onTap: () => context.push('/play/tournament'),
             ).animate().fadeIn(delay: 200.ms),
             const SizedBox(height: 8),
             _CompetitionTypeCard(
@@ -79,7 +79,7 @@ class PlayScreen extends StatelessWidget {
               title: 'League',
               subtitle: 'Đấu league với CLB',
               color: Colors.teal,
-              onTap: () => context.push('/play/recording'),
+              onTap: () => context.push('/play/tournament'),
             ).animate().fadeIn(delay: 250.ms),
 
             const SizedBox(height: 24),

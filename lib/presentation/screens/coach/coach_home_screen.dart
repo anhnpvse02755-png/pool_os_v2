@@ -1,19 +1,22 @@
 // ============================================================================
-// COACH HOME SCREEN - Phase 7B.1
+// COACH HOME SCREEN - Phase 7B.1 / Phase 8
 // ONE Priority Coach Home - The App Dashboard
 //
 // Principle: ONE Priority Only. Everything else is secondary.
 // Coach Voice: Natural, like a real coach, not AI.
+// Phase 8: Added "Từ trận đấu gần nhất" section
 // ============================================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/player_provider.dart' as player;
 import '../../../core/services/coach_voice_service.dart';
+import '../../../core/models/match_analysis.dart';
 import '../../widgets/coach/recommendation_card.dart';
 import '../../widgets/coach/continue_session_card.dart';
 import '../../widgets/coach/coach_empty_state.dart';
@@ -102,6 +105,10 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
     // Check for interrupted session
     final interruptedSession = _checkInterruptedSession();
 
+    // PHASE 8: Get match analysis
+    final matchAnalysis = ref.watch(latestMatchAnalysisProvider);
+    final matchInsight = ref.watch(coachMatchInsightProvider);
+
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
@@ -115,6 +122,12 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                 // Greeting
                 _buildGreeting(context, playerName),
                 const SizedBox(height: 24),
+
+                // PHASE 8: Match Analysis Section
+                if (matchAnalysis != null) ...[
+                  _buildMatchAnalysisSection(context, matchAnalysis, matchInsight),
+                  const SizedBox(height: 24),
+                ],
 
                 // MAIN CONTENT: ONE Priority Only (from Coach Brain)
                 if (!hasEnoughData)
@@ -198,9 +211,7 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
               child: _QuickActionButton(
                 icon: Icons.sports,
                 label: 'Đấu trận',
-                onTap: () {
-                  // Navigate to match recording
-                },
+                onTap: () => context.push('/play/recording'),
               ),
             ),
             const SizedBox(width: 12),
@@ -208,9 +219,7 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
               child: _QuickActionButton(
                 icon: Icons.chat_bubble_outline,
                 label: 'Hỏi Coach',
-                onTap: () {
-                  // Navigate to coach chat
-                },
+                onTap: () => context.push('/coach/chat'),
               ),
             ),
             const SizedBox(width: 12),
@@ -218,14 +227,240 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
               child: _QuickActionButton(
                 icon: Icons.history,
                 label: 'Lịch sử',
-                onTap: () {
-                  // Navigate to timeline
-                },
+                onTap: () => context.push('/training/timeline'),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  // ==========================================================================
+  // PHASE 8: MATCH ANALYSIS SECTION
+  // ==========================================================================
+
+  /// Build the "Từ trận đấu gần nhất" section
+  Widget _buildMatchAnalysisSection(BuildContext context, MatchAnalysis analysis, String? insight) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.analytics, color: AppTheme.primaryGreen),
+                const SizedBox(width: 8),
+                Text(
+                  'Từ trận đấu gần nhất',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primaryGreen,
+                      ),
+                ),
+              ],
+            ),
+          ),
+
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Coach Insight
+                if (insight != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.auto_awesome, size: 20, color: AppTheme.primaryGreen),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            insight,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppTheme.textPrimary,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
+                // Stats Grid
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        'Win Rate',
+                        '${analysis.winRate.toStringAsFixed(0)}%',
+                        Icons.emoji_events,
+                        analysis.winRate >= 50 ? Colors.green : Colors.orange,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        'Long Run',
+                        '${analysis.longestRun} bi',
+                        Icons.trending_up,
+                        AppTheme.primaryGreen,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        'Tổng bi',
+                        '${analysis.totalBallsPotted}',
+                        Icons.circle,
+                        Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        'Racks',
+                        '${analysis.totalRacks}',
+                        Icons.layers,
+                        Colors.purple,
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Strengths
+                if (analysis.strengths.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    'Điểm mạnh',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: analysis.strengths.map<Widget>((s) {
+                      return Chip(
+                        avatar: const Icon(Icons.check_circle, size: 16, color: Colors.green),
+                        label: Text(s, style: const TextStyle(fontSize: 12)),
+                        backgroundColor: Colors.green.shade50,
+                        side: BorderSide.none,
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    }).toList(),
+                  ),
+                ],
+
+                // Weaknesses
+                if (analysis.commonMistakes.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    'Cần cải thiện',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: analysis.commonMistakes.map<Widget>((m) {
+                      return Chip(
+                        avatar: const Icon(Icons.warning, size: 16, color: Colors.orange),
+                        label: Text(m, style: const TextStyle(fontSize: 12)),
+                        backgroundColor: Colors.orange.shade50,
+                        side: BorderSide.none,
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    }).toList(),
+                  ),
+                ],
+
+                // Recommendations
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.push('/coach/analysis'),
+                    icon: const Icon(Icons.lightbulb_outline),
+                    label: const Text('Xem đề xuất từ Coach'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppTheme.primaryGreen,
+                      side: const BorderSide(color: AppTheme.primaryGreen),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0);
+  }
+
+  Widget _buildStatCard(BuildContext context, String label, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+          ),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.grey.shade600,
+                ),
+          ),
+        ],
+      ),
     );
   }
 

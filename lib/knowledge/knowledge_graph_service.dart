@@ -66,6 +66,12 @@ class KnowledgeGraphService {
   /// Query: Get all mistakes
   List<MistakeNode> getAllMistakes() => _graph.mistakeNodes.values.toList();
 
+  /// Query: Get skill by ID
+  SkillNode? getSkill(String skillId) => _graph.getSkill(skillId);
+
+  /// Query: Get mistake by ID
+  MistakeNode? getMistake(String mistakeId) => _graph.getMistake(mistakeId);
+
   /// Query: Get drill by difficulty
   List<DrillNode> getDrillsByLevel(DrillDifficulty level) =>
       _graph.drillNodes.values.where((d) => d.difficulty == level).toList();

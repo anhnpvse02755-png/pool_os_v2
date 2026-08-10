@@ -40,6 +40,7 @@ import '../../presentation/screens/training/assessment_screen.dart';
 import '../../presentation/screens/coach/coach_screen.dart';
 import '../../presentation/screens/coach/coach_chat_screen.dart';
 import '../../presentation/screens/coach/coach_timeline_screen.dart';
+import '../../presentation/screens/coach/coach_entry_survey_screen.dart';
 import '../../presentation/screens/coach/training_plan_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/profile/settings_screen.dart';
@@ -307,6 +308,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/coach',
             name: 'coach',
             builder: (context, state) => const CoachScreen(),
+          ),
+          GoRoute(
+            path: '/coach/survey',
+            name: 'coachSurvey',
+            builder: (context, state) => const CoachEntrySurveyScreen(),
           ),
           GoRoute(
             path: '/coach/chat',

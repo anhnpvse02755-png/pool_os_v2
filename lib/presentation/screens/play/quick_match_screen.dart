@@ -205,52 +205,29 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
   }
 
   void _startMatch() {
-    final raceValue = _raceOptions
-        .firstWhere((o) => o['id'] == _selectedRaceTo)['value'] as int;
-
+    // Show "Đang phát triển" dialog
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: const Row(
           children: [
-            Icon(Icons.hourglass_empty, color: Colors.orange),
+            Icon(Icons.construction, color: Colors.orange),
             SizedBox(width: 8),
-            Text('Đang tìm đối thủ...'),
+            Text('Đang phát triển'),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
-            Text(
-              '$_selectedGameType • ${_selectedRaceTo.replaceAll('first-to-', 'FT')}',
-              style: TextStyle(color: Colors.grey.shade600),
-            ),
-          ],
+        content: const Text(
+          'Tính năng đấu nhanh online đang được phát triển.\n\n'
+          'Hiện tại bạn có thể sử dụng "Ghi nhận trận đấu" để ghi lại kết quả thi đấu.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Hủy'),
+            child: const Text('Đóng'),
           ),
         ],
       ),
     );
-
-    // Simulate finding opponent
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Tính năng đang phát triển'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    });
   }
 }
 

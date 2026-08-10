@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/providers/repository_providers.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Check if onboarding is already completed
+    final playerRepo = ref.read(playerRepositoryProvider);
+    final isOnboardingCompleted = playerRepo.isOnboardingCompleted();
+
+    // If already completed onboarding, redirect to home
+    isOnboardingCompleted.then((completed) {
+      if (completed) {
+        context.go('/home');
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -73,7 +86,14 @@ class WelcomeScreen extends StatelessWidget {
                   .slideY(begin: 0.3, end: 0, delay: 500.ms, duration: 400.ms),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: () => context.go('/home'),
+                onPressed: () async {
+                  final completed = await playerRepo.isOnboardingCompleted();
+                  if (completed) {
+                    context.go('/home');
+                  } else {
+                    context.push('/onboarding');
+                  }
+                },
                 child: const Text('Tôi đã có tài khoản'),
               ).animate().fadeIn(delay: 600.ms, duration: 400.ms),
               const SizedBox(height: 32),
