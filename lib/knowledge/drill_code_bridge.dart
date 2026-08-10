@@ -10,10 +10,10 @@
 //   STOP       → STOP_BALL
 //   DRAW       → DRAW_SHOT
 //   FOLLOW     → FOLLOW_SHOT
-//   STRAIGHT   → STRAIGHT_POT
+//   STRAIGHT   → STRAIGHT_NEAR
 //   POSITION   → POSITION_BASIC
 //   SAFETY     → SAFETY_BASIC
-//   BASIC      → STRAIGHT_POT   (BASIC_LV1 maps to closest beginner drill)
+//   BASIC      → STRAIGHT_NEAR   (BASIC_LV1 maps to closest beginner drill)
 //
 // Codes already in V2 form pass through unchanged. Codes that cannot be
 // mapped return null so the UI can fall back gracefully (no navigation).
@@ -34,13 +34,13 @@ String? v1ToV2Code(String v1Code) {
     case 'FOLLOW':
       return 'FOLLOW_SHOT';
     case 'STRAIGHT':
-      return 'STRAIGHT_POT';
+      return 'STRAIGHT_NEAR';
     case 'POSITION':
       return 'POSITION_BASIC';
     case 'SAFETY':
       return 'SAFETY_BASIC';
     case 'BASIC':
-      return 'STRAIGHT_POT';
+      return 'STRAIGHT_NEAR';
     default:
       return null;
   }

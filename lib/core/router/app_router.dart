@@ -215,7 +215,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/training/session/new',
             name: 'newDrillSession',
             builder: (context, state) {
-              final drillCode = state.uri.queryParameters['drill'] ?? 'STRAIGHT_POT';
+              final drillCode = state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR';
               return DrillSessionScreen(drillCode: drillCode);
             },
           ),
