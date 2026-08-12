@@ -632,7 +632,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
         child: ElevatedButton(
           onPressed: () {
             context.push(
-              '/training/session/new?drill=${drill.code}&level=$_selectedLevel',
+              '/training/session/ready?drill=${drill.code}&level=$_selectedLevel',
             );
           },
           style: ElevatedButton.styleFrom(

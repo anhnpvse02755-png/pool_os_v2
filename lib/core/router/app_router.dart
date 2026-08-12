@@ -11,6 +11,7 @@ import '../../presentation/screens/training/training_center_screen.dart';
 import '../../presentation/screens/training/drill_list_screen.dart';
 import '../../presentation/screens/training/drill_detail_screen.dart';
 import '../../presentation/screens/training/drill_session_screen.dart';
+import '../../presentation/screens/training/drill_recording_preparation_screen.dart';
 import '../../presentation/screens/training/drill_completion_screen.dart';
 import '../../data/models/drill_session.dart';
 import '../../presentation/screens/training/learning_path_screen.dart';
@@ -137,6 +138,19 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) {
               final drillCode = state.pathParameters['drillCode']!;
               return DrillDetailScreen(drillCode: drillCode);
+            },
+          ),
+          GoRoute(
+            path: '/training/session/ready',
+            name: 'drillRecordingPreparation',
+            builder: (context, state) {
+              final drillCode = state.uri.queryParameters['drill'] ?? '';
+              final levelStr = state.uri.queryParameters['level'];
+              final level = int.tryParse(levelStr ?? '1') ?? 1;
+              return DrillRecordingPreparationScreen(
+                drillCode: drillCode,
+                level: level,
+              );
             },
           ),
           GoRoute(

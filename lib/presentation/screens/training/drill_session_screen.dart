@@ -45,6 +45,23 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     _loadDrill();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Auto-start session when coming from drill detail (Bắt đầu Level X button).
+    // The level query param indicates user explicitly started.
+    final goState = GoRouterState.of(context);
+    final level = goState.uri.queryParameters['level'];
+    if (level != null && _drill != null && !isSessionActive && !_autoStarted) {
+      _autoStarted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _startSession();
+      });
+    }
+  }
+
+  bool _autoStarted = false;
+
   void _loadDrill() {
     final drill = DrillLibrary.getDrill(widget.drillCode);
     if (drill == null) {
