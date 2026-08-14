@@ -25,7 +25,7 @@ jobs:
         run: flutter pub get
 
       - name: Build Web
-        run: flutter build web
+        run: flutter build web --base-href /pool_os_v2/ --release
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
