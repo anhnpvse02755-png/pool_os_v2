@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
+import '../../../data/content/drill_content_vi.dart';
 
 class DrillDetailScreen extends StatefulWidget {
   final String drillCode;
@@ -202,7 +203,11 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   // Common Mistakes
                   _buildSectionTitle(context, 'Lỗi thường gặp'),
                   const SizedBox(height: 8),
-                  _buildCommonMistakes(),
+                  _buildCommonMistakes(drill.code),
+                  const SizedBox(height: 24),
+
+                  // Detailed Vietnamese content sections (if available)
+                  _buildContentSections(drill.code),
                   const SizedBox(height: 24),
 
                   // Knowledge Link
@@ -469,19 +474,17 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     );
   }
 
-  Widget _buildCommonMistakes() {
-    // Placeholder - sẽ lấy từ database
-    final mistakes = [
-      'Đánh quá mạnh hoặc quá nhẹ',
-      'Tư thế không vững',
-      'Không follow through đầy đủ',
-    ];
+  Widget _buildCommonMistakes(String drillCode) {
+    // Load from drillContentVi — Vietnamese content per drill.
+    final content = drillContentVi[drillCode];
+    final mistakes = content?.commonMistakes ?? _genericMistakes;
 
     return Column(
       children: mistakes.map((mistake) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(Icons.warning_amber, color: Colors.orange, size: 18),
               const SizedBox(width: 8),
@@ -490,6 +493,150 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
           ),
         );
       }).toList(),
+    );
+  }
+
+  // Fallback generic mistakes for drills without custom content.
+  static const _genericMistakes = [
+    'Đánh quá mạnh hoặc quá nhẹ',
+    'Tư thế không vững',
+    'Không follow through đầy đủ',
+  ];
+
+  Widget _buildContentSections(String drillCode) {
+    final content = drillContentVi[drillCode];
+    if (content == null) {
+      return _buildComingSoonCard();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Equipment
+        if (content.equipment.isNotEmpty) ...[
+          _buildSectionTitle(context, '🎯 Dụng cụ cần thiết'),
+          const SizedBox(height: 8),
+          _buildBulletList(content.equipment, Icons.sports_baseball),
+          const SizedBox(height: 16),
+        ],
+
+        // Stance
+        _buildSectionTitle(context, '🦶 Tư thế đứng'),
+        const SizedBox(height: 8),
+        _buildTextCard(content.stance),
+        const SizedBox(height: 16),
+
+        // Bridge
+        _buildSectionTitle(context, '🤚 Cầu tay'),
+        const SizedBox(height: 8),
+        _buildTextCard(content.bridge),
+        const SizedBox(height: 16),
+
+        // Stroke
+        _buildSectionTitle(context, '⚡ Kỹ thuật ra cơ'),
+        const SizedBox(height: 8),
+        _buildTextCard(content.stroke),
+        const SizedBox(height: 16),
+
+        // Aiming
+        _buildSectionTitle(context, '👁️ Hệ thống ngắm'),
+        const SizedBox(height: 8),
+        _buildTextCard(content.aiming),
+        const SizedBox(height: 16),
+
+        // Key Points
+        if (content.keyPoints.isNotEmpty) ...[
+          _buildSectionTitle(context, '🔑 Điểm cần nhớ'),
+          const SizedBox(height: 8),
+          _buildBulletList(content.keyPoints, Icons.check_circle_outline),
+          const SizedBox(height: 16),
+        ],
+
+        // Pro Tips
+        if (content.proTips.isNotEmpty) ...[
+          _buildSectionTitle(context, '⭐ Mẹo từ pro'),
+          const SizedBox(height: 8),
+          _buildBulletList(content.proTips, Icons.star, color: AppTheme.accentGold),
+          const SizedBox(height: 16),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildBulletList(
+    List<String> items,
+    IconData icon, {
+    Color? color,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: items.map((item) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 18, color: color ?? Colors.blue),
+              const SizedBox(width: 8),
+              Expanded(child: Text(item)),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildTextCard(String text) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
+    );
+  }
+
+  Widget _buildComingSoonCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.amber.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.amber.shade200),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.construction, color: Colors.amber.shade700),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Đang cập nhật',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber.shade900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Hướng dẫn chi tiết cho bài tập này sắp ra mắt. Vui lòng tham khảo các bài tập tương tự ở trên.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.amber.shade900,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -631,8 +778,11 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       child: SafeArea(
         child: ElevatedButton(
           onPressed: () {
+            // Skip the "recording preparation" screen — go straight to the
+            // session so the player can use the manual Trúng/Trượt buttons.
+            // (Camera-based auto-detection is for a later release.)
             context.push(
-              '/training/session/ready?drill=${drill.code}&level=$_selectedLevel',
+              '/training/session/new?drill=${drill.code}&level=$_selectedLevel',
             );
           },
           style: ElevatedButton.styleFrom(
@@ -643,10 +793,10 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.play_arrow),
+              const Icon(Icons.edit_note),
               const SizedBox(width: 8),
               Text(
-                'Bắt đầu Level $_selectedLevel',
+                'Bắt đầu nhập liệu — Level $_selectedLevel',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
