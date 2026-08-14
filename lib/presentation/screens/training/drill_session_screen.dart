@@ -30,6 +30,10 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   String? _error;
   Drill? _drill;
 
+  // Sprint 7B: custom target — user picks how many reps to do.
+  // Defaults to the level's default attempts if not provided via query param.
+  late int targetReps;
+
   // Shot recording
   ShotResult? lastShotResult;
 
@@ -52,6 +56,16 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     // The level query param indicates user explicitly started.
     final goState = GoRouterState.of(context);
     final level = goState.uri.queryParameters['level'];
+    final targetParam = goState.uri.queryParameters['target'];
+
+    // Sprint 7B: read custom target reps from query param (set by drill detail).
+    if (targetParam != null) {
+      final t = int.tryParse(targetParam);
+      if (t != null && t > 0) {
+        targetReps = t;
+      }
+    }
+
     if (level != null && _drill != null && !isSessionActive && !_autoStarted) {
       _autoStarted = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -72,10 +86,17 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     } else {
       setState(() {
         _drill = drill;
+        // Initialize target to level default if not yet set via query param.
+        if (!isInitialized) {
+          targetReps = drill.levels.first.attempts;
+          isInitialized = true;
+        }
         _error = null;
       });
     }
   }
+
+  bool isInitialized = false;
 
   Future<void> _startSession() async {
     final drill = _drill;
@@ -124,6 +145,14 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       successCount = updated.totalShotsMade;
       lastShotResult = result;
     });
+
+    // Sprint 7B: auto-finish when user reaches their target reps.
+    if (currentRep >= targetReps) {
+      // Small delay so the success/miss feedback animation plays first.
+      await Future<void>.delayed(const Duration(milliseconds: 700));
+      if (!mounted) return;
+      await _finishSession();
+    }
   }
 
   Future<void> _finishSession() async {
@@ -411,7 +440,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
                       ),
                     ),
                     Text(
-                      '${drill.levels.first.attempts} lần thành công',
+                      '$targetReps lần thành công',
                       style: TextStyle(color: AppTheme.textSecondary),
                     ),
                   ],
@@ -427,7 +456,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   Widget _buildActiveSession() {
-    final drill = _drill!;
     return Column(
       children: [
         // Progress
@@ -440,7 +468,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
               _StatItem(
                 label: 'Lần',
                 value: '$currentRep',
-                total: '/ ${drill.levels.first.attempts}',
+                total: '/ $targetReps',
               ),
               _StatItem(
                 label: 'Thành công',

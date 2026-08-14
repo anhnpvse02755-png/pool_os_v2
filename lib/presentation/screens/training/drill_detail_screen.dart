@@ -777,14 +777,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       ),
       child: SafeArea(
         child: ElevatedButton(
-          onPressed: () {
-            // Skip the "recording preparation" screen — go straight to the
-            // session so the player can use the manual Trúng/Trượt buttons.
-            // (Camera-based auto-detection is for a later release.)
-            context.push(
-              '/training/session/new?drill=${drill.code}&level=$_selectedLevel',
-            );
-          },
+          onPressed: () => _onStartPressed(drill),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryGreen,
             foregroundColor: Colors.white,
@@ -806,6 +799,142 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _onStartPressed(Drill drill) async {
+    final defaultAttempts = drill.levels.first.attempts;
+
+    // Show dialog so the player can pick a target — preset or custom.
+    // Sprint 7B: custom attempts to support heavy practice (e.g., 100 reps).
+    final picked = await showDialog<int>(
+      context: context,
+      builder: (ctx) => _RepetitionsDialog(
+        defaultAttempts: defaultAttempts,
+      ),
+    );
+    if (picked == null) return; // user cancelled
+
+    if (!mounted) return;
+    context.push(
+      '/training/session/new?drill=${drill.code}&level=$_selectedLevel&target=$picked',
+    );
+  }
+}
+
+/// Dialog chọn số lần tập — preset + tuỳ chỉnh.
+class _RepetitionsDialog extends StatefulWidget {
+  final int defaultAttempts;
+
+  const _RepetitionsDialog({required this.defaultAttempts});
+
+  @override
+  State<_RepetitionsDialog> createState() => _RepetitionsDialogState();
+}
+
+class _RepetitionsDialogState extends State<_RepetitionsDialog> {
+  static const _presets = [10, 25, 50, 100, 200];
+  late int _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.defaultAttempts;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Chọn số lần tập'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Mặc định cho level này: ${widget.defaultAttempts} lần',
+              style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+            ),
+            const SizedBox(height: 16),
+
+            // Preset chips
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _presets.map((preset) {
+                final isSelected = _selected == preset &&
+                    preset != widget.defaultAttempts;
+                return ChoiceChip(
+                  label: Text('$preset lần'),
+                  selected: isSelected,
+                  onSelected: (_) => setState(() => _selected = preset),
+                );
+              }).toList(),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Default option
+            ChoiceChip(
+              label: Text('Mặc định (${widget.defaultAttempts})'),
+              selected: _selected == widget.defaultAttempts,
+              onSelected: (_) =>
+                  setState(() => _selected = widget.defaultAttempts),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Custom input
+            const Text(
+              'Hoặc nhập số lần tuỳ chỉnh:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              initialValue: '$_selected',
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'VD: 150',
+                suffixText: 'lần',
+              ),
+              onChanged: (val) {
+                final n = int.tryParse(val);
+                if (n != null && n > 0) {
+                  setState(() => _selected = n);
+                }
+              },
+            ),
+
+            const SizedBox(height: 8),
+            Text(
+              'Số lần lớn giúp tăng độ chính xác và sức chịu đựng',
+              style: TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 11,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Huỷ'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_selected <= 0) return;
+            Navigator.of(context).pop(_selected);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.primaryGreen,
+            foregroundColor: Colors.white,
+          ),
+          child: Text('Bắt đầu $_selected lần'),
+        ),
+      ],
     );
   }
 }
