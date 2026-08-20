@@ -24,6 +24,7 @@ class CoachRecommendation {
   final List<String> outcomes;  // Expected outcomes
   final int estimatedMinutes;
   final int confidence;
+  final int priority; // 1 = highest priority
 
   CoachRecommendation({
     required this.drillCode,
@@ -32,6 +33,7 @@ class CoachRecommendation {
     required this.outcomes,
     required this.estimatedMinutes,
     required this.confidence,
+    this.priority = 1,
   });
 
   /// Create from Brain layer CoachRecommendation
@@ -43,6 +45,7 @@ class CoachRecommendation {
     List<String>? outcomes,
     int estimatedMinutes = 10,
     int confidence = 50,
+    int priority = 1,
   }) {
     return CoachRecommendation(
       drillCode: drillCode,
@@ -51,7 +54,38 @@ class CoachRecommendation {
       outcomes: outcomes ?? (expectedOutcome != null ? [expectedOutcome] : ['Cải thiện kỹ năng']),
       estimatedMinutes: estimatedMinutes,
       confidence: confidence,
+      priority: priority,
     );
+  }
+
+  /// Get priority label
+  String get priorityLabel {
+    switch (priority) {
+      case 1:
+        return 'Ưu tiên #1';
+      case 2:
+        return 'Ưu tiên #2';
+      case 3:
+        return 'Ưu tiên #3';
+      default:
+        return 'Ưu tiên #$priority';
+    }
+  }
+
+  /// Get confidence label
+  String get confidenceLabel {
+    if (confidence >= 80) return 'Rất chắc chắn';
+    if (confidence >= 60) return 'Khá chắc chắn';
+    if (confidence >= 40) return 'Bình thường';
+    return 'Ít dữ liệu';
+  }
+
+  /// Get confidence color
+  Color get confidenceColor {
+    if (confidence >= 80) return Colors.green;
+    if (confidence >= 60) return Colors.blue;
+    if (confidence >= 40) return Colors.orange;
+    return Colors.grey;
   }
 }
 
@@ -127,13 +161,20 @@ class RecommendationCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'HÔM NAY',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: AppTheme.primaryGreen,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                      ),
+                // Priority badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _getPriorityColor().withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    recommendation.priorityLabel,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: _getPriorityColor(),
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -143,11 +184,42 @@ class RecommendationCard extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '${recommendation.estimatedMinutes} phút',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppTheme.textSecondary,
+                Row(
+                  children: [
+                    Text(
+                      '${recommendation.estimatedMinutes} phút',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: AppTheme.textSecondary,
+                          ),
+                    ),
+                    const SizedBox(width: 12),
+                    // Confidence indicator
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: recommendation.confidenceColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(4),
                       ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.verified,
+                            size: 12,
+                            color: recommendation.confidenceColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${recommendation.confidence}%',
+                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                  color: recommendation.confidenceColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -155,6 +227,19 @@ class RecommendationCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _getPriorityColor() {
+    switch (recommendation.priority) {
+      case 1:
+        return Colors.orange;
+      case 2:
+        return Colors.blue;
+      case 3:
+        return Colors.purple;
+      default:
+        return Colors.grey;
+    }
   }
 
   Widget _buildReason(BuildContext context) {

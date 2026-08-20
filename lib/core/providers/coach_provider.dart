@@ -236,6 +236,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
       outcomes: rec.evidence,
       estimatedMinutes: _getEstimatedMinutes(rec.drillCode),
       confidence: rec.confidence,
+      priority: rec.rank,
     );
   }
 
@@ -445,11 +446,45 @@ final coachErrorProvider = Provider<String?>((ref) {
   return ref.watch(coachStateProvider).error;
 });
 
-/// Learning Path Provider (derived from CoachService)
+/// Learning Path Provider (derived from CoachingPlan)
 final learningPathProvider = FutureProvider<List<LearningPathItem>>((ref) async {
-  // Return empty list for now - Coach AI will populate this when user has data
-  // This prevents showing fake "Hoàn thành onboarding" message
-  return <LearningPathItem>[];
+  // Watch coach state to get coaching plan
+  final coachState = ref.watch(coachStateProvider);
+
+  // Check if user has enough data for recommendations
+  if (coachState.playerIntelligence.practicePatterns.totalSessions < 1) {
+    return <LearningPathItem>[];
+  }
+
+  final coachingPlan = coachState.coachingPlan;
+  if (coachingPlan == null) {
+    return <LearningPathItem>[];
+  }
+
+  // Generate learning path from prioritized recommendations
+  final items = <LearningPathItem>[];
+
+  for (final area in coachingPlan.prioritizedFocusAreas.take(5)) {
+    if (area.focusArea.drills.isEmpty) continue;
+
+    final drill = area.focusArea.drills.first;
+
+    items.add(LearningPathItem(
+      drillCode: drill.code,
+      drillName: drill.name,
+      drillNameVi: drill.nameVi,
+      description: area.focusArea.name,
+      priority: area.rank,
+      reason: area.reasoning,
+      estimatedMinutes: drill.estimatedMinutes,
+      category: area.focusArea.type.label,
+      difficulty: drill.difficulty.name,
+      currentProgress: 0.0, // TODO: Calculate from player intelligence
+      knowledgeIds: drill.prerequisites, // prerequisite drills
+    ));
+  }
+
+  return items;
 });
 
 /// Performance Summary Provider
