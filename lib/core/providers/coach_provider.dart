@@ -156,7 +156,15 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   /// Load PlayerIntelligence from storage
   Future<void> _loadPlayerIntelligence() async {
     try {
-      // Build from training data (MatchAnalysis persistence is Sprint-8 main focus)
+      // Sprint-8: Try to load from storage first
+      final savedData = LocalStorageService.getPlayerIntelligence();
+      if (savedData != null) {
+        final playerIntelligence = PlayerIntelligence.fromJson(savedData);
+        state = state.copyWith(playerIntelligence: playerIntelligence);
+        return;
+      }
+
+      // Fallback: build from training data if no saved data
       final playerIntelligence = await _buildPlayerIntelligence();
       state = state.copyWith(playerIntelligence: playerIntelligence);
     } catch (e) {
@@ -164,7 +172,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     }
   }
 
-  /// Build PlayerIntelligence from real training data
+  /// Build PlayerIntelligence from real training data (fallback)
   Future<PlayerIntelligence> _buildPlayerIntelligence() async {
     // Get training sessions from provider
     final trainingState = _ref.read(trainingProvider);
@@ -179,7 +187,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         score: session.score,
         durationMinutes: session.duration,
         completedAt: session.date,
-        mistakes: [], // TODO: Extract from session if available
+        mistakes: [],
       );
       playerIntelligence = playerIntelligence.updateWithSession(sessionData);
     }
@@ -304,8 +312,13 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   /// Save PlayerIntelligence to storage
   Future<void> _savePlayerIntelligence() async {
     // Sprint-8: Save PlayerIntelligence to local storage
-    // TODO: Implement full PlayerIntelligence serialization for persistence
-    // For now, MatchAnalysis is persisted which is the main Sprint-8 requirement
+    try {
+      await LocalStorageService.savePlayerIntelligence(
+        state.playerIntelligence.toJson(),
+      );
+    } catch (e) {
+      state = state.copyWith(error: 'Failed to save player data: $e');
+    }
   }
 
   /// Get Coach response through CoachService

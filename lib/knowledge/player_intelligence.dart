@@ -84,6 +84,68 @@ class PlayerIntelligence {
     );
   }
 
+  /// Create from JSON (Sprint-8 persistence)
+  factory PlayerIntelligence.fromJson(Map<String, dynamic> json) {
+    return PlayerIntelligence(
+      playerId: json['playerId'] as String? ?? 'current_user',
+      identity: json['identity'] != null
+          ? PlayerIdentity.fromJson(json['identity'] as Map<String, dynamic>)
+          : PlayerIdentity.empty(),
+      skillProfile: json['skillProfile'] != null
+          ? SkillProfile.fromJson(json['skillProfile'] as Map<String, dynamic>)
+          : SkillProfile.empty(),
+      progress: json['progress'] != null
+          ? ProgressTracker.fromJson(json['progress'] as Map<String, dynamic>)
+          : ProgressTracker.empty(),
+      mistakePatterns: json['mistakePatterns'] != null
+          ? MistakePatterns.fromJson(json['mistakePatterns'] as Map<String, dynamic>)
+          : MistakePatterns.empty(),
+      practicePatterns: json['practicePatterns'] != null
+          ? PracticePatterns.fromJson(json['practicePatterns'] as Map<String, dynamic>)
+          : PracticePatterns.empty(),
+      matchPatterns: json['matchPatterns'] != null
+          ? MatchPatterns.fromJson(json['matchPatterns'] as Map<String, dynamic>)
+          : MatchPatterns.empty(),
+      mentalModel: json['mentalModel'] != null
+          ? MentalModel.fromJson(json['mentalModel'] as Map<String, dynamic>)
+          : MentalModel.empty(),
+      learningHistory: json['learningHistory'] != null
+          ? LearningHistory.fromJson(json['learningHistory'] as Map<String, dynamic>)
+          : LearningHistory.empty(),
+      recommendations: json['recommendations'] != null
+          ? RecommendationHistory.fromJson(json['recommendations'] as Map<String, dynamic>)
+          : RecommendationHistory.empty(),
+      shortTermMemory: json['shortTermMemory'] != null
+          ? ShortTermMemory.fromJson(json['shortTermMemory'] as Map<String, dynamic>)
+          : ShortTermMemory.empty(),
+      workingMemory: json['workingMemory'] != null
+          ? WorkingMemory.fromJson(json['workingMemory'] as Map<String, dynamic>)
+          : WorkingMemory.empty(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : DateTime.now(),
+    );
+  }
+
+  /// Convert to JSON (Sprint-8 persistence)
+  Map<String, dynamic> toJson() {
+    return {
+      'playerId': playerId,
+      'identity': identity.toJson(),
+      'skillProfile': skillProfile.toJson(),
+      'progress': progress.toJson(),
+      'mistakePatterns': mistakePatterns.toJson(),
+      'practicePatterns': practicePatterns.toJson(),
+      'matchPatterns': matchPatterns.toJson(),
+      'mentalModel': mentalModel.toJson(),
+      'learningHistory': learningHistory.toJson(),
+      'recommendations': recommendations.toJson(),
+      'shortTermMemory': shortTermMemory.toJson(),
+      'workingMemory': workingMemory.toJson(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+
   /// Update with new session data
   PlayerIntelligence updateWithSession(TrainingSessionData session) {
     return copyWith(
@@ -211,6 +273,26 @@ class PlayerIdentity {
     return const PlayerIdentity(name: 'Player');
   }
 
+  factory PlayerIdentity.fromJson(Map<String, dynamic> json) {
+    return PlayerIdentity(
+      name: json['name'] as String? ?? 'Player',
+      startedAt: json['startedAt'] != null ? DateTime.parse(json['startedAt'] as String) : null,
+      primaryGoal: json['primaryGoal'] as String?,
+      experienceLevel: ExperienceLevel.fromString(json['experienceLevel'] as String? ?? 'beginner'),
+      playStyle: PlayStyle.fromString(json['playStyle'] as String?),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'startedAt': startedAt?.toIso8601String(),
+      'primaryGoal': primaryGoal,
+      'experienceLevel': experienceLevel.name,
+      'playStyle': playStyle?.name,
+    };
+  }
+
   int get daysSinceStart {
     if (startedAt == null) return 0;
     return DateTime.now().difference(startedAt!).inDays;
@@ -235,6 +317,13 @@ enum ExperienceLevel {
         return 'Chuyên gia';
     }
   }
+
+  static ExperienceLevel fromString(String value) {
+    return ExperienceLevel.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => ExperienceLevel.beginner,
+    );
+  }
 }
 
 enum PlayStyle {
@@ -254,6 +343,14 @@ enum PlayStyle {
       case PlayStyle.technical:
         return 'Kỹ thuật';
     }
+  }
+
+  static PlayStyle? fromString(String? value) {
+    if (value == null) return null;
+    return PlayStyle.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => PlayStyle.strategic,
+    );
   }
 }
 
@@ -290,6 +387,27 @@ class SkillProfile {
       skills: {},
       overallLevel: ExperienceLevel.beginner,
     );
+  }
+
+  factory SkillProfile.fromJson(Map<String, dynamic> json) {
+    final skillsMap = json['skills'] as Map<String, dynamic>? ?? {};
+    return SkillProfile(
+      skills: skillsMap.map((k, v) => MapEntry(k, SkillLevel.fromJson(v as Map<String, dynamic>))),
+      overallLevel: ExperienceLevel.fromString(json['overallLevel'] as String? ?? 'beginner'),
+      primaryStrength: json['primaryStrength'] as String?,
+      primaryWeakness: json['primaryWeakness'] as String?,
+      mostPracticedSkills: (json['mostPracticedSkills'] as List<dynamic>?)?.cast<String>() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'skills': skills.map((k, v) => MapEntry(k, v.toJson())),
+      'overallLevel': overallLevel.name,
+      'primaryStrength': primaryStrength,
+      'primaryWeakness': primaryWeakness,
+      'mostPracticedSkills': mostPracticedSkills,
+    };
   }
 
   SkillLevel getSkill(String skillId) {
@@ -329,6 +447,24 @@ class SkillLevel {
   static const intermediate = SkillLevel(skillId: '', level: 50);
   static const advanced = SkillLevel(skillId: '', level: 75);
   static const expert = SkillLevel(skillId: '', level: 100);
+
+  factory SkillLevel.fromJson(Map<String, dynamic> json) {
+    return SkillLevel(
+      skillId: json['skillId'] as String? ?? '',
+      level: json['level'] as int? ?? 0,
+      sessionsPracticed: json['sessionsPracticed'] as int? ?? 0,
+      lastPracticed: json['lastPracticed'] != null ? DateTime.parse(json['lastPracticed'] as String) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'skillId': skillId,
+      'level': level,
+      'sessionsPracticed': sessionsPracticed,
+      'lastPracticed': lastPracticed?.toIso8601String(),
+    };
+  }
 
   String get label {
     if (level < 20) return 'Sơ cấp';
@@ -374,6 +510,27 @@ class ProgressTracker {
       improvementRate: 0,
       consistencyScore: 0,
     );
+  }
+
+  factory ProgressTracker.fromJson(Map<String, dynamic> json) {
+    final historyList = json['trendHistory'] as List<dynamic>? ?? [];
+    return ProgressTracker(
+      trendHistory: historyList.map((e) => ProgressPoint.fromJson(e as Map<String, dynamic>)).toList(),
+      currentTrend: TrendDirection.fromString(json['currentTrend'] as String? ?? 'stable'),
+      personalBest: json['personalBest'] != null ? ProgressPoint.fromJson(json['personalBest'] as Map<String, dynamic>) : null,
+      improvementRate: (json['improvementRate'] as num?)?.toDouble() ?? 0,
+      consistencyScore: json['consistencyScore'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'trendHistory': trendHistory.map((e) => e.toJson()).toList(),
+      'currentTrend': currentTrend.name,
+      'personalBest': personalBest?.toJson(),
+      'improvementRate': improvementRate,
+      'consistencyScore': consistencyScore,
+    };
   }
 
   ProgressTracker addSession(TrainingSessionData session) {
@@ -456,9 +613,34 @@ class ProgressPoint {
     required this.score,
     required this.type,
   });
+
+  factory ProgressPoint.fromJson(Map<String, dynamic> json) {
+    return ProgressPoint(
+      date: DateTime.parse(json['date'] as String),
+      score: json['score'] as int? ?? 0,
+      type: ProgressTypeExtension.fromString(json['type'] as String? ?? 'training'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date.toIso8601String(),
+      'score': score,
+      'type': type.name,
+    };
+  }
 }
 
 enum ProgressType { training, match }
+
+extension ProgressTypeExtension on ProgressType {
+  static ProgressType fromString(String value) {
+    return ProgressType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => ProgressType.training,
+    );
+  }
+}
 
 enum TrendDirection {
   improving,
@@ -474,6 +656,13 @@ enum TrendDirection {
       case TrendDirection.declining:
         return 'Cần cải thiện';
     }
+  }
+
+  static TrendDirection fromString(String value) {
+    return TrendDirection.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => TrendDirection.stable,
+    );
   }
 }
 
@@ -514,6 +703,25 @@ class MistakePatterns {
     );
   }
 
+  factory MistakePatterns.fromJson(Map<String, dynamic> json) {
+    final patternsList = json['patterns'] as List<dynamic>? ?? [];
+    return MistakePatterns(
+      patterns: patternsList.map((e) => MistakePattern.fromJson(e as Map<String, dynamic>)).toList(),
+      topMistakes: (json['topMistakes'] as List<dynamic>?)?.cast<String>() ?? [],
+      improvingMistakes: (json['improvingMistakes'] as List<dynamic>?)?.cast<String>() ?? [],
+      newMistakes: (json['newMistakes'] as List<dynamic>?)?.cast<String>() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'patterns': patterns.map((e) => e.toJson()).toList(),
+      'topMistakes': topMistakes,
+      'improvingMistakes': improvingMistakes,
+      'newMistakes': newMistakes,
+    };
+  }
+
   MistakePatterns updateFromSession(TrainingSessionData session) {
     // Add mistakes from session
     return this;
@@ -541,6 +749,28 @@ class MistakePattern {
     required this.isImproving,
     this.associatedCauses = const [],
   });
+
+  factory MistakePattern.fromJson(Map<String, dynamic> json) {
+    return MistakePattern(
+      mistakeId: json['mistakeId'] as String? ?? '',
+      mistakeName: json['mistakeName'] as String? ?? '',
+      frequency: json['frequency'] as int? ?? 0,
+      lastSeen: json['lastSeen'] != null ? DateTime.parse(json['lastSeen'] as String) : DateTime.now(),
+      isImproving: json['isImproving'] as bool? ?? false,
+      associatedCauses: (json['associatedCauses'] as List<dynamic>?)?.cast<String>() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'mistakeId': mistakeId,
+      'mistakeName': mistakeName,
+      'frequency': frequency,
+      'lastSeen': lastSeen.toIso8601String(),
+      'isImproving': isImproving,
+      'associatedCauses': associatedCauses,
+    };
+  }
 }
 
 // ============================================================================
@@ -578,6 +808,34 @@ class PracticePatterns {
       favoriteDrills: const [],
       consistency: ConsistencyMetrics.empty(),
     );
+  }
+
+  factory PracticePatterns.fromJson(Map<String, dynamic> json) {
+    return PracticePatterns(
+      totalSessions: json['totalSessions'] as int? ?? 0,
+      totalMinutes: json['totalMinutes'] as int? ?? 0,
+      lastSession: json['lastSession'] != null ? DateTime.parse(json['lastSession'] as String) : null,
+      avgSessionLength: json['avgSessionLength'] as int? ?? 0,
+      sessionsThisWeek: json['sessionsThisWeek'] as int? ?? 0,
+      sessionsThisMonth: json['sessionsThisMonth'] as int? ?? 0,
+      favoriteDrills: (json['favoriteDrills'] as List<dynamic>?)?.cast<String>() ?? [],
+      consistency: json['consistency'] != null
+          ? ConsistencyMetrics.fromJson(json['consistency'] as Map<String, dynamic>)
+          : ConsistencyMetrics.empty(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'totalSessions': totalSessions,
+      'totalMinutes': totalMinutes,
+      'lastSession': lastSession?.toIso8601String(),
+      'avgSessionLength': avgSessionLength,
+      'sessionsThisWeek': sessionsThisWeek,
+      'sessionsThisMonth': sessionsThisMonth,
+      'favoriteDrills': favoriteDrills,
+      'consistency': consistency.toJson(),
+    };
   }
 
   PracticePatterns addSession(TrainingSessionData session) {
@@ -631,6 +889,24 @@ class ConsistencyMetrics {
     );
   }
 
+  factory ConsistencyMetrics.fromJson(Map<String, dynamic> json) {
+    return ConsistencyMetrics(
+      regularity: json['regularity'] as int? ?? 0,
+      preferredTime: json['preferredTime'] as int? ?? 0,
+      preferredDay: json['preferredDay'] as int? ?? 0,
+      deviationFromHabit: (json['deviationFromHabit'] as num?)?.toDouble() ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'regularity': regularity,
+      'preferredTime': preferredTime,
+      'preferredDay': preferredDay,
+      'deviationFromHabit': deviationFromHabit,
+    };
+  }
+
   ConsistencyMetrics addSession(TrainingSessionData session) {
     return this;
   }
@@ -680,6 +956,36 @@ class MatchPatterns {
     );
   }
 
+  factory MatchPatterns.fromJson(Map<String, dynamic> json) {
+    return MatchPatterns(
+      totalMatches: json['totalMatches'] as int? ?? 0,
+      wins: json['wins'] as int? ?? 0,
+      losses: json['losses'] as int? ?? 0,
+      draws: json['draws'] as int? ?? 0,
+      winRate: (json['winRate'] as num?)?.toDouble() ?? 0,
+      currentStreak: json['currentStreak'] != null ? StreakInfo.fromJson(json['currentStreak'] as Map<String, dynamic>) : const StreakInfo(type: StreakType.none, count: 0),
+      longestWinStreak: json['longestWinStreak'] != null ? StreakInfo.fromJson(json['longestWinStreak'] as Map<String, dynamic>) : const StreakInfo(type: StreakType.none, count: 0),
+      longestLossStreak: json['longestLossStreak'] != null ? StreakInfo.fromJson(json['longestLossStreak'] as Map<String, dynamic>) : const StreakInfo(type: StreakType.none, count: 0),
+      opponentAnalysis: json['opponentAnalysis'] != null ? PerformanceByOpponent.fromJson(json['opponentAnalysis'] as Map<String, dynamic>) : PerformanceByOpponent.empty(),
+      conditionAnalysis: json['conditionAnalysis'] != null ? PerformanceByCondition.fromJson(json['conditionAnalysis'] as Map<String, dynamic>) : PerformanceByCondition.empty(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'totalMatches': totalMatches,
+      'wins': wins,
+      'losses': losses,
+      'draws': draws,
+      'winRate': winRate,
+      'currentStreak': currentStreak.toJson(),
+      'longestWinStreak': longestWinStreak.toJson(),
+      'longestLossStreak': longestLossStreak.toJson(),
+      'opponentAnalysis': opponentAnalysis.toJson(),
+      'conditionAnalysis': conditionAnalysis.toJson(),
+    };
+  }
+
   MatchPatterns addMatch(MatchData match) {
     return this;
   }
@@ -693,9 +999,56 @@ class StreakInfo {
     required this.type,
     required this.count,
   });
+
+  factory StreakInfo.fromJson(Map<String, dynamic> json) {
+    return StreakInfo(
+      type: StreakTypeExtension.fromString(json['type'] as String? ?? 'none'),
+      count: json['count'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.name,
+      'count': count,
+    };
+  }
 }
 
 enum StreakType { win, loss, none }
+
+extension StreakTypeExtension on StreakType {
+  static StreakType fromString(String value) {
+    return StreakType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => StreakType.none,
+    );
+  }
+}
+
+enum MentalTrend {
+  improving,
+  stable,
+  declining;
+
+  String get label {
+    switch (this) {
+      case MentalTrend.improving:
+        return 'Đang cải thiện';
+      case MentalTrend.stable:
+        return 'Ổn định';
+      case MentalTrend.declining:
+        return 'Cần chú ý';
+    }
+  }
+
+  static MentalTrend fromString(String value) {
+    return MentalTrend.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => MentalTrend.stable,
+    );
+  }
+}
 
 class PerformanceByOpponent {
   final Map<String, OpponentRecord> records;
@@ -706,6 +1059,19 @@ class PerformanceByOpponent {
 
   factory PerformanceByOpponent.empty() {
     return const PerformanceByOpponent(records: {});
+  }
+
+  factory PerformanceByOpponent.fromJson(Map<String, dynamic> json) {
+    final recordsMap = json['records'] as Map<String, dynamic>? ?? {};
+    return PerformanceByOpponent(
+      records: recordsMap.map((k, v) => MapEntry(k, OpponentRecord.fromJson(v as Map<String, dynamic>))),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'records': records.map((k, v) => MapEntry(k, v.toJson())),
+    };
   }
 }
 
@@ -723,6 +1089,26 @@ class OpponentRecord {
     required this.losses,
     required this.lastPlayed,
   });
+
+  factory OpponentRecord.fromJson(Map<String, dynamic> json) {
+    return OpponentRecord(
+      opponentName: json['opponentName'] as String? ?? '',
+      timesPlayed: json['timesPlayed'] as int? ?? 0,
+      wins: json['wins'] as int? ?? 0,
+      losses: json['losses'] as int? ?? 0,
+      lastPlayed: json['lastPlayed'] != null ? DateTime.parse(json['lastPlayed'] as String) : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'opponentName': opponentName,
+      'timesPlayed': timesPlayed,
+      'wins': wins,
+      'losses': losses,
+      'lastPlayed': lastPlayed.toIso8601String(),
+    };
+  }
 }
 
 class PerformanceByCondition {
@@ -742,6 +1128,22 @@ class PerformanceByCondition {
       awayWinRate: 0,
       pressureWinRate: 0,
     );
+  }
+
+  factory PerformanceByCondition.fromJson(Map<String, dynamic> json) {
+    return PerformanceByCondition(
+      homeWinRate: json['homeWinRate'] as int? ?? 0,
+      awayWinRate: json['awayWinRate'] as int? ?? 0,
+      pressureWinRate: json['pressureWinRate'] as int? ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'homeWinRate': homeWinRate,
+      'awayWinRate': awayWinRate,
+      'pressureWinRate': pressureWinRate,
+    };
   }
 }
 
@@ -780,27 +1182,35 @@ class MentalModel {
     );
   }
 
+  factory MentalModel.fromJson(Map<String, dynamic> json) {
+    return MentalModel(
+      confidence: json['confidence'] as int? ?? 50,
+      focus: json['focus'] as int? ?? 50,
+      pressureHandling: json['pressureHandling'] as int? ?? 50,
+      tiltTendency: json['tiltTendency'] as int? ?? 50,
+      mentalBlocks: (json['mentalBlocks'] as List<dynamic>?)?.cast<String>() ?? [],
+      triggers: (json['triggers'] as List<dynamic>?)?.cast<String>() ?? [],
+      trend: MentalTrend.fromString(json['trend'] as String? ?? 'stable'),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'confidence': confidence,
+      'focus': focus,
+      'pressureHandling': pressureHandling,
+      'tiltTendency': tiltTendency,
+      'mentalBlocks': mentalBlocks,
+      'triggers': triggers,
+      'trend': trend.name,
+    };
+  }
+
   MentalModel updateFromReflection(ReflectionData reflection) {
     return this;
   }
 }
 
-enum MentalTrend {
-  improving,
-  stable,
-  declining;
-
-  String get label {
-    switch (this) {
-      case MentalTrend.improving:
-        return 'Đang cải thiện';
-      case MentalTrend.stable:
-        return 'Ổn định';
-      case MentalTrend.declining:
-        return 'Cần chú ý';
-    }
-  }
-}
 
 // ============================================================================
 // LEARNING HISTORY - What have they learned?
@@ -828,6 +1238,26 @@ class LearningHistory {
     );
   }
 
+  factory LearningHistory.fromJson(Map<String, dynamic> json) {
+    final entriesList = json['entries'] as List<dynamic>? ?? [];
+    final masteredMap = json['conceptMasteredAt'] as Map<String, dynamic>? ?? {};
+    return LearningHistory(
+      entries: entriesList.map((e) => LearningEntry.fromJson(e as Map<String, dynamic>)).toList(),
+      masteredConcepts: (json['masteredConcepts'] as List<dynamic>?)?.cast<String>() ?? [],
+      inProgressConcepts: (json['inProgressConcepts'] as List<dynamic>?)?.cast<String>() ?? [],
+      conceptMasteredAt: masteredMap.map((k, v) => MapEntry(k, DateTime.parse(v as String))),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'entries': entries.map((e) => e.toJson()).toList(),
+      'masteredConcepts': masteredConcepts,
+      'inProgressConcepts': inProgressConcepts,
+      'conceptMasteredAt': conceptMasteredAt.map((k, v) => MapEntry(k, v.toIso8601String())),
+    };
+  }
+
   LearningHistory addReflection(ReflectionData reflection) {
     return this;
   }
@@ -847,6 +1277,26 @@ class LearningEntry {
     required this.description,
     this.improvementScore,
   });
+
+  factory LearningEntry.fromJson(Map<String, dynamic> json) {
+    return LearningEntry(
+      date: json['date'] != null ? DateTime.parse(json['date'] as String) : DateTime.now(),
+      type: json['type'] as String? ?? 'drill',
+      itemId: json['itemId'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      improvementScore: json['improvementScore'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date.toIso8601String(),
+      'type': type,
+      'itemId': itemId,
+      'description': description,
+      'improvementScore': improvementScore,
+    };
+  }
 }
 
 // ============================================================================
@@ -870,6 +1320,24 @@ class RecommendationHistory {
       drillRecommendationCount: {},
       lastRecommendation: null,
     );
+  }
+
+  factory RecommendationHistory.fromJson(Map<String, dynamic> json) {
+    final entriesList = json['entries'] as List<dynamic>? ?? [];
+    final countMap = json['drillRecommendationCount'] as Map<String, dynamic>? ?? {};
+    return RecommendationHistory(
+      entries: entriesList.map((e) => RecommendationEntry.fromJson(e as Map<String, dynamic>)).toList(),
+      drillRecommendationCount: countMap.map((k, v) => MapEntry(k, v as int)),
+      lastRecommendation: json['lastRecommendation'] != null ? DateTime.parse(json['lastRecommendation'] as String) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'entries': entries.map((e) => e.toJson()).toList(),
+      'drillRecommendationCount': drillRecommendationCount,
+      'lastRecommendation': lastRecommendation?.toIso8601String(),
+    };
   }
 
   RecommendationHistory addRecommendation(String drillCode, String reason) {
@@ -897,6 +1365,28 @@ class RecommendationEntry {
     required this.completed,
     this.completedAt,
   });
+
+  factory RecommendationEntry.fromJson(Map<String, dynamic> json) {
+    return RecommendationEntry(
+      id: json['id'] as String? ?? '',
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : DateTime.now(),
+      drillCode: json['drillCode'] as String? ?? '',
+      reason: json['reason'] as String? ?? '',
+      completed: json['completed'] as bool? ?? false,
+      completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt'] as String) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'drillCode': drillCode,
+      'reason': reason,
+      'completed': completed,
+      'completedAt': completedAt?.toIso8601String(),
+    };
+  }
 }
 
 // ============================================================================
@@ -923,6 +1413,24 @@ class ShortTermMemory {
       recentReflections: [],
       recentObservations: [],
     );
+  }
+
+  factory ShortTermMemory.fromJson(Map<String, dynamic> json) {
+    return ShortTermMemory(
+      recentSessions: (json['recentSessions'] as List<dynamic>?)?.map((e) => MemoryEntry.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+      recentMatches: (json['recentMatches'] as List<dynamic>?)?.map((e) => MemoryEntry.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+      recentReflections: (json['recentReflections'] as List<dynamic>?)?.map((e) => MemoryEntry.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+      recentObservations: (json['recentObservations'] as List<dynamic>?)?.map((e) => MemoryEntry.fromJson(e as Map<String, dynamic>)).toList() ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'recentSessions': recentSessions.map((e) => e.toJson()).toList(),
+      'recentMatches': recentMatches.map((e) => e.toJson()).toList(),
+      'recentReflections': recentReflections.map((e) => e.toJson()).toList(),
+      'recentObservations': recentObservations.map((e) => e.toJson()).toList(),
+    };
   }
 
   ShortTermMemory addSession(TrainingSessionData session) {
@@ -958,9 +1466,34 @@ class MemoryEntry {
     required this.type,
     required this.data,
   });
+
+  factory MemoryEntry.fromJson(Map<String, dynamic> json) {
+    return MemoryEntry(
+      timestamp: json['timestamp'] != null ? DateTime.parse(json['timestamp'] as String) : DateTime.now(),
+      type: MemoryTypeExtension.fromString(json['type'] as String? ?? 'session'),
+      data: (json['data'] as Map<String, dynamic>?) ?? {},
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'timestamp': timestamp.toIso8601String(),
+      'type': type.name,
+      'data': data,
+    };
+  }
 }
 
 enum MemoryType { session, match, reflection, observation, recommendation }
+
+extension MemoryTypeExtension on MemoryType {
+  static MemoryType fromString(String value) {
+    return MemoryType.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => MemoryType.session,
+    );
+  }
+}
 
 // ============================================================================
 // WORKING MEMORY - Current conversation context
@@ -986,6 +1519,24 @@ class WorkingMemory {
       context: {},
       conversationStart: DateTime.now(),
     );
+  }
+
+  factory WorkingMemory.fromJson(Map<String, dynamic> json) {
+    return WorkingMemory(
+      currentTopics: (json['currentTopics'] as List<dynamic>?)?.cast<String>() ?? [],
+      pendingQuestions: (json['pendingQuestions'] as List<dynamic>?)?.cast<String>() ?? [],
+      context: (json['context'] as Map<String, dynamic>?) ?? {},
+      conversationStart: json['conversationStart'] != null ? DateTime.parse(json['conversationStart'] as String) : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'currentTopics': currentTopics,
+      'pendingQuestions': pendingQuestions,
+      'context': context,
+      'conversationStart': conversationStart.toIso8601String(),
+    };
   }
 
   WorkingMemory addTopic(String topic) {
