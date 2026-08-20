@@ -253,6 +253,9 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
       _racks = [];
     });
     await ref.read(matchRepositoryProvider).saveMatch(m);
+
+    // Sprint-8: Clear previous match analysis when starting new match
+    ref.read(coachStateProvider.notifier).clearMatchAnalysis();
   }
 
   void _recordRackResult(String result) {
@@ -885,6 +888,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
       _opponentScore = 0;
       _racks = [];
     });
+    // Sprint-8: Clear match analysis when resetting
+    ref.read(coachStateProvider.notifier).clearMatchAnalysis();
   }
 
   Widget _buildSectionTitle(String title) {

@@ -13,6 +13,8 @@ class LocalStorageService {
   static const String _keyUserProfile = 'user_profile';
   static const String _keySettings = 'settings';
   static const String _keyKnowledgeProgress = 'knowledge_progress';
+  static const String _keyLatestMatchAnalysis = 'latest_match_analysis';
+  static const String _keyPlayerIntelligence = 'player_intelligence';
 
   // Initialize
   static Future<void> init() async {
@@ -124,6 +126,43 @@ class LocalStorageService {
 
   static Future<void> saveSettings(Map<String, dynamic> settings) async {
     await prefs.setString(_keySettings, jsonEncode(settings));
+  }
+
+  // ==========================================================================
+  // MATCH ANALYSIS (Sprint-8)
+  // ==========================================================================
+
+  /// Save latest match analysis for Coach AI
+  static Future<void> saveLatestMatchAnalysis(Map<String, dynamic> analysis) async {
+    await prefs.setString(_keyLatestMatchAnalysis, jsonEncode(analysis));
+  }
+
+  /// Get latest match analysis
+  static Map<String, dynamic>? getLatestMatchAnalysis() {
+    final data = prefs.getString(_keyLatestMatchAnalysis);
+    if (data == null) return null;
+    return jsonDecode(data);
+  }
+
+  /// Clear latest match analysis (when starting new match)
+  static Future<void> clearLatestMatchAnalysis() async {
+    await prefs.remove(_keyLatestMatchAnalysis);
+  }
+
+  // ==========================================================================
+  // PLAYER INTELLIGENCE (Sprint-8)
+  // ==========================================================================
+
+  /// Save player intelligence for Coach AI
+  static Future<void> savePlayerIntelligence(Map<String, dynamic> intelligence) async {
+    await prefs.setString(_keyPlayerIntelligence, jsonEncode(intelligence));
+  }
+
+  /// Get player intelligence
+  static Map<String, dynamic>? getPlayerIntelligence() {
+    final data = prefs.getString(_keyPlayerIntelligence);
+    if (data == null) return null;
+    return jsonDecode(data);
   }
 
   // ==========================================================================

@@ -9,7 +9,7 @@
 // 4. Integrates with PlayerIntelligence for Coach AI
 // ============================================================================
 
-import '../models/match_analysis.dart';
+import '../models/match_stats.dart';
 import '../../data/models/match.dart';
 
 /// Service for analyzing match recording data

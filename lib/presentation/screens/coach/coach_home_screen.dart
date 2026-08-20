@@ -16,7 +16,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/player_provider.dart' as player;
 import '../../../core/services/coach_voice_service.dart';
-import '../../../core/models/match_analysis.dart';
+import '../../../core/models/match_stats.dart';
 import '../../widgets/coach/recommendation_card.dart';
 import '../../widgets/coach/continue_session_card.dart';
 import '../../widgets/coach/coach_empty_state.dart';

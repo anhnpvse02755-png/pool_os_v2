@@ -16,7 +16,8 @@ import '../../knowledge/player_intelligence.dart';
 import '../services/session_memory_service.dart';
 import '../services/coach_types.dart';
 import '../services/match_analysis_service.dart';
-import '../models/match_analysis.dart';
+import '../services/local_storage_service.dart';
+import '../models/match_stats.dart';
 import '../../knowledge/knowledge_graph_service.dart';
 import '../../knowledge/priority_engine.dart';
 import '../../knowledge/coach_service.dart' hide CoachRecommendation;
@@ -155,8 +156,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   /// Load PlayerIntelligence from storage
   Future<void> _loadPlayerIntelligence() async {
     try {
-      // TODO: Load from SharedPreferences or Supabase
-      // For now, build from training data
+      // Build from training data (MatchAnalysis persistence is Sprint-8 main focus)
       final playerIntelligence = await _buildPlayerIntelligence();
       state = state.copyWith(playerIntelligence: playerIntelligence);
     } catch (e) {
@@ -291,11 +291,21 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     state = state.copyWith(playerIntelligence: updatedPI);
     await refreshCoachPlan();
     await _savePlayerIntelligence();
+
+    // Persist MatchAnalysis for app restart (Sprint-8)
+    await LocalStorageService.saveLatestMatchAnalysis(analysis.toJson());
+  }
+
+  /// Clear MatchAnalysis when starting new match (Sprint-8)
+  Future<void> clearMatchAnalysis() async {
+    await LocalStorageService.clearLatestMatchAnalysis();
   }
 
   /// Save PlayerIntelligence to storage
   Future<void> _savePlayerIntelligence() async {
-    // TODO: Save to SharedPreferences or Supabase
+    // Sprint-8: Save PlayerIntelligence to local storage
+    // TODO: Implement full PlayerIntelligence serialization for persistence
+    // For now, MatchAnalysis is persisted which is the main Sprint-8 requirement
   }
 
   /// Get Coach response through CoachService
@@ -456,6 +466,15 @@ final matchAnalysisServiceProvider = Provider<MatchAnalysisService>((ref) {
 /// Latest Match Analysis Provider
 /// Stores the most recent match analysis for Coach Home display
 final latestMatchAnalysisProvider = StateProvider<MatchAnalysis?>((ref) {
+  // Load from storage on initialization (Sprint-8)
+  final savedData = LocalStorageService.getLatestMatchAnalysis();
+  if (savedData != null) {
+    try {
+      return MatchAnalysis.fromJson(savedData);
+    } catch (_) {
+      return null;
+    }
+  }
   return null;
 });
 
