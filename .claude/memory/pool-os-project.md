@@ -7,12 +7,12 @@ metadata:
 
 Pool OS là nền tảng quản lý cho các doanh nghiệp dịch vụ bể bơi. Phiên bản hiện tại là v2, tập trung vào **Coach AI** — một AI assistant giúp coach technicians và pool service businesses.
 
-**Current Phase:** Phase 3-7B (Coach AI Preview UI Sprint)
+**Current Phase:** Phase 3 (Sprint-8 complete)
 
-**Vertical Slice Complete:** Phase 3-7B — Coach AI Preview đã sẵn sàng
+**Sprint Baseline:** `9d784e8` — Sprint-8 Match Recording → Coach AI integration
 
-**Next Work:** Sprint 7B.1 — Coach Preview UI
+**Next Work:** Sprint-9 Planning
 
-**Why:** Dự án áp dụng Phase Constitution với 6 rules: Workflow → North Star → DoD → 4A-InternalBuild → 4B-ProductValidation → OneSprintOneWorkflow. Phase 3-7B đã hoàn thành Vertical Slice.
+**Why:** Sprint-8 đã hoàn thành Match Recording → Coach AI integration. Sprint-9 cần định hướng mới.
 
-**How to apply:** Khi planning work mới, luôn reference Phase Conventions và Vertical Slice Roadmap. Engineering Done = sprint gate.
+**How to apply:** Sprint-9 chỉ xử lý requirements mới hoặc regression được phát hiện. Không modify Sprint-8 architecture.

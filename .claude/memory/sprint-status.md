@@ -29,6 +29,22 @@ metadata:
 |--------|--------|-------|
 | Sprint-9 | 🟡 Planning | TBD |
 
+---
+
+### Sprint-8 Post-Closure Notes
+
+**Baseline commit:** `9d784e8` — Match Recording → Coach AI integration
+
+**Closed with:** Static analysis ✅ + Release build ✅ + Integration code ✅
+
+**Post-Sprint Verification (Sprint-9 / Regression):**
+- `flutter test` — unit/integration tests
+- Device/emulator E2E: Match Recording → Coach flow
+- Restart app → Match Analysis persists ✅ (implemented, not verified)
+- New match → old analysis cleared ✅ (implemented, not verified)
+
+**Architecture freeze:** Sprint-8 baseline (`9d784e8`) — no architectural changes unless regression found.
+
 **Why:** Tracking sprint completion giúp maintain visibility on project progress.
 
 **How to apply:** Check sprint status trước khi plan sprint mới để tránh duplicate work.
