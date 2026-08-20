@@ -15,18 +15,14 @@
 // DrillSessionScreen is a ConsumerStatefulWidget — requires ProviderScope
 // with drillSessionRepositoryProvider override.
 //
-// Implementation note: this test renders the screen in its initial
-// (pre-active) state and asserts visible widgets only. Driving the
-// start/stop transitions would require `tester.tap(...)` on widgets
-// that drive flutter_animate tweens, which leave pending Timer
-// instances that fail the binding's post-test invariant check
-// (`!timersPending`). The match_summary_flow_test pattern from
-// Sprint 2B uses the same approach: pump-and-assert, no tap.
+// FIX: DrillSessionScreen uses GoRouterState.of(context) in didChangeDependencies(),
+// so the test must wrap the widget with GoRouter.
 // ============================================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:pool_os_v2/presentation/screens/training/drill_session_screen.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart' as repo;
@@ -67,8 +63,18 @@ void main() {
         overrides: [
           repo.drillSessionRepositoryProvider.overrideWithValue(FakeDrillSessionRepository()),
         ],
-        child: const MaterialApp(
-          home: DrillSessionScreen(drillCode: 'STRAIGHT_NEAR'),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/training/drill/STRAIGHT_NEAR',
+            routes: [
+              GoRoute(
+                path: '/training/drill/:code',
+                builder: (context, state) => DrillSessionScreen(
+                  drillCode: state.pathParameters['code'] ?? 'STRAIGHT_NEAR',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

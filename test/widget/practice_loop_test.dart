@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pool_os_v2/core/services/local_storage_service.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart'
@@ -96,8 +97,18 @@ void main() {
           repo_providers.playerRepositoryProvider
               .overrideWithValue(_FakePlayerRepository()),
         ],
-        child: const MaterialApp(
-          home: DrillSessionScreen(drillCode: 'STRAIGHT_NEAR'),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/training/drill/STRAIGHT_NEAR',
+            routes: [
+              GoRoute(
+                path: '/training/drill/:code',
+                builder: (context, state) => DrillSessionScreen(
+                  drillCode: state.pathParameters['code'] ?? 'STRAIGHT_NEAR',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
