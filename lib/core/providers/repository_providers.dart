@@ -20,6 +20,7 @@ import '../../domain/services/quiz_service.dart' as quiz_svc;
 import '../../domain/services/spaced_repetition_service.dart' as sr_svc;
 import '../../data/repositories/ai_coach_repository.dart' as ai_repo;
 import '../../data/repositories/equipment_repository.dart' as equipment_repo;
+import '../services/daily_notification_service.dart';
 import '../../data/models/player.dart';
 import '../../data/models/player_interests.dart';
 import '../../data/models/drill_progress.dart';
@@ -218,6 +219,14 @@ final knowledgeGraphServiceProvider = Provider<kg_svc.KnowledgeGraphService>((re
 final learningStreakServiceProvider = Provider<ls_svc.LearningStreakService>((ref) {
   return ls_svc.LearningStreakService(ref.watch(cacheRepositoryProvider));
 });
+
+final dailyNotificationServiceProvider = Provider<DailyNotificationService>((ref) {
+  final service = DailyNotificationService(ref.watch(cacheRepositoryProvider));
+  // Use platform scheduler in production
+  service.scheduler = PlatformNotificationScheduler();
+  return service;
+});
+
 final quizServiceProvider = Provider<quiz_svc.QuizService>((ref) {
   return quiz_svc.QuizService(ref.watch(cacheRepositoryProvider));
 });

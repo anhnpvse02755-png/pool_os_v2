@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/test_logging_service.dart';
@@ -46,20 +45,8 @@ class SettingsScreen extends ConsumerWidget {
             // Notifications Section
             _buildSectionTitle('Thông báo'),
             _buildSettingsCard([
-              _SwitchSettingsItem(
-                icon: Icons.notifications_outlined,
-                title: 'Thông báo streak',
-                subtitle: 'Nhắc nhở khi sắp mất streak',
-                value: true,
-                onChanged: (value) {},
-              ),
-              _SwitchSettingsItem(
-                icon: Icons.calendar_today_outlined,
-                title: 'Nhắc lịch tập',
-                subtitle: 'Thông báo nhắc tập hàng ngày',
-                value: false,
-                onChanged: (value) {},
-              ),
+              const _NotificationSettingsItem(),
+              const _DailyReminderSettingsItem(),
               _SwitchSettingsItem(
                 icon: Icons.emoji_events_outlined,
                 title: 'Thông báo giải đấu',
@@ -481,6 +468,384 @@ class _SettingsItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Daily notification settings - Sprint-10B
+class _DailyReminderSettingsItem extends ConsumerWidget {
+  const _DailyReminderSettingsItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notificationService = ref.watch(dailyNotificationServiceProvider);
+    final isEnabled = notificationService.isEnabled();
+    final hour = notificationService.getHour();
+    final minute = notificationService.getMinute();
+    final timeStr = '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _toggleDailyReminder(context, ref, isEnabled),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  isEnabled ? Icons.notifications_active : Icons.notifications_off_outlined,
+                  color: AppTheme.primaryGreen,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Nhắc lịch tập',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isEnabled ? 'Hàng ngày lúc $timeStr' : 'Thông báo nhắc tập hàng ngày',
+                      style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              ),
+              Switch(
+                value: isEnabled,
+                onChanged: (value) => _toggleDailyReminder(context, ref, isEnabled),
+                activeColor: AppTheme.primaryGreen,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _toggleDailyReminder(BuildContext context, WidgetRef ref, bool currentValue) async {
+    final notificationService = ref.read(dailyNotificationServiceProvider);
+
+    if (currentValue) {
+      // Disable
+      await notificationService.disable();
+      ref.invalidate(dailyNotificationServiceProvider);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đã tắt nhắc nhở hàng ngày'),
+            backgroundColor: Colors.grey,
+          ),
+        );
+      }
+    } else {
+      // Enable
+      final success = await notificationService.enable();
+      ref.invalidate(dailyNotificationServiceProvider);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              success
+                  ? 'Đã bật nhắc nhở hàng ngày!'
+                  : 'Không thể bật thông báo. Kiểm tra quyền trong cài đặt hệ thống.',
+            ),
+            backgroundColor: success ? Colors.green : Colors.orange,
+          ),
+        );
+      }
+    }
+  }
+}
+
+/// Streak reminder settings - Sprint-10B
+class _NotificationSettingsItem extends ConsumerWidget {
+  const _NotificationSettingsItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _showStreakSettings(context, ref),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  Icons.local_fire_department,
+                  color: Colors.orange.shade700,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Thông báo streak',
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Nhắc nhở khi sắp mất streak',
+                      style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, color: Colors.grey.shade400),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showStreakSettings(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => const _StreakSettingsSheet(),
+    );
+  }
+}
+
+class _StreakSettingsSheet extends ConsumerStatefulWidget {
+  const _StreakSettingsSheet();
+
+  @override
+  ConsumerState<_StreakSettingsSheet> createState() => _StreakSettingsSheetState();
+}
+
+class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
+  late TimeOfDay _selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    final notificationService = ref.read(dailyNotificationServiceProvider);
+    _selectedTime = TimeOfDay(
+      hour: notificationService.getHour(),
+      minute: notificationService.getMinute(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final streakService = ref.read(learningStreakServiceProvider);
+    final currentStreak = streakService.currentStreak();
+    final longestStreak = streakService.longestStreak();
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Handle
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Title
+          Row(
+            children: [
+              Icon(Icons.local_fire_department, color: Colors.orange.shade700, size: 28),
+              const SizedBox(width: 12),
+              const Text(
+                'Streak Reminder',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Current stats
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _StatColumn(
+                  icon: Icons.local_fire_department,
+                  value: '$currentStreak',
+                  label: 'Current',
+                  color: Colors.orange.shade700,
+                ),
+                Container(width: 1, height: 40, color: Colors.grey.shade300),
+                _StatColumn(
+                  icon: Icons.emoji_events,
+                  value: '$longestStreak',
+                  label: 'Longest',
+                  color: Colors.amber.shade700,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Time picker
+          const Text(
+            'Thời gian nhắc nhở',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: () => _pickTime(context),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.access_time),
+                  const SizedBox(width: 12),
+                  Text(
+                    _selectedTime.format(context),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Info text
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, size: 20, color: Colors.blue.shade700),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Bạn sẽ nhận thông báo nhắc nhở luyện tập vào thời gian đã chọn mỗi ngày.',
+                    style: TextStyle(fontSize: 13, color: Colors.blue.shade700),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Close button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryGreen,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Đóng', style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickTime(BuildContext context) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
+
+    if (picked != null) {
+      setState(() {
+        _selectedTime = picked;
+      });
+
+      // Update notification time
+      final notificationService = ref.read(dailyNotificationServiceProvider);
+      if (notificationService.isEnabled()) {
+        await notificationService.updateTime(
+          hour: picked.hour,
+          minute: picked.minute,
+        );
+      }
+    }
+  }
+}
+
+class _StatColumn extends StatelessWidget {
+  const _StatColumn({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.color,
+  });
+
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 24),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
     );
   }
 }
