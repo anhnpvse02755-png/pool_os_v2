@@ -767,4 +767,366 @@ Pattern play là tư duy toàn bộ chuỗi cú đánh từ đầu đến cuối
     relatedDrills: ['PATTERN_3_BALLS', 'PATTERN_5_BALLS', 'POSITION_3BALL'],
     tags: ['positioning', 'tag_pattern', 'tag_positioning'],
   ),
+
+  // ============================================================================
+  // MENTAL GAME — Tâm lý thi đấu
+  // ============================================================================
+  KnowledgeArticle(
+    id: 'mental-game',
+    title: 'Mental game — Tâm lý trong thi đấu billiards',
+    category: 'mental',
+    level: 'intermediate',
+    summary: 'Mental game là yếu tố tâm lý quyết định 50% kết quả trận đấu. Kiểm soát cảm xúc, tập trung vào quá trình, không kết quả.',
+    content: '''
+**Tại sao mental game quan trọng?**
+
+Trong billiards, kỹ thuật chỉ quyết định 50% kết quả. 50% còn lại là tâm lý.
+
+**Các yếu tố tâm lý chính:**
+
+1. **Confidence (Tự tin)**
+   - Tự tin đến từ việc luyện tập đúng cách
+   - Không tự tin = đánh run, sai cú dễ
+   - Cách tăng: tập những cú đã thành thạo mỗi ngày
+
+2. **Focus (Tập trung)**
+   - Tập trung vào cú đánh hiện tại, không nghĩ về cú trước
+   - Không nghĩ về điểm số
+   - Tip: hít thở sâu trước mỗi cú
+
+3. **Tilt control (Kiểm soát cảm xúc)**
+   - Tilt = mất kiểm soát cảm xúc sau khi thua
+   - Dấu hiệu tilt: thở nhanh, tay run, quyết định vội vàng
+   - Cách kiểm soát: dừng 30 giây, hít thở, uống nước
+
+4. **Pressure (Áp lực)**
+   - Áp lực từ điểm số, đối thủ, khán giả
+   - Áp lực giúp một số người chơi tốt hơn
+   - Áp lực làm một số người chơi kém hơn
+   - Biết mình thuộc loại nào
+
+**Cách rèn luyện mental game:**
+
+1. Tưởng tượng (visualization) trước khi ngủ
+2. Tự nói chuyện với bản thân (self-talk) tích cực
+3. Ghi lại trận đấu, xem lại để học từ sai lầm
+4. Tập thở và thiền 5-10 phút mỗi ngày
+5. Tập trong điều kiện có áp lực (đặt cược nhỏ với bạn bè)
+
+**Lời khuyên:**
+- Không bao giờ tỏ ra "chắc thắng" — đối thủ có thể hồi phục
+- Không bao giờ tỏ ra "chắc thua" — có thể đối thủ đang căng thẳng
+- Luôn tập trung vào quá trình, không phải kết quả
+''',
+    keyTakeaways: [
+      'Mental game = 50% kết quả trận đấu',
+      'Tự tin đến từ luyện tập',
+      'Tập trung vào cú hiện tại',
+      'Kiểm soát tilt bằng cách dừng 30 giây',
+      'Áp lực có thể là bạn hoặc kẻ thù',
+    ],
+    relatedDrills: ['BREAK_POWER', 'STRAIGHT_NEAR'],
+    tags: ['mental', 'tag_psychology', 'tag_tilt'],
+  ),
+
+  KnowledgeArticle(
+    id: 'pressure-play',
+    title: 'Chơi dưới áp lực — Khi điểm số quan trọng',
+    category: 'mental',
+    level: 'advanced',
+    summary: 'Cách chơi hiệu quả khi điểm số quan trọng, đối thủ thắng thế, hoặc thi đấu quan trọng.',
+    content: '''
+**Áp lực trong billiards:**
+
+Áp lực xuất hiện khi:
+- Đang thắng và muốn giữ
+- Đang thua và cần gỡ
+- Trận đấu quan trọng
+- Đối thủ mạnh hơn
+- Thi đấu trước khán giả
+
+**Triệu chứng áp lực:**
+
+1. **Thể chất:**
+   - Tim đập nhanh
+   - Tay run hoặc cứng
+   - Thở nông, không đều
+   - Ra mồ hôi nhiều hơn bình thường
+
+2. **Tinh thần:**
+   - Nghĩ quá nhiều về kết quả
+   - Phân tán chú ý
+   - Đưa ra quyết định vội vàng
+   - Mất tự tin đột ngột
+
+**Cách xử lý áp lực:**
+
+1. **Thở:** Hít sâu 4 giây, giữ 4 giây, thở ra 4 giây. Lặp 3 lần.
+
+2. **Ritual trước cú:** Tạo thói quen trước mỗi cú đánh (đặt cơ xuống, nhìn, hít thở, đánh)
+
+3. **Một cú một lần:** Không nghĩ về cú trước hay cú tiếp theo. Chỉ nghĩ về cú hiện tại.
+
+4. **Visualization:** Trước khi đánh, tưởng tượng cú đánh thành công trong đầu.
+
+5. **Điểm số không quan trọng:** Tập trung vào quá trình đánh tốt, điểm số sẽ tự cải thiện.
+
+**Luyện tập dưới áp lực:**
+
+- Tập với "stakes" nhỏ: thua thì phạt (10 cái chạm, chống đẩy)
+- Tập với đối thủ giỏi hơn
+- Tập thi đấu mô phỏng (đặt thời gian, điểm số giả)
+- Tập trước khán giả
+
+**Tư duy đúng:**
+- "Dưới áp lực, tôi chơi tốt hơn" → self-fulfilling prophecy
+- "Áp lực là cơ hội để tỏa sáng" → growth mindset
+- "Thắng thua không quan trọng bằng việc đánh tốt" → process focus
+''',
+    keyTakeaways: [
+      'Áp lực gây run tay, phân tán chú ý',
+      'Thở sâu 4-4-4 giúp bình tĩnh',
+      'Một cú một lần, không nghĩ về điểm số',
+      'Tưởng tượng cú thành công trước khi đánh',
+      'Luyện tập với stakes nhỏ để quen áp lực',
+    ],
+    relatedDrills: ['STRAIGHT_NEAR', 'STRAIGHT_MID'],
+    tags: ['mental', 'tag_pressure', 'tag_advanced'],
+  ),
+
+  // ============================================================================
+  // BREAK — Khai cuộc
+  // ============================================================================
+  KnowledgeArticle(
+    id: 'break-technique',
+    title: 'Kỹ thuật break — Nền tảng của mọi trận đấu',
+    category: 'break',
+    level: 'intermediate',
+    summary: 'Break là cú đánh đầu tiên trong mỗi rack. Một break tốt tạo cơ hội ghi điểm ngay, break không tốt có thể mất lợi thế.',
+    content: '''
+**Break là gì?**
+
+Break là cú đánh mở đầu mỗi rack, đánh bi 1 vào tổ hợp bi để phát tán chúng.
+
+**Mục tiêu của break:**
+
+1. **Phát tán bi:** Làm bi tách ra khắp bàn
+2. **Ghi điểm:** Đánh được ít nhất 1 bi vào lỗ (break and run)
+3. **Kiểm soát:** Không để đối thủ dễ đánh
+
+**Các loại break phổ biến:**
+
+1. **Power Break:**
+   - Đánh mạnh để phát tán mạnh
+   - Ưu điểm: nhiều bi bay ra
+   - Nhược điểm: mất kiểm soát bi cái
+
+2. **Control Break:**
+   - Đánh vừa phải, nhắm vào vị trí
+   - Ưu điểm: kiểm soát tốt hơn
+   - Nhược điểm: ít bi phát tán hơn
+
+3. **Cut Break:**
+   - Đánh lệch để tạo góc
+   - Ưu điểm: tạo cơ hội cho mình
+   - Nhược điểm: khó kiểm soát
+
+**Kỹ thuật đánh break:**
+
+1. **Điểm đánh trên bi:**
+   - 1/4 dưới tâm: ít xoáy, phát tán mạnh
+   - 1/2 dưới tâm: xoáy forward, bi cái đi theo bi đánh
+   - Dưới đáy: xoáy back, bi cái quay về
+
+2. **Vị trí đứng:**
+   - Chân trước hơi xa bàn
+   - Thân nghiêng về phía trước
+   - Tay sau nắm cuối cơ (power grip)
+
+3. **Lực đánh:**
+   - Đánh mạnh và nhanh
+   - Follow through đầy đủ
+   - Không "chặn" cơ khi tiếp xúc
+
+4. **Follow through:**
+   - Vung cơ qua bi, không dừng
+   - Tay cao theo sau cú đánh
+   - Độ dài follow through = độ mạnh cú đánh
+
+**Lỗi thường gặp:**
+
+1. Đánh không đủ lực → bi không phát tán
+2. Điểm đánh sai → bi đi lệch hướng
+3. Follow through ngắn → mất lực
+4. Tay run → miscues
+
+**Cách luyện tập:**
+
+1. Bắt đầu với power break để cảm nhận lực
+2. Tập kiểm soát điểm đánh trên bi
+3. Tập break vào lỗ cụ thể
+4. Quay video để phân tích kỹ thuật
+''',
+    keyTakeaways: [
+      'Break = cú đánh mở đầu mỗi rack',
+      'Điểm đánh 1/4 dưới tâm để phát tán',
+      'Follow through đầy đủ = lực đánh tốt',
+      'Power break vs control break tùy tình huống',
+      'Quay video để phân tích kỹ thuật',
+    ],
+    relatedDrills: ['BREAK_POWER', 'BREAK_CONTROL', 'BREAK_ACCURACY'],
+    tags: ['break', 'tag_technique', 'tag_power'],
+  ),
+
+  // ============================================================================
+  // SAFETY PLAY
+  // ============================================================================
+  KnowledgeArticle(
+    id: 'safety-fundamentals',
+    title: 'Safety play — Khi không thể đánh trúng',
+    category: 'safety',
+    level: 'intermediate',
+    summary: 'Safety là cú đánh không nhắm ghi điểm mà tạo thế khó cho đối thủ. Đây là kỹ năng chiến thuật quan trọng.',
+    content: '''
+**Safety là gì?**
+
+Safety là cú đánh mục đích không phải ghi điểm mà tạo thế khó cho đối thủ.
+
+**Khi nào nên đánh safety:**
+
+1. Không có cú đánh trúng chắc chắn
+2. Đang thắng điểm, muốn giữ lợi thế
+3. Đối thủ đang có momentum
+4. Hết giờ (trong thi đấu có thời gian)
+
+**Các loại safety:**
+
+1. **Hit and Stay:**
+   - Đánh bi cái chạm bi đối thủ
+   - Bi đối thủ dừng gần vị trí cũ
+   - Đối thủ khó đánh trúng
+
+2. **Hit and Run:**
+   - Đánh bi cái chạm bi đối thủ
+   - Bi cái đi ra xa
+   - Tạo khoảng cách bất lợi cho đối thủ
+
+3. **Legal Ball:**
+   - Đánh đúng bi đầu tiên
+   - Không phạm lỗi (foul)
+   - Tạo thế khó cho đối thủ
+
+4. **Plant:**
+   - Bi đối thủ gần lỗ nhưng đánh trực tiếp khó
+   - Đánh bi đối thủ để nó đi vào lỗ
+   - "Ăn gian" một cú điểm
+
+**Nguyên tắc safety tốt:**
+
+1. **Đánh đúng bi đầu tiên** — không phạm lỗi
+2. **Tạo khoảng cách** — đối thủ phải đánh xa
+3. **Khó cho đối thủ** — ít lỗ mở, bi đối thủ xa lỗ
+4. **An toàn cho mình** — không tạo cơ hội cho đối thủ
+
+**Cách luyện safety:**
+
+1. Đặt bi đối thủ ở các vị trí khác nhau
+2. Tập đánh safety từ xa
+3. Tập kick safety (đá bi khi không đánh thẳng được)
+4. Tập 2-ball safety (2 bi cách nhau)
+
+**Trong thi đấu:**
+
+- Safety là quyền lựa chọn, không phải lựa chọn cuối cùng
+- Đọc thế bàn trước khi quyết định safety hay đánh
+- Safety tốt có thể khiến đối thủ phạm sai lầm
+''',
+    keyTakeaways: [
+      'Safety = tạo thế khó cho đối thủ',
+      'Đánh đúng bi đầu tiên, không phạm lỗi',
+      'Hit and Run tạo khoảng cách bất lợi',
+      'Safety là quyền lựa chọn chiến thuật',
+      'Luyện kick safety để đa dạng',
+    ],
+    relatedDrills: ['SAFETY_BASIC', 'SAFETY_FORCE', 'SAFETY_KICK'],
+    tags: ['safety', 'tag_strategy', 'tag_defensive'],
+  ),
+
+  // ============================================================================
+  // AIMING — Bổ sung
+  // ============================================================================
+  KnowledgeArticle(
+    id: 'cut-shot-geometry',
+    title: 'Hình học của cú cắt — Hiểu để đánh chính xác',
+    category: 'aiming',
+    level: 'advanced',
+    summary: 'Cú cắt (cut shot) là cú đánh mà bi cái và bi mục tiêu không thẳng hàng với lỗ. Hiểu hình học giúp đánh chính xác hơn.',
+    content: '''
+**Cú cắt là gì?**
+
+Cú cắt (cut shot) là cú đánh mà:
+- Bi cái không đi thẳng đến bi mục tiêu
+- Góc cắt = góc giữa đường bi cái-bi mục tiêu và đường bi mục tiêu-lỗ
+
+**Các loại cú cắt:**
+
+1. **Thin Cut (Cắt mỏng):**
+   - Góc cắt > 45 độ
+   - Bi mục tiêu ở xa lỗ
+   - Khó đánh, dễ miss
+
+2. **Half Ball (Nửa bi):**
+   - Góc cắt = 30 độ
+   - Điểm ngắm = mép bi mục tiêu
+   - Cú cắt phổ biến nhất
+
+3. **Thick Cut (Cắt dày):**
+   - Góc cắt < 30 độ
+   - Bi mục tiêu gần lỗ
+   - Dễ đánh hơn
+
+**Cách xác định góc cắt:**
+
+1. **Bằng mắt:**
+   - Ước lượng góc
+   - Tập với nhiều tình huống
+   - Kinh nghiệm là chìa khóa
+
+2. **Bằng hình học:**
+   - Điểm ngắm = tâm bi mục tiêu + offset
+   - Offset = khoảng cách từ tâm đến điểm cắt
+   - Công thức: Offset = R × sin(góc cắt)
+
+3. **Ghost ball method:**
+   - Tưởng tượng bi trắng "đi qua" bi mục tiêu
+   - Điểm cắt = điểm tiếp xúc ảo
+   - Đánh vào điểm đó
+
+**Tip đánh cú cắt:**
+
+1. **Ngắm điểm rìa bi mục tiêu** — điểm gần nhất với hướng lỗ
+
+2. **Điều khiển lực theo góc** — góc cắt lớn → lực nhẹ hơn
+
+3. **Follow through đầy đủ** — không "chặn" cơ
+
+4. **Giữ mắt trên đường ngắm** — không nhìn bi cái khi ra cơ
+
+**Luyện tập:**
+
+1. Bắt đầu với half ball (30 độ)
+2. Tập thin cut từ dễ đến khó
+3. Tập đánh vào lỗ khác nhau
+4. Tập với khoảng cách khác nhau
+''',
+    keyTakeaways: [
+      'Cú cắt = bi cái không thẳng với bi mục tiêu-lỗ',
+      'Half ball = góc 30 độ, điểm ngắm = mép bi',
+      'Thin cut (>45 độ) khó hơn thick cut (<30 đô)',
+      'Ghost ball method giúp xác định điểm ngắm',
+      'Góc cắt lớn → lực nhẹ hơn',
+    ],
+    relatedDrills: ['THIN_CUT_30', 'HALF_BALL_LEFT', 'HALF_BALL_RIGHT'],
+    tags: ['aiming', 'tag_cut', 'tag_geometry'],
+  ),
 ];
