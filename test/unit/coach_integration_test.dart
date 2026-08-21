@@ -1,6 +1,6 @@
 // ============================================================================
-// coach_integration_test.dart - Sprint-10C & Sprint-11
-// Tests for Coach AI integration with Training Sessions
+// coach_integration_test.dart - Sprint-10C, Sprint-11, Sprint-12
+// Tests for Coach AI integration with Training Sessions and Matches
 // ============================================================================
 //
 // Note: These tests verify the integration logic.
@@ -13,10 +13,12 @@
 // 4. WeaknessAnalysis identification logic
 // 5. PlayerIntelligence mistakes inference (Sprint-11)
 // 6. MatchStats type (Sprint-11)
+// 7. MatchPatterns and MistakePatterns (Sprint-12)
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/providers/training_provider.dart';
 import 'package:pool_os_v2/core/services/coach_types.dart';
+import 'package:pool_os_v2/knowledge/player_intelligence.dart';
 
 void main() {
   group('TrainingSession Model', () {
@@ -330,6 +332,158 @@ void main() {
 
       expect(totalMatches, equals(0));
       expect(winRate, equals(0.0));
+    });
+  });
+
+  // Sprint-12: Match Loop Tests
+  group('Sprint-12 Match Loop', () {
+    test('MatchPatterns.addMatch updates win count', () {
+      // Start with empty patterns
+      final patterns = MatchPatterns.empty();
+
+      // Add a winning match
+      final matchData = MatchData(
+        opponentName: 'Test Opponent',
+        won: true,
+        playerScore: 5,
+        opponentScore: 3,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: [],
+      );
+
+      final updated = patterns.addMatch(matchData);
+
+      expect(updated.totalMatches, equals(1));
+      expect(updated.wins, equals(1));
+      expect(updated.losses, equals(0));
+      expect(updated.winRate, equals(1.0));
+    });
+
+    test('MatchPatterns.addMatch updates loss count', () {
+      final patterns = MatchPatterns.empty();
+
+      // Add a losing match
+      final matchData = MatchData(
+        opponentName: 'Test Opponent',
+        won: false,
+        playerScore: 3,
+        opponentScore: 5,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: [],
+      );
+
+      final updated = patterns.addMatch(matchData);
+
+      expect(updated.totalMatches, equals(1));
+      expect(updated.wins, equals(0));
+      expect(updated.losses, equals(1));
+      expect(updated.winRate, equals(0.0));
+    });
+
+    test('MatchPatterns.addMatch updates streak on wins', () {
+      final patterns = MatchPatterns.empty();
+
+      // Add two wins
+      final winData = MatchData(
+        opponentName: 'Opponent',
+        won: true,
+        playerScore: 5,
+        opponentScore: 3,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: [],
+      );
+
+      var updated = patterns.addMatch(winData);
+      expect(updated.currentStreak.type, equals(StreakType.win));
+      expect(updated.currentStreak.count, equals(1));
+
+      updated = updated.addMatch(winData);
+      expect(updated.currentStreak.count, equals(2));
+    });
+
+    test('MatchPatterns.addMatch updates streak on losses', () {
+      final patterns = MatchPatterns.empty();
+
+      // Add a loss
+      final lossData = MatchData(
+        opponentName: 'Opponent',
+        won: false,
+        playerScore: 3,
+        opponentScore: 5,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: [],
+      );
+
+      var updated = patterns.addMatch(lossData);
+      expect(updated.currentStreak.type, equals(StreakType.loss));
+      expect(updated.currentStreak.count, equals(1));
+
+      updated = updated.addMatch(lossData);
+      expect(updated.currentStreak.count, equals(2));
+    });
+
+    test('MistakePatterns.updateFromMatch adds new mistakes', () {
+      final patterns = MistakePatterns.empty();
+
+      final matchData = MatchData(
+        opponentName: 'Opponent',
+        won: true,
+        playerScore: 5,
+        opponentScore: 3,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: ['safety_errors', 'position_play'],
+      );
+
+      final updated = patterns.updateFromMatch(matchData);
+
+      expect(updated.patterns.length, equals(2));
+      expect(updated.topMistakes, contains('safety_errors'));
+      expect(updated.topMistakes, contains('position_play'));
+    });
+
+    test('MistakePatterns.updateFromMatch increments frequency', () {
+      final patterns = MistakePatterns.empty();
+
+      final matchData = MatchData(
+        opponentName: 'Opponent',
+        won: true,
+        playerScore: 5,
+        opponentScore: 3,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: ['safety_errors'],
+      );
+
+      // Add same mistake twice
+      var updated = patterns.updateFromMatch(matchData);
+      updated = updated.updateFromMatch(matchData);
+
+      final safetyPattern = updated.patterns.firstWhere((p) => p.mistakeId == 'safety_errors');
+      expect(safetyPattern.frequency, equals(2));
+    });
+
+    test('MistakePatterns.updateFromMatch handles empty mistakes', () {
+      final patterns = MistakePatterns.empty();
+
+      final matchData = MatchData(
+        opponentName: 'Opponent',
+        won: true,
+        playerScore: 5,
+        opponentScore: 3,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: [],
+      );
+
+      final updated = patterns.updateFromMatch(matchData);
+
+      // Empty mistakes should not change patterns
+      expect(updated.patterns.length, equals(0));
     });
   });
 }

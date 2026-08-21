@@ -22,6 +22,7 @@ import '../../presentation/screens/training/certification_detail_screen.dart';
 import '../../presentation/screens/play/match_recording_screen.dart';
 import '../../presentation/screens/play/match_history_screen.dart';
 import '../../presentation/screens/play/match_summary_screen.dart';
+import '../../presentation/screens/play/match_log_screen.dart';
 import '../../presentation/screens/training/training_history_screen.dart';
 import '../../presentation/screens/training/session_detail_screen.dart';
 import '../../presentation/screens/training/unified_timeline_screen.dart';
@@ -188,6 +189,12 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/play/recording',
             name: 'matchRecording',
             builder: (context, state) => const MatchRecordingScreen(),
+          ),
+          // Sprint-12: Manual match log
+          GoRoute(
+            path: '/play/log',
+            name: 'matchLog',
+            builder: (context, state) => const MatchLogScreen(),
           ),
           GoRoute(
             path: '/play/history',

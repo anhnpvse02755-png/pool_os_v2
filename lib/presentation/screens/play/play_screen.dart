@@ -57,8 +57,25 @@ class PlayScreen extends StatelessWidget {
             // Match Recording
             _buildSectionTitle(context, 'Ghi nhận trận đấu'),
             const SizedBox(height: 12),
-            _MatchRecordingCard(
-              onTap: () => context.push('/play/recording'),
+            Row(
+              children: [
+                Expanded(
+                  child: _MatchRecordingCard(
+                    onTap: () => context.push('/play/recording'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Sprint-12: Manual Match Log
+                Expanded(
+                  child: _PlayCard(
+                    icon: Icons.edit_note,
+                    title: 'Ghi kết quả',
+                    subtitle: 'Nhập kết quả thủ công',
+                    color: Colors.green,
+                    onTap: () => context.push('/play/log'),
+                  ),
+                ),
+              ],
             ).animate().fadeIn(delay: 100.ms),
 
             const SizedBox(height: 24),

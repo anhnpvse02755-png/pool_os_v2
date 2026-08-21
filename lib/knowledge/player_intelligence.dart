@@ -728,8 +728,61 @@ class MistakePatterns {
   }
 
   MistakePatterns updateFromMatch(MatchData match) {
-    // Add mistakes from match rack analysis
-    return this;
+    // Sprint-12: Update mistake patterns from user-reported match mistakes
+    if (match.mistakes.isEmpty) {
+      return this;
+    }
+
+    // Update pattern frequencies
+    final updatedPatterns = List<MistakePattern>.from(patterns);
+    final now = DateTime.now();
+
+    for (final mistake in match.mistakes) {
+      final existingIndex = updatedPatterns.indexWhere((p) => p.mistakeId == mistake);
+      if (existingIndex >= 0) {
+        // Increment frequency
+        final existing = updatedPatterns[existingIndex];
+        updatedPatterns[existingIndex] = MistakePattern(
+          mistakeId: existing.mistakeId,
+          mistakeName: existing.mistakeName,
+          frequency: existing.frequency + 1,
+          lastSeen: now,
+          isImproving: existing.isImproving,
+          associatedCauses: existing.associatedCauses,
+        );
+      } else {
+        // Add new mistake
+        updatedPatterns.add(MistakePattern(
+          mistakeId: mistake,
+          mistakeName: _formatMistakeName(mistake),
+          frequency: 1,
+          lastSeen: now,
+          isImproving: false,
+        ));
+      }
+    }
+
+    // Sort by frequency and get top 5
+    updatedPatterns.sort((a, b) => b.frequency.compareTo(a.frequency));
+    final newTopMistakes = updatedPatterns
+        .take(5)
+        .map((p) => p.mistakeId)
+        .toList();
+
+    return MistakePatterns(
+      patterns: updatedPatterns,
+      topMistakes: newTopMistakes,
+      improvingMistakes: improvingMistakes,
+      newMistakes: newMistakes,
+    );
+  }
+
+  String _formatMistakeName(String mistakeId) {
+    // Convert snake_case to readable name
+    return mistakeId
+        .split('_')
+        .map((word) => word[0].toUpperCase() + word.substring(1))
+        .join(' ');
   }
 }
 
@@ -987,7 +1040,47 @@ class MatchPatterns {
   }
 
   MatchPatterns addMatch(MatchData match) {
-    return this;
+    // Sprint-12: Update match patterns with new result
+    final newTotal = totalMatches + 1;
+    final newWins = match.won ? wins + 1 : wins;
+    final newLosses = match.won ? losses : losses + 1;
+    // Note: MatchData uses bool won, not result String - draws not supported in MVP
+    final newDraws = draws;
+    final newWinRate = newTotal > 0 ? (newWins / newTotal) : 0.0;
+
+    // Update streaks
+    final newStreak = _updateStreak(match.won, currentStreak);
+
+    return MatchPatterns(
+      totalMatches: newTotal,
+      wins: newWins,
+      losses: newLosses,
+      draws: newDraws,
+      winRate: newWinRate,
+      currentStreak: newStreak,
+      longestWinStreak: match.won && newStreak.count > longestWinStreak.count
+          ? newStreak
+          : longestWinStreak,
+      longestLossStreak: !match.won && newStreak.count > longestLossStreak.count
+          ? newStreak
+          : longestLossStreak,
+      opponentAnalysis: opponentAnalysis,
+      conditionAnalysis: conditionAnalysis,
+    );
+  }
+
+  StreakInfo _updateStreak(bool won, StreakInfo current) {
+    if (won) {
+      if (current.type == StreakType.win) {
+        return StreakInfo(type: StreakType.win, count: current.count + 1);
+      }
+      return StreakInfo(type: StreakType.win, count: 1);
+    } else {
+      if (current.type == StreakType.loss) {
+        return StreakInfo(type: StreakType.loss, count: current.count + 1);
+      }
+      return StreakInfo(type: StreakType.loss, count: 1);
+    }
   }
 }
 

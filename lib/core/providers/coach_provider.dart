@@ -13,6 +13,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../knowledge/player_intelligence.dart';
+import '../../data/repositories/match_repository.dart';
 import '../services/session_memory_service.dart';
 import '../services/coach_types.dart';
 import '../services/match_analysis_service.dart';
@@ -24,6 +25,7 @@ import '../../knowledge/coach_service.dart' hide CoachRecommendation;
 import '../../knowledge/conversation_engine.dart';
 import '../../presentation/widgets/coach/recommendation_card.dart';
 import 'training_provider.dart';
+import 'repository_providers.dart';
 
 // ========================================================================
 // KNOWLEDGE GRAPH PROVIDER
@@ -238,6 +240,41 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         isLoading: false,
         error: 'Failed to generate plan: $e',
       );
+    }
+  }
+
+  /// Sprint-12: Refresh Coach from match data
+  /// Called when a manual match is logged
+  Future<void> refreshFromMatch() async {
+    // Load matches from repository
+    final matchRepo = _ref.read(matchRepositoryProvider);
+    final matches = await matchRepo.getAllMatches();
+
+    if (matches.isEmpty) return;
+
+    // Build PlayerIntelligence from matches
+    var updatedPI = state.playerIntelligence;
+
+    for (final match in matches) {
+      // Only use most recent match for MVP
+      final matchData = MatchData(
+        opponentName: match.opponentName ?? match.opponent ?? 'Unknown',
+        won: match.isWin,
+        playerScore: match.playerScore,
+        opponentScore: match.opponentScore,
+        durationMinutes: match.duration ?? 0,
+        playedAt: match.createdAt,
+        mistakes: match.analysis?.biggestMistakes ?? [],
+      );
+      updatedPI = updatedPI.updateWithMatch(matchData);
+    }
+
+    // Update state and refresh plan
+    if (updatedPI != state.playerIntelligence) {
+      state = state.copyWith(playerIntelligence: updatedPI);
+      await refreshCoachPlan();
+      // Sprint-12: Persist updated PlayerIntelligence
+      await _savePlayerIntelligence();
     }
   }
 
