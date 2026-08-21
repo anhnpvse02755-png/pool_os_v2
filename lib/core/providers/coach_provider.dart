@@ -140,6 +140,10 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         mistakes.add('technique_consistency');
       }
 
+      // Sprint-14: Get drill skills for SkillProfile population
+      final drill = _kg.getDrill(session.drillCode);
+      final drillSkills = drill?.skillsTrained ?? [];
+
       final sessionData = TrainingSessionData(
         drillCode: session.drillCode,
         score: session.score,
@@ -147,7 +151,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         completedAt: session.date,
         mistakes: mistakes,
       );
-      updatedPI = updatedPI.updateWithSession(sessionData);
+      updatedPI = updatedPI.updateWithSession(sessionData, drillSkills: drillSkills);
     }
 
     // Only update if changed
@@ -319,8 +323,15 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
 
   /// Update PlayerIntelligence with new session
   Future<void> updateWithSession(TrainingSessionData sessionData) async {
+    // Sprint-14: Get drill skills for SkillProfile population
+    final drill = _kg.getDrill(sessionData.drillCode);
+    final drillSkills = drill?.skillsTrained ?? [];
+
     // Update PlayerIntelligence
-    final updatedPI = state.playerIntelligence.updateWithSession(sessionData);
+    final updatedPI = state.playerIntelligence.updateWithSession(
+      sessionData,
+      drillSkills: drillSkills,
+    );
 
     // Update recommendation history
     final updatedRecs = [

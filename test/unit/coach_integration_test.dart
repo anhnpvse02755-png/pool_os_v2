@@ -642,4 +642,140 @@ void main() {
       expect(hasRecoveryAvoid, isTrue);
     });
   });
+
+  // Sprint-14: Training Intelligence Closure Tests
+  group('Sprint-14 Training Intelligence - Closed Loop', () {
+    late KnowledgeGraphService kg;
+
+    setUpAll(() {
+      kg = KnowledgeGraphService.instance;
+    });
+
+    TrainingSessionData _session(String drillCode, int score) => TrainingSessionData(
+      drillCode: drillCode,
+      score: score,
+      durationMinutes: 10,
+      completedAt: DateTime.now(),
+      mistakes: [],
+    );
+
+    test('Case 1: Strong training with skills → skill level increases', () {
+      // Build PI with strong performance in STRAIGHT_POT drill (trains aiming, stroke)
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 3 sessions with high score (85%)
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithSession(
+          _session('STRAIGHT_POT', 85),
+          drillSkills: ['aiming', 'stroke'],
+        );
+      }
+
+      // SkillProfile should have skills from the drill
+      expect(pi.skillProfile.skills.isNotEmpty, isTrue);
+
+      // Skill level should be high (weighted average, but starts at 0)
+      final aimingSkill = pi.skillProfile.skills['aiming'];
+      expect(aimingSkill, isNotNull);
+      expect(aimingSkill!.level, greaterThan(0));
+
+      // No low-accuracy signal from high performance
+      final hasLowSignal = pi.mistakePatterns.patterns.any(
+        (p) => p.mistakeId == 'accuracy_low_signal',
+      );
+      expect(hasLowSignal, isFalse);
+    });
+
+    test('Case 2: Weak training with skills → skill level lower + signal', () {
+      // Build PI with repeated low performance
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 3 sessions with low score (40%)
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithSession(
+          _session('STRAIGHT_POT', 40),
+          drillSkills: ['aiming', 'stroke'],
+        );
+      }
+
+      // SkillProfile should have skills
+      expect(pi.skillProfile.skills.isNotEmpty, isTrue);
+
+      // Low performance should create accuracy_low_signal
+      final hasSignal = pi.mistakePatterns.patterns.any(
+        (p) => p.mistakeId.contains('accuracy'),
+      );
+      expect(hasSignal, isTrue);
+    });
+
+    test('Case 3: Improvement rate calculated correctly', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 5 old sessions with low scores (55%)
+      for (var i = 0; i < 5; i++) {
+        final oldDate = DateTime.now().subtract(Duration(days: i + 10));
+        final oldSession = TrainingSessionData(
+          drillCode: 'STRAIGHT_POT',
+          score: 55,
+          durationMinutes: 10,
+          completedAt: oldDate,
+          mistakes: [],
+        );
+        pi = pi.updateWithSession(oldSession, drillSkills: ['aiming']);
+      }
+
+      // Add 5 recent sessions with high scores (75%)
+      for (var i = 0; i < 5; i++) {
+        final recentDate = DateTime.now().subtract(Duration(days: i));
+        final recentSession = TrainingSessionData(
+          drillCode: 'STRAIGHT_POT',
+          score: 75,
+          durationMinutes: 10,
+          completedAt: recentDate,
+          mistakes: [],
+        );
+        pi = pi.updateWithSession(recentSession, drillSkills: ['aiming']);
+      }
+
+      // Improvement rate should be positive (recent better than old)
+      expect(pi.progress.improvementRate, greaterThan(0));
+    });
+
+    test('Case 4: Empty training → no artificial weaknesses', () {
+      // Build PI with no training
+      final pi = PlayerIntelligence.empty('test');
+
+      // No skill data
+      expect(pi.skillProfile.skills.isEmpty, isTrue);
+
+      // No weakness signals
+      expect(pi.mistakePatterns.patterns.isEmpty, isTrue);
+
+      // Improvement rate should be 0 (insufficient data)
+      expect(pi.progress.improvementRate, equals(0));
+    });
+
+    test('Case 5: Closed loop - training data reaches Coach reasoning', () {
+      // Build PI with some training
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add training sessions with skills
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithSession(
+          _session('STRAIGHT_POT', 50),
+          drillSkills: ['aiming'],
+        );
+      }
+
+      // PriorityEngine should use training data
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Coach reasoning should mention training sessions
+      expect(plan.reasoning, contains('buổi tập'));
+    });
+  });
 }

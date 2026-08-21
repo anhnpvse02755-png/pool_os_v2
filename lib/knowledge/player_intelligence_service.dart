@@ -33,6 +33,7 @@ class PlayerIntelligenceService {
 
   /// Update from training session
   /// Sprint-11: Extract real data from available fields
+  /// Sprint-14: Also extract drill skills for SkillProfile
   Future<PlayerIntelligence> updateFromSession(TrainingSession session) async {
     // Infer mistakes from accuracy
     // Low accuracy (< 50%) suggests aiming issues
@@ -46,6 +47,9 @@ class PlayerIntelligenceService {
     if (session.shotsMissed > session.shotsMade && session.shotsMissed > 5) {
       mistakes.add('technique_consistency');
     }
+
+    // Sprint-14: Get drill skills for SkillProfile population
+    final drillSkills = _getDrillSkills(session.drillCode);
 
     final data = TrainingSessionData(
       drillCode: session.drillCode,
@@ -61,7 +65,18 @@ class PlayerIntelligenceService {
       },
     );
 
-    return _playerIntelligence.updateWithSession(data);
+    return _playerIntelligence.updateWithSession(data, drillSkills: drillSkills);
+  }
+
+  /// Sprint-14: Get skills trained by a drill from knowledge graph
+  List<String> _getDrillSkills(String drillCode) {
+    try {
+      final kg = KnowledgeGraphService.instance;
+      final drill = kg.getDrill(drillCode);
+      return drill?.skillsTrained ?? [];
+    } catch (_) {
+      return [];
+    }
   }
 
   /// Update from match

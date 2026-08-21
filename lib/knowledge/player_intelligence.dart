@@ -146,13 +146,20 @@ class PlayerIntelligence {
     };
   }
 
-  /// Update with new session data
-  PlayerIntelligence updateWithSession(TrainingSessionData session) {
+  /// Update with new session data (Sprint-14: with drill skills for SkillProfile)
+  PlayerIntelligence updateWithSession(
+    TrainingSessionData session, {
+    List<String> drillSkills = const [],
+  }) {
     return copyWith(
       progress: progress.addSession(session),
       mistakePatterns: mistakePatterns.updateFromSession(session),
       practicePatterns: practicePatterns.addSession(session),
       shortTermMemory: shortTermMemory.addSession(session),
+      // Sprint-14: Update skill profile from drill skills
+      skillProfile: drillSkills.isNotEmpty
+          ? skillProfile.updateFromSession(session, drillSkills)
+          : skillProfile,
       updatedAt: DateTime.now(),
     );
   }
@@ -427,6 +434,74 @@ class SkillProfile {
         .reduce((a, b) => a.value.level < b.value.level ? a : b)
         .value;
   }
+
+  /// Sprint-14: Update skills from training session
+  /// Maps drill to skills via knowledge graph, then updates skill levels
+  SkillProfile updateFromSession(TrainingSessionData session, List<String> drillSkills) {
+    if (drillSkills.isEmpty) {
+      return this;
+    }
+
+    final updatedSkills = Map<String, SkillLevel>.from(skills);
+    final now = DateTime.now();
+
+    for (final skillId in drillSkills) {
+      final existing = skills[skillId] ?? SkillLevel(skillId: skillId, level: 0);
+      final sessions = existing.sessionsPracticed + 1;
+
+      // Weighted average: new score weighs more with practice
+      // New score contributes ~20% per session, capping at 90% new
+      final weight = (1.0 / sessions).clamp(0.1, 0.5);
+      final newLevel = ((existing.level * (1 - weight)) + (session.score * weight)).round().clamp(0, 100);
+
+      updatedSkills[skillId] = SkillLevel(
+        skillId: skillId,
+        level: newLevel,
+        sessionsPracticed: sessions,
+        lastPracticed: now,
+      );
+    }
+
+    // Update derived fields
+    final strength = _derivePrimaryStrength(updatedSkills);
+    final weakness = _derivePrimaryWeakness(updatedSkills);
+
+    return SkillProfile(
+      skills: updatedSkills,
+      overallLevel: _deriveOverallLevel(updatedSkills),
+      primaryStrength: strength,
+      primaryWeakness: weakness,
+      mostPracticedSkills: _deriveMostPracticed(updatedSkills),
+    );
+  }
+
+  String? _derivePrimaryStrength(Map<String, SkillLevel> skills) {
+    if (skills.isEmpty) return null;
+    return skills.entries
+        .reduce((a, b) => a.value.level > b.value.level ? a : b)
+        .key;
+  }
+
+  String? _derivePrimaryWeakness(Map<String, SkillLevel> skills) {
+    if (skills.isEmpty) return null;
+    return skills.entries
+        .reduce((a, b) => a.value.level < b.value.level ? a : b)
+        .key;
+  }
+
+  ExperienceLevel _deriveOverallLevel(Map<String, SkillLevel> skills) {
+    if (skills.isEmpty) return ExperienceLevel.beginner;
+    final avg = skills.values.map((s) => s.level).reduce((a, b) => a + b) / skills.length;
+    if (avg >= 75) return ExperienceLevel.advanced;
+    if (avg >= 50) return ExperienceLevel.intermediate;
+    return ExperienceLevel.beginner;
+  }
+
+  List<String> _deriveMostPracticed(Map<String, SkillLevel> skills) {
+    final sorted = skills.entries.toList()
+      ..sort((a, b) => b.value.sessionsPracticed.compareTo(a.value.sessionsPracticed));
+    return sorted.take(3).map((e) => e.key).toList();
+  }
 }
 
 class SkillLevel {
@@ -595,10 +670,28 @@ class ProgressTracker {
     return current;
   }
 
+  /// Sprint-14: Calculate improvement rate by comparing recent vs older sessions
+  /// Returns percentage change (positive = improving, negative = declining)
   double _calculateImprovementRate(List<ProgressPoint> history) {
+    // Need at least 10 sessions for meaningful comparison (5 recent vs 5 older)
     if (history.length < 10) return 0;
-    // Simplified: compare first 5 vs last 5
-    return 0;
+
+    // Get last 5 sessions (most recent)
+    final recent = history.reversed.take(5).toList();
+    // Get previous 5 sessions (older)
+    final older = history.reversed.skip(5).take(5).toList();
+
+    // Need both groups to compare
+    if (recent.isEmpty || older.isEmpty) return 0;
+
+    // Calculate average for each group
+    final recentAvg = recent.map((p) => p.score).reduce((a, b) => a + b) / recent.length;
+    final olderAvg = older.map((p) => p.score).reduce((a, b) => a + b) / older.length;
+
+    // Calculate percentage improvement
+    if (olderAvg == 0) return 0; // Avoid division by zero
+
+    return ((recentAvg - olderAvg) / olderAvg * 100);
   }
 
   int _calculateConsistency(List<ProgressPoint> history) {
@@ -735,8 +828,79 @@ class MistakePatterns {
   }
 
   MistakePatterns updateFromSession(TrainingSessionData session) {
-    // Add mistakes from session
-    return this;
+    // Sprint-14: Infer performance signals from training data
+    // Conservative approach: require pattern before flagging as weakness
+    final inferredMistakes = _inferMistakesFromSession(session);
+
+    if (inferredMistakes.isEmpty) {
+      return this;
+    }
+
+    // Update pattern frequencies
+    final updatedPatterns = List<MistakePattern>.from(patterns);
+    final now = DateTime.now();
+
+    for (final mistake in inferredMistakes) {
+      final existingIndex = updatedPatterns.indexWhere((p) => p.mistakeId == mistake);
+      if (existingIndex >= 0) {
+        // Increment frequency
+        final existing = updatedPatterns[existingIndex];
+        updatedPatterns[existingIndex] = MistakePattern(
+          mistakeId: existing.mistakeId,
+          mistakeName: existing.mistakeName,
+          frequency: existing.frequency + 1,
+          lastSeen: now,
+          isImproving: existing.isImproving,
+          associatedCauses: existing.associatedCauses,
+        );
+      } else {
+        // Add new performance signal
+        updatedPatterns.add(MistakePattern(
+          mistakeId: mistake,
+          mistakeName: _formatMistakeName(mistake),
+          frequency: 1,
+          lastSeen: now,
+          isImproving: false,
+        ));
+      }
+    }
+
+    // Sort by frequency and update top mistakes
+    updatedPatterns.sort((a, b) => b.frequency.compareTo(a.frequency));
+    final newTopMistakes = updatedPatterns
+        .take(5)
+        .map((p) => p.mistakeId)
+        .toList();
+
+    return MistakePatterns(
+      patterns: updatedPatterns,
+      topMistakes: newTopMistakes,
+      improvingMistakes: improvingMistakes,
+      newMistakes: newMistakes,
+    );
+  }
+
+  /// Sprint-14: Infer performance signals from training session
+  /// Conservative approach - use signals, not diagnostic conclusions
+  List<String> _inferMistakesFromSession(TrainingSessionData session) {
+    final signals = <String>[];
+
+    // Score-based signals (conservative thresholds)
+    if (session.score < 50) {
+      // Low accuracy signal - not diagnosing, just flagging
+      signals.add('accuracy_low_signal');
+    } else if (session.score < 60) {
+      // Moderate accuracy - potential improvement area
+      signals.add('accuracy_can_improve');
+    }
+
+    // Duration-based signals
+    // Very short sessions with low score might indicate frustration or difficulty
+    if (session.durationMinutes < 5 && session.score < 60) {
+      signals.add('focus_signal');
+    }
+
+    return signals;
   }
 
   MistakePatterns updateFromMatch(MatchData match) {
