@@ -16,7 +16,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/player_provider.dart' as player;
 import '../../../core/services/coach_voice_service.dart';
-import '../../../core/models/match_stats.dart';
+import '../../../core/models/match_stats.dart'; // Sprint-11: MatchRackAnalysis
 import '../../widgets/coach/recommendation_card.dart';
 import '../../widgets/coach/continue_session_card.dart';
 import '../../widgets/coach/coach_empty_state.dart';
@@ -241,7 +241,8 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
   // ==========================================================================
 
   /// Build the "Từ trận đấu gần nhất" section
-  Widget _buildMatchAnalysisSection(BuildContext context, MatchAnalysis analysis, String? insight) {
+  /// Sprint-11: MatchAnalysis renamed to MatchRackAnalysis
+  Widget _buildMatchAnalysisSection(BuildContext context, MatchRackAnalysis analysis, String? insight) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

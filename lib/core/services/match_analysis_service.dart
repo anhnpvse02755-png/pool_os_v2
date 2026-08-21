@@ -13,14 +13,15 @@ import '../models/match_stats.dart';
 import '../../data/models/match.dart';
 
 /// Service for analyzing match recording data
+/// Sprint-11: Uses MatchRackAnalysis (renamed from MatchAnalysis)
 class MatchAnalysisService {
   /// Analyze a list of racks and return analysis
-  MatchAnalysis analyzeRacks(String matchId, List<Rack> racks) {
-    return MatchAnalysis.fromRacks(matchId, racks);
+  MatchRackAnalysis analyzeRacks(String matchId, List<Rack> racks) {
+    return MatchRackAnalysis.fromRacks(matchId, racks);
   }
 
   /// Convert analysis to weakness-based drill recommendations
-  List<DrillRecommendation> getRecommendations(MatchAnalysis analysis) {
+  List<DrillRecommendation> getRecommendations(MatchRackAnalysis analysis) {
     final recommendations = <DrillRecommendation>[];
 
     if (analysis.totalRacks == 0) {
@@ -134,7 +135,7 @@ class MatchAnalysisService {
   }
 
   /// Get match summary for Coach Home display
-  MatchAnalysisSummary getSummary(MatchAnalysis analysis) {
+  MatchAnalysisSummary getSummary(MatchRackAnalysis analysis) {
     return MatchAnalysisSummary(
       winRate: '${analysis.winRate.toStringAsFixed(0)}%',
       longestRun: analysis.longestRun,
@@ -146,7 +147,8 @@ class MatchAnalysisService {
   }
 
   /// Generate Coach AI insights from analysis
-  String generateCoachInsight(MatchAnalysis analysis) {
+  /// Sprint-11: MatchAnalysis renamed to MatchRackAnalysis
+  String generateCoachInsight(MatchRackAnalysis analysis) {
     if (analysis.totalRacks == 0) {
       return 'Chưa có dữ liệu trận đấu để phân tích.';
     }

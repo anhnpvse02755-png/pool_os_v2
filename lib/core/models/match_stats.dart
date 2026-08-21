@@ -10,8 +10,9 @@
 
 import '../../data/models/match.dart';
 
-/// Match Analysis Result - Generated from Rack data
-class MatchAnalysis {
+/// Match Rack Analysis - Raw rack-level data from match recording
+/// Used by Coach AI to identify patterns and weaknesses
+class MatchRackAnalysis {
   final String matchId;
   final int totalRacks;
   final int wins;
@@ -35,7 +36,7 @@ class MatchAnalysis {
   final double winRate;
   final DateTime analyzedAt;
 
-  const MatchAnalysis({
+  const MatchRackAnalysis({
     required this.matchId,
     required this.totalRacks,
     required this.wins,
@@ -61,8 +62,8 @@ class MatchAnalysis {
   });
 
   /// Create empty analysis
-  factory MatchAnalysis.empty() {
-    return MatchAnalysis(
+  factory MatchRackAnalysis.empty() {
+    return MatchRackAnalysis(
       matchId: '',
       totalRacks: 0,
       wins: 0,
@@ -89,9 +90,9 @@ class MatchAnalysis {
   }
 
   /// Create from list of racks
-  factory MatchAnalysis.fromRacks(String matchId, List<Rack> racks) {
+  factory MatchRackAnalysis.fromRacks(String matchId, List<Rack> racks) {
     if (racks.isEmpty) {
-      return MatchAnalysis.empty();
+      return MatchRackAnalysis.empty();
     }
 
     // Calculate basic stats
@@ -144,7 +145,7 @@ class MatchAnalysis {
 
     final winRate = racks.isNotEmpty ? (wins / racks.length) * 100 : 0.0;
 
-    return MatchAnalysis(
+    return MatchRackAnalysis(
       matchId: matchId,
       totalRacks: racks.length,
       wins: wins,
@@ -274,7 +275,7 @@ class MatchAnalysis {
         'analyzedAt': analyzedAt.toIso8601String(),
       };
 
-  factory MatchAnalysis.fromJson(Map<String, dynamic> json) => MatchAnalysis(
+  factory MatchRackAnalysis.fromJson(Map<String, dynamic> json) => MatchRackAnalysis(
         matchId: json['matchId'] as String,
         totalRacks: json['totalRacks'] as int,
         wins: json['wins'] as int,

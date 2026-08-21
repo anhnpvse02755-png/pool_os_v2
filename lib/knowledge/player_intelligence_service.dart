@@ -32,15 +32,32 @@ class PlayerIntelligenceService {
   PlayerSummary get summary => _playerIntelligence.toSummary();
 
   /// Update from training session
+  /// Sprint-11: Extract real data from available fields
   Future<PlayerIntelligence> updateFromSession(TrainingSession session) async {
+    // Infer mistakes from accuracy
+    // Low accuracy (< 50%) suggests aiming issues
+    // High misses relative to shots suggests technique issues
+    final mistakes = <String>[];
+    if (session.score < 50) {
+      mistakes.add('aiming_issues');
+    } else if (session.score < 70) {
+      mistakes.add('accuracy_can_improve');
+    }
+    if (session.shotsMissed > session.shotsMade && session.shotsMissed > 5) {
+      mistakes.add('technique_consistency');
+    }
+
     final data = TrainingSessionData(
       drillCode: session.drillCode,
       score: session.score,
       durationMinutes: session.duration,
       completedAt: session.completedAt,
-      mistakes: [], // TODO: Extract from session if available
+      mistakes: mistakes,
       metrics: {
         'accuracy': session.score,
+        'shotsMade': session.shotsMade,
+        'shotsMissed': session.shotsMissed,
+        'totalShots': session.shotsMade + session.shotsMissed,
       },
     );
 
@@ -48,15 +65,19 @@ class PlayerIntelligenceService {
   }
 
   /// Update from match
+  /// Sprint-11: Extract real data where available
   Future<PlayerIntelligence> updateFromMatch(Match match) async {
+    // Extract mistakes from AI analysis if available
+    final mistakes = match.analysis?.biggestMistakes ?? [];
+
     final data = MatchData(
       opponentName: match.opponentName ?? match.opponent ?? 'Unknown',
       won: match.isWin,
       playerScore: match.playerScore,
       opponentScore: match.opponentScore,
-      durationMinutes: 0, // TODO: Extract if available
+      durationMinutes: 0, // Duration not tracked in current model
       playedAt: match.createdAt,
-      mistakes: [], // TODO: Extract from rack analysis
+      mistakes: mistakes,
     );
 
     return _playerIntelligence.updateWithMatch(data);

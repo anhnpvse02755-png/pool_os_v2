@@ -26,6 +26,7 @@ import '../../data/models/player_interests.dart';
 import '../../data/models/drill_progress.dart';
 import '../../data/models/training_session.dart';
 import '../../data/models/match.dart';
+import '../../data/models/match_aggregates.dart'; // Sprint-11: Typed MatchStats
 import '../../data/models/equipment.dart';
 import '../../data/impl/local_player_repository.dart';
 import '../../data/impl/local_drill_repository.dart';
@@ -161,10 +162,11 @@ final matchHistoryProvider = FutureProvider<List<Match>>((ref) async {
 });
 
 // Aggregates return raw map from repository; screen decodes keys.
-// TODO(phase-D): define a typed `MatchStats` model in match_repository.dart.
-final matchStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+// Sprint-11: Typed MatchStats model created
+final matchStatsProvider = FutureProvider<MatchStats>((ref) async {
   final repository = ref.watch(matchRepositoryProvider);
-  return repository.getPlayerAggregates('current');
+  final map = await repository.getPlayerAggregates('current');
+  return MatchStats.fromMap(map);
 });
 
 // ============================================================================

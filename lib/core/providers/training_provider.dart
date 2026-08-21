@@ -178,17 +178,14 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
 // Used by Coach AI to track player progress
 // ============================================================================
 
+// Sprint-11: Canonical provider - use trainingNotifierProvider
 final trainingNotifierProvider = StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
-  return TrainingNotifier();
-});
-
-
-final trainingProvider = StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
   return TrainingNotifier();
 });
 
 // Stats provider
 final trainingStatsProvider = Provider<Map<String, dynamic>>((ref) {
-  final notifier = ref.read(trainingProvider.notifier);
+  // Sprint-11: Use canonical trainingNotifierProvider
+  final notifier = ref.read(trainingNotifierProvider.notifier);
   return notifier.getStats();
 });

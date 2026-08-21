@@ -54,7 +54,8 @@ class CoachTimelineScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final trainingState = ref.watch(trainingProvider);
+    // Sprint-11: Canonical provider is trainingNotifierProvider
+    final trainingState = ref.watch(trainingNotifierProvider);
     final progressMap = ref.watch(allDrillProgressProvider);
 
     // Build timeline from sessions

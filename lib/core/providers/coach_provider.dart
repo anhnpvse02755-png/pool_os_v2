@@ -105,6 +105,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   }
 
   /// Update PlayerIntelligence from training data
+  /// Sprint-11: Extract real data including mistakes inference
   Future<void> _updatePlayerIntelligenceFromTraining(TrainingState trainingState) async {
     if (trainingState.sessions.isEmpty) return;
 
@@ -112,12 +113,25 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
 
     // Build from all sessions
     for (final session in trainingState.sessions) {
+      // Sprint-11: Infer mistakes from accuracy
+      final mistakes = <String>[];
+      if (session.score < 50) {
+        mistakes.add('aiming_issues');
+      } else if (session.score < 70) {
+        mistakes.add('accuracy_can_improve');
+      }
+      // Infer missed shots from shotsAttempted - shotsMade
+      final missedShots = session.shotsAttempted - session.shotsMade;
+      if (missedShots > session.shotsMade && missedShots > 5) {
+        mistakes.add('technique_consistency');
+      }
+
       final sessionData = TrainingSessionData(
         drillCode: session.drillCode,
         score: session.score,
         durationMinutes: session.duration,
         completedAt: session.date,
-        mistakes: [],
+        mistakes: mistakes,
       );
       updatedPI = updatedPI.updateWithSession(sessionData);
     }
@@ -284,7 +298,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
 
   /// Update Coach with match analysis from Match Recording
   /// This is called after a match is completed to feed data into Coach AI
-  Future<void> updateWithMatchAnalysis(MatchAnalysis analysis) async {
+  Future<void> updateWithMatchAnalysis(MatchRackAnalysis analysis) async {
     // Update PlayerIntelligence with match data
     final matchData = MatchData(
       opponentName: 'Unknown',
@@ -667,12 +681,13 @@ final matchAnalysisServiceProvider = Provider<MatchAnalysisService>((ref) {
 
 /// Latest Match Analysis Provider
 /// Stores the most recent match analysis for Coach Home display
-final latestMatchAnalysisProvider = StateProvider<MatchAnalysis?>((ref) {
+/// Sprint-11: Renamed from MatchAnalysis to MatchRackAnalysis
+final latestMatchAnalysisProvider = StateProvider<MatchRackAnalysis?>((ref) {
   // Load from storage on initialization (Sprint-8)
   final savedData = LocalStorageService.getLatestMatchAnalysis();
   if (savedData != null) {
     try {
-      return MatchAnalysis.fromJson(savedData);
+      return MatchRackAnalysis.fromJson(savedData);
     } catch (_) {
       return null;
     }
