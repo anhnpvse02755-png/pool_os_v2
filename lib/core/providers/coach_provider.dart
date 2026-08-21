@@ -80,16 +80,28 @@ class CoachState {
 class CoachStateNotifier extends StateNotifier<CoachState> {
   final Ref _ref;
   final KnowledgeGraphService _kg;
-  final CoachService _coachService;
+  late final CoachService _coachService;
   final SessionMemoryService _sessionMemory = SessionMemoryService();
 
   CoachStateNotifier(this._ref, this._kg)
-      : _coachService = CoachService(knowledgeGraph: _kg),
-        super(CoachState(
+      : super(CoachState(
           playerIntelligence: PlayerIntelligence.empty('current_user'),
         )) {
+    // Sprint-13: Initialize CoachService with initial PlayerIntelligence
+    _coachService = CoachService(
+      knowledgeGraph: _kg,
+      playerIntelligence: state.playerIntelligence,
+    );
     _initialize();
     _setupTrainingListener();
+  }
+
+  /// Sprint-13: Sync CoachService with updated PlayerIntelligence
+  void _syncCoachService() {
+    _coachService = CoachService(
+      knowledgeGraph: _kg,
+      playerIntelligence: state.playerIntelligence,
+    );
   }
 
   /// Listen to training provider changes to update PlayerIntelligence
@@ -141,6 +153,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     // Only update if changed
     if (updatedPI != state.playerIntelligence) {
       state = state.copyWith(playerIntelligence: updatedPI);
+      _syncCoachService(); // Sprint-13: Sync CoachService with updated PI
       await refreshCoachPlan();
     }
   }
@@ -178,12 +191,14 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
       if (savedData != null) {
         final playerIntelligence = PlayerIntelligence.fromJson(savedData);
         state = state.copyWith(playerIntelligence: playerIntelligence);
+        _syncCoachService(); // Sprint-13: Sync CoachService with loaded PI
         return;
       }
 
       // Fallback: build from training data if no saved data
       final playerIntelligence = await _buildPlayerIntelligence();
       state = state.copyWith(playerIntelligence: playerIntelligence);
+      _syncCoachService(); // Sprint-13: Sync CoachService with built PI
     } catch (e) {
       state = state.copyWith(error: 'Failed to load player data: $e');
     }
@@ -272,6 +287,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     // Update state and refresh plan
     if (updatedPI != state.playerIntelligence) {
       state = state.copyWith(playerIntelligence: updatedPI);
+      _syncCoachService(); // Sprint-13: Sync CoachService with updated PI
       await refreshCoachPlan();
       // Sprint-12: Persist updated PlayerIntelligence
       await _savePlayerIntelligence();
@@ -316,6 +332,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
       playerIntelligence: updatedPI,
       recentRecommendations: updatedRecs,
     );
+    _syncCoachService(); // Sprint-13: Sync CoachService with updated PI
 
     // Refresh coaching plan
     await refreshCoachPlan();
@@ -329,6 +346,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     final updatedPI = state.playerIntelligence.updateWithMatch(matchData);
 
     state = state.copyWith(playerIntelligence: updatedPI);
+    _syncCoachService(); // Sprint-13: Sync CoachService with updated PI
     await refreshCoachPlan();
     await _savePlayerIntelligence();
   }
@@ -350,6 +368,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     final updatedPI = state.playerIntelligence.updateWithMatch(matchData);
 
     state = state.copyWith(playerIntelligence: updatedPI);
+    _syncCoachService(); // Sprint-13: Sync CoachService with updated PI
     await refreshCoachPlan();
     await _savePlayerIntelligence();
 

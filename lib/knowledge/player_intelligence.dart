@@ -573,8 +573,15 @@ class ProgressTracker {
   TrendDirection _calculateTrend(List<ProgressPoint> history) {
     if (history.length < 5) return TrendDirection.stable;
 
-    final recent = history.take(5).map((p) => p.score).average;
-    final older = history.skip(5).take(5).map((p) => p.score).average;
+    final recentScores = history.take(5).map((p) => p.score.toDouble()).toList();
+    final olderPoints = history.skip(5).take(5).toList();
+
+    // If no older history, can't determine trend
+    if (olderPoints.isEmpty) return TrendDirection.stable;
+
+    final olderScores = olderPoints.map((p) => p.score.toDouble()).toList();
+    final recent = recentScores.reduce((a, b) => a + b) / recentScores.length;
+    final older = olderScores.reduce((a, b) => a + b) / olderScores.length;
 
     if (recent - older > 5) return TrendDirection.improving;
     if (older - recent > 5) return TrendDirection.declining;
@@ -596,10 +603,15 @@ class ProgressTracker {
 
   int _calculateConsistency(List<ProgressPoint> history) {
     if (history.isEmpty) return 0;
-    final scores = history.map((p) => p.score).toList();
-    final mean = scores.average;
-    final variance = scores.map((s) => (s - mean) * (s - mean)).reduce((a, b) => a + b) / scores.length;
-    return (100 - variance.clamp(0, 100)).round();
+    final scores = history.map((p) => p.score.toDouble()).toList();
+    final sum = scores.reduce((a, b) => a + b);
+    final mean = sum / scores.length;
+    double variance = 0;
+    for (final s in scores) {
+      variance += (s - mean) * (s - mean);
+    }
+    variance /= scores.length;
+    return (100 - variance.clamp(0.0, 100.0)).round();
   }
 }
 

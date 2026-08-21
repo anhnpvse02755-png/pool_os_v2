@@ -223,6 +223,7 @@ class PriorityEngine {
   }
 
   /// Calculate priority score (higher = more important)
+  /// Sprint-13: Now considers match streak as modifier
   double _calculatePriorityScore(FocusArea area) {
     double score = 0;
 
@@ -238,6 +239,24 @@ class PriorityEngine {
     // Player level factor: 10%
     final playerLevel = _player.skillProfile.overallLevel;
     score += _levelFactor(playerLevel) * 0.1;
+
+    // Sprint-13: Streak modifier - adjust priority based on match streak
+    // Only apply if player has match history
+    if (_player.matchPatterns.totalMatches > 0) {
+      final streak = _player.matchPatterns.currentStreak;
+      if (streak.type == StreakType.loss && streak.count >= 3) {
+        // Losing streak: prefer easier/solid drills, reduce harder focus
+        // Modify based on effort - higher effort areas get penalized
+        if (area.effort == PriorityLevel.high) {
+          score -= 0.15;
+        }
+      } else if (streak.type == StreakType.win && streak.count >= 5) {
+        // Winning streak: player is confident, can handle harder focus
+        if (area.effort == PriorityLevel.high) {
+          score += 0.10;
+        }
+      }
+    }
 
     return score;
   }
@@ -400,6 +419,18 @@ class PriorityEngine {
       ));
     }
 
+    // Sprint-13: If losing streak >= 3, avoid too-hard drills
+    if (_player.matchPatterns.totalMatches > 0) {
+      final streak = _player.matchPatterns.currentStreak;
+      if (streak.type == StreakType.loss && streak.count >= 3) {
+        avoid.add(AvoidRecommendation(
+          item: 'Drill quá khó',
+          reason: 'Bạn đang trong chuỗi ${streak.count} trận thua. Tập trung củng cố thay vì tăng độ khó.',
+          alternative: 'Quay lại drill đã thành thạo ở mức 70-80%.',
+        ));
+      }
+    }
+
     // If inconsistent, avoid changing routine
     if (_player.practicePatterns.consistency.regularity < 50) {
       avoid.add(AvoidRecommendation(
@@ -491,6 +522,16 @@ class PriorityEngine {
     // Trend
     if (_player.progress.currentTrend != TrendDirection.stable) {
       parts.add('Xu hướng: ${_player.progress.currentTrend.label} - cần chú ý.');
+    }
+
+    // Sprint-13: Streak context
+    if (_player.matchPatterns.totalMatches > 0) {
+      final streak = _player.matchPatterns.currentStreak;
+      if (streak.type == StreakType.loss && streak.count >= 3) {
+        parts.add('Chuỗi thua: ${streak.count} trận - ưu tiên củng cố độ ổn định.');
+      } else if (streak.type == StreakType.win && streak.count >= 5) {
+        parts.add('Chuỗi thắng: ${streak.count} trận - bạn đang tự tin, có thể thử thách hơn.');
+      }
     }
 
     return parts.join('\n');

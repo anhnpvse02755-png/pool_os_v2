@@ -1,9 +1,10 @@
 // ============================================================================
-// COACH SERVICE - Phase 7
+// COACH SERVICE - Phase 7 / Sprint-13
 // Orchestrates Coach Brain for Conversation
 //
 // All responses go through Coach Brain first.
 // LLM only generates natural language.
+// Sprint-13: Now receives real PlayerIntelligence for streak-aware recommendations.
 // ============================================================================
 
 import 'player_intelligence.dart';
@@ -15,9 +16,12 @@ import 'conversation_engine.dart';
 class CoachService {
   CoachService({
     required KnowledgeGraphService knowledgeGraph,
-  }) : _kg = knowledgeGraph;
+    PlayerIntelligence? playerIntelligence,
+  }) : _kg = knowledgeGraph,
+       _playerIntelligence = playerIntelligence;
 
   final KnowledgeGraphService _kg;
+  final PlayerIntelligence? _playerIntelligence;
 
   /// Get reasoning from Coach Brain based on context
   CoachReasoning getReasoning(ConversationContext context) {
@@ -34,11 +38,10 @@ class CoachService {
     return _generateReasoning(context, coachingPlan, player);
   }
 
-  /// Get Player Intelligence from context
+  /// Get Player Intelligence - Sprint-13: Use injected PI or empty
   PlayerIntelligence _getPlayerIntelligence(ConversationContext context) {
-    // In real implementation, this would load from storage
-    // For now, return empty
-    return PlayerIntelligence.empty('default');
+    // Sprint-13: Use injected PlayerIntelligence if available
+    return _playerIntelligence ?? PlayerIntelligence.empty('default');
   }
 
   /// Generate reasoning based on context
@@ -147,15 +150,30 @@ class CoachService {
 
     final rec = plan.todayRecommendation!;
     final avoid = plan.avoidRecommendations;
+    final player = _getPlayerIntelligence(context);
+
+    // Sprint-13: Build supporting points with streak awareness
+    final supportingPoints = <String>[
+      'Lý do: ${rec.reason}',
+    ];
+
+    // Sprint-13: Add streak context
+    if (player.matchPatterns.totalMatches > 0) {
+      final streak = player.matchPatterns.currentStreak;
+      if (streak.type == StreakType.loss && streak.count >= 3) {
+        supportingPoints.add('Bạn đang có chuỗi ${streak.count} trận thua - ưu tiên củng cố thay vì tăng độ khó.');
+      } else if (streak.type == StreakType.win && streak.count >= 5) {
+        supportingPoints.add('Bạn đang có chuỗi ${streak.count} trận thắng - đang tự tin, có thể thử drill khó hơn.');
+      }
+    }
+
+    if (rec.evidence.isNotEmpty) supportingPoints.add('Bằng chứng: ${rec.evidence.first}');
+    if (rec.expectedImprovement != null) supportingPoints.add('Dự kiến cải thiện: ${rec.expectedImprovement!.improvementPercent}%');
 
     return CoachReasoning(
       type: ReasoningType.recommendation,
       mainPoint: 'Hôm nay mình khuyên bạn tập: ${rec.drillName}',
-      supportingPoints: [
-        'Lý do: ${rec.reason}',
-        if (rec.evidence.isNotEmpty) 'Bằng chứng: ${rec.evidence.first}',
-        if (rec.expectedImprovement != null) 'Dự kiến cải thiện: ${rec.expectedImprovement!.improvementPercent}%',
-      ],
+      supportingPoints: supportingPoints,
       recommendations: [
         CoachRecommendation(
           type: RecommendationType.today,
@@ -287,19 +305,40 @@ class CoachService {
   ) {
     final progress = player.progress;
 
+    // Sprint-13: Build supporting points with streak awareness
+    final supportingPoints = <String>[
+      'Bạn đã tập ${player.practicePatterns.totalSessions} buổi.',
+      'Độ ổn định: ${progress.consistencyScore}%.',
+      if (progress.personalBest != null) 'PB: ${progress.personalBest!.score}%.',
+    ];
+
+    // Sprint-13: Add streak context for encouragement
+    if (player.matchPatterns.totalMatches > 0) {
+      final streak = player.matchPatterns.currentStreak;
+      if (streak.type == StreakType.loss && streak.count >= 3) {
+        supportingPoints.add('Chuỗi thua: ${streak.count} trận - đừng nản, mỗi trận là bài học!');
+      } else if (streak.type == StreakType.win && streak.count >= 5) {
+        supportingPoints.add('Chuỗi thắng: ${streak.count} trận - giữ phong độ!');
+      }
+    }
+
     return CoachReasoning(
       type: ReasoningType.encouragement,
       mainPoint: _getEncouragementMessage(player),
-      supportingPoints: [
-        'Bạn đã tập ${player.practicePatterns.totalSessions} buổi.',
-        'Độ ổn định: ${progress.consistencyScore}%.',
-        if (progress.personalBest != null) 'PB: ${progress.personalBest!.score}%.',
-      ],
+      supportingPoints: supportingPoints,
       dataNeeded: null,
     );
   }
 
   String _getEncouragementMessage(PlayerIntelligence player) {
+    // Sprint-13: Consider match streak in encouragement
+    if (player.matchPatterns.totalMatches > 0) {
+      final streak = player.matchPatterns.currentStreak;
+      if (streak.type == StreakType.loss && streak.count >= 3) {
+        return 'Chuỗi thua gần đây không định nghĩa bạn. Mỗi trận là cơ hội học hỏi!';
+      }
+    }
+
     if (player.progress.currentTrend == TrendDirection.improving) {
       return 'Xuất sắc! Bạn đang tiến bộ rõ rệt!';
     }

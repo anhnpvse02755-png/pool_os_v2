@@ -1,5 +1,5 @@
 // ============================================================================
-// coach_integration_test.dart - Sprint-10C, Sprint-11, Sprint-12
+// coach_integration_test.dart - Sprint-10C, Sprint-11, Sprint-12, Sprint-13
 // Tests for Coach AI integration with Training Sessions and Matches
 // ============================================================================
 //
@@ -14,11 +14,14 @@
 // 5. PlayerIntelligence mistakes inference (Sprint-11)
 // 6. MatchStats type (Sprint-11)
 // 7. MatchPatterns and MistakePatterns (Sprint-12)
+// 8. Streak-aware priority and Coach reasoning (Sprint-13)
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/providers/training_provider.dart';
 import 'package:pool_os_v2/core/services/coach_types.dart';
 import 'package:pool_os_v2/knowledge/player_intelligence.dart';
+import 'package:pool_os_v2/knowledge/priority_engine.dart';
+import 'package:pool_os_v2/knowledge/knowledge_graph_service.dart';
 
 void main() {
   group('TrainingSession Model', () {
@@ -484,6 +487,159 @@ void main() {
 
       // Empty mistakes should not change patterns
       expect(updated.patterns.length, equals(0));
+    });
+  });
+
+  // Sprint-13: Closed Loop Acceptance Tests
+  group('Sprint-13 Closed Loop - Streak-aware Priority', () {
+    late KnowledgeGraphService kg;
+
+    setUpAll(() {
+      kg = KnowledgeGraphService.instance;
+    });
+
+    MatchData _matchData(bool won) => MatchData(
+      opponentName: 'Test',
+      won: won,
+      playerScore: won ? 5 : 3,
+      opponentScore: won ? 3 : 5,
+      durationMinutes: 30,
+      playedAt: DateTime.now(),
+      mistakes: [],
+    );
+
+    test('Case 1: 3+ consecutive losses → recovery recommendation', () {
+      // Build PlayerIntelligence with 3 consecutive losses
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 3 losses
+      pi = pi.updateWithMatch(_matchData(false));
+      pi = pi.updateWithMatch(_matchData(false));
+      pi = pi.updateWithMatch(_matchData(false));
+
+      // Verify streak state
+      expect(pi.matchPatterns.currentStreak.type, equals(StreakType.loss));
+      expect(pi.matchPatterns.currentStreak.count, equals(3));
+
+      // Get coaching plan with streak data
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Streak >= 3 losses should add recovery avoidance
+      expect(plan.avoidRecommendations.isNotEmpty, isTrue);
+      final avoid = plan.avoidRecommendations.firstWhere(
+        (a) => a.item.contains('khó') || a.item.contains('Drill'),
+        orElse: () => const AvoidRecommendation(item: 'none', reason: '', alternative: ''),
+      );
+      expect(avoid.item, isNot(equals('none')));
+
+      // Reasoning should mention streak
+      expect(plan.reasoning, contains('thua'));
+    });
+
+    test('Case 2: 5+ consecutive wins → challenge recommendation', () {
+      // Build PlayerIntelligence with 5 consecutive wins
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 5 wins
+      for (var i = 0; i < 5; i++) {
+        pi = pi.updateWithMatch(_matchData(true));
+      }
+
+      // Verify streak state
+      expect(pi.matchPatterns.currentStreak.type, equals(StreakType.win));
+      expect(pi.matchPatterns.currentStreak.count, equals(5));
+
+      // Get coaching plan with streak data
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Reasoning should mention winning streak
+      expect(plan.reasoning, contains('thắng'));
+    });
+
+    test('Case 3: Mixed results → no streak mode activated', () {
+      // Build PlayerIntelligence with mixed results: W, L, W
+      var pi = PlayerIntelligence.empty('test');
+
+      pi = pi.updateWithMatch(_matchData(true));
+      pi = pi.updateWithMatch(_matchData(false));
+      pi = pi.updateWithMatch(_matchData(true));
+
+      // Verify no long streak
+      expect(pi.matchPatterns.currentStreak.count, lessThan(3));
+      expect(pi.matchPatterns.totalMatches, equals(3));
+
+      // Get coaching plan
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Should NOT trigger streak-specific recovery avoidance
+      final hasLossStreakAvoid = plan.avoidRecommendations.any(
+        (a) => a.item.contains('khó') && a.reason.contains('thua'),
+      );
+      expect(hasLossStreakAvoid, isFalse);
+    });
+
+    test('Edge case: 0 matches → no streak logic applied', () {
+      // Build PlayerIntelligence with no matches
+      final pi = PlayerIntelligence.empty('test');
+
+      expect(pi.matchPatterns.totalMatches, equals(0));
+
+      // Get coaching plan without match data
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Should NOT crash and should not mention streaks
+      expect(plan.reasoning, isNot(contains('thua')));
+      expect(plan.reasoning, isNot(contains('thắng')));
+    });
+
+    test('Streak is MODIFIER, not replacement - reasoning still includes weakness data', () {
+      // Build PI with weakness AND loss streak
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 3 losses (loss streak)
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithMatch(_matchData(false));
+      }
+
+      // Add training session with weakness
+      pi = pi.updateWithSession(TrainingSessionData(
+        drillCode: 'STRAIGHT_SHOT',
+        score: 40, // Low score = weakness
+        durationMinutes: 10,
+        completedAt: DateTime.now(),
+        mistakes: ['aiming_issues'],
+      ));
+
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Reasoning should mention streak
+      expect(plan.reasoning, contains('thua'));
+
+      // Avoid recommendations should include recovery advice
+      final hasRecoveryAvoid = plan.avoidRecommendations.any(
+        (a) => a.item.contains('khó') || a.item.contains('Drill'),
+      );
+      expect(hasRecoveryAvoid, isTrue);
     });
   });
 }
