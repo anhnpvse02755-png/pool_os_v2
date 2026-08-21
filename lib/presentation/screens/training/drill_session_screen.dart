@@ -6,10 +6,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../../core/providers/training_provider.dart';
 import '../../../data/models/drill_session.dart';
 import '../../../data/models/drill_progress.dart';
 import '../../../data/models/personal_best.dart';
-// ignore: unused_import — used via ref.read(drillRepositoryProvider) and toTrainingSession()
 import '../../../data/repositories/drill_repository.dart';
 import '../../../data/repositories/personal_best_repository.dart';
 import '../../../domain/services/drill_session_recovery_service.dart';
@@ -212,14 +212,17 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
 
   /// Sprint 4A Task 10: sync completed session to TrainingSession for history.
   /// Sprint 4A Task 13: update DrillProgress for Coach AI.
+  /// Sprint-10C P0: Wire to TrainingNotifier so Coach AI receives updates.
   Future<void> _syncToTrainingHistory(DrillSession completed) async {
     final drillRepo = ref.read(drillRepositoryProvider);
+    final trainingNotifier = ref.read(trainingNotifierProvider.notifier);
 
-    // Save to training history.
-    final trainingSession = completed.toTrainingSession();
-    await drillRepo.saveTrainingSession(trainingSession);
+    // Save to TrainingNotifier (what Coach listens to)
+    final trainingSessionMap = completed.toTrainingSessionMap();
+    final trainingSession = TrainingSession.fromJson(trainingSessionMap);
+    await trainingNotifier.addSession(trainingSession);
 
-    // Update drill progress for Coach AI to read skill progression.
+    // Also save to drill repository for progress tracking.
     final progressList = await drillRepo.getUserProgress();
     final existingProgress = progressList
         .where((p) => p.drillCode == widget.drillCode)

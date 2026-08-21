@@ -91,9 +91,10 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   }
 
   /// Listen to training provider changes to update PlayerIntelligence
+  /// Sprint-10C: Wire trainingNotifierProvider so Coach receives session updates.
   void _setupTrainingListener() {
     _ref.listen(
-      trainingProvider,
+      trainingNotifierProvider,
       (previous, next) {
         // Update when new sessions are added
         if (previous != null && next.sessions.length > previous.sessions.length) {
@@ -175,7 +176,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   /// Build PlayerIntelligence from real training data (fallback)
   Future<PlayerIntelligence> _buildPlayerIntelligence() async {
     // Get training sessions from provider
-    final trainingState = _ref.read(trainingProvider);
+    final trainingState = _ref.read(trainingNotifierProvider);
 
     // Build PlayerIntelligence from sessions
     var playerIntelligence = PlayerIntelligence.empty('current_user');
@@ -488,18 +489,171 @@ final learningPathProvider = FutureProvider<List<LearningPathItem>>((ref) async 
 });
 
 /// Performance Summary Provider
+/// Sprint-10C P0-4: Calculate from actual training sessions
 final performanceSummaryProvider = FutureProvider<PerformanceSummary>((ref) async {
-  return PerformanceSummary.empty();
+  final trainingState = ref.watch(trainingNotifierProvider);
+
+  if (trainingState.sessions.isEmpty) {
+    return PerformanceSummary.empty();
+  }
+
+  final sessions = trainingState.sessions;
+  final totalSessions = sessions.length;
+  final totalMinutes = sessions.fold<int>(0, (sum, s) => sum + s.duration);
+  final totalShots = sessions.fold<int>(0, (sum, s) => sum + s.shotsAttempted);
+  final totalMade = sessions.fold<int>(0, (sum, s) => sum + s.shotsMade);
+  final overallAccuracy = totalShots > 0 ? ((totalMade / totalShots) * 100).round() : 0;
+
+  // Find weakest and strongest drills by accuracy
+  final drillScores = <String, List<int>>{};
+  for (final session in sessions) {
+    final score = session.score;
+    drillScores.putIfAbsent(session.drillCode, () => []).add(score);
+  }
+
+  WeakestDrillInfo? strongest;
+  WeakestDrillInfo? weakest;
+
+  if (drillScores.isNotEmpty) {
+    final avgScores = drillScores.map((code, scores) {
+      final avg = scores.fold<int>(0, (sum, s) => sum + s) ~/ scores.length;
+      return MapEntry(code, avg);
+    });
+
+    final sorted = avgScores.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+    if (sorted.isNotEmpty) {
+      weakest = WeakestDrillInfo(
+        code: sorted.last.key,
+        name: sessions.firstWhere((s) => s.drillCode == sorted.last.key).drillName,
+        rate: sorted.last.value,
+      );
+      strongest = WeakestDrillInfo(
+        code: sorted.first.key,
+        name: sessions.firstWhere((s) => s.drillCode == sorted.first.key).drillName,
+        rate: sorted.first.value,
+      );
+    }
+  }
+
+  // Determine trend (simple: improving if recent avg > older avg)
+  String recentTrend = 'stable';
+  if (sessions.length >= 3) {
+    final recent = sessions.take(sessions.length ~/ 2);
+    final older = sessions.skip(sessions.length ~/ 2);
+    final recentAvg = recent.fold<int>(0, (sum, s) => sum + s.score) ~/ recent.length;
+    final olderAvg = older.fold<int>(0, (sum, s) => sum + s.score) ~/ older.length;
+    if (recentAvg > olderAvg + 5) {
+      recentTrend = 'improving';
+    } else if (recentAvg < olderAvg - 5) {
+      recentTrend = 'declining';
+    }
+  }
+
+  return PerformanceSummary(
+    totalSessions: totalSessions,
+    totalMinutes: totalMinutes,
+    totalShots: totalShots,
+    overallAccuracy: overallAccuracy,
+    strongestDrill: strongest,
+    weakestDrill: weakest,
+    recentTrend: recentTrend,
+  );
 });
 
 /// Weakness Analysis Provider
+/// Sprint-10C P0-5: Analyze from actual training sessions
 final weaknessAnalysisProvider = FutureProvider<List<WeaknessAnalysis>>((ref) async {
-  return <WeaknessAnalysis>[];
+  final trainingState = ref.watch(trainingNotifierProvider);
+
+  if (trainingState.sessions.isEmpty) {
+    return <WeaknessAnalysis>[];
+  }
+
+  final sessions = trainingState.sessions;
+  final weaknesses = <WeaknessAnalysis>[];
+
+  // Group sessions by drill
+  final drillScores = <String, List<int>>{};
+  final drillNames = <String, String>{};
+  for (final session in sessions) {
+    drillScores.putIfAbsent(session.drillCode, () => []).add(session.score);
+    drillNames[session.drillCode] = session.drillName;
+  }
+
+  // Find drills with low accuracy (weakness)
+  for (final entry in drillScores.entries) {
+    final avgScore = entry.value.fold<int>(0, (sum, s) => sum + s) ~/ entry.value.length;
+    if (avgScore < 70 && entry.value.length >= 2) {
+      weaknesses.add(WeaknessAnalysis(
+        drillCode: entry.key,
+        drillName: drillNames[entry.key] ?? entry.key,
+        currentRate: avgScore,
+        attempts: entry.value.length,
+        suggestion: 'Cần luyện tập thêm để cải thiện',
+        priority: avgScore < 50 ? 1 : 2, // 1=high, 2=medium
+      ));
+    }
+  }
+
+  // Sort by accuracy (lowest first)
+  weaknesses.sort((a, b) => a.currentRate.compareTo(b.currentRate));
+
+  return weaknesses.take(5).toList(); // Top 5 weaknesses
 });
 
 /// All Drill Progress Provider
+/// Sprint-10C P0: Calculate from actual training sessions
 final allDrillProgressProvider = Provider<Map<String, SimpleDrillProgress>>((ref) {
-  return <String, SimpleDrillProgress>{};
+  final trainingState = ref.watch(trainingNotifierProvider);
+  final sessions = trainingState.sessions;
+
+  if (sessions.isEmpty) {
+    return <String, SimpleDrillProgress>{};
+  }
+
+  // Group by drill and calculate progress
+  final progressMap = <String, SimpleDrillProgress>{};
+  for (final session in sessions) {
+    final code = session.drillCode;
+    final existing = progressMap[code];
+
+    if (existing != null) {
+      final totalAttempts = existing.totalAttempts + session.shotsAttempted;
+      final successfulAttempts = existing.successfulAttempts + session.shotsMade;
+      final avgAccuracy = totalAttempts > 0
+          ? ((successfulAttempts / totalAttempts) * 100)
+          : 0.0;
+      final successRate = session.shotsAttempted > 0
+          ? ((session.shotsMade / session.shotsAttempted) * 100)
+          : 0.0;
+
+      progressMap[code] = SimpleDrillProgress(
+        drillCode: code,
+        drillName: session.drillName,
+        successRate: session.score > existing.successRate ? successRate : existing.successRate,
+        totalAttempts: totalAttempts,
+        successfulAttempts: successfulAttempts,
+        averageAccuracy: avgAccuracy,
+        lastAttemptedAt: session.date,
+      );
+    } else {
+      final successRate = session.shotsAttempted > 0
+          ? ((session.shotsMade / session.shotsAttempted) * 100)
+          : 0.0;
+      progressMap[code] = SimpleDrillProgress(
+        drillCode: code,
+        drillName: session.drillName,
+        successRate: successRate,
+        totalAttempts: session.shotsAttempted,
+        successfulAttempts: session.shotsMade,
+        averageAccuracy: session.score.toDouble(),
+        lastAttemptedAt: session.date,
+      );
+    }
+  }
+
+  return progressMap;
 });
 
 // ========================================================================

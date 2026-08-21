@@ -34,6 +34,7 @@ class TrainingSession {
   final String id;
   final String drillCode;
   final String drillName;
+  final int level;
   final int score;
   final int shotsAttempted;
   final int shotsMade;
@@ -45,6 +46,7 @@ class TrainingSession {
     required this.id,
     required this.drillCode,
     required this.drillName,
+    this.level = 1,
     required this.score,
     required this.shotsAttempted,
     required this.shotsMade,
@@ -58,6 +60,7 @@ class TrainingSession {
       id: json['id'] ?? const Uuid().v4(),
       drillCode: json['drillCode'] ?? '',
       drillName: json['drillName'] ?? '',
+      level: json['level'] ?? 1,
       score: json['score'] ?? 0,
       shotsAttempted: json['shotsAttempted'] ?? 0,
       shotsMade: json['shotsMade'] ?? 0,
@@ -71,6 +74,7 @@ class TrainingSession {
     'id': id,
     'drillCode': drillCode,
     'drillName': drillName,
+    'level': level,
     'score': score,
     'shotsAttempted': shotsAttempted,
     'shotsMade': shotsMade,
@@ -167,6 +171,17 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
     }).toList();
   }
 }
+
+// ============================================================================
+// Training Provider - Sprint-10C
+// Centralized provider for training sessions
+// Used by Coach AI to track player progress
+// ============================================================================
+
+final trainingNotifierProvider = StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
+  return TrainingNotifier();
+});
+
 
 final trainingProvider = StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
   return TrainingNotifier();
