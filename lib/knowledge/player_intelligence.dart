@@ -646,18 +646,26 @@ class ProgressTracker {
   }
 
   TrendDirection _calculateTrend(List<ProgressPoint> history) {
-    if (history.length < 5) return TrendDirection.stable;
+    if (history.length < 10) return TrendDirection.stable;
 
-    final recentScores = history.take(5).map((p) => p.score.toDouble()).toList();
-    final olderPoints = history.skip(5).take(5).toList();
+    // Use reversed to get most recent sessions first
+    final reversed = history.reversed.toList();
 
-    // If no older history, can't determine trend
-    if (olderPoints.isEmpty) return TrendDirection.stable;
+    // Recent = last 5 sessions
+    final recentPoints = reversed.take(5).toList();
+    // Older = previous 5 sessions
+    final olderPoints = reversed.skip(5).take(5).toList();
 
+    // Need both groups to compare
+    if (recentPoints.isEmpty || olderPoints.isEmpty) return TrendDirection.stable;
+
+    final recentScores = recentPoints.map((p) => p.score.toDouble()).toList();
     final olderScores = olderPoints.map((p) => p.score.toDouble()).toList();
+
     final recent = recentScores.reduce((a, b) => a + b) / recentScores.length;
     final older = olderScores.reduce((a, b) => a + b) / olderScores.length;
 
+    // Threshold for significant change
     if (recent - older > 5) return TrendDirection.improving;
     if (older - recent > 5) return TrendDirection.declining;
     return TrendDirection.stable;

@@ -617,14 +617,17 @@ void main() {
         pi = pi.updateWithMatch(_matchData(false));
       }
 
-      // Add training session with weakness
-      pi = pi.updateWithSession(TrainingSessionData(
-        drillCode: 'STRAIGHT_SHOT',
-        score: 40, // Low score = weakness
-        durationMinutes: 10,
-        completedAt: DateTime.now(),
-        mistakes: ['aiming_issues'],
-      ));
+      // Add training session with weakness and known drill
+      pi = pi.updateWithSession(
+        TrainingSessionData(
+          drillCode: 'STRAIGHT_POT',
+          score: 40, // Low score = weakness
+          durationMinutes: 10,
+          completedAt: DateTime.now(),
+          mistakes: ['aiming_issues'],
+        ),
+        drillSkills: ['aiming'], // Explicitly pass skills
+      );
 
       final engine = PriorityEngine(
         playerIntelligence: pi,
@@ -776,6 +779,148 @@ void main() {
 
       // Coach reasoning should mention training sessions
       expect(plan.reasoning, contains('buổi tập'));
+    });
+  });
+
+  // Sprint-14 Verification Fix: Trend Direction Regression Tests
+  group('Sprint-14 _calculateTrend Regression Tests', () {
+    test('50 → 75 = improving', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // 5 older sessions with 50%
+      for (var i = 0; i < 5; i++) {
+        final oldDate = DateTime.now().subtract(Duration(days: i + 10));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 50,
+          durationMinutes: 10,
+          completedAt: oldDate,
+          mistakes: [],
+        ));
+      }
+
+      // 5 recent sessions with 75%
+      for (var i = 0; i < 5; i++) {
+        final recentDate = DateTime.now().subtract(Duration(days: i));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 75,
+          durationMinutes: 10,
+          completedAt: recentDate,
+          mistakes: [],
+        ));
+      }
+
+      expect(pi.progress.currentTrend, equals(TrendDirection.improving),
+          reason: '75% recent > 50% older = improving');
+    });
+
+    test('75 → 50 = declining', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // 5 older sessions with 75%
+      for (var i = 0; i < 5; i++) {
+        final oldDate = DateTime.now().subtract(Duration(days: i + 10));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 75,
+          durationMinutes: 10,
+          completedAt: oldDate,
+          mistakes: [],
+        ));
+      }
+
+      // 5 recent sessions with 50%
+      for (var i = 0; i < 5; i++) {
+        final recentDate = DateTime.now().subtract(Duration(days: i));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 50,
+          durationMinutes: 10,
+          completedAt: recentDate,
+          mistakes: [],
+        ));
+      }
+
+      expect(pi.progress.currentTrend, equals(TrendDirection.declining),
+          reason: '50% recent < 75% older = declining');
+    });
+
+    test('70 → 71 = improving (small positive)', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      for (var i = 0; i < 5; i++) {
+        final oldDate = DateTime.now().subtract(Duration(days: i + 10));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 70,
+          durationMinutes: 10,
+          completedAt: oldDate,
+          mistakes: [],
+        ));
+      }
+
+      for (var i = 0; i < 5; i++) {
+        final recentDate = DateTime.now().subtract(Duration(days: i));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 71,
+          durationMinutes: 10,
+          completedAt: recentDate,
+          mistakes: [],
+        ));
+      }
+
+      // Small change (< 5%) = stable
+      expect(pi.progress.currentTrend, equals(TrendDirection.stable),
+          reason: '1% change < 5% threshold = stable');
+    });
+
+    test('70 → 70 = stable', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      for (var i = 0; i < 5; i++) {
+        final oldDate = DateTime.now().subtract(Duration(days: i + 10));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 70,
+          durationMinutes: 10,
+          completedAt: oldDate,
+          mistakes: [],
+        ));
+      }
+
+      for (var i = 0; i < 5; i++) {
+        final recentDate = DateTime.now().subtract(Duration(days: i));
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 70,
+          durationMinutes: 10,
+          completedAt: recentDate,
+          mistakes: [],
+        ));
+      }
+
+      expect(pi.progress.currentTrend, equals(TrendDirection.stable),
+          reason: 'No change = stable');
+    });
+
+    test('insufficient sessions = stable', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Only 3 sessions - not enough for trend
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithSession(TrainingSessionData(
+          drillCode: 'TEST',
+          score: 70,
+          durationMinutes: 10,
+          completedAt: DateTime.now(),
+          mistakes: [],
+        ));
+      }
+
+      expect(pi.progress.currentTrend, equals(TrendDirection.stable),
+          reason: '< 10 sessions = stable (safe default)');
     });
   });
 }

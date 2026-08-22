@@ -114,8 +114,11 @@ class PriorityEngine {
       ));
     }
 
-    // From practice frequency (if inconsistent)
-    if (_player.practicePatterns.consistency.regularity < 50) {
+    // From practice frequency (if inconsistent AND no clear skill weakness or mistake)
+    // Sprint-14 fix: Consistency advice should not suppress a clear repeated skill weakness
+    final hasClearWeakness = _player.skillProfile.skills.values.any((s) => s.level < 40) ||
+        _player.mistakePatterns.topMistakes.isNotEmpty;
+    if (_player.practicePatterns.consistency.regularity < 50 && !hasClearWeakness) {
       areas.add(FocusArea(
         type: FocusAreaType.consistencyBuild,
         id: 'consistency',
@@ -506,11 +509,11 @@ class PriorityEngine {
   String _buildPlanReasoning(List<PrioritizedFocusArea> prioritized) {
     final parts = <String>[];
 
-    if (prioritized.isEmpty) {
-      return 'Bạn đang tiến bộ tốt. Tiếp tục duy trì!';
-    }
-
     parts.add('Dựa trên ${_player.practicePatterns.totalSessions} buổi tập và ${_player.matchPatterns.totalMatches} trận đấu:');
+
+    if (prioritized.isEmpty) {
+      return '${parts.first}\nBạn đang tiến bộ tốt. Tiếp tục duy trì!';
+    }
 
     // Top priority
     if (prioritized.isNotEmpty) {
