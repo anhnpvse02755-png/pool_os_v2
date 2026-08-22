@@ -10,6 +10,7 @@
 - [phase-conventions](.claude/memory/phase-conventions.md) — Phase A/B/C/D conventions, Phase 3 Constitution
 - [sprint-status](.claude/memory/sprint-status.md) — Sprint 3A-7B completed, Sprint-8 active
 - [coach-design](.claude/memory/coach-design.md) — Coach UX Blueprint v2.1 & Voice Guidelines
+- [sprint-17-training-flow-bug](memory/sprint-17-training-flow-bug.md) — Training flow bug: DrillDetail CTA trace
 
 ## User Context
 
