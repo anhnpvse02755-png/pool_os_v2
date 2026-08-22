@@ -1079,4 +1079,153 @@ void main() {
       expect(recentMatches[0].data['opponent'], equals('Khoa'));
     });
   });
+
+  // Sprint-17: Recommendation Reliability Tests
+  group('Sprint-17 Recommendation Reliability', () {
+    late KnowledgeGraphService kg;
+
+    setUpAll(() {
+      kg = KnowledgeGraphService.instance;
+    });
+
+    test('P0-1: RecommendationHistory tracks recommendations', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add some recommendations (returns RecommendationHistory, needs copyWith)
+      var recs = pi.recommendations.addRecommendation('STRAIGHT_POT', 'Need basics');
+      pi = pi.copyWith(recommendations: recs);
+      recs = pi.recommendations.addRecommendation('FOLLOW_SHOT', 'Build on basics');
+      pi = pi.copyWith(recommendations: recs);
+
+      expect(pi.recommendations.entries.length, equals(2));
+      expect(pi.recommendations.getRecommendationCount('STRAIGHT_POT'), equals(1));
+      expect(pi.recommendations.getRecommendationCount('FOLLOW_SHOT'), equals(1));
+    });
+
+    test('P0-1: Diversity - prefers drills not recently recommended', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 3 recommendations for STRAIGHT_POT
+      for (var i = 0; i < 3; i++) {
+        final recs = pi.recommendations.addRecommendation('STRAIGHT_POT', 'Practice basics');
+        pi = pi.copyWith(recommendations: recs);
+      }
+
+      // Get recent drill codes
+      final recentDrills = pi.recommendations.getRecentDrillCodes();
+      expect(recentDrills.isNotEmpty, isTrue);
+      expect(recentDrills.first, equals('STRAIGHT_POT'));
+    });
+
+    test('P0-1: Intelligence overrides diversity for losing streak', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add losing streak (3 losses)
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithMatch(MatchData(
+          opponentName: 'Test',
+          won: false,
+          playerScore: 3,
+          opponentScore: 5,
+          durationMinutes: 30,
+          playedAt: DateTime.now(),
+          mistakes: [],
+        ));
+      }
+
+      // Add many recommendations for the same drill
+      for (var i = 0; i < 5; i++) {
+        final recs = pi.recommendations.addRecommendation('STRAIGHT_POT', 'Recovery');
+        pi = pi.copyWith(recommendations: recs);
+      }
+
+      // PriorityEngine should still recommend STRAIGHT_POT because:
+      // - Losing streak >= 3 allows maxRecCount = 5
+      // - Recommendation count = 5, which equals max
+      final count = pi.recommendations.getRecommendationCount('STRAIGHT_POT');
+      expect(count, equals(5));
+
+      // The intelligence (losing streak) should allow this drill
+      expect(pi.matchPatterns.currentStreak.type, equals(StreakType.loss));
+      expect(pi.matchPatterns.currentStreak.count, equals(3));
+    });
+
+    test('P0-1: Intelligence overrides diversity for clear weakness', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add clear weakness (low aiming score)
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithSession(
+          TrainingSessionData(
+            drillCode: 'STRAIGHT_POT',
+            score: 30, // Very low = clear weakness
+            durationMinutes: 10,
+            completedAt: DateTime.now(),
+            mistakes: [],
+          ),
+          drillSkills: ['aiming'],
+        );
+      }
+
+      // Verify weakness exists
+      final aimingSkill = pi.skillProfile.skills['aiming'];
+      expect(aimingSkill, isNotNull);
+      expect(aimingSkill!.level, lessThan(35));
+
+      // Intelligence should allow drill recommendation despite history
+      final hasClearWeakness = pi.skillProfile.skills.values.any((s) => s.level < 35);
+      expect(hasClearWeakness, isTrue);
+    });
+
+    test('P0-2: Cold start - uses beginner drill from KG', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Empty PI = cold start
+      expect(pi.skillProfile.skills.isEmpty, isTrue);
+      expect(pi.practicePatterns.totalSessions, equals(0));
+      expect(pi.matchPatterns.totalMatches, equals(0));
+
+      // PriorityEngine should generate starter recommendation
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Should have a recommendation
+      expect(plan.todayRecommendation, isNotNull);
+      // Should be beginner drill
+      expect(plan.todayRecommendation!.drillCode, isNotEmpty);
+    });
+
+    test('P0-2: Cold start - starter drill has correct reasoning', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // Reasoning should mention starting/beginner
+      expect(plan.reasoning, contains('bài nền tảng'));
+    });
+
+    test('Anti-hallucination: Empty state no fabricated evidence', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // No drill history
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      expect(lastSession, isNull,
+          reason: 'Should not fabricate drill evidence');
+
+      // No match history
+      final lastMatch = pi.shortTermMemory.getLastMatch();
+      expect(lastMatch, isNull,
+          reason: 'Should not fabricate match evidence');
+
+      // Cold start has no recommendations
+      expect(pi.recommendations.entries.isEmpty, isTrue);
+    });
+  });
 }

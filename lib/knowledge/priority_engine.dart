@@ -114,11 +114,13 @@ class PriorityEngine {
       ));
     }
 
-    // From practice frequency (if inconsistent AND no clear skill weakness or mistake)
+    // From practice frequency (if inconsistent AND has some practice AND no clear skill weakness or mistake)
     // Sprint-14 fix: Consistency advice should not suppress a clear repeated skill weakness
+    // Sprint-17 fix: Don't show consistency advice for true cold start (no sessions at all)
     final hasClearWeakness = _player.skillProfile.skills.values.any((s) => s.level < 40) ||
         _player.mistakePatterns.topMistakes.isNotEmpty;
-    if (_player.practicePatterns.consistency.regularity < 50 && !hasClearWeakness) {
+    final hasSomePractice = _player.practicePatterns.totalSessions > 0;
+    if (_player.practicePatterns.consistency.regularity < 50 && !hasClearWeakness && hasSomePractice) {
       areas.add(FocusArea(
         type: FocusAreaType.consistencyBuild,
         id: 'consistency',
@@ -129,6 +131,28 @@ class PriorityEngine {
         drills: [],
         causes: [],
       ));
+    }
+
+    // Sprint-17: Cold start - if no training data AND no skill/mistake/trend,
+    // use beginner drill from knowledge graph
+    final hasTrainingData = _player.practicePatterns.totalSessions > 0 ||
+        _player.skillProfile.skills.isNotEmpty ||
+        _player.mistakePatterns.patterns.isNotEmpty;
+
+    if (!hasTrainingData) {
+      final starterDrill = _kg.getStarterDrill();
+      if (starterDrill != null) {
+        areas.add(FocusArea(
+          type: FocusAreaType.starter,
+          id: 'starter',
+          name: starterDrill.nameVi,
+          urgency: PriorityLevel.medium,
+          impact: PriorityImpact.medium,
+          effort: PriorityEffort.low,
+          drills: [starterDrill],
+          causes: [],
+        ));
+      }
     }
 
     return areas;
@@ -312,6 +336,9 @@ class PriorityEngine {
     // Matching mistakes = more confidence
     if (area.type == FocusAreaType.mistakeFix) confidence += 30;
 
+    // Starter drills have lower confidence (generic recommendation)
+    if (area.type == FocusAreaType.starter) confidence = 40;
+
     return confidence.clamp(0, 100);
   }
 
@@ -325,6 +352,8 @@ class PriorityEngine {
         return 'Xu hướng đang giảm. Cần tập trung để ổn định.';
       case FocusAreaType.consistencyBuild:
         return 'Thói quen tập luyện chưa đều đặn. Cần xây dựng trước.';
+      case FocusAreaType.starter:
+        return 'Đây là bài nền tảng phù hợp để bắt đầu.';
     }
   }
 
@@ -382,24 +411,51 @@ class PriorityEngine {
     return recommendations;
   }
 
-  /// Get today's recommendation (considering time constraint)
+  /// Get today's recommendation (considering time constraint + diversity)
   CoachingRecommendation? _getTodayRecommendation(
     List<CoachingRecommendation> recommendations,
   ) {
+    // Sprint-17: Diversity check - prefer drills not recently recommended
+    CoachingRecommendation? findDiverseRecommendation(
+      List<CoachingRecommendation> recs,
+      int maxRecCount,
+    ) {
+      for (final rec in recs) {
+        final count = _player.recommendations.getRecommendationCount(rec.drillCode);
+        if (count < maxRecCount) {
+          return rec;
+        }
+      }
+      // If all exceed max, return the highest priority one (intelligence overrides diversity)
+      return recs.isNotEmpty ? recs.first : null;
+    }
+
+    // Sprint-17: Consider losing streak - if in losing streak, prioritize recovery
+    final isLosingStreak = _player.matchPatterns.totalMatches > 0 &&
+        _player.matchPatterns.currentStreak.type == StreakType.loss &&
+        _player.matchPatterns.currentStreak.count >= 3;
+
+    // Sprint-17: Consider clear weakness - if clear weakness, allow repeat
+    final hasClearWeakness = _player.skillProfile.skills.values.any((s) => s.level < 35) ||
+        _player.mistakePatterns.topMistakes.isNotEmpty;
+
+    // Sprint-17: Max recommendations before flagging as "over-recommended"
+    // Higher if in losing streak or has weakness (intelligence overrides diversity)
+    final maxRecCount = (isLosingStreak || hasClearWeakness) ? 5 : 3;
+
     // Filter by time constraint
     final available = recommendations
         .where((r) => r.timeHorizon.inDays <= constraint.maxSessionDays)
         .toList();
 
     if (available.isEmpty && recommendations.isNotEmpty) {
-      // Return highest priority anyway
-      return recommendations.first.copyWith(
+      return findDiverseRecommendation(recommendations, maxRecCount)?.copyWith(
         type: RecommendationType.today,
       );
     }
 
     if (available.isNotEmpty) {
-      return available.first.copyWith(
+      return findDiverseRecommendation(available, maxRecCount)?.copyWith(
         type: RecommendationType.today,
       );
     }
@@ -683,7 +739,8 @@ enum FocusAreaType {
   mistakeFix,
   skillImprovement,
   trendReversal,
-  consistencyBuild;
+  consistencyBuild,
+  starter; // Sprint-17: Cold start beginner drill
 
   String get label {
     switch (this) {
@@ -695,6 +752,8 @@ enum FocusAreaType {
         return 'Đảo chiều xu hướng';
       case FocusAreaType.consistencyBuild:
         return 'Xây dựng thói quen';
+      case FocusAreaType.starter:
+        return 'Bắt đầu';
     }
   }
 }

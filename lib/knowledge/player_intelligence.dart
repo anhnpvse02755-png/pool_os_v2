@@ -1620,11 +1620,65 @@ class RecommendationHistory {
   }
 
   RecommendationHistory addRecommendation(String drillCode, String reason) {
-    return this;
+    // Sprint-17: Implement actual history tracking
+    final entry = RecommendationEntry(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      createdAt: DateTime.now(),
+      drillCode: drillCode,
+      reason: reason,
+      completed: false,
+    );
+
+    final updatedEntries = [entry, ...entries].take(20).toList();
+    final updatedCount = Map<String, int>.from(drillRecommendationCount);
+    updatedCount[drillCode] = (updatedCount[drillCode] ?? 0) + 1;
+
+    return RecommendationHistory(
+      entries: updatedEntries,
+      drillRecommendationCount: updatedCount,
+      lastRecommendation: DateTime.now(),
+    );
   }
 
   RecommendationHistory markAsCompleted(String recommendationId) {
-    return this;
+    // Sprint-17: Mark recommendation as completed
+    final updatedEntries = entries.map((e) {
+      if (e.id == recommendationId) {
+        return RecommendationEntry(
+          id: e.id,
+          createdAt: e.createdAt,
+          drillCode: e.drillCode,
+          reason: e.reason,
+          completed: true,
+          completedAt: DateTime.now(),
+        );
+      }
+      return e;
+    }).toList();
+
+    return RecommendationHistory(
+      entries: updatedEntries,
+      drillRecommendationCount: drillRecommendationCount,
+      lastRecommendation: lastRecommendation,
+    );
+  }
+
+  /// Sprint-17: Check if drill was recently recommended
+  bool wasRecentlyRecommended(String drillCode, {int days = 7}) {
+    final cutoff = DateTime.now().subtract(Duration(days: days));
+    return entries.any((e) =>
+        e.drillCode == drillCode &&
+        e.createdAt.isAfter(cutoff));
+  }
+
+  /// Sprint-17: Get how many times this drill was recommended
+  int getRecommendationCount(String drillCode) {
+    return drillRecommendationCount[drillCode] ?? 0;
+  }
+
+  /// Sprint-17: Get recent drill codes
+  List<String> getRecentDrillCodes({int limit = 5}) {
+    return entries.take(limit).map((e) => e.drillCode).toList();
   }
 }
 

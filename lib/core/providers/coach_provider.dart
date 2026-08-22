@@ -245,11 +245,21 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
 
       // Extract current recommendation
       CoachRecommendation? currentRec;
+      PlayerIntelligence updatedPI = state.playerIntelligence;
+
       if (coachingPlan.todayRecommendation != null) {
         currentRec = _convertRecommendation(coachingPlan.todayRecommendation!);
+
+        // Sprint-17: Record recommendation in history
+        final updatedRecs = state.playerIntelligence.recommendations.addRecommendation(
+          coachingPlan.todayRecommendation!.drillCode,
+          coachingPlan.todayRecommendation!.reason,
+        );
+        updatedPI = state.playerIntelligence.copyWith(recommendations: updatedRecs);
       }
 
       state = state.copyWith(
+        playerIntelligence: updatedPI,
         coachingPlan: coachingPlan,
         currentRecommendation: currentRec,
         isLoading: false,

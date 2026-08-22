@@ -83,6 +83,28 @@ class KnowledgeGraphService {
     return drills;
   }
 
+  /// Sprint-17: Get beginner drills (no prerequisites) for cold start
+  List<DrillNode> getBeginnerDrills() {
+    return _graph.drillNodes.values
+        .where((d) => d.difficulty == DrillDifficulty.beginner)
+        .toList()
+      ..sort((a, b) => a.difficulty.index.compareTo(b.difficulty.index));
+  }
+
+  /// Sprint-17: Get starter drill - easiest drill with no prerequisites
+  DrillNode? getStarterDrill() {
+    final beginners = getBeginnerDrills();
+    if (beginners.isEmpty) return null;
+
+    // Find drill with no prerequisites
+    for (final drill in beginners) {
+      if (drill.prerequisites.isEmpty) {
+        return drill;
+      }
+    }
+    return beginners.first;
+  }
+
   /// Query: Coach AI reasoning - Why should I practice this drill?
   String explainDrillPurpose(String drillCode) {
     final drill = getDrill(drillCode);
