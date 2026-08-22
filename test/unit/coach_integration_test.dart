@@ -923,4 +923,160 @@ void main() {
           reason: '< 10 sessions = stable (safe default)');
     });
   });
+
+  // Sprint-15: Specific Evidence Tests
+  group('Sprint-15 Specific Evidence - Closed Loop', () {
+    late KnowledgeGraphService kg;
+
+    setUpAll(() {
+      kg = KnowledgeGraphService.instance;
+    });
+
+    test('P0-1: Coach knows last drill result for specific drill', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add a session for STRAIGHT_POT
+      final sessionDate = DateTime.now().subtract(const Duration(days: 3));
+      pi = pi.updateWithSession(TrainingSessionData(
+        drillCode: 'STRAIGHT_POT',
+        score: 55,
+        durationMinutes: 10,
+        completedAt: sessionDate,
+        mistakes: [],
+      ));
+
+      // ShortTermMemory should have this session
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      expect(lastSession, isNotNull);
+      expect(lastSession!.data['score'], equals(55));
+      expect(lastSession.data['drillCode'], equals('STRAIGHT_POT'));
+    });
+
+    test('P0-2: Specific evidence - Coach cites drill, date, score', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add session for a drill
+      final sessionDate = DateTime.now().subtract(const Duration(days: 3));
+      pi = pi.updateWithSession(
+        TrainingSessionData(
+          drillCode: 'STRAIGHT_POT',
+          score: 55,
+          durationMinutes: 10,
+          completedAt: sessionDate,
+          mistakes: [],
+        ),
+        drillSkills: ['aiming'],
+      );
+
+      // Coach should be able to reference this session
+      final engine = PriorityEngine(
+        playerIntelligence: pi,
+        knowledgeGraph: kg,
+      );
+      final plan = engine.getCoachingPlan();
+
+      // ShortTermMemory should have evidence
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      expect(lastSession, isNotNull);
+      expect(lastSession!.data['score'], equals(55));
+    });
+
+    test('P0-3: Coach cites actual opponent names in streak', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add 3 matches with different opponents
+      final opponents = ['Minh', 'Tuấn', 'Khoa'];
+      for (var i = 0; i < 3; i++) {
+        pi = pi.updateWithMatch(MatchData(
+          opponentName: opponents[i],
+          won: false,
+          playerScore: 3,
+          opponentScore: 5,
+          durationMinutes: 30,
+          playedAt: DateTime.now().subtract(Duration(days: i)),
+          mistakes: [],
+        ));
+      }
+
+      // ShortTermMemory should have match details
+      final recentMatches = pi.shortTermMemory.getRecentMatches(limit: 3);
+      expect(recentMatches.length, equals(3));
+      expect(recentMatches[0].data['opponent'], equals('Khoa')); // Most recent first
+      expect(recentMatches[1].data['opponent'], equals('Tuấn'));
+      expect(recentMatches[2].data['opponent'], equals('Minh'));
+    });
+
+    test('Anti-hallucination: No drill history = no evidence claim', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // No sessions for STRAIGHT_POT
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      expect(lastSession, isNull,
+          reason: 'Should not fabricate evidence when no history exists');
+    });
+
+    test('Anti-hallucination: No match history = no opponent names', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // No matches
+      final recentMatches = pi.shortTermMemory.getRecentMatches();
+      expect(recentMatches.isEmpty, isTrue,
+          reason: 'Should not fabricate opponents when no match history');
+    });
+
+    test('Combined: Drill weakness + match streak with specifics', () {
+      var pi = PlayerIntelligence.empty('test');
+
+      // Add drill session with low score
+      pi = pi.updateWithSession(
+        TrainingSessionData(
+          drillCode: 'STRAIGHT_POT',
+          score: 45,
+          durationMinutes: 10,
+          completedAt: DateTime.now().subtract(const Duration(days: 2)),
+          mistakes: [],
+        ),
+        drillSkills: ['aiming'],
+      );
+
+      // Add match losses (most recent first in the list)
+      pi = pi.updateWithMatch(MatchData(
+        opponentName: 'Minh',
+        won: false,
+        playerScore: 3,
+        opponentScore: 5,
+        durationMinutes: 30,
+        playedAt: DateTime.now(),
+        mistakes: [],
+      ));
+      pi = pi.updateWithMatch(MatchData(
+        opponentName: 'Tuấn',
+        won: false,
+        playerScore: 2,
+        opponentScore: 5,
+        durationMinutes: 30,
+        playedAt: DateTime.now().subtract(const Duration(days: 1)),
+        mistakes: [],
+      ));
+      pi = pi.updateWithMatch(MatchData(
+        opponentName: 'Khoa',
+        won: false,
+        playerScore: 4,
+        opponentScore: 5,
+        durationMinutes: 30,
+        playedAt: DateTime.now().subtract(const Duration(days: 2)),
+        mistakes: [],
+      ));
+
+      // Both drill and match data should be available
+      final lastDrill = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      final recentMatches = pi.shortTermMemory.getRecentMatches(limit: 3);
+
+      expect(lastDrill, isNotNull);
+      expect(lastDrill!.data['score'], equals(45));
+      expect(recentMatches.length, equals(3));
+      // Most recent processed (Khoa, added last) is at index 0
+      expect(recentMatches[0].data['opponent'], equals('Khoa'));
+    });
+  });
 }

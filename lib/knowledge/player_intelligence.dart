@@ -164,12 +164,14 @@ class PlayerIntelligence {
     );
   }
 
-  /// Update with new match data
+  /// Update with new match data (Sprint-15: also update ShortTermMemory)
   PlayerIntelligence updateWithMatch(MatchData match) {
     return copyWith(
       matchPatterns: matchPatterns.addMatch(match),
       mistakePatterns: mistakePatterns.updateFromMatch(match),
       progress: progress.addMatch(match),
+      // Sprint-15: Store match in ShortTermMemory for recall
+      shortTermMemory: shortTermMemory.addMatch(match),
       updatedAt: DateTime.now(),
     );
   }
@@ -1731,6 +1733,53 @@ class ShortTermMemory {
   MemoryEntry? getLastSession() => recentSessions.isNotEmpty ? recentSessions.first : null;
   MemoryEntry? getLastMatch() => recentMatches.isNotEmpty ? recentMatches.first : null;
   MemoryEntry? getLastReflection() => recentReflections.isNotEmpty ? recentReflections.first : null;
+
+  /// Sprint-15: Get last session for a specific drill
+  MemoryEntry? getLastSessionForDrill(String drillCode) {
+    for (final entry in recentSessions) {
+      if (entry.data['drillCode'] == drillCode) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  /// Sprint-15: Get last N sessions for a specific drill
+  List<MemoryEntry> getSessionsForDrill(String drillCode, {int limit = 3}) {
+    final results = <MemoryEntry>[];
+    for (final entry in recentSessions) {
+      if (entry.data['drillCode'] == drillCode) {
+        results.add(entry);
+        if (results.length >= limit) break;
+      }
+    }
+    return results;
+  }
+
+  /// Sprint-15: Get last N matches
+  List<MemoryEntry> getRecentMatches({int limit = 5}) {
+    return recentMatches.take(limit).toList();
+  }
+
+  /// Sprint-15: Add match to memory
+  ShortTermMemory addMatch(MatchData match) {
+    final entry = MemoryEntry(
+      timestamp: match.playedAt,
+      type: MemoryType.match,
+      data: {
+        'opponent': match.opponentName,
+        'won': match.won,
+        'playerScore': match.playerScore,
+        'opponentScore': match.opponentScore,
+      },
+    );
+    return ShortTermMemory(
+      recentSessions: recentSessions,
+      recentMatches: [entry, ...recentMatches.where((e) => e.timestamp.isAfter(DateTime.now().subtract(const Duration(days: 30))))],
+      recentReflections: recentReflections,
+      recentObservations: recentObservations,
+    );
+  }
 }
 
 class MemoryEntry {

@@ -152,22 +152,44 @@ class CoachService {
     final avoid = plan.avoidRecommendations;
     final player = _getPlayerIntelligence(context);
 
-    // Sprint-13: Build supporting points with streak awareness
-    final supportingPoints = <String>[
-      'Lý do: ${rec.reason}',
-    ];
+    // Sprint-15: Build supporting points with specific evidence
+    final supportingPoints = <String>[];
 
-    // Sprint-13: Add streak context
+    // Sprint-15: Add specific drill evidence if available
+    final lastDrillSession = player.shortTermMemory.getLastSessionForDrill(rec.drillCode);
+    if (lastDrillSession != null) {
+      final daysAgo = DateTime.now().difference(lastDrillSession.timestamp).inDays;
+      final score = lastDrillSession.data['score'] as int? ?? 0;
+      final daysText = daysAgo == 0 ? 'hôm nay' : (daysAgo == 1 ? 'hôm qua' : '$daysAgo ngày trước');
+      supportingPoints.add('Lần gần nhất bạn tập bài này $daysText được $score%.');
+    } else {
+      // No history - use generic reason
+      supportingPoints.add('Lý do: ${rec.reason}');
+    }
+
+    // Sprint-13: Add streak context with opponent names
     if (player.matchPatterns.totalMatches > 0) {
       final streak = player.matchPatterns.currentStreak;
       if (streak.type == StreakType.loss && streak.count >= 3) {
-        supportingPoints.add('Bạn đang có chuỗi ${streak.count} trận thua - ưu tiên củng cố thay vì tăng độ khó.');
+        // Sprint-15: Get opponent names from ShortTermMemory
+        final recentMatches = player.shortTermMemory.getRecentMatches(limit: streak.count);
+        final opponents = recentMatches
+            .where((m) => m.data['won'] == false)
+            .map((m) => m.data['opponent'] as String? ?? 'đối thủ')
+            .take(streak.count)
+            .toList();
+
+        if (opponents.isNotEmpty) {
+          final opponentText = opponents.take(3).join(', ');
+          supportingPoints.add('Chuỗi ${streak.count} trận thua gần nhất trước $opponentText.');
+        } else {
+          supportingPoints.add('Bạn đang có chuỗi ${streak.count} trận thua - ưu tiên củng cố thay vì tăng độ khó.');
+        }
       } else if (streak.type == StreakType.win && streak.count >= 5) {
         supportingPoints.add('Bạn đang có chuỗi ${streak.count} trận thắng - đang tự tin, có thể thử drill khó hơn.');
       }
     }
 
-    if (rec.evidence.isNotEmpty) supportingPoints.add('Bằng chứng: ${rec.evidence.first}');
     if (rec.expectedImprovement != null) supportingPoints.add('Dự kiến cải thiện: ${rec.expectedImprovement!.improvementPercent}%');
 
     return CoachReasoning(
