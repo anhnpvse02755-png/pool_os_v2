@@ -1,34 +1,37 @@
 // ============================================================================
 // drill_session_screen_test.dart
 // ----------------------------------------------------------------------------
-// Sprint 2D AC-2 widget smoke. Three assertions per Constitution Article 8:
-//   (1) screen mounts without crash,
-//   (2) instructions view renders the drill header,
-//   (3) start FAB is present, signaling the pre-active state machine.
+// Sprint-17 Part 6 — Training UX smoke test.
+//
+// Tests verify:
+//   (1) DrillSessionScreen mounts without crash,
+//   (2) No instructions view (removed in Part 6),
+//   (3) No FAB start button (removed in Part 6),
+//   (4) Active session UI with recording buttons shown.
 //
 // Widget under test is DrillSessionScreen
 // (lib/presentation/screens/training/drill_session_screen.dart).
 //
-// No score assertions, no timer simulation, no manual tap-through.
-// Manual QA on a real device covers the rest.
+// Sprint-17 Part 6: User goes directly to recording UI after confirming
+// repetitions. No intermediate start screen.
 //
-// DrillSessionScreen is a ConsumerStatefulWidget — requires ProviderScope
-// with drillSessionRepositoryProvider override.
-//
-// FIX: DrillSessionScreen uses GoRouterState.of(context) in didChangeDependencies(),
-// so the test must wrap the widget with GoRouter.
 // ============================================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:pool_os_v2/core/services/local_storage_service.dart';
 import 'package:pool_os_v2/presentation/screens/training/drill_session_screen.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart' as repo;
 import 'package:pool_os_v2/data/repositories/drill_session_repository.dart';
+import 'package:pool_os_v2/data/repositories/player_repository.dart'
+    as player_repo;
 import 'package:pool_os_v2/data/models/drill_session.dart';
 import 'package:pool_os_v2/data/models/drill_attempt.dart';
+import 'package:pool_os_v2/data/models/player.dart';
 import 'package:pool_os_v2/core/models/training_session.dart' hide DrillRun;
 
 /// Minimal fake for drill session repository
@@ -55,22 +58,43 @@ class FakeDrillSessionRepository implements IDrillSessionRepository {
   Future<void> updateRun(DrillRun run) async {}
 }
 
+/// Fake player repository for testing
+class FakePlayerRepository implements player_repo.PlayerRepository {
+  @override
+  Future<Player?> getCurrentPlayer() async => Player(
+        id: 'test-player',
+        name: 'Test User',
+        currentLevel: 'B',
+        createdAt: DateTime(2026, 1, 1),
+        updatedAt: DateTime(2026, 1, 1),
+      );
+
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 void main() {
-  testWidgets('Drill session screen mounts and shows instructions view',
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    await LocalStorageService.init();
+  });
+
+  testWidgets('DrillSessionScreen mounts with active session UI (Part 6)',
       (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           repo.drillSessionRepositoryProvider.overrideWithValue(FakeDrillSessionRepository()),
+          repo.playerRepositoryProvider.overrideWithValue(FakePlayerRepository()),
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: '/training/drill/STRAIGHT_NEAR',
+            initialLocation: '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10',
             routes: [
               GoRoute(
-                path: '/training/drill/:code',
+                path: '/training/session/new',
                 builder: (context, state) => DrillSessionScreen(
-                  drillCode: state.pathParameters['code'] ?? 'STRAIGHT_NEAR',
+                  drillCode: state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR',
                 ),
               ),
             ],
@@ -79,8 +103,7 @@ void main() {
       ),
     );
 
-    // Allow async flutter_animate tweens to settle. Avoid pumpAndSettle
-    // (flutter_animate has indefinite animations).
+    // Allow async flutter_animate tweens to settle.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(milliseconds: 100));
@@ -88,17 +111,18 @@ void main() {
     // Assertion 1: screen is reachable.
     expect(find.byType(DrillSessionScreen), findsOneWidget);
 
-    // Assertion 2: instructions view shows the drill header.
-    // Note: the same drill name appears in AppBar title AND in the
-    // header card, so we expect at least one match.
-    expect(find.text('Đánh thẳng gần'), findsAtLeastNWidgets(1),
-        reason: 'drill header should be visible from instructions view');
+    // Assertion 2: Drill name in AppBar.
+    expect(find.text('Đánh thẳng gần'), findsOneWidget,
+        reason: 'drill name should appear in AppBar');
 
-    // Assertion 3: start FAB is present, signaling the pre-active state
-    // machine. This proves the widget renders the call-to-action without
-    // any state-driven error path.
-    expect(find.widgetWithText(FloatingActionButton, 'Bắt đầu'),
-        findsOneWidget,
-        reason: 'start FAB should be visible before session starts');
+    // Assertion 3: Sprint-17 Part 6 — NO FAB start button.
+    expect(find.byType(FloatingActionButton), findsNothing,
+        reason: 'FAB removed in Part 6');
+
+    // Assertion 4: Sprint-17 Part 6 — Recording buttons shown.
+    expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsOneWidget,
+        reason: 'Success button should appear');
+    expect(find.widgetWithText(ElevatedButton, 'Trượt'), findsOneWidget,
+        reason: 'Failure button should appear');
   });
 }

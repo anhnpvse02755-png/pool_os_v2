@@ -89,7 +89,7 @@ void main() {
     await LocalStorageService.init();
   });
 
-  testWidgets('Smoke 1 — DrillSessionScreen mounts in cold-user state',
+  testWidgets('Smoke 1 — DrillSessionScreen mounts and shows recording UI',
       (tester) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -99,12 +99,12 @@ void main() {
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: '/training/drill/STRAIGHT_NEAR',
+            initialLocation: '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10',
             routes: [
               GoRoute(
-                path: '/training/drill/:code',
+                path: '/training/session/new',
                 builder: (context, state) => DrillSessionScreen(
-                  drillCode: state.pathParameters['code'] ?? 'STRAIGHT_NEAR',
+                  drillCode: state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR',
                 ),
               ),
             ],
@@ -116,8 +116,17 @@ void main() {
     await _settle(tester);
 
     expect(find.byType(DrillSessionScreen), findsOneWidget);
+    // Sprint-17 Part 6: No FAB "Bắt đầu" — user goes straight to recording UI
     expect(find.widgetWithText(FloatingActionButton, 'Bắt đầu'),
-        findsOneWidget);
+        findsNothing,
+        reason: 'FAB removed in Part 6 — no redundant start button');
+    // Sprint-17 Part 6: Recording buttons should be visible
+    expect(find.widgetWithText(ElevatedButton, 'Thành công'),
+        findsOneWidget,
+        reason: 'Success button must render immediately');
+    expect(find.widgetWithText(ElevatedButton, 'Trượt'),
+        findsOneWidget,
+        reason: 'Failure button must render immediately');
   });
 
   testWidgets(

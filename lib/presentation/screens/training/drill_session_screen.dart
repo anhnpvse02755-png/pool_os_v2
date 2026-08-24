@@ -10,7 +10,6 @@ import '../../../core/providers/training_provider.dart';
 import '../../../data/models/drill_session.dart';
 import '../../../data/models/drill_progress.dart';
 import '../../../data/models/personal_best.dart';
-import '../../../data/repositories/drill_repository.dart';
 import '../../../data/repositories/personal_best_repository.dart';
 import '../../../domain/services/drill_session_recovery_service.dart';
 
@@ -344,6 +343,9 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       );
     }
 
+    // Sprint-17 Part 6: Show active session UI directly.
+    // Instructions screen removed — user goes straight to recording.
+    // Auto-start initializes session on mount.
     return Scaffold(
       appBar: AppBar(
         title: Text(_drill!.nameVi),
@@ -356,137 +358,8 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
             ),
         ],
       ),
-      body: !isSessionActive
-          ? _buildInstructions()
-          : _buildActiveSession(),
-      floatingActionButton: !isSessionActive
-          ? FloatingActionButton.extended(
-              onPressed: () => _startSession(),
-              icon: const Icon(Icons.play_arrow),
-              label: const Text('Bắt đầu'),
-            )
-          : null,
+      body: _buildActiveSession(),
       bottomNavigationBar: isSessionActive ? _buildRecordingBar() : null,
-    );
-  }
-
-  Widget _buildInstructions() {
-    final drill = _drill!;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Drill Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.fitness_center,
-                  size: 64,
-                  color: AppTheme.primaryGreen,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  drill.nameVi,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  drill.description,
-                  style: TextStyle(color: AppTheme.textSecondary),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ).animate().fadeIn(),
-
-          const SizedBox(height: 24),
-
-          // Steps
-          Text(
-            'Các bước',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          const SizedBox(height: 12),
-          ...drill.steps.asMap().entries.map((entry) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${entry.key + 1}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(entry.value),
-                  ),
-                ],
-              ),
-            ).animate().fadeIn(delay: (entry.key * 100).ms);
-          }),
-
-          const SizedBox(height: 24),
-
-          // Target
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.track_changes, color: AppTheme.accentGold),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Mục tiêu',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      '$targetReps lần thành công',
-                      style: TextStyle(color: AppTheme.textSecondary),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ).animate().fadeIn(delay: 500.ms),
-
-          const SizedBox(height: 80), // Space for FAB
-        ],
-      ),
     );
   }
 

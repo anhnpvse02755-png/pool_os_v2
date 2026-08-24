@@ -135,7 +135,7 @@ void main() {
       expect(find.text('Trượt'), findsOneWidget);
     });
 
-    testWidgets('2. No query level param → does NOT auto-start',
+    testWidgets('2. No query level param → does NOT auto-start, no FAB',
         (tester) async {
       await tester.pumpWidget(
         MaterialApp.router(
@@ -149,10 +149,13 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Session should NOT be active — user should see start button
+      // Sprint-17 Part 6: FAB removed — no start button
       expect(find.byType(DrillSessionScreen), findsOneWidget);
-      // Should show instructions view with "Bắt đầu" button
-      expect(find.text('Bắt đầu'), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNothing,
+          reason: 'FAB removed in Part 6');
+      // Recording buttons should NOT show (session not active)
+      expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsNothing,
+          reason: 'Recording buttons hidden when session not active');
     });
 
     testWidgets('3. Auto-start fires only ONCE even with multiple rebuilds',
@@ -216,13 +219,13 @@ void main() {
       expect(find.text('/ 50'), findsOneWidget);
     });
 
-    testWidgets('6. FAB start button still works for manual start',
+    testWidgets('6. No query level param → session inactive with no manual start',
         (tester) async {
       await tester.pumpWidget(
         MaterialApp.router(
           routerConfig: createTestRouter(
             drillCode: 'STRAIGHT_NEAR',
-            // No level param — must start manually
+            // No level param — session should not start
           ),
         ),
       );
@@ -230,17 +233,12 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Find and tap the start FAB
-      final fab = find.widgetWithText(FloatingActionButton, 'Bắt đầu');
-      expect(fab, findsOneWidget);
-
-      await tester.tap(fab);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
-
-      // Session should start
-      expect(find.text('Thành công'), findsAtLeastNWidgets(1));
-      expect(find.text('Trượt'), findsOneWidget);
+      // Sprint-17 Part 6: FAB removed — no manual start possible
+      expect(find.byType(FloatingActionButton), findsNothing,
+          reason: 'FAB removed in Part 6 — no manual start button');
+      // Session should be inactive
+      expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsNothing,
+          reason: 'Recording buttons hidden when session not active');
     });
   });
 }
