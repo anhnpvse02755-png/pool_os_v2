@@ -4,14 +4,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/providers/auth_provider.dart';
+import '../../../core/providers/repository_providers.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authProvider);
+    final playerAsync = ref.watch(currentPlayerProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -23,28 +23,63 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+      body: playerAsync.when(
+        data: (player) => player != null
+            ? _buildLoadedContent(context, ref, player)
+            : _buildNoPlayerContent(context),
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
+        error: (e, s) => _buildNoPlayerContent(context),
+      ),
+    );
+  }
+
+  Widget _buildLoadedContent(BuildContext context, WidgetRef ref, dynamic player) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          // Profile Header
+          _buildProfileHeader(context, player),
+          const SizedBox(height: 24),
+
+          // Menu Items
+          _buildMenuSection(context),
+          const SizedBox(height: 100),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoPlayerContent(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Profile Header
-            _buildProfileHeader(context, ref, authState),
+            Icon(
+              Icons.person_outline,
+              size: 80,
+              color: Colors.grey.shade400,
+            ),
             const SizedBox(height: 24),
-
-            // Stats Card
-            _buildStatsCard(context),
-            const SizedBox(height: 24),
-
-            // Menu Items
-            _buildMenuSection(context),
-            const SizedBox(height: 100),
+            Text(
+              'Hoàn tất onboarding để xem hồ sơ',
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, WidgetRef ref, dynamic authState) {
+  Widget _buildProfileHeader(BuildContext context, dynamic player) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -110,26 +145,16 @@ class ProfileScreen extends ConsumerWidget {
           const SizedBox(height: 16),
 
           // Name
-          const Text(
-            'Người dùng',
-            style: TextStyle(
+          Text(
+            player.name ?? 'Người dùng',
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 22,
             ),
           ),
           const SizedBox(height: 4),
 
-          // Email
-          Text(
-            'user@email.com',
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // Rank Badge
+          // Level badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
@@ -146,7 +171,7 @@ class ProfileScreen extends ConsumerWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Rank H',
+                  'Level ${player.currentLevel ?? '?'}',
                   style: TextStyle(
                     color: AppTheme.primaryGreen,
                     fontWeight: FontWeight.bold,
@@ -158,52 +183,6 @@ class ProfileScreen extends ConsumerWidget {
         ],
       ),
     ).animate().fadeIn();
-  }
-
-  Widget _buildStatsCard(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _StatItem(
-            value: '43',
-            label: 'Drills',
-            color: AppTheme.primaryGreen,
-          ),
-          Container(
-            width: 1,
-            height: 40,
-            color: Colors.grey.shade200,
-          ),
-          _StatItem(
-            value: '8',
-            label: 'Streak',
-            color: Colors.orange,
-          ),
-          Container(
-            width: 1,
-            height: 40,
-            color: Colors.grey.shade200,
-          ),
-          _StatItem(
-            value: '12',
-            label: 'Match',
-            color: Colors.blue,
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: 100.ms);
   }
 
   Widget _buildMenuSection(BuildContext context) {
@@ -261,53 +240,15 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-class _StatItem extends StatelessWidget {
-  final String value;
-  final String label;
-  final Color color;
-
-  const _StatItem({
-    required this.value,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class _MenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final Widget? trailing;
 
   const _MenuItem({
     required this.icon,
     required this.label,
     required this.onTap,
-    this.trailing,
   });
 
   @override
@@ -344,11 +285,10 @@ class _MenuItem extends StatelessWidget {
                   ),
                 ),
               ),
-              trailing ??
-                  Icon(
-                    Icons.chevron_right,
-                    color: Colors.grey.shade400,
-                  ),
+              Icon(
+                Icons.chevron_right,
+                color: Colors.grey.shade400,
+              ),
             ],
           ),
         ),
