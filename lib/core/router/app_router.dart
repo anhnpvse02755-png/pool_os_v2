@@ -214,24 +214,8 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'trainingHistory',
             builder: (context, state) => const TrainingHistoryScreen(),
           ),
-          GoRoute(
-            path: '/training/session/:sessionId',
-            name: 'sessionDetail',
-            builder: (context, state) {
-              final sessionId = state.pathParameters['sessionId']!;
-              return SessionDetailScreen(sessionId: sessionId);
-            },
-          ),
-          GoRoute(
-            path: '/training/timeline',
-            name: 'unifiedTimeline',
-            builder: (context, state) => const UnifiedTimelineScreen(),
-          ),
-          GoRoute(
-            path: '/training/trends',
-            name: 'trendDashboard',
-            builder: (context, state) => const TrendDashboardScreen(),
-          ),
+          // IMPORTANT: Static routes MUST be declared before dynamic :sessionId route.
+          // Otherwise /training/session/new matches :sessionId="new" and opens SessionDetailScreen.
           GoRoute(
             path: '/training/session/new',
             name: 'newDrillSession',
@@ -262,6 +246,16 @@ final routerProvider = Provider<GoRouter>((ref) {
                 session: session,
                 drillCode: drillCode,
               );
+            },
+          ),
+          // Dynamic route MUST be last among /training/session/ routes.
+          // Static routes (new, active, complete) are declared before this.
+          GoRoute(
+            path: '/training/session/:sessionId',
+            name: 'sessionDetail',
+            builder: (context, state) {
+              final sessionId = state.pathParameters['sessionId']!;
+              return SessionDetailScreen(sessionId: sessionId);
             },
           ),
           GoRoute(
