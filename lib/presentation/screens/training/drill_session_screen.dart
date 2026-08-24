@@ -285,9 +285,9 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                  onPressed: () => context.go('/training/history'),
-                  icon: const Icon(Icons.history),
-                  label: const Text('Quay lại lịch sử'),
+                  onPressed: () => context.pop(),
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Quay lại'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryGreen,
                     foregroundColor: Colors.white,

@@ -62,7 +62,11 @@ Previous attempt routed to `/play/vision` (VisionRecordingScreen) - THIS WAS WRO
 - [[sprint-17-recommendation-reliability]] - Sprint-17 commit d2c6021
 - [[pool-os-v2-architecture]] - Overall app structure
 
-## Next Steps
-1. User should check browser DevTools Console for debug output
-2. Verify if drill is found or null in DrillLibrary
-3. If confirmed, minimal fix: change error fallback from `/training/history` to `context.pop()`
+## Fix Applied (Aug 24, 2026)
+✅ `DrillSessionScreen` line 288: changed `context.go('/training/history')` → `context.pop()`
+✅ Error state now returns to DrillDetail screen instead of jumping to Training History
+✅ Button label changed to "Quay lại" with back arrow icon
+
+## Status
+- Code fix applied in working tree
+- Awaiting test run and Flutter build
