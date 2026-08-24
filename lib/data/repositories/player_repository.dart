@@ -12,6 +12,9 @@ abstract class PlayerRepository {
     required String name,
     String? email,
     String? avatarUrl,
+    String? currentLevel,
+    int? yearsPlaying,
+    double? hoursPerWeek,
   });
 
   /// Update player profile

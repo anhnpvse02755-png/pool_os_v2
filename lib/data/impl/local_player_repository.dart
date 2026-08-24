@@ -17,12 +17,18 @@ class LocalPlayerRepository implements PlayerRepository {
     required String name,
     String? email,
     String? avatarUrl,
+    String? currentLevel,
+    int? yearsPlaying,
+    double? hoursPerWeek,
   }) async {
     final player = Player(
       id: 'local_${DateTime.now().millisecondsSinceEpoch}',
       name: name,
       email: email,
       avatarUrl: avatarUrl,
+      currentLevel: currentLevel ?? 'beginner',
+      yearsPlaying: yearsPlaying ?? 0,
+      hoursPerWeek: hoursPerWeek ?? 0.0,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );

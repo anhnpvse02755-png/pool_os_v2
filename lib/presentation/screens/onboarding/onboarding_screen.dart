@@ -1,27 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/pool_rating_calculator.dart';
+import '../../../core/providers/repository_providers.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   final Map<int, int> _answers = {};
+  bool _isCreatingPlayer = false;
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _completeOnboardingAndNavigate() async {
+    if (_isCreatingPlayer) return;
+
+    setState(() {
+      _isCreatingPlayer = true;
+    });
+
+    try {
+      // Step 1: Calculate rating from assessment answers
+      final rating = PoolRatingCalculator.calculateFromAssessment(_answers);
+      final level = PoolRatingCalculator.getLevelFromRating(rating);
+
+      // Step 2: Get years playing from Q1 answer
+      // Q1: 0=never, 1=<3mo, 2=3-6mo, 3=6mo-1yr, 4=1-2yr, 5=2-5yr, 6=5yr+
+      final yearsAnswer = _answers[1] ?? 0;
+      int yearsPlaying;
+      if (yearsAnswer == 0) {
+        yearsPlaying = 0;
+      } else if (yearsAnswer == 1) {
+        yearsPlaying = 0; // < 3 months
+      } else if (yearsAnswer == 2) {
+        yearsPlaying = 0; // 3-6 months
+      } else if (yearsAnswer == 3) {
+        yearsPlaying = 1; // 6mo-1yr
+      } else if (yearsAnswer == 4) {
+        yearsPlaying = 1; // 1-2yr
+      } else if (yearsAnswer == 5) {
+        yearsPlaying = 3; // 2-5yr
+      } else {
+        yearsPlaying = 6; // 5yr+
+      }
+
+      // Step 3: Get hours per week from Q2 answer
+      final hoursAnswer = _answers[2] ?? 1;
+      double hoursPerWeek;
+      switch (hoursAnswer) {
+        case 1:
+          hoursPerWeek = 1.0; // < 2
+          break;
+        case 2:
+          hoursPerWeek = 3.5; // 2-5
+          break;
+        case 3:
+          hoursPerWeek = 7.5; // 5-10
+          break;
+        case 4:
+          hoursPerWeek = 15.0; // 10-20
+          break;
+        default:
+          hoursPerWeek = 25.0; // > 20
+      }
+
+      // Step 4: Create player with onboarding data
+      final playerRepo = ref.read(playerRepositoryProvider);
+      final player = await playerRepo.createPlayer(
+        name: 'Player ${DateTime.now().millisecondsSinceEpoch % 10000}', // Anonymous name
+        currentLevel: level,
+        yearsPlaying: yearsPlaying,
+        hoursPerWeek: hoursPerWeek,
+      );
+
+      // Step 5: Mark onboarding as completed (only after player creation succeeds)
+      await playerRepo.completeOnboarding();
+
+      // Step 6: Navigate to home
+      if (mounted) {
+        context.go('/home');
+      }
+    } catch (e) {
+      // On error, show snackbar and stay on page
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi: ${e.toString()}')),
+        );
+        setState(() {
+          _isCreatingPlayer = false;
+        });
+      }
+    }
   }
 
   void _nextPage() {
@@ -31,7 +115,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      context.go('/home');
+      // Last page - complete onboarding and create player
+      _completeOnboardingAndNavigate();
     }
   }
 
