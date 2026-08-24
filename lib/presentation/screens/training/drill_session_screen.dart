@@ -41,6 +41,13 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   DrillSession? _session;
   late final DrillSessionRecoveryService _recovery;
 
+  // Sprint-17 Part 3: Track whether auto-start has been triggered.
+  // Prevents duplicate session creation on rebuild.
+  bool _autoStarted = false;
+
+  // Sprint-17 Part 3: Track initialization state.
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
@@ -52,13 +59,34 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Auto-start session when coming from drill detail (Bắt đầu Level X button).
-    // The level query param indicates user explicitly started.
+    // Sprint-17 Part 3: Extract auto-start logic into helper.
+    // Read query params and trigger auto-start if conditions met.
+    _tryAutoStart();
+  }
+
+  /// Sprint-17 Part 3: Helper to auto-start session when navigating from drill detail.
+  /// Called from:
+  /// 1. didChangeDependencies() — when widget is first built
+  /// 2. _loadDrill() completion — when drill async load finishes
+  ///
+  /// Guards against:
+  /// - Duplicate auto-start (tracked via _autoStarted)
+  /// - Starting while session already active
+  /// - Starting if drill not yet loaded
+  /// - Starting if no 'level' query param (not from drill detail)
+  /// - Starting after widget disposed
+  void _tryAutoStart() {
+    if (!mounted) return;
+    if (_autoStarted) return;
+    if (isSessionActive) return;
+    if (_drill == null) return;
+
     final goState = GoRouterState.of(context);
     final level = goState.uri.queryParameters['level'];
-    final targetParam = goState.uri.queryParameters['target'];
+    if (level == null) return; // Not from drill detail — don't auto-start
 
-    // Sprint 7B: read custom target reps from query param (set by drill detail).
+    // Sprint 7B: read custom target reps from query param.
+    final targetParam = goState.uri.queryParameters['target'];
     if (targetParam != null) {
       final t = int.tryParse(targetParam);
       if (t != null && t > 0) {
@@ -66,15 +94,14 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       }
     }
 
-    if (level != null && _drill != null && !isSessionActive && !_autoStarted) {
-      _autoStarted = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _startSession();
-      });
-    }
-  }
+    // Mark as started BEFORE async call to prevent race conditions
+    _autoStarted = true;
 
-  bool _autoStarted = false;
+    // Defer to post-frame to avoid setState during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _startSession();
+    });
+  }
 
   void _loadDrill() {
     final drill = DrillLibrary.getDrill(widget.drillCode);
@@ -87,16 +114,21 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       setState(() {
         _drill = drill;
         // Initialize target to level default if not yet set via query param.
-        if (!isInitialized) {
+        if (!_isInitialized) {
           targetReps = drill.levels.first.attempts;
-          isInitialized = true;
+          _isInitialized = true;
         }
         _error = null;
       });
+
+      // Sprint-17 Part 3: Trigger auto-start after drill loads.
+      // This fixes the race condition where didChangeDependencies()
+      // fired before _drill was set.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _tryAutoStart();
+      });
     }
   }
-
-  bool isInitialized = false;
 
   Future<void> _startSession() async {
     final drill = _drill;
