@@ -73,6 +73,8 @@ class Player {
       'hours_per_week': hoursPerWeek,
       'short_term_goal': shortTermGoal,
       'long_term_goal': longTermGoal,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
