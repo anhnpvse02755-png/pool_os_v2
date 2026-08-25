@@ -358,8 +358,17 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
             ),
         ],
       ),
-      body: _buildActiveSession(),
-      bottomNavigationBar: isSessionActive ? _buildRecordingBar() : null,
+      // Sprint-17 Part 8: Recording bar is now part of body for reliable web visibility.
+      // bottomNavigationBar can be clipped on web viewports.
+      body: Column(
+        children: [
+          Expanded(child: _buildActiveSession()),
+          // Recording controls always visible at bottom
+          if (isSessionActive)
+            _buildRecordingBar(),
+        ],
+      ),
+      // Removed bottomNavigationBar - now using Column for reliability
     );
   }
 
@@ -445,6 +454,8 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   Widget _buildRecordingBar() {
+    // Sprint-17 Part 8: Recording controls for body-based layout
+    // Uses ConstrainedBox to ensure minimum height
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -458,36 +469,55 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
         ],
       ),
       child: SafeArea(
-        child: Row(
-          children: [
-            // Success button
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => _recordShot(ShotResult.success),
-                icon: const Icon(Icons.check),
-                label: const Text('Thành công'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+        top: false, // Only safe area at bottom
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 80),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  // Success button
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _recordShot(ShotResult.success),
+                      icon: const Icon(Icons.check),
+                      label: const Text('Thành công'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Miss button
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _recordShot(ShotResult.miss),
+                      icon: const Icon(Icons.close),
+                      label: const Text('Trượt'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              // End session button
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => _finishSession(),
+                  icon: const Icon(Icons.stop, color: Colors.red),
+                  label: const Text('Kết thúc', style: TextStyle(color: Colors.red)),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            // Miss button
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: () => _recordShot(ShotResult.miss),
-                icon: const Icon(Icons.close),
-                label: const Text('Trượt'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
