@@ -49,9 +49,12 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
 
   @override
   void initState() {
+    print('[SPRINT17_STORAGE] SESSION_SCREEN_INIT_START');
     super.initState();
-    // Sprint 3A housekeeping: injected via provider (task #27).
+    // Sprint-17 Part 9A: recovery service requires LocalStorageService to be initialized.
+    // This is now guaranteed by main.dart calling LocalStorageService.init().
     _recovery = DrillSessionRecoveryService(ref.read(drillSessionRepositoryProvider));
+    print('[SPRINT17_STORAGE] SESSION_SCREEN_INIT: recovery service created');
     _loadDrill();
   }
 
@@ -103,7 +106,10 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   void _loadDrill() {
+    print('[SPRINT17_FLOW] LOAD_DRILL_START: drillCode=${widget.drillCode}');
     final drill = DrillLibrary.getDrill(widget.drillCode);
+    print('[SPRINT17_FLOW] LOAD_DRILL: drill=${drill != null ? "found" : "null"}');
+
     if (drill == null) {
       setState(() {
         _error = 'Bài tập với mã "${widget.drillCode}" không tồn tại.';
@@ -115,6 +121,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
         // Initialize target to level default if not yet set via query param.
         if (!_isInitialized) {
           targetReps = drill.levels.first.attempts;
+          print('[SPRINT17_FLOW] LOAD_DRILL: set targetReps=$targetReps');
           _isInitialized = true;
         }
         _error = null;
@@ -126,14 +133,17 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _tryAutoStart();
       });
+      print('[SPRINT17_FLOW] LOAD_DRILL_COMPLETE');
     }
   }
 
   Future<void> _startSession() async {
+    print('[SPRINT17_FLOW] START_SESSION: creating DrillSession');
     final drill = _drill;
     if (drill == null) return;
 
     final player = await ref.read(currentPlayerProvider.future);
+    print('[SPRINT17_FLOW] START_SESSION: player=${player?.id ?? "null"}');
     if (player == null) {
       // No player profile — cannot persist. Surface failure cleanly.
       if (!mounted) return;
@@ -142,14 +152,19 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       );
       return;
     }
+
     final session = DrillSession(
       id: 'session-${DateTime.now().microsecondsSinceEpoch}',
       playerId: player.id,
       title: drill.nameVi,
       startedAt: DateTime.now(),
     );
+
+    print('[SPRINT17_STORAGE] START_SESSION: recovery.pause ENTER');
     await _recovery.pause(session); // creates the active session row.
+    print('[SPRINT17_STORAGE] START_SESSION: recovery.pause COMPLETE');
     if (!mounted) return;
+
     setState(() {
       _session = session;
       isSessionActive = true;
@@ -157,6 +172,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       successCount = 0;
       lastShotResult = null;
     });
+    print('[SPRINT17_FLOW] START_SESSION: COMPLETE - isSessionActive=$isSessionActive');
   }
 
   Future<void> _recordShot(ShotResult result) async {

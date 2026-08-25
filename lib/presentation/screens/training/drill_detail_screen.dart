@@ -803,6 +803,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Future<void> _onStartPressed(Drill drill) async {
+    print('[SPRINT17_FLOW] DRILL_DETAIL: _onStartPressed entered');
     final defaultAttempts = drill.levels.first.attempts;
 
     // Show dialog so the player can pick a target — preset or custom.
