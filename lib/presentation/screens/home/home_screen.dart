@@ -10,6 +10,7 @@ import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/dashboard_provider.dart';
 import '../../../core/services/coach_service.dart';
 import '../../../core/services/coach_types.dart';
+import '../../../knowledge/drill_code_bridge.dart';
 
 /// AI Home - Dashboard chính
 /// Trả lời: "Hôm nay tôi nên làm gì?"
@@ -266,8 +267,12 @@ class HomeScreen extends ConsumerWidget {
                 final path = learningPathAsync.valueOrNull;
                 if (path != null && path.isNotEmpty) {
                   final first = path.first;
+                  // Sprint-18 Part 1: Resolve V1 drill codes (e.g., STRAIGHT_POT)
+                  // to V2 DrillLibrary codes (e.g., STRAIGHT_NEAR) before
+                  // navigating to the session screen.
+                  final resolvedCode = resolveDrillCode(first.drillCode) ?? first.drillCode;
                   context.push(
-                    '/training/session/new?drill=${first.drillCode}',
+                    '/training/session/new?drill=$resolvedCode',
                   );
                 } else {
                   context.go('/training');

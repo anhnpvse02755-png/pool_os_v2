@@ -34,6 +34,8 @@ String? v1ToV2Code(String v1Code) {
     case 'FOLLOW':
       return 'FOLLOW_SHOT';
     case 'STRAIGHT':
+    case 'STRAIGHT_POT':  // Sprint-18: knowledge graph uses STRAIGHT_POT
+    case 'STRAIGHT_NEAR': // already V2 but pass through
       return 'STRAIGHT_NEAR';
     case 'POSITION':
       return 'POSITION_BASIC';
