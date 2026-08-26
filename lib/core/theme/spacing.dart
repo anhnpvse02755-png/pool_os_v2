@@ -45,4 +45,21 @@ class AppSpacing {
 
   /// Full radius - pills, avatars
   static const double radiusFull = 9999.0;
+
+  // ========================================================================
+  // ALIASES (convenience shortcuts)
+  // ========================================================================
+
+  /// xs = 4px
+  static const double xs = space1;
+  /// sm = 8px
+  static const double sm = space2;
+  /// md = 12px
+  static const double md = space3;
+  /// lg = 16px
+  static const double lg = space4;
+  /// xl = 20px
+  static const double xl = space5;
+  /// xxl = 24px
+  static const double xxl = space6;
 }

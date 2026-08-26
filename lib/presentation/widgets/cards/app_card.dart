@@ -36,7 +36,7 @@ class AppCard extends StatelessWidget {
             padding: padding ?? const EdgeInsets.all(AppSpacing.space4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              boxShadow: [AppShadows.sm(brightness)],
+              boxShadow: AppShadows.sm(brightness),
             ),
             child: child,
           ),
@@ -68,7 +68,7 @@ class SectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        boxShadow: [AppShadows.sm(Theme.of(context).brightness)],
+        boxShadow: AppShadows.sm(Theme.of(context).brightness),
       ),
       child: child,
     );

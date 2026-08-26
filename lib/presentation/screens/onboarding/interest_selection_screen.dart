@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 
 class InterestSelectionScreen extends StatefulWidget {
   final VoidCallback? onComplete;
@@ -16,86 +18,76 @@ class InterestSelectionScreen extends StatefulWidget {
 class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   final Set<String> _selectedInterests = {};
 
-  final List<InterestOption> _interests = [
-    InterestOption(
+  final List<_InterestOption> _interests = [
+    _InterestOption(
       id: 'draw',
       name: 'Draw Shot',
       nameVi: 'Draw Shot',
       icon: Icons.arrow_back,
       color: Colors.orange,
-      description: 'Bi cái quay ngược lại sau khi chạm',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'position',
       name: 'Position Control',
       nameVi: 'Kiểm soát vị trí',
       icon: Icons.gps_fixed,
       color: Colors.blue,
-      description: 'Điều bi cái đến vị trí mong muốn',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'bank',
       name: 'Bank Shot',
       nameVi: 'Bank',
       icon: Icons.change_history,
       color: Colors.purple,
-      description: 'Đánh chạm băng trước khi vào lỗ',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'kick',
       name: 'Kick Shot',
       nameVi: 'Kick',
       icon: Icons.turn_right,
       color: Colors.teal,
-      description: 'Đá từ băng vào bi mục tiêu',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'jump',
       name: 'Jump Shot',
       nameVi: 'Jump',
       icon: Icons.arrow_upward,
       color: Colors.red,
-      description: 'Bi cái nhảy qua chướng ngại vật',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'masse',
       name: 'Masse',
       nameVi: 'Masse',
       icon: Icons.rotate_right,
       color: Colors.pink,
-      description: 'Đánh xoáy ngược với độ cong lớn',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'safety',
       name: 'Safety Play',
       nameVi: 'An toàn',
       icon: Icons.shield,
       color: Colors.green,
-      description: 'Đánh an toàn, không để đối thủ dễ đánh',
     ),
-    InterestOption(
+    _InterestOption(
       id: '3cushion',
       name: '3 Cushion',
       nameVi: '3 Băng',
       icon: Icons.view_in_ar,
       color: Colors.indigo,
-      description: 'Đánh chạm 3 băng trước khi đánh bi mục tiêu',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'trickshot',
       name: 'Trickshot',
       nameVi: 'Trickshot',
       icon: Icons.auto_awesome,
       color: Colors.amber,
-      description: 'Những cú đánh đặc biệt, ảo diệu',
     ),
-    InterestOption(
+    _InterestOption(
       id: 'break',
       name: 'Break Shot',
       nameVi: 'Khai cuộc',
       icon: Icons.flash_on,
       color: Colors.deepOrange,
-      description: 'Cú phá bi, tạo cơ hội ghi điểm',
     ),
   ];
 
@@ -110,7 +102,6 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   }
 
   void _continue() {
-    // TODO: Save to user profile
     if (widget.onComplete != null) {
       widget.onComplete!();
     } else {
@@ -121,44 +112,46 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       body: SafeArea(
         child: Column(
           children: [
             // Header
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Bạn thích học gì?',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                   ).animate().fadeIn(),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Chọn những gì bạn muốn cải thiện. Điều này giúp AI đề xuất bài tập phù hợp với bạn.',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppTheme.textSecondary,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.lightTextSecondary,
                         ),
                   ).animate().fadeIn(delay: 100.ms),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: AppTheme.accentGold.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.gold.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, size: 18, color: AppTheme.accentGold),
-                        const SizedBox(width: 8),
+                        Icon(Icons.info_outline, size: 18, color: AppColors.gold),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             'Bạn có thể chọn nhiều hoặc bỏ trống. Tất cả bài tập đều mở cho bạn.',
                             style: TextStyle(
-                              color: AppTheme.accentGold,
+                              color: AppColors.gold,
                               fontSize: 13,
                             ),
                           ),
@@ -173,12 +166,12 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
             // Interest Grid
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 1.1,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.0,
+                  crossAxisSpacing: AppSpacing.sm,
+                  mainAxisSpacing: AppSpacing.sm,
                 ),
                 itemCount: _interests.length,
                 itemBuilder: (context, index) {
@@ -194,48 +187,33 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
               ),
             ),
 
-            // Selection count & Continue
+            // Bottom bar
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
+                color: AppColors.lightSurface,
+                border: Border(
+                  top: BorderSide(color: AppColors.lightBorder),
+                ),
               ),
-              child: Column(
-                children: [
-                  Text(
-                    '${_selectedInterests.length} sở thích đã chọn',
-                    style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 14,
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  children: [
+                    Text(
+                      '${_selectedInterests.length} sở thích đã chọn',
+                      style: TextStyle(
+                        color: AppColors.lightTextSecondary,
+                        fontSize: 14,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
+                    const SizedBox(height: AppSpacing.md),
+                    _PrimaryButton(
                       onPressed: _selectedInterests.isNotEmpty ? _continue : null,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: AppTheme.primaryGreen,
-                        disabledBackgroundColor: Colors.grey.shade200,
-                      ),
-                      child: const Text(
-                        'Tiếp tục',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      label: 'Tiếp tục',
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -245,26 +223,24 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   }
 }
 
-class InterestOption {
+class _InterestOption {
   final String id;
   final String name;
   final String nameVi;
   final IconData icon;
   final Color color;
-  final String description;
 
-  const InterestOption({
+  const _InterestOption({
     required this.id,
     required this.name,
     required this.nameVi,
     required this.icon,
     required this.color,
-    required this.description,
   });
 }
 
 class _InterestCard extends StatelessWidget {
-  final InterestOption interest;
+  final _InterestOption interest;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -278,15 +254,17 @@ class _InterestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? interest.color.withValues(alpha: 0.1) : Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: isSelected
+              ? interest.color.withValues(alpha: 0.1)
+              : AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? interest.color : Colors.grey.shade300,
+            color: isSelected ? interest.color : AppColors.lightBorder,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -308,41 +286,90 @@ class _InterestCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isSelected
                     ? interest.color.withValues(alpha: 0.2)
-                    : Colors.grey.shade100,
+                    : AppColors.lightBackground,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 interest.icon,
-                color: isSelected ? interest.color : Colors.grey,
+                color: isSelected ? interest.color : AppColors.lightTextTertiary,
                 size: 24,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               interest.nameVi,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: isSelected ? interest.color : AppTheme.textPrimary,
+                color: isSelected ? interest.color : AppColors.lightTextPrimary,
                 fontSize: 13,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: interest.color,
-                size: 18,
-              )
-            else
-              Icon(
-                Icons.circle_outlined,
-                color: Colors.grey.shade300,
-                size: 18,
-              ),
+            const SizedBox(height: AppSpacing.xs),
+            Icon(
+              isSelected ? Icons.check_circle : Icons.circle_outlined,
+              color: isSelected ? interest.color : AppColors.lightTextTertiary,
+              size: 20,
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+
+  const _PrimaryButton({
+    required this.onPressed,
+    required this.label,
+  });
+
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null
+                ? [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Text(
+            widget.label,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );
