@@ -271,8 +271,13 @@ class HomeScreen extends ConsumerWidget {
                   // to V2 DrillLibrary codes (e.g., STRAIGHT_NEAR) before
                   // navigating to the session screen.
                   final resolvedCode = resolveDrillCode(first.drillCode) ?? first.drillCode;
+                  // Sprint-18 Part 3: Pass level and target params so
+                  // _tryAutoStart() auto-starts the session and recording
+                  // UI (THÀNH CÔNG/TRƯỢT buttons) appears. Level=1 is the
+                  // default level; target=10 is the default rep count for
+                  // level 1 drills (matching DrillDetailScreen defaults).
                   context.push(
-                    '/training/session/new?drill=$resolvedCode',
+                    '/training/session/new?drill=$resolvedCode&level=1&target=10',
                   );
                 } else {
                   context.go('/training');
@@ -864,23 +869,39 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildTodayGoalSection(BuildContext context, WidgetRef ref) {
     final goals = ref.watch(todayGoalsProvider);
+    final learningPathAsync = ref.watch(learningPathProvider);
+
+    // Sprint-18 Part 3: Navigation handlers for actionable goals.
+    void goToTraining() {
+      final path = learningPathAsync.valueOrNull;
+      if (path != null && path.isNotEmpty) {
+        final first = path.first;
+        final resolvedCode = resolveDrillCode(first.drillCode) ?? first.drillCode;
+        context.push('/training/session/new?drill=$resolvedCode&level=1&target=10');
+      } else {
+        context.go('/training/drills');
+      }
+    }
 
     final goalItems = [
       _GoalItem(
         icon: Icons.fitness_center,
         label: '${goals.drillsCompleted}/${goals.drillsTarget} drills',
         isDone: goals.drillsCompleted >= goals.drillsTarget,
+        onTap: goals.drillsCompleted < goals.drillsTarget ? goToTraining : null,
       ),
       _GoalItem(
         icon: Icons.article,
         label: 'Đọc bài kiến thức',
         isDone: goals.knowledgeRead,
+        onTap: goals.knowledgeRead ? null : () => context.push('/training/knowledge'),
       ),
       _GoalItem(
         icon: Icons.quiz,
         label: 'Pass Level Test',
         isDone: goals.testPassed,
         isSpecial: true,
+        onTap: goals.testPassed ? null : () => context.push('/training/assessment'),
       ),
     ];
 
@@ -1480,12 +1501,14 @@ class _GoalItem {
   final String label;
   final bool isDone;
   final bool isSpecial;
+  final VoidCallback? onTap;
 
   _GoalItem({
     required this.icon,
     required this.label,
     required this.isDone,
     this.isSpecial = false,
+    this.onTap,
   });
 }
 
@@ -1496,7 +1519,12 @@ class _GoalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return InkWell(
+      onTap: goal.onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: Row(
       children: [
         Container(
           width: 36,
@@ -1544,7 +1572,12 @@ class _GoalRow extends StatelessWidget {
           Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 20)
         else
           const SizedBox(width: 20),
+        // Trailing arrow for clickable incomplete goals
+        if (!goal.isDone && goal.onTap != null)
+          Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 20),
       ],
+        ),
+      ),
     );
   }
 }

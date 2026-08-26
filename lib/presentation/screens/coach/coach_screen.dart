@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../knowledge/knowledge_graph_service.dart';
 import '../../../knowledge/drill_node.dart';
+import '../../../knowledge/drill_code_bridge.dart';
 import '../../providers/coach_survey_provider.dart';
 
 /// Coach Screen - Rule-based Coach với Recommendations
@@ -486,7 +487,12 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
   }
 
   void _startDrill(BuildContext context, String drillCode) {
-    context.push('/training/session/new?drill=$drillCode');
+    // Sprint-18 Part 3: Resolve V1→V2 codes and pass level/target so
+    // DrillSessionScreen auto-starts and shows recording UI.
+    final resolvedCode = resolveDrillCode(drillCode) ?? drillCode;
+    context.push(
+      '/training/session/new?drill=$resolvedCode&level=1&target=10',
+    );
   }
 }
 
