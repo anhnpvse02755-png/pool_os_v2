@@ -234,10 +234,10 @@ class _StatsRow extends StatelessWidget {
       children: [
         Expanded(
           child: _StatCard(
-            icon: Icons.local_fire_department,
-            value: '${summary.streakDays}',
-            label: 'Day Streak',
-            color: AppColors.gold,
+            icon: Icons.timer,
+            value: '${summary.totalMinutes}m',
+            label: 'Total Time',
+            color: AppColors.accentColor(brightness),
             brightness: brightness,
           ),
         ),
@@ -246,7 +246,7 @@ class _StatsRow extends StatelessWidget {
           child: _StatCard(
             icon: Icons.fitness_center,
             value: '${summary.totalSessions}',
-            label: 'Total Sessions',
+            label: 'Sessions',
             color: AppColors.success,
             brightness: brightness,
           ),
@@ -255,7 +255,7 @@ class _StatsRow extends StatelessWidget {
         Expanded(
           child: _StatCard(
             icon: Icons.track_changes,
-            value: '${summary.weakestDrill?.accuracy ?? 0}%',
+            value: '${summary.weakestDrill?.rate ?? 0}%',
             label: 'Needs Work',
             color: AppColors.warning,
             brightness: brightness,
@@ -507,14 +507,14 @@ class _RecommendationsSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Focus on ${summary.weakestDrill?.drillName ?? "aiming drills"}',
+                          'Focus on ${summary.weakestDrill?.name ?? "aiming drills"}',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary(brightness),
                           ),
                         ),
                         Text(
-                          summary.weakestDrill?.suggestion ?? 'Keep practicing!',
+                          summary.weakestDrill != null ? 'Practice more to improve' : 'Keep practicing!',
                           style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary(brightness),
