@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/colors.dart';
 import '../../../core/providers/notification_provider.dart';
 
-/// Main Shell với Bottom Navigation
+/// PoolOS Main Shell with Bottom Navigation
+/// 4 tabs: Home | Train | Progress | Profile
 class MainShell extends ConsumerWidget {
   final Widget child;
 
@@ -14,55 +16,72 @@ class MainShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final unreadCount = ref.watch(unreadNotificationCountProvider);
+    final currentLocation = GoRouterState.of(context).uri.path;
+
+    // Determine current tab index based on route
+    int currentIndex = 0;
+    if (currentLocation.startsWith('/training') ||
+        currentLocation.startsWith('/home') && currentLocation == '/home') {
+      // Training tab (also handles home as it shows training content)
+    } else if (currentLocation.startsWith('/progress') ||
+               currentLocation.startsWith('/coach')) {
+      currentIndex = 2; // Progress
+    } else if (currentLocation.startsWith('/profile')) {
+      currentIndex = 3; // Profile
+    } else if (currentLocation.startsWith('/play')) {
+      // Play is part of training flow in new design
+      currentIndex = 1;
+    }
 
     return Scaffold(
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? const Color(0x0D000000)
+                  : const Color(0x26000000),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
           ],
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          top: false,
+          child: SizedBox(
+            height: 64,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _NavItem(
                   icon: Icons.home_outlined,
                   activeIcon: Icons.home,
-                  label: 'Trang chủ',
-                  route: '/home',
+                  label: 'Home',
+                  isActive: currentIndex == 0,
+                  onTap: () => context.go('/home'),
                 ),
                 _NavItem(
-                  icon: Icons.fitness_center_outlined,
-                  activeIcon: Icons.fitness_center,
-                  label: 'Luyện tập',
-                  route: '/training',
-                ),
-                _NavItem(
-                  icon: Icons.emoji_events_outlined,
-                  activeIcon: Icons.emoji_events,
-                  label: 'Thi đấu',
-                  route: '/play',
+                  icon: Icons.track_changes_outlined,
+                  activeIcon: Icons.track_changes,
+                  label: 'Train',
+                  isActive: currentIndex == 1,
+                  onTap: () => context.go('/training'),
                 ),
                 _NavItem(
                   icon: Icons.bar_chart_outlined,
                   activeIcon: Icons.bar_chart,
-                  label: 'Phân tích',
-                  route: '/coach/analysis',
+                  label: 'Progress',
+                  isActive: currentIndex == 2,
+                  onTap: () => context.go('/coach/analysis'),
                 ),
                 _NavItem(
                   icon: Icons.person_outline,
                   activeIcon: Icons.person,
-                  label: 'Cá nhân',
-                  route: '/profile',
+                  label: 'Profile',
+                  isActive: currentIndex == 3,
+                  onTap: () => context.go('/profile'),
                   badge: unreadCount > 0 ? unreadCount : null,
                 ),
               ],
@@ -78,49 +97,45 @@ class _NavItem extends StatelessWidget {
   final IconData icon;
   final IconData activeIcon;
   final String label;
-  final String route;
+  final bool isActive;
+  final VoidCallback onTap;
   final int? badge;
 
   const _NavItem({
     required this.icon,
     required this.activeIcon,
     required this.label,
-    required this.route,
+    required this.isActive,
+    required this.onTap,
     this.badge,
   });
 
   @override
   Widget build(BuildContext context) {
-    final currentLocation = GoRouterState.of(context).uri.path;
-    final isActive = currentLocation.startsWith(route);
+    final accentColor = AppColors.accentColor(Theme.of(context).brightness);
+    final mutedColor = Theme.of(context).brightness == Brightness.light
+        ? AppColors.lightTextSecondary
+        : AppColors.darkTextSecondary;
 
-    return InkWell(
-      onTap: () {
-        if (!isActive) {
-          context.go(route);
-        }
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive
-              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        width: 72,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Icon(
-                  isActive ? activeIcon : icon,
-                  color: isActive
-                      ? AppTheme.primaryGreen
-                      : Colors.grey.shade500,
-                  size: 24,
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  child: Icon(
+                    isActive ? activeIcon : icon,
+                    color: isActive ? accentColor : mutedColor,
+                    size: 24,
+                  ),
                 ),
                 if (badge != null)
                   Positioned(
@@ -132,7 +147,7 @@ class _NavItem extends StatelessWidget {
                         vertical: 1,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: AppColors.error,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       constraints: const BoxConstraints(
@@ -153,14 +168,23 @@ class _NavItem extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            Text(
-              label,
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                color: isActive
-                    ? AppTheme.primaryGreen
-                    : Colors.grey.shade600,
                 fontSize: 11,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                color: isActive ? accentColor : mutedColor,
+              ),
+              child: Text(label),
+            ),
+            const SizedBox(height: 4),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: isActive ? 20 : 0,
+              height: 2,
+              decoration: BoxDecoration(
+                color: accentColor,
+                borderRadius: BorderRadius.circular(1),
               ),
             ),
           ],
