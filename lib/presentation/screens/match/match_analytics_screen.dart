@@ -1,12 +1,14 @@
 // ============================================================================
-// MATCH ANALYTICS SCREEN - Sprint-9C
-// Integrates Shot Map, Heat Map, and Pocket Accuracy visualizations
+// MATCH ANALYTICS SCREEN - Sprint-19 Redesign
+// Minimalist Luxury Design System
 // ============================================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/match.dart';
 import '../../widgets/shot_map_view.dart';
@@ -62,7 +64,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
       setState(() {
         _match = match;
         _isLoading = false;
-        _error = match == null ? 'Không tìm thấy trận đấu' : null;
+        _error = match == null ? 'Khong tim thay tran dau' : null;
       });
     } catch (e) {
       setState(() {
@@ -75,30 +77,41 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Phân tích trận đấu'),
+        backgroundColor: AppColors.lightSurface,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'Phan tich tran dau',
+          style: TextStyle(
+            color: AppColors.lightTextPrimary,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+          ),
+        ),
         actions: [
-          // Heat map toggle
           if (_match != null && _match!.racks.isNotEmpty)
             IconButton(
               icon: Icon(
                 _showHeatMap ? Icons.layers_clear : Icons.layers,
+                color: AppColors.lightTextPrimary,
               ),
               onPressed: () {
                 setState(() {
                   _showHeatMap = !_showHeatMap;
                 });
               },
-              tooltip: _showHeatMap ? 'Tắt Heat Map' : 'Bật Heat Map',
+              tooltip: _showHeatMap ? 'Tat Heat Map' : 'Bat Heat Map',
             ),
         ],
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Shot Map'),
-            Tab(text: 'Heat Map'),
-            Tab(text: 'Pocket Accuracy'),
-          ],
+          indicatorColor: AppColors.accent,
+          labelColor: AppColors.accent,
+          unselectedLabelColor: AppColors.lightTextSecondary,
+          labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+          unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
         ),
       ),
       body: _buildBody(),
@@ -107,7 +120,11 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: CircularProgressIndicator(
+          color: AppColors.accent,
+        ),
+      );
     }
 
     if (_error != null) {
@@ -121,13 +138,8 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
     return TabBarView(
       controller: _tabController,
       children: [
-        // Shot Map Tab
         _ShotMapTab(match: _match!),
-
-        // Heat Map Tab
         _HeatMapTab(match: _match!),
-
-        // Pocket Accuracy Tab
         _PocketAccuracyTab(match: _match!),
       ],
     );
@@ -135,22 +147,32 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
 
   Widget _buildErrorState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.red),
-          const SizedBox(height: 16),
-          Text(
-            'Lỗi: $_error',
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _loadMatch,
-            child: const Text('Thử lại'),
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.all(AppSpacing.xxl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: EdgeInsets.all(AppSpacing.lg),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.error_outline, size: 48, color: Colors.red),
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Text(
+              'Loi: $_error',
+              style: TextStyle(
+                color: AppColors.lightTextPrimary,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: AppSpacing.xl),
+            _RetryButton(onPressed: _loadMatch),
+          ],
+        ),
       ),
     );
   }
@@ -158,29 +180,79 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.analytics_outlined,
-              size: 80,
-              color: Colors.grey.shade300,
+            Container(
+              padding: EdgeInsets.all(AppSpacing.xl),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.analytics_outlined,
+                size: 48,
+                color: AppColors.accent.withValues(alpha: 0.5),
+              ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: AppSpacing.lg),
             Text(
-              'Chưa có dữ liệu trận đấu',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
+              'Chua co du lieu tran dau',
+              style: TextStyle(
+                color: AppColors.lightTextPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
-              'Ghi lại ít nhất 1 trận đấu để xem phân tích',
-              style: TextStyle(color: Colors.grey.shade500),
+              'Ghi lai it nhat 1 tran dau de xem phan tich',
+              style: TextStyle(
+                color: AppColors.lightTextSecondary,
+                fontSize: 14,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Retry Button with _PrimaryButton pattern
+class _RetryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  const _RetryButton({required this.onPressed});
+
+  @override
+  State<_RetryButton> createState() => _RetryButtonState();
+}
+
+class _RetryButtonState extends State<_RetryButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          width: 140,
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null
+                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                : null,
+          ),
+          child: Text('Thu lai', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
         ),
       ),
     );
@@ -196,32 +268,41 @@ class _ShotMapTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (match.racks.isEmpty) {
-      return _buildNoDataState(context, 'Chưa có dữ liệu shot trong trận đấu này');
+      return _buildNoDataState(context, 'Chua co du lieu shot trong tran dau nay');
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Info card
           _buildInfoCard(context),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
 
-          // Shot map visualization
           Text(
             'Shot Map',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: TextStyle(
+              color: AppColors.lightTextPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 8),
-          ShotMapView(match: match),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.md),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.lightSurface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              child: ShotMapView(match: match),
+            ),
+          ),
+          SizedBox(height: AppSpacing.md),
           _buildLegend(context),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
 
-          // Stats summary
           _buildStatsSummary(context),
         ],
       ),
@@ -230,19 +311,23 @@ class _ShotMapTab extends StatelessWidget {
 
   Widget _buildInfoCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        color: AppColors.accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: AppTheme.primaryGreen),
-          const SizedBox(width: 12),
+          Icon(Icons.info_outline, color: AppColors.accent, size: 20),
+          SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
-              'Shot Map hiển thị đường đi của các cú đánh. Đường xanh = trúng, đường đỏ = trượt.',
-              style: Theme.of(context).textTheme.bodySmall,
+              'Shot Map hien thi duong di cua cac cu danh. Duong xanh = trung, duong do = truot.',
+              style: TextStyle(
+                color: AppColors.lightTextSecondary,
+                fontSize: 13,
+              ),
             ),
           ),
         ],
@@ -254,13 +339,13 @@ class _ShotMapTab extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _LegendItem(color: Colors.white, label: 'Bi trắng', border: Colors.black),
-        const SizedBox(width: 16),
-        _LegendItem(color: Colors.yellow, label: 'Bi mục tiêu'),
-        const SizedBox(width: 16),
-        _LegendItem(color: Colors.green, label: 'Trúng', line: true),
-        const SizedBox(width: 16),
-        _LegendItem(color: Colors.redAccent, label: 'Trượt', line: true),
+        _LegendItem(color: Colors.white, label: 'Bi trang', border: Colors.black),
+        SizedBox(width: AppSpacing.md),
+        _LegendItem(color: Colors.yellow, label: 'Bi muc tieu'),
+        SizedBox(width: AppSpacing.md),
+        _LegendItem(color: AppColors.success, label: 'Trung', line: true),
+        SizedBox(width: AppSpacing.md),
+        _LegendItem(color: Colors.redAccent, label: 'Truot', line: true),
       ],
     );
   }
@@ -272,16 +357,17 @@ class _ShotMapTab extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _StatItem(label: 'Racks', value: '${match.racks.length}'),
-          _StatItem(label: 'Tổng shots', value: '$totalShots'),
+          _StatItem(label: 'Tong shots', value: '$totalShots'),
           _StatItem(
             label: 'Win Rate',
             value: '${match.winner == 'player' ? 100 : 0}%',
@@ -296,13 +382,14 @@ class _ShotMapTab extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.gps_off, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
+          Icon(Icons.gps_off, size: 48, color: AppColors.lightTextTertiary),
+          SizedBox(height: AppSpacing.md),
           Text(
             message,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+            style: TextStyle(
+              color: AppColors.lightTextSecondary,
+              fontSize: 16,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -324,13 +411,14 @@ class _HeatMapTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.gps_off, size: 64, color: Colors.grey.shade300),
-            const SizedBox(height: 16),
+            Icon(Icons.gps_off, size: 48, color: AppColors.lightTextTertiary),
+            SizedBox(height: AppSpacing.md),
             Text(
-              'Chưa có dữ liệu shot',
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.grey.shade600,
-                  ),
+              'Chua co du lieu shot',
+              style: TextStyle(
+                color: AppColors.lightTextSecondary,
+                fontSize: 16,
+              ),
             ),
           ],
         ),
@@ -338,44 +426,47 @@ class _HeatMapTab extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Info card
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.redAccent.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: Colors.redAccent.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              border: Border.all(color: Colors.redAccent.withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
-                Icon(Icons.local_fire_department, color: Colors.redAccent),
-                const SizedBox(width: 12),
+                Icon(Icons.local_fire_department, color: Colors.redAccent, size: 20),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
-                    'Heat Map cho thấy khu vực thường xuyên đánh (đỏ = nhiều, xanh = ít).',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    'Heat Map cho thay khu vuc thuong xuyen danh (do = nhieu, xanh = it).',
+                    style: TextStyle(
+                      color: AppColors.lightTextSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
 
-          // Heat map visualization with showHeat = true
           Text(
             'Heat Map',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: TextStyle(
+              color: AppColors.lightTextPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.md),
           _buildHeatMapVisualization(context),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
 
-          // Analysis
           _buildHeatAnalysis(context),
         ],
       ),
@@ -383,14 +474,14 @@ class _HeatMapTab extends StatelessWidget {
   }
 
   Widget _buildHeatMapVisualization(BuildContext context) {
-    // Build a ShotMapView with showHeat enabled
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
-        borderRadius: BorderRadius.circular(4),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         child: _HeatMapCanvas(racks: match.racks),
       ),
     );
@@ -400,30 +491,38 @@ class _HeatMapTab extends StatelessWidget {
     final totalShots = match.racks.fold<int>(0, (sum, r) => sum + r.shots.length);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Phân tích',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            'Phan tich',
+            style: TextStyle(
+              color: AppColors.lightTextPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: AppSpacing.sm),
           Text(
-            'Tổng số cú đánh: $totalShots',
-            style: Theme.of(context).textTheme.bodyMedium,
+            'Tong so cu danh: $totalShots',
+            style: TextStyle(
+              color: AppColors.lightTextPrimary,
+              fontSize: 14,
+            ),
           ),
+          SizedBox(height: AppSpacing.xs),
           Text(
-            'Dữ liệu heat map được tính từ vị trí shot gần nhất.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+            'Du lieu heat map duoc tinh tu vi tri shot gan nhat.',
+            style: TextStyle(
+              color: AppColors.lightTextSecondary,
+              fontSize: 13,
+            ),
           ),
         ],
       ),
@@ -440,34 +539,46 @@ class _PocketAccuracyTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Info card
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.accent.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.gps_fixed, color: Colors.blue),
-                const SizedBox(width: 12),
+                Icon(Icons.gps_fixed, color: AppColors.accent, size: 20),
+                SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
-                    'Pocket Accuracy thể hiện tỷ lệ trúng theo từng lỗ trên bàn.',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    'Pocket Accuracy the hien ti le trung theo tung lo tren ban.',
+                    style: TextStyle(
+                      color: AppColors.lightTextSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: AppSpacing.lg),
 
-          // Pocket accuracy widget
-          PocketAccuracyWidget(racks: match.racks),
+          Container(
+            decoration: BoxDecoration(
+              color: AppColors.lightSurface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+              child: PocketAccuracyWidget(racks: match.racks),
+            ),
+          ),
         ],
       ),
     );
@@ -499,25 +610,21 @@ class _HeatMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // Draw table
     final tablePaint = Paint()..color = const Color(0xFF0E5C3B);
     canvas.drawRect(Offset.zero & size, tablePaint);
 
-    // Draw rail
     final railPaint = Paint()
       ..color = const Color(0xFF1E7E55)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6;
     canvas.drawRect(Rect.fromLTWH(4, 4, size.width - 8, size.height - 8), railPaint);
 
-    // Draw border
     final borderPaint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     canvas.drawRect(Offset.zero & size, borderPaint);
 
-    // Draw pockets
     final pocketPaint = Paint()..color = Colors.black;
     final pockets = [
       Offset.zero,
@@ -531,16 +638,13 @@ class _HeatMapPainter extends CustomPainter {
       canvas.drawCircle(p, 12, pocketPaint);
     }
 
-    // Draw heat map
     if (racks.isEmpty) return;
 
-    // Bin into grid
     const cols = 12, rows = 6;
     final grid = List.generate(rows, (_) => List.filled(cols, 0));
 
     int shotIndex = 0;
     for (final rack in racks) {
-      // Count shots per grid cell based on rack
       final shotCount = rack.shots.length;
       if (shotCount == 0) {
         shotIndex++;
@@ -552,7 +656,6 @@ class _HeatMapPainter extends CustomPainter {
       shotIndex++;
     }
 
-    // Find max
     int maxV = 1;
     for (final row in grid) {
       for (final v in row) {
@@ -560,7 +663,6 @@ class _HeatMapPainter extends CustomPainter {
       }
     }
 
-    // Draw heat cells
     final cellW = size.width / cols;
     final cellH = size.height / rows;
 
@@ -620,10 +722,13 @@ class _LegendItem extends StatelessWidget {
               border: border != null ? Border.all(color: border!) : null,
             ),
           ),
-        const SizedBox(width: 4),
+        SizedBox(width: AppSpacing.xs),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall,
+          style: TextStyle(
+            color: AppColors.lightTextSecondary,
+            fontSize: 12,
+          ),
         ),
       ],
     );
@@ -646,15 +751,19 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: TextStyle(
+            color: AppColors.lightTextPrimary,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
         ),
+        SizedBox(height: AppSpacing.xs),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey.shade600,
-              ),
+          style: TextStyle(
+            color: AppColors.lightTextSecondary,
+            fontSize: 13,
+          ),
         ),
       ],
     );
