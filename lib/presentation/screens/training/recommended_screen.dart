@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 
 class RecommendedScreen extends StatefulWidget {
   const RecommendedScreen({super.key});
@@ -18,68 +19,72 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
   final List<Map<String, dynamic>> _recommendations = [
     {
       'type': 'personalized',
-      'title': 'Cải thiện Draw Shot',
-      'subtitle': 'Dựa trên phong cách chơi của bạn',
-      'reason': 'Bạn có xu hướng đánh mạnh. Hãy tập trung vào kiểm soát lực.',
+      'title': 'Cai thien Draw Shot',
+      'subtitle': 'Dua tren phong cach choi cua ban',
+      'reason': 'Ban co xu huong danh manh. Hay tap trung vao kiem soat luc.',
       'drills': [
-        {'name': 'Draw Shot Lv1', 'duration': '15 phút', 'difficulty': 'Dễ'},
-        {'name': 'Draw Shot Lv2', 'duration': '20 phút', 'difficulty': 'Trung bình'},
+        {'name': 'Draw Shot Lv1', 'duration': '15 phut', 'difficulty': 'Easy'},
+        {'name': 'Draw Shot Lv2', 'duration': '20 phut', 'difficulty': 'Medium'},
       ],
       'progress': 0.4,
       'icon': Icons.trending_up,
-      'color': Colors.orange,
+      'color': AppColors.warning,
     },
     {
       'type': 'weakness',
-      'title': 'Position Play yếu',
-      'subtitle': 'Điểm cần cải thiện',
-      'reason': 'Tỷ lệ kiểm soát vị trí của bạn thấp hơn mức trung bình.',
+      'title': 'Position Play yeu',
+      'subtitle': 'Diem can cai thien',
+      'reason': 'Ty le kiem soat vi tri cua ban thap hon muc trung binh.',
       'drills': [
-        {'name': 'Position Control Lv1', 'duration': '25 phút', 'difficulty': 'Trung bình'},
-        {'name': 'Position Control Lv2', 'duration': '30 phút', 'difficulty': 'Khó'},
+        {'name': 'Position Control Lv1', 'duration': '25 phut', 'difficulty': 'Medium'},
+        {'name': 'Position Control Lv2', 'duration': '30 phut', 'difficulty': 'Hard'},
       ],
       'progress': 0.25,
       'icon': Icons.gps_fixed,
-      'color': Colors.blue,
+      'color': AppColors.accent,
     },
     {
       'type': 'challenge',
-      'title': 'Thử thách: Bank Shot',
-      'subtitle': 'Nâng cao kỹ năng',
-      'reason': 'Bạn chưa tập Bank Shot. Đây là kỹ năng quan trọng.',
+      'title': 'Thu thach: Bank Shot',
+      'subtitle': 'Nang cao ky nang',
+      'reason': 'Ban chua tap Bank Shot. Day la ky nang quan trong.',
       'drills': [
-        {'name': 'Bank Shot Lv1', 'duration': '20 phút', 'difficulty': 'Trung bình'},
-        {'name': 'Bank Shot Lv2', 'duration': '25 phút', 'difficulty': 'Khó'},
+        {'name': 'Bank Shot Lv1', 'duration': '20 phut', 'difficulty': 'Medium'},
+        {'name': 'Bank Shot Lv2', 'duration': '25 phut', 'difficulty': 'Hard'},
       ],
       'progress': 0.0,
       'icon': Icons.shield,
-      'color': Colors.purple,
+      'color': const Color(0xFF8B5CF6),
     },
     {
       'type': 'maintenance',
-      'title': 'Ôn tập: Stop Shot',
-      'subtitle': 'Duy trì kỹ năng',
-      'reason': 'Đã 3 ngày không tập Stop Shot. Hãy ôn lại để duy trì.',
+      'title': 'On tap: Stop Shot',
+      'subtitle': 'Duy tri ky nang',
+      'reason': 'Da 3 ngay khong tap Stop Shot. Hay on lai de duy tri.',
       'drills': [
-        {'name': 'Stop Shot Lv1', 'duration': '10 phút', 'difficulty': 'Dễ'},
-        {'name': 'Stop Shot Lv2', 'duration': '15 phút', 'difficulty': 'Trung bình'},
+        {'name': 'Stop Shot Lv1', 'duration': '10 phut', 'difficulty': 'Easy'},
+        {'name': 'Stop Shot Lv2', 'duration': '15 phut', 'difficulty': 'Medium'},
       ],
       'progress': 0.75,
       'icon': Icons.refresh,
-      'color': Colors.green,
+      'color': AppColors.success,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('AI đề xuất'),
+        title: const Text('AI de xuat'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refreshRecommendations,
-            tooltip: 'Làm mới',
+            tooltip: 'Lam moi',
           ),
         ],
       ),
@@ -122,40 +127,40 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
 
   Widget _buildGoalFilter() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
             _GoalChip(
-              label: 'Tất cả',
+              label: 'Tat ca',
               isSelected: _selectedGoal == 'all',
               onTap: () => setState(() => _selectedGoal = 'all'),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Cá nhân hóa',
+              label: 'Ca nhan hoa',
               isSelected: _selectedGoal == 'personalized',
               onTap: () => setState(() => _selectedGoal = 'personalized'),
               icon: Icons.person,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Điểm yếu',
+              label: 'Diem yeu',
               isSelected: _selectedGoal == 'weakness',
               onTap: () => setState(() => _selectedGoal = 'weakness'),
               icon: Icons.trending_down,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Thử thách',
+              label: 'Thu thach',
               isSelected: _selectedGoal == 'challenge',
               onTap: () => setState(() => _selectedGoal = 'challenge'),
               icon: Icons.emoji_events,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Ôn tập',
+              label: 'On tap',
               isSelected: _selectedGoal == 'maintenance',
               onTap: () => setState(() => _selectedGoal = 'maintenance'),
               icon: Icons.refresh,
@@ -169,7 +174,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
   Widget _buildPageIndicator() {
     final filtered = _getFilteredRecommendations();
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
@@ -177,12 +182,12 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
           (index) => Container(
             width: 8,
             height: 8,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: index == _currentIndex
-                  ? AppTheme.primaryGreen
-                  : Colors.grey.shade300,
+                  ? AppColors.accent
+                  : AppColors.lightBorder,
             ),
           ),
         ),
@@ -192,12 +197,12 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
 
   Widget _buildQuickActions() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -210,12 +215,16 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => context.push('/training/assessment'),
                 icon: const Icon(Icons.psychology),
-                label: const Text('Đánh giá lại'),
+                label: const Text('Danh gia lai'),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: AppColors.accent),
+                  foregroundColor: AppColors.accent,
+                ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: ElevatedButton.icon(
+              child: _PrimaryButton(
                 onPressed: () {
                   final filtered = _getFilteredRecommendations();
                   if (filtered.isNotEmpty) {
@@ -227,11 +236,8 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
                     }
                   }
                 },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Bắt đầu'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
-                ),
+                label: 'Bat dau',
+                icon: Icons.play_arrow,
               ),
             ),
           ],
@@ -251,7 +257,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Đã làm mới đề xuất'),
+        content: Text('Da lam moi de xuat'),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -278,16 +284,19 @@ class _GoalChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 16),
-            const SizedBox(width: 4),
+            Icon(icon, size: 16, color: isSelected ? Colors.white : AppColors.lightTextSecondary),
+            const SizedBox(width: AppSpacing.xs),
           ],
           Text(label),
         ],
       ),
       selected: isSelected,
       onSelected: (_) => onTap(),
-      selectedColor: AppTheme.primaryGreen.withValues(alpha: 0.2),
-      checkmarkColor: AppTheme.primaryGreen,
+      selectedColor: AppColors.accent,
+      checkmarkColor: Colors.white,
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.white : AppColors.lightTextSecondary,
+      ),
     );
   }
 }
@@ -307,23 +316,23 @@ class _RecommendationCard extends StatelessWidget {
     final color = recommendation['color'] as Color;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.xxl),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [color, color.withValues(alpha: 0.7)],
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             ),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
@@ -334,7 +343,7 @@ class _RecommendationCard extends StatelessWidget {
                     size: 32,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,7 +356,7 @@ class _RecommendationCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         recommendation['subtitle'] as String,
                         style: TextStyle(
@@ -362,37 +371,37 @@ class _RecommendationCard extends StatelessWidget {
             ),
           ).animate().fadeIn().slideY(begin: -0.1),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Reason
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               border: Border.all(color: color.withValues(alpha: 0.2)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(Icons.lightbulb, color: color, size: 20),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Phân tích AI',
+                        'Phan tich AI',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: color,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         recommendation['reason'] as String,
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: AppColors.lightTextSecondary,
                           height: 1.4,
                         ),
                       ),
@@ -403,31 +412,32 @@ class _RecommendationCard extends StatelessWidget {
             ),
           ).animate().fadeIn(delay: 100.ms),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Progress
           if (recommendation['progress'] > 0) ...[
             Text(
-              'Tiến độ',
+              'Tien do',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: AppColors.lightTextPrimary,
                   ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     child: LinearProgressIndicator(
                       value: recommendation['progress'] as double,
                       minHeight: 8,
-                      backgroundColor: Colors.grey.shade200,
+                      backgroundColor: AppColors.lightBorder,
                       valueColor: AlwaysStoppedAnimation(color),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Text(
                   '${((recommendation['progress'] as double) * 100).round()}%',
                   style: TextStyle(
@@ -437,22 +447,23 @@ class _RecommendationCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.xxl),
           ],
 
           // Drills
           Text(
-            'Bài tập đề xuất',
+            'Bai tap de xuat',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: AppColors.lightTextPrimary,
                 ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           ...drills.asMap().entries.map((entry) {
             final index = entry.key;
             final drill = entry.value as Map<String, dynamic>;
             return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: _DrillCard(
                 name: drill['name'] as String,
                 duration: drill['duration'] as String,
@@ -486,13 +497,14 @@ class _DrillCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
           ),
         ],
@@ -504,34 +516,34 @@ class _DrillCard extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Icon(Icons.fitness_center, color: color),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: AppColors.lightTextPrimary),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Row(
                   children: [
-                    Icon(Icons.timer, size: 14, color: Colors.grey.shade500),
-                    const SizedBox(width: 4),
+                    Icon(Icons.timer, size: 14, color: AppColors.lightTextSecondary),
+                    const SizedBox(width: AppSpacing.xs),
                     Text(
                       duration,
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                      style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 13),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: _getDifficultyColor(difficulty).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Text(
                         difficulty,
@@ -558,14 +570,54 @@ class _DrillCard extends StatelessWidget {
 
   Color _getDifficultyColor(String difficulty) {
     switch (difficulty) {
-      case 'Dễ':
-        return Colors.green;
-      case 'Trung bình':
-        return Colors.orange;
-      case 'Khó':
-        return Colors.red;
+      case 'Easy':
+        return AppColors.success;
+      case 'Medium':
+        return AppColors.warning;
+      case 'Hard':
+        return AppColors.error;
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _PrimaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 18),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
 // ============================================================================
 // COACH ENTRY SURVEY SCREEN - Phase 7B.5
 // Initial assessment survey for Coach AI
+// Redesigned with Minimalist Luxury Design System
 // ============================================================================
 
 import 'dart:convert';
@@ -10,6 +11,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../knowledge/player_intelligence.dart';
 import '../../providers/coach_survey_provider.dart';
 
@@ -23,40 +26,54 @@ class CoachEntrySurveyScreen extends ConsumerStatefulWidget {
 }
 
 class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen> {
-  // Survey answers
-  int? _missedShotType; // 0: far, 1: angle, 2: draw/follow, 3: bank/kick, 4: unclear
-  int? _cueBallBehavior; // 0: over, 1: under, 2: off-angle, 3: controlled
-  int? _scratchFrequency; // 0: often, 1: sometimes, 2: rarely, 3: never
-
+  int? _missedShotType;
+  int? _cueBallBehavior;
+  int? _scratchFrequency;
   bool _isSubmitting = false;
+  late Brightness _brightness;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _brightness = Theme.of(context).brightness;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background(_brightness),
       appBar: AppBar(
-        title: const Text('Khám phá điểm mạnh/yếu'),
+        backgroundColor: AppColors.background(_brightness),
+        elevation: 0,
+        title: Text(
+          'Khám phá điểm mạnh/yếu',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary(_brightness),
+          ),
+        ),
         automaticallyImplyLeading: false,
         actions: [
           TextButton(
             onPressed: _skipSurvey,
-            child: const Text('Bỏ qua'),
+            child: Text(
+              'Bỏ qua',
+              style: TextStyle(color: AppColors.textSecondary(_brightness)),
+            ),
           ),
         ],
       ),
       body: SafeArea(
         child: Column(
           children: [
-            // Progress indicator
             _buildProgressIndicator(),
-
-            // Survey content
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(AppSpacing.xxl),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Question 1
                     _buildQuestion(
                       number: 1,
                       title: 'Bạn thường miss ở loại cú đánh nào nhất?',
@@ -70,9 +87,8 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
                       selectedIndex: _missedShotType,
                       onSelected: (index) => setState(() => _missedShotType = index),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                    // Question 2
                     _buildQuestion(
                       number: 2,
                       title: 'Bi cái thường đi như thế nào?',
@@ -85,9 +101,8 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
                       selectedIndex: _cueBallBehavior,
                       onSelected: (index) => setState(() => _cueBallBehavior = index),
                     ),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                    // Question 3
                     _buildQuestion(
                       number: 3,
                       title: 'Bạn có hay scratch không?',
@@ -105,47 +120,13 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
               ),
             ),
 
-            // Submit button
             Padding(
-              padding: const EdgeInsets.all(24),
-              child: SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _canSubmit ? _submitSurvey : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                    disabledBackgroundColor: Colors.grey.shade300,
-                  ),
-                  child: _isSubmitting
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Tiếp tục',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Icon(Icons.arrow_forward),
-                          ],
-                        ),
-                ),
+              padding: const EdgeInsets.all(AppSpacing.xxl),
+              child: _SurveyButton(
+                onPressed: _canSubmit ? _submitSurvey : null,
+                isLoading: _isSubmitting,
+                label: 'Tiếp tục',
+                brightness: _brightness,
               ),
             ),
           ],
@@ -165,31 +146,27 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
     ].where((e) => e != null).length;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl, vertical: AppSpacing.md),
+      child: Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: answeredCount / 3,
-                    backgroundColor: Colors.grey.shade200,
-                    valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryGreen),
-                    minHeight: 6,
-                  ),
-                ),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: answeredCount / 3,
+                backgroundColor: AppColors.lightBorder,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentColor(_brightness)),
+                minHeight: 6,
               ),
-              const SizedBox(width: 12),
-              Text(
-                '$answeredCount/3',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Text(
+            '$answeredCount/3',
+            style: TextStyle(
+              color: AppColors.textSecondary(_brightness),
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
@@ -203,6 +180,8 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
     required int? selectedIndex,
     required Function(int) onSelected,
   }) {
+    final accentColor = AppColors.accentColor(_brightness);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -212,40 +191,42 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: AppTheme.primaryGreen,
+                color: accentColor,
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
                   '$number',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary(_brightness),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         ...List.generate(options.length, (index) {
           final isSelected = selectedIndex == index;
           return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: _OptionTile(
               title: options[index],
               isSelected: isSelected,
               onTap: () => onSelected(index),
+              brightness: _brightness,
             ),
           );
         }),
@@ -259,7 +240,6 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
     setState(() => _isSubmitting = true);
 
     try {
-      // Create survey answers
       final answers = CoachSurveyAnswers(
         missedShotType: _missedShotType!,
         cueBallBehavior: _cueBallBehavior!,
@@ -267,14 +247,11 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
         completedAt: DateTime.now(),
       );
 
-      // Save to storage
       await _saveSurveyAnswers(answers);
 
-      // Update provider with survey data
       ref.read(coachSurveyProvider.notifier).setSurveyCompleted(true);
       ref.read(coachSurveyProvider.notifier).setSurveyAnswers(answers);
 
-      // Navigate to Coach Home
       if (mounted) {
         context.go('/coach');
       }
@@ -283,7 +260,7 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Lỗi: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -295,7 +272,6 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
   }
 
   Future<void> _skipSurvey() async {
-    // Just mark survey as skipped and go to Coach Home
     ref.read(coachSurveyProvider.notifier).setSurveyCompleted(true);
 
     if (mounted) {
@@ -317,31 +293,106 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
   }
 }
 
+class _SurveyButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  final String label;
+  final Brightness brightness;
+
+  const _SurveyButton({
+    required this.onPressed,
+    required this.isLoading,
+    required this.label,
+    required this.brightness,
+  });
+
+  @override
+  State<_SurveyButton> createState() => _SurveyButtonState();
+}
+
+class _SurveyButtonState extends State<_SurveyButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          width: double.infinity,
+          height: 56,
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accentColor(widget.brightness) : AppColors.textTertiary(widget.brightness),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [
+              BoxShadow(color: AppColors.accentColor(widget.brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))
+            ] : null,
+          ),
+          child: widget.isLoading
+              ? Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.label,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
+}
+
 class _OptionTile extends StatelessWidget {
   final String title;
   final bool isSelected;
   final VoidCallback onTap;
+  final Brightness brightness;
 
   const _OptionTile({
     required this.title,
     required this.isSelected,
     required this.onTap,
+    required this.brightness,
   });
 
   @override
   Widget build(BuildContext context) {
+    final accentColor = AppColors.accentColor(brightness);
+
     return Material(
-      color: isSelected ? AppTheme.primaryGreen.withValues(alpha: 0.1) : Colors.white,
-      borderRadius: BorderRadius.circular(12),
+      color: isSelected ? accentColor.withValues(alpha: 0.1) : AppColors.surface(brightness),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md + 2),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
+              color: isSelected ? accentColor : AppColors.lightBorder,
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -353,27 +404,27 @@ class _OptionTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade400,
+                    color: isSelected ? accentColor : AppColors.textTertiary(brightness),
                     width: 2,
                   ),
-                  color: isSelected ? AppTheme.primaryGreen : Colors.transparent,
+                  color: isSelected ? accentColor : Colors.transparent,
                 ),
                 child: isSelected
-                    ? const Icon(
+                    ? Icon(
                         Icons.check,
                         size: 14,
                         color: Colors.white,
                       )
                     : null,
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Text(
                   title,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    color: isSelected ? AppTheme.primaryGreen : Colors.black87,
+                    color: isSelected ? accentColor : AppColors.textPrimary(brightness),
                   ),
                 ),
               ),
@@ -387,9 +438,9 @@ class _OptionTile extends StatelessWidget {
 
 /// Coach Survey Answers Model
 class CoachSurveyAnswers {
-  final int missedShotType; // 0: far, 1: angle, 2: draw/follow, 3: bank/kick, 4: unclear
-  final int cueBallBehavior; // 0: over, 1: under, 2: off-angle, 3: controlled
-  final int scratchFrequency; // 0: often, 1: sometimes, 2: rarely, 3: never
+  final int missedShotType;
+  final int cueBallBehavior;
+  final int scratchFrequency;
   final DateTime completedAt;
 
   const CoachSurveyAnswers({
@@ -399,81 +450,62 @@ class CoachSurveyAnswers {
     required this.completedAt,
   });
 
-  /// Convert to PlayerIntelligence initial data
   Map<String, dynamic> toPlayerIntelligenceData() {
-    // Determine initial skill levels based on survey answers
     final skillLevels = <String, int>{};
 
-    // Cue ball control assessment
     if (cueBallBehavior <= 2) {
-      skillLevels['cueball_control'] = 30; // Lower if having issues
+      skillLevels['cueball_control'] = 30;
     } else {
       skillLevels['cueball_control'] = 50;
     }
 
-    // Position play assessment based on cue ball behavior
     if (cueBallBehavior == 0) {
-      // Over-running - needs position play work
       skillLevels['position_play'] = 25;
       skillLevels['spin_control'] = 35;
     } else if (cueBallBehavior == 1) {
-      // Under-running
       skillLevels['position_play'] = 30;
       skillLevels['spin_control'] = 40;
     } else if (cueBallBehavior == 2) {
-      // Off-angle
       skillLevels['position_play'] = 35;
       skillLevels['aiming'] = 40;
     } else {
-      // Controlled
       skillLevels['position_play'] = 55;
       skillLevels['spin_control'] = 55;
     }
 
-    // Scratch tendency
     if (scratchFrequency == 0) {
-      // Often scratch
       skillLevels['safety_play'] = 25;
       skillLevels['shot_selection'] = 35;
     } else if (scratchFrequency == 1) {
-      // Sometimes
       skillLevels['safety_play'] = 40;
       skillLevels['shot_selection'] = 45;
     } else {
-      // Rarely/never
       skillLevels['safety_play'] = 55;
       skillLevels['shot_selection'] = 60;
     }
 
-    // Shot type weaknesses
     switch (missedShotType) {
       case 0:
-        // Far shots - power control issue
         skillLevels['power_control'] = 30;
         skillLevels['long_shots'] = 25;
         break;
       case 1:
-        // Angle shots - aiming issue
         skillLevels['aiming'] = 35;
         skillLevels['english_usage'] = 40;
         break;
       case 2:
-        // Draw/follow - spin control issue
         skillLevels['spin_control'] = 30;
         skillLevels['draw_shots'] = 25;
         skillLevels['follow_shots'] = 30;
         break;
       case 3:
-        // Bank/kick - advanced skills
         skillLevels['bank_shots'] = 25;
         skillLevels['kick_shots'] = 25;
         break;
       default:
-        // Unclear - general assessment needed
         break;
     }
 
-    // Determine initial experience level
     final avgScore = skillLevels.values.isEmpty
         ? 0
         : skillLevels.values.reduce((a, b) => a + b) ~/ skillLevels.values.length;

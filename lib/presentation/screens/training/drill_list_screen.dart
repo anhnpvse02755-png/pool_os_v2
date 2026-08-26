@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 
 class DrillListScreen extends StatefulWidget {
@@ -57,81 +58,132 @@ class _DrillListScreenState extends State<DrillListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         title: Text(_getCategoryName()),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(120),
           child: Column(
             children: [
               // Tabs
-              TabBar(
-                controller: _tabController,
-                onTap: (_) => setState(() {}),
-                tabs: const [
-                  Tab(text: '⭐ Recommended'),
-                  Tab(text: 'All Drill'),
-                ],
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                decoration: BoxDecoration(
+                  color: AppColors.lightBackground,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  onTap: (_) => setState(() {}),
+                  indicator: BoxDecoration(
+                    color: AppColors.accent,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  ),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: AppColors.lightTextSecondary,
+                  dividerColor: Colors.transparent,
+                  labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  tabs: const [
+                    Tab(text: 'Recommended'),
+                    Tab(text: 'All Drills'),
+                  ],
+                ),
               ),
               // Filters Row
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.md,
+                ),
                 child: Row(
                   children: [
                     // Search
                     Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) => setState(() => _searchQuery = value),
-                        decoration: InputDecoration(
-                          hintText: 'Search drills...',
-                          prefixIcon: const Icon(Icons.search, size: 20),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: AppColors.lightSurface,
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                          border: Border.all(color: AppColors.lightBorder),
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (value) => setState(() => _searchQuery = value),
+                          style: const TextStyle(fontSize: 14, color: AppColors.lightTextPrimary),
+                          decoration: InputDecoration(
+                            hintText: 'Search drills...',
+                            hintStyle: TextStyle(color: AppColors.lightTextTertiary, fontSize: 14),
+                            prefixIcon: Icon(Icons.search, size: 20, color: AppColors.lightTextSecondary),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.md,
+                            ),
+                            border: InputBorder.none,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpacing.sm),
                     // Difficulty Filter
                     PopupMenuButton<String?>(
                       initialValue: _selectedDifficulty,
                       onSelected: (value) =>
                           setState(() => _selectedDifficulty = value),
+                      offset: const Offset(0, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      ),
                       itemBuilder: (context) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: null,
-                          child: Text('All'),
+                          child: Text('All', style: TextStyle(
+                            color: _selectedDifficulty == null ? AppColors.accent : AppColors.lightTextPrimary,
+                            fontWeight: _selectedDifficulty == null ? FontWeight.w600 : FontWeight.normal,
+                          )),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'easy',
-                          child: Text('Easy'),
+                          child: Text('Easy', style: TextStyle(
+                            color: _selectedDifficulty == 'easy' ? AppColors.accent : AppColors.lightTextPrimary,
+                            fontWeight: _selectedDifficulty == 'easy' ? FontWeight.w600 : FontWeight.normal,
+                          )),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'medium',
-                          child: Text('Medium'),
+                          child: Text('Medium', style: TextStyle(
+                            color: _selectedDifficulty == 'medium' ? AppColors.accent : AppColors.lightTextPrimary,
+                            fontWeight: _selectedDifficulty == 'medium' ? FontWeight.w600 : FontWeight.normal,
+                          )),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'hard',
-                          child: Text('Hard'),
+                          child: Text('Hard', style: TextStyle(
+                            color: _selectedDifficulty == 'hard' ? AppColors.accent : AppColors.lightTextPrimary,
+                            fontWeight: _selectedDifficulty == 'hard' ? FontWeight.w600 : FontWeight.normal,
+                          )),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'expert',
-                          child: Text('Expert'),
+                          child: Text('Expert', style: TextStyle(
+                            color: _selectedDifficulty == 'expert' ? AppColors.accent : AppColors.lightTextPrimary,
+                            fontWeight: _selectedDifficulty == 'expert' ? FontWeight.w600 : FontWeight.normal,
+                          )),
                         ),
                       ],
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.md,
                         ),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(8),
+                          color: AppColors.lightSurface,
+                          border: Border.all(color: _selectedDifficulty != null ? AppColors.accent : AppColors.lightBorder),
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -140,19 +192,20 @@ class _DrillListScreenState extends State<DrillListScreen>
                               Icons.filter_list,
                               size: 18,
                               color: _selectedDifficulty != null
-                                  ? AppTheme.primaryGreen
-                                  : Colors.grey,
+                                  ? AppColors.accent
+                                  : AppColors.lightTextSecondary,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpacing.xs),
                             Text(
                               _selectedDifficulty != null
                                   ? _selectedDifficulty!.toUpperCase()
                                   : 'Filter',
                               style: TextStyle(
                                 color: _selectedDifficulty != null
-                                    ? AppTheme.primaryGreen
-                                    : Colors.grey,
+                                    ? AppColors.accent
+                                    : AppColors.lightTextSecondary,
                                 fontSize: 12,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -169,12 +222,12 @@ class _DrillListScreenState extends State<DrillListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Recommended Tab - show drills from THIS category
+          // Recommended Tab
           _buildDrillList(
-            _categoryDrills.take(5).toList(), // First 5 drills from this category
+            _categoryDrills.take(5).toList(),
             showReason: false,
           ),
-          // All Drills Tab - show all drills from THIS category
+          // All Drills Tab
           _buildDrillList(_categoryDrills),
         ],
       ),
@@ -192,13 +245,28 @@ class _DrillListScreenState extends State<DrillListScreen>
 
   Widget _buildDrillList(List<Drill> drills, {bool showReason = false}) {
     if (drills.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: 48, color: Colors.grey),
-            SizedBox(height: 16),
-            Text('No drills found'),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: AppColors.lightBackground,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.search_off, size: 40, color: AppColors.lightTextTertiary),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Text(
+              'No drills found',
+              style: TextStyle(
+                color: AppColors.lightTextSecondary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
       );
@@ -213,9 +281,9 @@ class _DrillListScreenState extends State<DrillListScreen>
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       itemCount: filteredDrills.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, index) {
         final drill = filteredDrills[index];
         return _DrillCard(
@@ -242,15 +310,15 @@ class _DrillCard extends StatelessWidget {
   Color _getDifficultyColor() {
     switch (drill.difficulty) {
       case 'easy':
-        return Colors.green;
+        return AppColors.success;
       case 'medium':
-        return Colors.orange;
+        return AppColors.warning;
       case 'hard':
-        return Colors.red;
+        return AppColors.error;
       case 'expert':
-        return Colors.purple;
+        return const Color(0xFF8B5CF6);
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
   }
 
@@ -279,16 +347,17 @@ class _DrillCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
+              color: AppColors.shadowLight,
+              blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
@@ -300,11 +369,11 @@ class _DrillCard extends StatelessWidget {
               children: [
                 // Level indicator
                 Container(
-                  width: 48,
-                  height: 48,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
                     color: _getDifficultyColor().withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                   child: Center(
                     child: Column(
@@ -315,7 +384,7 @@ class _DrillCard extends StatelessWidget {
                           style: TextStyle(
                             color: _getDifficultyColor(),
                             fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                            fontSize: 20,
                           ),
                         ),
                         Text(
@@ -323,14 +392,14 @@ class _DrillCard extends StatelessWidget {
                           style: TextStyle(
                             color: _getDifficultyColor(),
                             fontSize: 9,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -341,37 +410,39 @@ class _DrillCard extends StatelessWidget {
                             child: Text(
                               drill.nameVi,
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 16,
+                                color: AppColors.lightTextPrimary,
                               ),
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
                               color: _getDifficultyColor().withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               _getDifficultyLabel(),
                               style: TextStyle(
                                 color: _getDifficultyColor(),
                                 fontSize: 11,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         drill.description,
                         style: TextStyle(
-                          color: AppTheme.textSecondary,
+                          color: AppColors.lightTextSecondary,
                           fontSize: 13,
+                          height: 1.4,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -379,9 +450,11 @@ class _DrillCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(width: AppSpacing.sm),
+                Icon(Icons.chevron_right, color: AppColors.lightTextTertiary, size: 24),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             // Level progress
             Row(
               children: List.generate(drill.levels.length, (index) {
@@ -391,14 +464,14 @@ class _DrillCard extends StatelessWidget {
 
                 return Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(right: index < drill.levels.length - 1 ? 4 : 0),
+                    margin: EdgeInsets.only(right: index < drill.levels.length - 1 ? AppSpacing.xs : 0),
                     height: 4,
                     decoration: BoxDecoration(
                       color: !isUnlocked
-                          ? Colors.grey.shade300
+                          ? AppColors.lightBorder
                           : isCompleted
-                              ? AppTheme.primaryGreen
-                              : AppTheme.primaryGreen.withValues(alpha: 0.3),
+                              ? AppColors.success
+                              : AppColors.success.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -437,12 +510,12 @@ class DrillCategoriesScreen extends StatelessWidget {
 
   Color _getColor(int index) {
     final colors = [
-      Colors.blue,
-      Colors.orange,
-      Colors.purple,
-      Colors.teal,
-      Colors.pink,
-      Colors.indigo,
+      AppColors.accent,
+      AppColors.warning,
+      const Color(0xFF8B5CF6),
+      const Color(0xFF14B8A6),
+      const Color(0xFFEC4899),
+      const Color(0xFF6366F1),
     ];
     return colors[index % colors.length];
   }
@@ -450,30 +523,44 @@ class DrillCategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         title: const Text('Drill Library'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
       ),
       body: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         itemCount: DrillLibrary.categories.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
         itemBuilder: (context, index) {
           final category = DrillLibrary.categories[index];
           final color = _getColor(index);
 
           return InkWell(
             onTap: () => context.push('/training/drills/${category.id}'),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                   colors: [
                     color,
                     color.withValues(alpha: 0.8),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
@@ -482,7 +569,7 @@ class DrillCategoriesScreen extends StatelessWidget {
                     height: 56,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     ),
                     child: Icon(
                       _getIcon(category.icon),
@@ -490,7 +577,7 @@ class DrillCategoriesScreen extends StatelessWidget {
                       size: 28,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,8 +590,9 @@ class DrillCategoriesScreen extends StatelessWidget {
                             fontSize: 18,
                           ),
                         ),
+                        const SizedBox(height: AppSpacing.xs),
                         Text(
-                          '${category.drills.length} drills • ${category.drills.length * 5} levels',
+                          '${category.drills.length} drills',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.8),
                             fontSize: 13,
@@ -513,7 +601,7 @@ class DrillCategoriesScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: Colors.white),
+                  const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18),
                 ],
               ),
             ),

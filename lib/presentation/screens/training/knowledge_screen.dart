@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../knowledge/knowledge_provider.dart';
 import '../../../knowledge/knowledge_models.dart';
 
@@ -25,8 +26,12 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
     final knowledgeState = ref.watch(knowledgeProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Kiến thức'),
+        title: const Text('Kien thuc'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -54,15 +59,15 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
   Widget _buildCategoryTabs(List<KnowledgeCategory> categories) {
     return Container(
       height: 50,
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         itemCount: categories.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return _CategoryChip(
-              label: 'Tất cả',
+              label: 'Tat ca',
               isSelected: _selectedCategoryId == null,
               onTap: () => setState(() => _selectedCategoryId = null),
             );
@@ -82,15 +87,15 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
   Widget _buildDifficultyFilter() {
     return Container(
       height: 50,
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         itemCount: DifficultyLevel.values.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return _CategoryChip(
-              label: 'Tất cả',
+              label: 'Tat ca',
               isSelected: _selectedDifficulty == null,
               onTap: () => setState(() => _selectedDifficulty = null),
             );
@@ -108,7 +113,6 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
   }
 
   Widget _buildContent(KnowledgeState state) {
-    // Filter knowledge
     var knowledge = state.allKnowledge;
 
     if (_selectedCategoryId != null) {
@@ -128,11 +132,11 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.article_outlined, size: 64, color: Colors.grey.shade300),
-            const SizedBox(height: 16),
+            Icon(Icons.article_outlined, size: 64, color: AppColors.lightTextTertiary),
+            const SizedBox(height: AppSpacing.lg),
             Text(
-              'Không có bài viết',
-              style: TextStyle(color: Colors.grey.shade600),
+              'Khong co bai viet',
+              style: TextStyle(color: AppColors.lightTextSecondary),
             ),
           ],
         ),
@@ -140,12 +144,12 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       itemCount: knowledge.length,
       itemBuilder: (context, index) {
         final item = knowledge[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: _KnowledgeCard(
             knowledge: item,
             onTap: () => context.push('/training/knowledge/${item.slug}'),
@@ -177,15 +181,15 @@ class _CategoryChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.only(right: AppSpacing.sm),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
         onSelected: (_) => onTap(),
-        selectedColor: AppTheme.primaryGreen.withValues(alpha: 0.2),
-        checkmarkColor: AppTheme.primaryGreen,
+        selectedColor: AppColors.accent.withValues(alpha: 0.2),
+        checkmarkColor: AppColors.accent,
         labelStyle: TextStyle(
-          color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade600,
+          color: isSelected ? AppColors.accent : AppColors.lightTextSecondary,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
@@ -206,15 +210,16 @@ class _KnowledgeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          border: Border.all(color: AppColors.lightBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: AppColors.shadowLight,
               blurRadius: 10,
             ),
           ],
@@ -226,11 +231,12 @@ class _KnowledgeCard extends StatelessWidget {
             Text(
               knowledge.titleVi ?? knowledge.title,
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 fontSize: 16,
+                color: AppColors.lightTextPrimary,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
 
             // Preview
             Text(
@@ -238,12 +244,12 @@ class _KnowledgeCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: AppColors.lightTextSecondary,
                 fontSize: 13,
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             // Tags
             Row(
@@ -253,12 +259,12 @@ class _KnowledgeCard extends StatelessWidget {
                 if (knowledge.relatedDrillCodes.isNotEmpty)
                   Row(
                     children: [
-                      Icon(Icons.fitness_center, size: 14, color: Colors.grey.shade400),
-                      const SizedBox(width: 4),
+                      Icon(Icons.fitness_center, size: 14, color: AppColors.lightTextTertiary),
+                      const SizedBox(width: AppSpacing.xs),
                       Text(
                         '${knowledge.relatedDrillCodes.length} drills',
                         style: TextStyle(
-                          color: Colors.grey.shade500,
+                          color: AppColors.lightTextSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -273,7 +279,6 @@ class _KnowledgeCard extends StatelessWidget {
   }
 
   String _getPreview(String content) {
-    // Remove markdown headers
     return content
         .replaceAll(RegExp(r'#{1,3}\s'), '')
         .replaceAll(RegExp(r'\*{1,2}'), '')
@@ -292,24 +297,24 @@ class _DifficultyBadge extends StatelessWidget {
     Color color;
     switch (difficulty) {
       case DifficultyLevel.beginner:
-        color = Colors.green;
+        color = AppColors.success;
         break;
       case DifficultyLevel.intermediate:
-        color = Colors.blue;
+        color = AppColors.accent;
         break;
       case DifficultyLevel.advanced:
-        color = Colors.orange;
+        color = AppColors.warning;
         break;
       case DifficultyLevel.expert:
-        color = Colors.red;
+        color = AppColors.error;
         break;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Text(
         difficulty.label,
@@ -362,12 +367,10 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // Debounce: schedule a refresh 300ms after the last keystroke.
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       if (query != _lastQueried) {
         _lastQueried = query;
-        // Triggers a rebuild with the new query applied.
         (context as Element).markNeedsBuild();
       }
     });
@@ -378,13 +381,12 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
     if (query.isEmpty) {
       return Center(
         child: Text(
-          'Nhập từ khóa để tìm kiếm',
-          style: TextStyle(color: Colors.grey.shade600),
+          'Nhap tu khoa de tim kiem',
+          style: TextStyle(color: AppColors.lightTextSecondary),
         ),
       );
     }
 
-    // Wait until debounce has settled and `_lastQueried` matches current query.
     if (query != _lastQueried) {
       return const Center(
         child: SizedBox(
@@ -402,11 +404,11 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: 64, color: Colors.grey.shade300),
-            const SizedBox(height: 16),
+            Icon(Icons.search_off, size: 64, color: AppColors.lightTextTertiary),
+            const SizedBox(height: AppSpacing.lg),
             Text(
-              'Không tìm thấy kết quả',
-              style: TextStyle(color: Colors.grey.shade600),
+              'Khong tim thay ket qua',
+              style: TextStyle(color: AppColors.lightTextSecondary),
             ),
           ],
         ),
@@ -414,12 +416,12 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       itemCount: results.length,
       itemBuilder: (context, index) {
         final item = results[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: _KnowledgeCard(
             knowledge: item,
             onTap: () {

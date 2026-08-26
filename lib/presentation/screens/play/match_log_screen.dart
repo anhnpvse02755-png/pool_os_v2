@@ -10,7 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../data/models/match.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/providers/coach_provider.dart';
@@ -80,15 +81,7 @@ class MatchLogNotifier extends StateNotifier<MatchLogState> {
       final repository = _ref.read(matchRepositoryProvider);
       await repository.saveMatch(match);
 
-      // Also save mistakes if provided
-      if (mistakes != null && mistakes.isNotEmpty) {
-        // Mistakes will be processed by PlayerIntelligenceService
-        // via the Coach provider refresh
-      }
-
       // Trigger Coach refresh
-      // Sprint-12: Coach listens to training, but we need to also refresh
-      // when a match is logged. For MVP, we trigger a Coach refresh.
       await _ref.read(coachStateProvider.notifier).refreshFromMatch();
 
       state = state.copyWith(isLoading: false, saved: true);
@@ -169,9 +162,9 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
     ref.listen<MatchLogState>(matchLogProvider, (prev, next) {
       if (next.saved && prev?.saved != true) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Đã ghi nhận trận đấu!'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
           ),
         );
         context.pop();
@@ -185,15 +178,18 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.md),
           children: [
             // Required: Opponent
             TextFormField(
               controller: _opponentController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Đối thủ *',
                 hintText: 'Tên đối thủ',
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: Icon(Icons.person, color: AppColors.accent),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
@@ -202,48 +198,57 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Required: Win/Lose
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Kết quả *',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _ResultButton(
-                            label: 'THẮNG',
-                            icon: Icons.emoji_events,
-                            color: Colors.green,
-                            selected: _won,
-                            onTap: () => setState(() => _won = true),
-                          ),
+            Container(
+              padding: EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.lightSurface,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.03),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Kết quả *',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.lightTextSecondary),
+                  ),
+                  SizedBox(height: AppSpacing.sm),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ResultButton(
+                          label: 'THẮNG',
+                          icon: Icons.emoji_events,
+                          color: AppColors.success,
+                          selected: _won,
+                          onTap: () => setState(() => _won = true),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _ResultButton(
-                            label: 'THUA',
-                            icon: Icons.close,
-                            color: Colors.red,
-                            selected: !_won,
-                            onTap: () => setState(() => _won = false),
-                          ),
+                      ),
+                      SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: _ResultButton(
+                          label: 'THUA',
+                          icon: Icons.close,
+                          color: AppColors.error,
+                          selected: !_won,
+                          onTap: () => setState(() => _won = false),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Optional: Scores
             Row(
@@ -251,105 +256,127 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: _playerScoreController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Điểm của bạn',
-                      prefixIcon: Icon(Icons.sports_score),
+                      prefixIcon: Icon(Icons.sports_score, color: AppColors.accent),
                     ),
                     keyboardType: TextInputType.number,
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: TextFormField(
                     controller: _opponentScoreController,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'Điểm đối thủ',
-                      prefixIcon: Icon(Icons.sports_score),
+                      prefixIcon: Icon(Icons.sports_score, color: AppColors.accent),
                     ),
                     keyboardType: TextInputType.number,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Optional: Duration
             TextFormField(
               controller: _durationController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Thời gian (phút)',
                 hintText: 'VD: 45',
-                prefixIcon: Icon(Icons.timer),
+                prefixIcon: Icon(Icons.timer, color: AppColors.accent),
               ),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Optional: Venue
             TextFormField(
               controller: _venueController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Địa điểm',
                 hintText: 'VD: CLB Billiards A',
-                prefixIcon: Icon(Icons.location_on),
+                prefixIcon: Icon(Icons.location_on, color: AppColors.accent),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: AppSpacing.xl),
 
             // Optional: Mistakes
-            const Text(
-              'Lỗi thường gặp (tuỳ chọn)',
+            Text(
+              'Lỗi thường gặp (tùy chọn)',
               style: TextStyle(
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
+                color: AppColors.lightTextPrimary,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
               children: _commonMistakes.map((mistake) {
                 final selected = _selectedMistakes.contains(mistake);
-                return FilterChip(
-                  label: Text(_formatMistake(mistake)),
-                  selected: selected,
-                  onSelected: (value) {
+                return GestureDetector(
+                  onTap: () {
                     setState(() {
-                      if (value) {
-                        _selectedMistakes.add(mistake);
-                      } else {
+                      if (selected) {
                         _selectedMistakes.remove(mistake);
+                      } else {
+                        _selectedMistakes.add(mistake);
                       }
                     });
                   },
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                    decoration: BoxDecoration(
+                      color: selected ? AppColors.accent.withValues(alpha: 0.12) : AppColors.lightSurfaceElevated,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                      border: Border.all(
+                        color: selected ? AppColors.accent : AppColors.lightBorder,
+                      ),
+                    ),
+                    child: Text(
+                      _formatMistake(mistake),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                        color: selected ? AppColors.accent : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                  ),
                 );
               }).toList(),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: AppSpacing.xxl),
 
             // Error message
             if (logState.error != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Text(
-                  'Lỗi: ${logState.error}',
-                  style: const TextStyle(color: Colors.red),
+              Container(
+                padding: EdgeInsets.all(AppSpacing.md),
+                margin: EdgeInsets.only(bottom: AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                    SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        'Lỗi: ${logState.error}',
+                        style: TextStyle(color: AppColors.error),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
             // Save button
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: logState.isLoading ? null : _save,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primary,
-                  foregroundColor: Colors.white,
-                ),
-                child: logState.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('LƯU TRẬN ĐẤU'),
-              ),
+            _SaveButton(
+              onPressed: logState.isLoading ? null : _save,
+              isLoading: logState.isLoading,
             ),
           ],
         ),
@@ -365,7 +392,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
   }
 }
 
-class _ResultButton extends StatelessWidget {
+class _ResultButton extends StatefulWidget {
   final String label;
   final IconData icon;
   final Color color;
@@ -381,34 +408,102 @@ class _ResultButton extends StatelessWidget {
   });
 
   @override
+  State<_ResultButton> createState() => _ResultButtonState();
+}
+
+class _ResultButtonState extends State<_ResultButton> {
+  double _scale = 1.0;
+
+  @override
   Widget build(BuildContext context) {
-    return Material(
-      color: selected ? color.withOpacity(0.2) : Colors.grey.shade100,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _scale = 0.96),
+      onTapUp: (_) => setState(() => _scale = 1.0),
+      onTapCancel: () => setState(() => _scale = 1.0),
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
+            color: widget.selected ? widget.color.withValues(alpha: 0.12) : AppColors.lightSurfaceElevated,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: selected ? color : Colors.grey.shade300,
-              width: selected ? 2 : 1,
+              color: widget.selected ? widget.color : AppColors.lightBorder,
+              width: widget.selected ? 2 : 1,
             ),
-            borderRadius: BorderRadius.circular(12),
           ),
           child: Column(
             children: [
-              Icon(icon, color: selected ? color : Colors.grey, size: 32),
-              const SizedBox(height: 4),
+              Icon(widget.icon, color: widget.selected ? widget.color : AppColors.lightTextSecondary, size: 32),
+              SizedBox(height: 4),
               Text(
-                label,
+                widget.label,
                 style: TextStyle(
-                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                  color: selected ? color : Colors.grey,
+                  fontWeight: widget.selected ? FontWeight.w600 : FontWeight.normal,
+                  color: widget.selected ? widget.color : AppColors.lightTextSecondary,
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SaveButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final bool isLoading;
+
+  const _SaveButton({required this.onPressed, required this.isLoading});
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null
+                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                : null,
+          ),
+          child: Center(
+            child: widget.isLoading
+                ? SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
+                : Text(
+                    'LƯU TRẬN ĐẤU',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
       ),

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../data/content/drill_content_vi.dart';
 
@@ -16,20 +17,24 @@ class DrillDetailScreen extends StatefulWidget {
 }
 
 class _DrillDetailScreenState extends State<DrillDetailScreen> {
-  int _selectedLevel = 1; // Default to level 1
+  int _selectedLevel = 1;
 
   @override
   Widget build(BuildContext context) {
     final drill = DrillLibrary.getDrill(widget.drillCode);
 
-    // DEBUG: Log the drill code
     debugPrint('DrillDetailScreen: Looking for drill code: ${widget.drillCode}');
     debugPrint('DrillDetailScreen: Found drill: $drill');
 
     if (drill == null) {
       return Scaffold(
+        backgroundColor: AppColors.lightBackground,
         appBar: AppBar(
-          title: const Text('Lỗi'),
+          title: const Text('Loi'),
+          backgroundColor: AppColors.lightSurface,
+          foregroundColor: AppColors.lightTextPrimary,
+          elevation: 0,
+          surfaceTintColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
@@ -37,44 +42,47 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
         ),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.xxl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 80,
-                  color: Colors.orange.shade400,
+                Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.error_outline,
+                    size: 56,
+                    color: AppColors.warning,
+                  ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xxl),
                 Text(
-                  'Không tìm thấy bài tập này',
+                  'Khong tim thay bai tap nay',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: AppColors.lightTextPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Text(
-                  'Bài tập với mã "${widget.drillCode}" không tồn tại hoặc đã bị xóa.',
+                  'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.lightTextSecondary,
                     fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
-                  onPressed: () => context.go('/training/drills'),
-                  icon: const Icon(Icons.fitness_center),
-                  label: const Text('Quay về thư viện bài tập'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
+                const SizedBox(height: AppSpacing.xxl),
+                SizedBox(
+                  width: double.infinity,
+                  child: _PrimaryButton(
+                    onPressed: () => context.go('/training/drills'),
+                    label: 'Quay ve thu vien bai tap',
                   ),
                 ),
               ],
@@ -85,14 +93,22 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     }
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       body: CustomScrollView(
         slivers: [
           // App Bar
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
+            backgroundColor: AppColors.lightSurface,
+            foregroundColor: AppColors.lightTextPrimary,
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(drill.nameVi),
+              title: Text(
+                drill.nameVi,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -118,9 +134,9 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 icon: const Icon(Icons.share),
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Chia sẻ bài tập - Tính năng đang phát triển'),
-                      backgroundColor: Colors.orange,
+                    SnackBar(
+                      content: const Text('Chia se bai tap - Tinh nang dang phat trien'),
+                      backgroundColor: AppColors.warning,
                     ),
                   );
                 },
@@ -130,104 +146,108 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Difficulty Badge
                   _buildDifficultyBadge(drill.difficulty),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
                   // Description
                   Text(
                     drill.description,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.lightTextPrimary,
+                      height: 1.6,
+                    ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Levels Section
-                  _buildSectionTitle(context, 'Các cấp độ'),
-                  const SizedBox(height: 12),
+                  _buildSectionTitle(context, 'Cac cap do'),
+                  const SizedBox(height: AppSpacing.md),
                   _buildLevelsList(drill),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Setup
                   _buildSectionTitle(context, 'Setup'),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.lightSurface,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                      border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.settings, color: Colors.grey.shade600),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(drill.setup)),
+                        Icon(Icons.settings, color: AppColors.lightTextSecondary, size: 22),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(child: Text(drill.setup, style: TextStyle(color: AppColors.lightTextPrimary))),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Steps
-                  _buildSectionTitle(context, 'Các bước'),
-                  const SizedBox(height: 12),
+                  _buildSectionTitle(context, 'Cac buoc'),
+                  const SizedBox(height: AppSpacing.md),
                   ...drill.steps.asMap().entries.map((entry) {
                     return _buildStep(entry.key + 1, entry.value);
                   }),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Goal
-                  _buildSectionTitle(context, 'Mục tiêu'),
-                  const SizedBox(height: 8),
+                  _buildSectionTitle(context, 'Muc tieu'),
+                  const SizedBox(height: AppSpacing.sm),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.success.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       border: Border.all(
-                        color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                        color: AppColors.success.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.flag, color: AppTheme.primaryGreen),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(drill.goal)),
+                        Icon(Icons.flag, color: AppColors.success, size: 22),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(child: Text(drill.goal, style: TextStyle(color: AppColors.lightTextPrimary))),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Common Mistakes
-                  _buildSectionTitle(context, 'Lỗi thường gặp'),
-                  const SizedBox(height: 8),
+                  _buildSectionTitle(context, 'Loi thuong gap'),
+                  const SizedBox(height: AppSpacing.sm),
                   _buildCommonMistakes(drill.code),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
-                  // Detailed Vietnamese content sections (if available)
+                  // Detailed Vietnamese content sections
                   _buildContentSections(drill.code),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Knowledge Link
-                  _buildSectionTitle(context, '📚 Kiến thức liên quan'),
-                  const SizedBox(height: 8),
+                  _buildSectionTitle(context, 'Kien thuc lien quan'),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Knowledge không bị khóa. Bạn có thể học bất kỳ lúc nào.',
+                    'Kien thuc khong bi khoa. Ban co the hoc bat ky luc nao.',
                     style: TextStyle(
-                      color: AppTheme.textSecondary,
+                      color: AppColors.lightTextSecondary,
                       fontStyle: FontStyle.italic,
                       fontSize: 13,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   _buildKnowledgeList(drill.knowledgeIds),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Related Drills
-                  _buildSectionTitle(context, '🔗 Bài tập liên quan'),
-                  const SizedBox(height: 12),
+                  _buildSectionTitle(context, 'Bai tap lien quan'),
+                  const SizedBox(height: AppSpacing.md),
                   _buildRelatedDrills(drill.code),
                   const SizedBox(height: 100),
                 ],
@@ -242,10 +262,10 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
   Widget _buildDifficultyBadge(String difficulty) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
         color: _getDifficultyColor(difficulty).withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
         border: Border.all(
           color: _getDifficultyColor(difficulty).withValues(alpha: 0.3),
         ),
@@ -258,12 +278,13 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
             size: 16,
             color: _getDifficultyColor(difficulty),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             _getDifficultyLabel(difficulty),
             style: TextStyle(
               color: _getDifficultyColor(difficulty),
               fontWeight: FontWeight.bold,
+              fontSize: 13,
             ),
           ),
         ],
@@ -274,15 +295,15 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   Color _getDifficultyColor(String difficulty) {
     switch (difficulty) {
       case 'easy':
-        return Colors.green;
+        return AppColors.success;
       case 'medium':
-        return Colors.orange;
+        return AppColors.warning;
       case 'hard':
-        return Colors.red;
+        return AppColors.error;
       case 'expert':
-        return Colors.purple;
+        return const Color(0xFF8B5CF6);
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
   }
 
@@ -306,6 +327,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       title,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
+            color: AppColors.lightTextPrimary,
           ),
     );
   }
@@ -320,31 +342,31 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
         final isCompleted = level.level < drill.currentLevel;
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: isUnlocked
                   ? () => setState(() => _selectedLevel = level.level)
                   : null,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                      ? AppColors.accent.withValues(alpha: 0.1)
                       : isCompleted
-                          ? Colors.green.withValues(alpha: 0.1)
-                          : Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                          ? AppColors.success.withValues(alpha: 0.05)
+                          : AppColors.lightSurface,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                   border: Border.all(
                     color: isSelected
-                        ? AppTheme.primaryGreen
+                        ? AppColors.accent
                         : isCompleted
-                            ? Colors.green
+                            ? AppColors.success.withValues(alpha: 0.5)
                             : isUnlocked
-                                ? Colors.grey.shade300
-                                : Colors.grey.shade200,
+                                ? AppColors.lightBorder
+                                : AppColors.lightBorderSubtle,
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -352,31 +374,32 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   children: [
                     // Level indicator
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
                         color: !isUnlocked
-                            ? Colors.grey.shade300
+                            ? AppColors.lightTextTertiary
                             : isCompleted
-                                ? Colors.green
-                                : AppTheme.primaryGreen,
+                                ? AppColors.success
+                                : AppColors.accent,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
                         child: isCompleted
-                            ? const Icon(Icons.check, color: Colors.white, size: 20)
+                            ? const Icon(Icons.check, color: Colors.white, size: 22)
                             : !isUnlocked
-                                ? const Icon(Icons.lock, color: Colors.white, size: 18)
+                                ? const Icon(Icons.lock, color: Colors.white, size: 20)
                                 : Text(
                                     '${level.level}',
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 16,
                                     ),
                                   ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppSpacing.lg),
                     // Level info
                     Expanded(
                       child: Column(
@@ -388,21 +411,22 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                                 'Level ${level.level}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 15,
                                   color: !isUnlocked
-                                      ? Colors.grey
-                                      : AppTheme.textPrimary,
+                                      ? AppColors.lightTextTertiary
+                                      : AppColors.lightTextPrimary,
                                 ),
                               ),
                               if (isCompleted) ...[
-                                const SizedBox(width: 8),
+                                const SizedBox(width: AppSpacing.sm),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 6,
-                                    vertical: 2,
+                                    horizontal: AppSpacing.sm,
+                                    vertical: AppSpacing.xs,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(4),
+                                    color: AppColors.success,
+                                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                                   ),
                                   child: const Text(
                                     'Completed',
@@ -416,21 +440,21 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                               ],
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpacing.xs),
                           Text(
                             level.criteriaText,
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               color: !isUnlocked
-                                  ? Colors.grey
-                                  : AppTheme.textSecondary,
+                                  ? AppColors.lightTextTertiary
+                                  : AppColors.lightTextSecondary,
                             ),
                           ),
                         ],
                       ),
                     ),
                     if (!isUnlocked)
-                      Icon(Icons.lock, color: Colors.grey.shade400, size: 20),
+                      Icon(Icons.lock, color: AppColors.lightTextTertiary, size: 22),
                   ],
                 ),
               ),
@@ -443,15 +467,15 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
   Widget _buildStep(int number, String step) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 24,
-            height: 24,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen,
+              color: AppColors.accent,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -460,14 +484,14 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                  fontSize: 13,
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
-            child: Text(step),
+            child: Text(step, style: TextStyle(color: AppColors.lightTextPrimary, height: 1.5)),
           ),
         ],
       ),
@@ -475,20 +499,19 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildCommonMistakes(String drillCode) {
-    // Load from drillContentVi — Vietnamese content per drill.
     final content = drillContentVi[drillCode];
     final mistakes = content?.commonMistakes ?? _genericMistakes;
 
     return Column(
       children: mistakes.map((mistake) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.warning_amber, color: Colors.orange, size: 18),
-              const SizedBox(width: 8),
-              Expanded(child: Text(mistake)),
+              Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(child: Text(mistake, style: TextStyle(color: AppColors.lightTextPrimary, height: 1.4))),
             ],
           ),
         );
@@ -496,11 +519,10 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     );
   }
 
-  // Fallback generic mistakes for drills without custom content.
   static const _genericMistakes = [
-    'Đánh quá mạnh hoặc quá nhẹ',
-    'Tư thế không vững',
-    'Không follow through đầy đủ',
+    'Danh qua manh hoac qua nhe',
+    'Tu the khong vung',
+    'Khong follow through day du',
   ];
 
   Widget _buildContentSections(String drillCode) {
@@ -512,52 +534,45 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Equipment
         if (content.equipment.isNotEmpty) ...[
-          _buildSectionTitle(context, '🎯 Dụng cụ cần thiết'),
-          const SizedBox(height: 8),
+          _buildSectionTitle(context, 'Dung cu can thiet'),
+          const SizedBox(height: AppSpacing.sm),
           _buildBulletList(content.equipment, Icons.sports_baseball),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
         ],
 
-        // Stance
-        _buildSectionTitle(context, '🦶 Tư thế đứng'),
-        const SizedBox(height: 8),
+        _buildSectionTitle(context, 'Tu the dung'),
+        const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.stance),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
-        // Bridge
-        _buildSectionTitle(context, '🤚 Cầu tay'),
-        const SizedBox(height: 8),
+        _buildSectionTitle(context, 'Cau tay'),
+        const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.bridge),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
-        // Stroke
-        _buildSectionTitle(context, '⚡ Kỹ thuật ra cơ'),
-        const SizedBox(height: 8),
+        _buildSectionTitle(context, 'Ky thuat ra co'),
+        const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.stroke),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
-        // Aiming
-        _buildSectionTitle(context, '👁️ Hệ thống ngắm'),
-        const SizedBox(height: 8),
+        _buildSectionTitle(context, 'He thong ngam'),
+        const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.aiming),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
-        // Key Points
         if (content.keyPoints.isNotEmpty) ...[
-          _buildSectionTitle(context, '🔑 Điểm cần nhớ'),
-          const SizedBox(height: 8),
+          _buildSectionTitle(context, 'Diem can nho'),
+          const SizedBox(height: AppSpacing.sm),
           _buildBulletList(content.keyPoints, Icons.check_circle_outline),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
         ],
 
-        // Pro Tips
         if (content.proTips.isNotEmpty) ...[
-          _buildSectionTitle(context, '⭐ Mẹo từ pro'),
-          const SizedBox(height: 8),
-          _buildBulletList(content.proTips, Icons.star, color: AppTheme.accentGold),
-          const SizedBox(height: 16),
+          _buildSectionTitle(context, 'Meo tu pro'),
+          const SizedBox(height: AppSpacing.sm),
+          _buildBulletList(content.proTips, Icons.star, color: AppColors.gold),
+          const SizedBox(height: AppSpacing.lg),
         ],
       ],
     );
@@ -572,13 +587,13 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: items.map((item) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 18, color: color ?? Colors.blue),
-              const SizedBox(width: 8),
-              Expanded(child: Text(item)),
+              Icon(icon, size: 20, color: color ?? AppColors.accent),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(child: Text(item, style: TextStyle(color: AppColors.lightTextPrimary, height: 1.4))),
             ],
           ),
         );
@@ -588,48 +603,52 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
   Widget _buildTextCard(String text) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
       ),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.bodyMedium,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: AppColors.lightTextPrimary,
+          height: 1.5,
+        ),
       ),
     );
   }
 
   Widget _buildComingSoonCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.amber.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.amber.shade200),
+        color: AppColors.warning.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(Icons.construction, color: Colors.amber.shade700),
-          const SizedBox(width: 12),
+          Icon(Icons.construction, color: AppColors.warning, size: 28),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Đang cập nhật',
+                  'Dang cap nhat',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.amber.shade900,
+                    fontSize: 15,
+                    color: AppColors.warning,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Hướng dẫn chi tiết cho bài tập này sắp ra mắt. Vui lòng tham khảo các bài tập tương tự ở trên.',
+                  'Huong dan chi tiet cho bai tap nay sap ra mat.',
                   style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.amber.shade900,
+                    fontSize: 13,
+                    color: AppColors.lightTextSecondary,
                   ),
                 ),
               ],
@@ -641,16 +660,16 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildKnowledgeList(List<String> knowledgeIds) {
-    // Placeholder - sẽ lấy từ database
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
       children: knowledgeIds.map((id) {
         return ActionChip(
-          label: Text(_getKnowledgeName(id)),
-          avatar: const Icon(Icons.menu_book, size: 16),
+          label: Text(_getKnowledgeName(id), style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500)),
+          avatar: Icon(Icons.menu_book, size: 18, color: AppColors.accent),
+          backgroundColor: AppColors.accent.withValues(alpha: 0.1),
+          side: BorderSide(color: AppColors.accent.withValues(alpha: 0.3)),
           onPressed: () {
-            // Navigate to knowledge detail
             context.push('/training/knowledge/$id');
           },
         );
@@ -679,7 +698,6 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildRelatedDrills(String currentCode) {
-    // Get drills from same category
     final currentDrill = DrillLibrary.getDrill(currentCode);
     if (currentDrill == null) return const SizedBox();
 
@@ -690,35 +708,42 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
     if (relatedDrills.isEmpty) {
       return Text(
-        'Không có bài tập liên quan',
-        style: TextStyle(color: AppTheme.textSecondary),
+        'Khong co bai tap lien quan',
+        style: TextStyle(color: AppColors.lightTextSecondary),
       );
     }
 
     return Column(
       children: relatedDrills.map((drill) {
         return Container(
-          margin: const EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: () => context.push('/training/drill/${drill.code}'),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               child: Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade200),
+                  color: AppColors.lightSurface,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.shadowLight,
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: 44,
+                      height: 44,
                       decoration: BoxDecoration(
                         color: _getDifficultyColor(drill.difficulty).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                       child: Center(
                         child: Text(
@@ -726,24 +751,25 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                           style: TextStyle(
                             color: _getDifficultyColor(drill.difficulty),
                             fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             drill.nameVi,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppColors.lightTextPrimary),
                           ),
                           Text(
                             drill.description,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppTheme.textSecondary,
+                              color: AppColors.lightTextSecondary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -751,7 +777,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                         ],
                       ),
                     ),
-                    Icon(Icons.chevron_right, color: Colors.grey.shade400),
+                    Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
                   ],
                 ),
               ),
@@ -764,39 +790,21 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
   Widget _buildStartButton(Drill drill) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: AppColors.shadowLight,
+            blurRadius: 12,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: SafeArea(
-        child: ElevatedButton(
+        child: _PrimaryButton(
           onPressed: () => _onStartPressed(drill),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryGreen,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.edit_note),
-              const SizedBox(width: 8),
-              Text(
-                'Bắt đầu nhập liệu — Level $_selectedLevel',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+          label: 'Bat dau nhap lieu - Level $_selectedLevel',
         ),
       ),
     );
@@ -806,15 +814,13 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     print('[SPRINT17_FLOW] DRILL_DETAIL: _onStartPressed entered');
     final defaultAttempts = drill.levels.first.attempts;
 
-    // Show dialog so the player can pick a target — preset or custom.
-    // Sprint 7B: custom attempts to support heavy practice (e.g., 100 reps).
     final picked = await showDialog<int>(
       context: context,
       builder: (ctx) => _RepetitionsDialog(
         defaultAttempts: defaultAttempts,
       ),
     );
-    if (picked == null) return; // user cancelled
+    if (picked == null) return;
 
     if (!mounted) return;
     context.push(
@@ -823,12 +829,37 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 }
 
-/// Dialog chọn số lần tập — preset + tuỳ chỉnh.
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  const _PrimaryButton({required this.onPressed, required this.label});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
+          ),
+          child: Text(widget.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center)),
+      ),
+    );
+  }
+}
+
 class _RepetitionsDialog extends StatefulWidget {
   final int defaultAttempts;
-
   const _RepetitionsDialog({required this.defaultAttempts});
-
   @override
   State<_RepetitionsDialog> createState() => _RepetitionsDialogState();
 }
@@ -846,58 +877,68 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Chọn số lần tập'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      ),
+      title: const Text('Chon so lan tap'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Mặc định cho level này: ${widget.defaultAttempts} lần',
-              style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+              'Mac dinh cho level nay: ${widget.defaultAttempts} lan',
+              style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 13),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
-            // Preset chips
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
               children: _presets.map((preset) {
-                final isSelected = _selected == preset &&
-                    preset != widget.defaultAttempts;
+                final isSelected = _selected == preset && preset != widget.defaultAttempts;
                 return ChoiceChip(
-                  label: Text('$preset lần'),
+                  label: Text('$preset lan', style: TextStyle(
+                    color: isSelected ? Colors.white : AppColors.lightTextPrimary,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  )),
                   selected: isSelected,
+                  selectedColor: AppColors.accent,
+                  backgroundColor: AppColors.lightBackground,
                   onSelected: (_) => setState(() => _selected = preset),
                 );
               }).toList(),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
 
-            // Default option
             ChoiceChip(
-              label: Text('Mặc định (${widget.defaultAttempts})'),
+              label: Text('Mac dinh (${widget.defaultAttempts})', style: TextStyle(
+                color: _selected == widget.defaultAttempts ? Colors.white : AppColors.lightTextPrimary,
+                fontWeight: _selected == widget.defaultAttempts ? FontWeight.w600 : FontWeight.normal,
+              )),
               selected: _selected == widget.defaultAttempts,
-              onSelected: (_) =>
-                  setState(() => _selected = widget.defaultAttempts),
+              selectedColor: AppColors.accent,
+              backgroundColor: AppColors.lightBackground,
+              onSelected: (_) => setState(() => _selected = widget.defaultAttempts),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpacing.xxl),
 
-            // Custom input
             const Text(
-              'Hoặc nhập số lần tuỳ chỉnh:',
+              'Hoac nhap so lan tuy chinh:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             TextFormField(
               initialValue: '$_selected',
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                ),
                 hintText: 'VD: 150',
-                suffixText: 'lần',
+                suffixText: 'lan',
               ),
               onChanged: (val) {
                 final n = int.tryParse(val);
@@ -907,12 +948,12 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
               },
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
-              'Số lần lớn giúp tăng độ chính xác và sức chịu đựng',
+              'So lan lon giup tang do chinh xac',
               style: TextStyle(
-                color: AppTheme.textSecondary,
-                fontSize: 11,
+                color: AppColors.lightTextSecondary,
+                fontSize: 12,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -922,20 +963,45 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Huỷ'),
+          child: Text('Huy', style: TextStyle(color: AppColors.lightTextSecondary)),
         ),
-        ElevatedButton(
+        _DialogButton(
           onPressed: () {
             if (_selected <= 0) return;
             Navigator.of(context).pop(_selected);
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryGreen,
-            foregroundColor: Colors.white,
-          ),
-          child: Text('Bắt đầu $_selected lần'),
+          label: 'Bat dau $_selected lan',
         ),
       ],
+    );
+  }
+}
+
+class _DialogButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final String label;
+  const _DialogButton({required this.onPressed, required this.label});
+  @override
+  State<_DialogButton> createState() => _DialogButtonState();
+}
+class _DialogButtonState extends State<_DialogButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _scale = 0.96),
+      onTapUp: (_) => setState(() => _scale = 1.0),
+      onTapCancel: () => setState(() => _scale = 1.0),
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.accent,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          ),
+          child: Text(widget.label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        ),
+      ),
     );
   }
 }

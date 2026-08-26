@@ -1,6 +1,7 @@
 // ============================================================================
 // COACH CHAT SCREEN - Phase 7B.2
 // Natural Language Conversation with Coach
+// Redesigned with Minimalist Luxury Design System
 //
 // Coach Voice:
 // - Short (2-3 sentences)
@@ -13,6 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../knowledge/conversation_engine.dart';
 import '../../../knowledge/coach_service.dart' show ReasoningType;
@@ -95,6 +98,7 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
   CoachChatState _state = CoachChatState();
+  late Brightness _brightness;
 
   @override
   void initState() {
@@ -102,10 +106,15 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
     _initializeChat();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _brightness = Theme.of(context).brightness;
+  }
+
   void _initializeChat() {
     final messages = <ChatMessage>[];
 
-    // Initial Coach message
     messages.add(ChatMessage(
       content: 'Chào bạn! Mình có thể giúp gì?',
       isUser: false,
@@ -125,26 +134,35 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background(_brightness),
       appBar: AppBar(
-        title: const Text('Coach'),
+        backgroundColor: AppColors.background(_brightness),
+        elevation: 0,
+        title: Text(
+          'Coach',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary(_brightness),
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: Icon(Icons.close, color: AppColors.textPrimary(_brightness)),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.help_outline),
+            icon: Icon(Icons.help_outline, color: AppColors.textSecondary(_brightness)),
             onPressed: () => _showHelp(context),
           ),
         ],
       ),
       body: Column(
         children: [
-          // Chat Messages
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               itemCount: _state.messages.length,
               itemBuilder: (context, index) {
                 final message = _state.messages[index];
@@ -157,13 +175,11 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
             ),
           ),
 
-          // Suggestion Chips
           if (_state.messages.length == 1)
             CoachSuggestionChips(
               onSuggestionTap: _handleSuggestion,
             ).animate().fadeIn(delay: 500.ms),
 
-          // Input Area
           _buildInputArea(context),
         ],
       ),
@@ -173,13 +189,13 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
   Widget _buildInputArea(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 12,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
+        left: AppSpacing.lg,
+        right: AppSpacing.lg,
+        top: AppSpacing.md,
+        bottom: MediaQuery.of(context).padding.bottom + AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(_brightness),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -195,29 +211,31 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
               controller: _textController,
               decoration: InputDecoration(
                 hintText: 'Hỏi Coach...',
+                hintStyle: TextStyle(color: AppColors.textTertiary(_brightness)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey.shade100,
+                fillColor: AppColors.background(_brightness),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 12,
                 ),
               ),
+              style: TextStyle(color: AppColors.textPrimary(_brightness)),
               textInputAction: TextInputAction.send,
               onSubmitted: _handleSend,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Container(
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen,
+              color: AppColors.accentColor(_brightness),
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              icon: const Icon(Icons.send, color: Colors.white),
+              icon: Icon(Icons.send, color: Colors.white, size: 20),
               onPressed: () => _handleSend(_textController.text),
             ),
           ),
@@ -245,36 +263,27 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
     _textController.clear();
     _scrollToBottom();
 
-    // Generate Coach response through Brain
     Future.delayed(const Duration(milliseconds: 500), () {
       _generateCoachResponse(userMessage);
     });
   }
 
   void _generateCoachResponse(ChatMessage userMessage) async {
-    // Parse intent using ConversationEngine's IntentParser
     final intent = IntentParser.parse(userMessage.content);
-
-    // Build context from Coach State
     final context = _buildContext(intent, userMessage.content);
 
-    // Get reasoning from Coach Brain via CoachService
     final coachNotifier = ref.read(coachStateProvider.notifier);
     final reasoning = coachNotifier.getReasoning(context);
 
-    // Format response with Coach Voice
     String content;
     CoachRecommendation? recommendation;
 
     if (reasoning.type == ReasoningType.noRecommendation ||
         reasoning.type == ReasoningType.insufficientData) {
-      // No data response
       content = coachNotifier.formatResponse(reasoning);
     } else if (reasoning.recommendations.isNotEmpty) {
-      // Has recommendations - use Coach Brain response
       content = coachNotifier.formatResponse(reasoning);
 
-      // Convert first recommendation to UI format
       final rec = reasoning.recommendations.first;
       recommendation = CoachRecommendation.fromBrain(
         drillCode: rec.drillCode,
@@ -285,19 +294,16 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
         confidence: rec.confidence,
       );
     } else {
-      // General response
       content = coachNotifier.formatResponse(reasoning);
     }
 
-    // Also include supporting points if available
     if (reasoning.supportingPoints.isNotEmpty &&
         !reasoning.supportingPoints.first.contains(content)) {
       content = '$content\n\n${reasoning.supportingPoints.map((p) => '• $p').join('\n')}';
     }
 
-    // Add data disclaimer if needed
     if (reasoning.dataNeeded != null) {
-      content = '$content\n\n⚠️ ${reasoning.dataNeeded}';
+      content = '$content\n\n${reasoning.dataNeeded}';
     }
 
     final coachMessage = ChatMessage(
@@ -319,12 +325,9 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
     }
   }
 
-  /// Build ConversationContext from Coach State
   ConversationContext _buildContext(CoachIntent intent, String message) {
     final coachState = ref.read(coachStateProvider);
     final pi = coachState.playerIntelligence;
-
-    // Get coaching plan or create empty one
     final coachingPlan = coachState.coachingPlan;
 
     return ConversationContext(
@@ -348,7 +351,6 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
     );
   }
 
-  /// Map ConversationEngine's CoachIntent to ChatIntent
   ChatIntent _mapReasoningType(CoachIntent intent) {
     switch (intent) {
       case CoachIntent.whatToPracticeToday:
@@ -386,14 +388,11 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
     });
   }
 
-  /// Get explanation from Coach Brain
   String _getExplanationFromBrain(String drillCode, CoachState coachState) {
-    // Get drill knowledge from Knowledge Graph
     final kg = ref.read(knowledgeGraphProvider);
     final drill = kg.getDrill(drillCode);
 
     if (drill != null) {
-      // Use drill's explanation from Knowledge Graph
       final skills = drill.skillsTrained
           .map((s) => kg.graph.getSkill(s)?.nameVi ?? s)
           .join(', ');
@@ -401,14 +400,12 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
           'Đây là bài tập ${drill.difficulty.label} giúp bạn phát triển kỹ năng.';
     }
 
-    // Fallback
     return 'Drill này giúp bạn cải thiện kỹ năng cơ bản.';
   }
 
   void _showExplain(BuildContext context, String? drillCode) {
     if (drillCode == null) return;
 
-    // Get explanation from Coach Brain
     final coachState = ref.read(coachStateProvider);
     final explanation = _getExplanationFromBrain(drillCode, coachState);
 
@@ -441,24 +438,27 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Hỏi Coach gì?'),
-        content: const Column(
+        title: Text(
+          'Hỏi Coach gì?',
+          style: TextStyle(color: AppColors.textPrimary(_brightness)),
+        ),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('• "Hôm nay nên tập gì?"'),
-            SizedBox(height: 8),
-            Text('• "Tại sao tôi đánh kém?"'),
-            SizedBox(height: 8),
-            Text('• "Tôi nên cải thiện gì?"'),
-            SizedBox(height: 8),
-            Text('• "Điểm mạnh của tôi là gì?"'),
+            Text('• "Hôm nay nên tập gì?"', style: TextStyle(color: AppColors.textSecondary(_brightness))),
+            const SizedBox(height: 8),
+            Text('• "Tại sao tôi đánh kém?"', style: TextStyle(color: AppColors.textSecondary(_brightness))),
+            const SizedBox(height: 8),
+            Text('• "Tôi nên cải thiện gì?"', style: TextStyle(color: AppColors.textSecondary(_brightness))),
+            const SizedBox(height: 8),
+            Text('• "Điểm mạnh của tôi là gì?"', style: TextStyle(color: AppColors.textSecondary(_brightness))),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: Text('OK', style: TextStyle(color: AppColors.accentColor(_brightness))),
           ),
         ],
       ),

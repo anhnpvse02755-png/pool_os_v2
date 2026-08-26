@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 
 class DrillResultScreen extends StatelessWidget {
@@ -20,17 +21,17 @@ class DrillResultScreen extends StatelessWidget {
   double get successRate => totalReps > 0 ? (successCount / totalReps) * 100 : 0;
 
   String get rating {
-    if (successRate >= 90) return 'Xuất sắc!';
-    if (successRate >= 70) return 'Tốt lắm!';
-    if (successRate >= 50) return 'Cần cố gắng hơn';
-    return 'Cần luyện tập thêm';
+    if (successRate >= 90) return 'Xuat sac!';
+    if (successRate >= 70) return 'Tot lam!';
+    if (successRate >= 50) return 'Can co gang hon';
+    return 'Can luyen tap them';
   }
 
   Color get ratingColor {
-    if (successRate >= 90) return Colors.green;
-    if (successRate >= 70) return Colors.blue;
-    if (successRate >= 50) return Colors.orange;
-    return Colors.red;
+    if (successRate >= 90) return AppColors.success;
+    if (successRate >= 70) return AppColors.accent;
+    if (successRate >= 50) return AppColors.warning;
+    return AppColors.error;
   }
 
   @override
@@ -38,12 +39,13 @@ class DrillResultScreen extends StatelessWidget {
     final drill = DrillLibrary.getDrill(drillCode);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Trophy icon
               Container(
@@ -62,7 +64,7 @@ class DrillResultScreen extends StatelessWidget {
                   .animate()
                   .scale(duration: 400.ms, curve: Curves.elasticOut),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xl),
 
               // Rating
               Text(
@@ -73,46 +75,47 @@ class DrillResultScreen extends StatelessWidget {
                     ),
               ).animate().fadeIn(delay: 200.ms),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.xs),
 
               if (drill != null)
                 Text(
                   drill.nameVi,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppTheme.textSecondary,
+                        color: AppColors.lightTextSecondary,
                       ),
                 ).animate().fadeIn(delay: 300.ms),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Stats cards
               Row(
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Tổng lần',
+                      label: 'Tong lan',
                       value: '$totalReps',
                       icon: Icons.repeat,
-                      color: Colors.blue,
+                      color: AppColors.accent,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Thành công',
+                      label: 'Thanh cong',
                       value: '$successCount',
                       icon: Icons.check_circle,
-                      color: Colors.green,
+                      color: AppColors.success,
                     ),
                   ),
                 ],
               ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.lg),
 
               // Success rate
               Container(
-                padding: const EdgeInsets.all(20),
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.xxl),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -120,7 +123,14 @@ class DrillResultScreen extends StatelessWidget {
                       ratingColor.withValues(alpha: 0.7),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  boxShadow: [
+                    BoxShadow(
+                      color: ratingColor.withValues(alpha: 0.3),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
@@ -132,17 +142,18 @@ class DrillResultScreen extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
+                    const SizedBox(height: AppSpacing.sm),
                     const Text(
-                      'Tỷ lệ thành công',
+                      'Ty le thanh cong',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.lg),
                     // Progress bar
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       child: LinearProgressIndicator(
                         value: successRate / 100,
                         minHeight: 12,
@@ -154,16 +165,17 @@ class DrillResultScreen extends StatelessWidget {
                 ),
               ).animate().fadeIn(delay: 500.ms),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Coach feedback placeholder
               Container(
-                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: AppTheme.accentGold.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.gold.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                   border: Border.all(
-                    color: AppTheme.accentGold.withValues(alpha: 0.3),
+                    color: AppColors.gold.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(
@@ -171,62 +183,58 @@ class DrillResultScreen extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.lightbulb, color: AppTheme.accentGold),
-                        const SizedBox(width: 8),
+                        Icon(Icons.lightbulb, color: AppColors.gold, size: 24),
+                        const SizedBox(width: AppSpacing.sm),
                         Text(
-                          'AI Coach gợi ý',
+                          'AI Coach goi y',
                           style: TextStyle(
-                            color: AppTheme.accentGold,
+                            color: AppColors.gold,
                             fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     Text(
                       successRate < 70
-                          ? 'Bạn cần tập trung vào độ chính xác hơn. Hãy chú ý đến tư thế và cách cầm cơ.'
-                          : 'Kỹ thuật của bạn đã khá tốt! Hãy tiếp tục luyện tập để duy trì và cải thiện.',
+                          ? 'Ban can tap trung vao do chinh xac hon. Hay chu y den tu the va cach cam co.'
+                          : 'Ky thuat cua ban da kha tot! Hay tiep tuc luyen tap de duy tri va cai thien.',
                       style: TextStyle(
-                        color: AppTheme.textPrimary,
+                        color: AppColors.lightTextPrimary,
                         height: 1.5,
+                        fontSize: 14,
                       ),
                     ),
                   ],
                 ),
               ).animate().fadeIn(delay: 600.ms),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Action buttons
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton.icon(
+                child: _PrimaryButton(
                   onPressed: () => context.go('/training'),
-                  icon: const Icon(Icons.home),
-                  label: const Text('Về Training Center'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
+                  label: 'Ve Training Center',
                 ),
               ).animate().fadeIn(delay: 700.ms),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
 
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton.icon(
+                child: _SecondaryButton(
                   onPressed: () {
-                    // Re-do the same drill
                     context.go('/training/session/new?drill=$drillCode');
                   },
-                  icon: const Icon(Icons.replay),
-                  label: const Text('Tập lại'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
+                  label: 'Tap lai',
+                  icon: Icons.replay,
                 ),
               ).animate().fadeIn(delay: 800.ms),
+
+              const SizedBox(height: AppSpacing.lg),
             ],
           ),
         ),
@@ -251,31 +259,117 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          Icon(icon, color: color, size: 32),
-          const SizedBox(height: 8),
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 28,
               fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppColors.lightTextSecondary,
               fontSize: 13,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  const _PrimaryButton({required this.onPressed, required this.label});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
+          ),
+          child: Text(widget.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center)),
+      ),
+    );
+  }
+}
+
+class _SecondaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _SecondaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_SecondaryButton> createState() => _SecondaryButtonState();
+}
+class _SecondaryButtonState extends State<_SecondaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.lightSurface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(color: AppColors.accent, width: 1.5),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: AppColors.accent, size: 20),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Text(widget.label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.accent), textAlign: TextAlign.center),
+            ],
+          ),
+        ),
       ),
     );
   }

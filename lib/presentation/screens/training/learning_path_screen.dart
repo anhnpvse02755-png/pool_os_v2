@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_types.dart';
 import '../../../knowledge/knowledge_provider.dart';
@@ -16,13 +17,17 @@ class LearningPathScreen extends ConsumerWidget {
     final learningPathAsync = ref.watch(learningPathProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Lộ trình của bạn'),
+        title: const Text('Lo trinh cua ban'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(learningPathProvider),
-            tooltip: 'Làm mới',
+            tooltip: 'Lam moi',
           ),
         ],
       ),
@@ -33,13 +38,13 @@ class LearningPathScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text('Lỗi: $error'),
-              const SizedBox(height: 16),
-              ElevatedButton(
+              Icon(Icons.error_outline, size: 48, color: AppColors.error),
+              const SizedBox(height: AppSpacing.lg),
+              Text('Loi: $error'),
+              const SizedBox(height: AppSpacing.lg),
+              _PrimaryButton(
                 onPressed: () => ref.invalidate(learningPathProvider),
-                child: const Text('Thử lại'),
+                label: 'Thu lai',
               ),
             ],
           ),
@@ -54,31 +59,31 @@ class LearningPathScreen extends ConsumerWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.primaryGreen,
-                  AppTheme.primaryGreen.withValues(alpha: 0.8),
+                  AppColors.accent,
+                  AppColors.accent.withValues(alpha: 0.8),
                 ],
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.auto_awesome, color: Colors.white),
-                    const SizedBox(width: 8),
+                    const Icon(Icons.auto_awesome, color: Colors.white),
+                    const SizedBox(width: AppSpacing.sm),
                     const Text(
-                      'Tuần này',
+                      'Tuan nay',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -87,9 +92,9 @@ class LearningPathScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'AI đề xuất ${path.length} bài tập cho bạn',
+                  'AI de xuat ${path.length} bai tap cho ban',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.9),
                     fontSize: 14,
@@ -99,45 +104,41 @@ class LearningPathScreen extends ConsumerWidget {
             ),
           ).animate().fadeIn(),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Follow AI / Skip AI
           Row(
             children: [
               Expanded(
-                child: ElevatedButton.icon(
+                child: _PrimaryButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Đang theo lộ trình AI...'),
+                        content: Text('Dang theo lo trinh AI...'),
                         behavior: SnackBarBehavior.floating,
                       ),
                     );
                   },
-                  icon: const Icon(Icons.check_circle),
-                  label: const Text('Follow AI'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
+                  label: 'Follow AI',
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => context.push('/training/drills'),
                   icon: const Icon(Icons.skip_next),
-                  label: const Text('Tự chọn'),
+                  label: const Text('Tu chon'),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    side: BorderSide(color: AppColors.accent),
+                    foregroundColor: AppColors.accent,
                   ),
                 ),
               ),
             ],
           ).animate().fadeIn(delay: 100.ms),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Learning path items
           ...path.asMap().entries.map((entry) {
@@ -145,7 +146,7 @@ class LearningPathScreen extends ConsumerWidget {
             final item = entry.value;
 
             return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
               child: _LearningPathCard(
                 item: item,
                 order: index + 1,
@@ -155,10 +156,9 @@ class LearningPathScreen extends ConsumerWidget {
                   );
                 },
                 onSkip: () {
-                  // Remove from list
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Đã bỏ qua'),
+                      content: Text('Da bo qua'),
                       behavior: SnackBarBehavior.floating,
                       duration: Duration(seconds: 1),
                     ),
@@ -168,24 +168,25 @@ class LearningPathScreen extends ConsumerWidget {
             );
           }),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
 
           // Note
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.lightBackground,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              border: Border.all(color: AppColors.lightBorder),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: Colors.grey.shade600, size: 20),
-                const SizedBox(width: 8),
+                Icon(Icons.info_outline, color: AppColors.lightTextSecondary, size: 20),
+                const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    'Bạn có thể bỏ qua bất kỳ bài tập nào. Tất cả bài tập đều mở cho bạn.',
+                    'Ban co the bo qua bat ky bai tap nao. Tat ca bai tap deu mo cho ban.',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: AppColors.lightTextSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -201,32 +202,32 @@ class LearningPathScreen extends ConsumerWidget {
   Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.school_outlined,
               size: 80,
-              color: Colors.grey.shade300,
+              color: AppColors.lightTextTertiary,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
             Text(
-              'Chưa có lộ trình',
+              'Chua co lo trinh',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.grey.shade600,
+                    color: AppColors.lightTextSecondary,
                   ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
-              'Tập ít nhất 1 bài tập để nhận đề xuất từ Coach',
-              style: TextStyle(color: Colors.grey.shade500),
+              'Tap it nhat 1 bai tap de nhan de xuat tu Coach',
+              style: TextStyle(color: AppColors.lightTextSecondary),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
-            ElevatedButton(
+            const SizedBox(height: AppSpacing.xxl),
+            _PrimaryButton(
               onPressed: () => context.push('/onboarding/interests'),
-              child: const Text('Chọn sở thích'),
+              label: 'Chon so thich',
             ),
           ],
         ),
@@ -251,22 +252,22 @@ class _LearningPathCard extends ConsumerWidget {
   Color _getPriorityColor() {
     switch (item.priority) {
       case 1:
-        return Colors.orange;
+        return AppColors.warning;
       case 2:
-        return Colors.blue;
+        return AppColors.accent;
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
   }
 
   String _getPriorityLabel() {
     switch (item.priority) {
       case 1:
-        return 'Ưu tiên cao';
+        return 'Uu tien cao';
       case 2:
-        return 'Khuyến nghị';
+        return 'Kuyen nghi';
       default:
-        return 'Bổ sung';
+        return 'Bo sung';
     }
   }
 
@@ -274,11 +275,12 @@ class _LearningPathCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -287,10 +289,9 @@ class _LearningPathCard extends ConsumerWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: [
-                // Order number
                 Container(
                   width: 36,
                   height: 36,
@@ -309,9 +310,7 @@ class _LearningPathCard extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-
-                // Drill info
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,19 +321,20 @@ class _LearningPathCard extends ConsumerWidget {
                             child: Text(
                               item.drillNameVi,
                               style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 16,
+                                color: AppColors.lightTextPrimary,
                               ),
                             ),
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
                               color: _getPriorityColor().withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               _getPriorityLabel(),
@@ -347,43 +347,43 @@ class _LearningPathCard extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Text(
                         item.reason,
                         style: TextStyle(
-                          color: AppTheme.textSecondary,
+                          color: AppColors.lightTextSecondary,
                           fontSize: 13,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(4),
+                              color: AppColors.lightBackground,
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
-                              '${item.estimatedMinutes} phút',
+                              '${item.estimatedMinutes} phut',
                               style: TextStyle(
-                                color: Colors.grey.shade700,
+                                color: AppColors.lightTextSecondary,
                                 fontSize: 11,
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppSpacing.sm),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
+                              horizontal: AppSpacing.sm,
+                              vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
                               color: _getDifficultyColor().withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               _getDifficultyLabel(),
@@ -402,36 +402,27 @@ class _LearningPathCard extends ConsumerWidget {
             ),
           ),
 
-          const Divider(height: 1),
+          const Divider(height: 1, color: AppColors.lightBorder),
 
           _buildKnowledgeChips(context, ref),
 
-          // Actions
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.fromLTRB(AppSpacing.sm, AppSpacing.xs, AppSpacing.sm, AppSpacing.sm),
             child: Row(
               children: [
                 TextButton.icon(
                   onPressed: onSkip,
                   icon: const Icon(Icons.skip_next, size: 18),
-                  label: const Text('Bỏ qua'),
+                  label: const Text('Bo qua'),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey,
+                    foregroundColor: AppColors.lightTextSecondary,
                   ),
                 ),
                 const Spacer(),
-                ElevatedButton.icon(
+                _PrimaryButton(
                   onPressed: onStart,
-                  icon: const Icon(Icons.play_arrow, size: 18),
-                  label: const Text('Bắt đầu'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                  ),
+                  label: 'Bat dau',
+                  icon: Icons.play_arrow,
                 ),
               ],
             ),
@@ -444,15 +435,15 @@ class _LearningPathCard extends ConsumerWidget {
   Color _getDifficultyColor() {
     switch (item.difficulty) {
       case 'easy':
-        return Colors.green;
+        return AppColors.success;
       case 'medium':
-        return Colors.orange;
+        return AppColors.warning;
       case 'hard':
-        return Colors.red;
+        return AppColors.error;
       case 'expert':
-        return Colors.purple;
+        return const Color(0xFF8B5CF6);
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
   }
 
@@ -461,33 +452,33 @@ class _LearningPathCard extends ConsumerWidget {
     if (related.isEmpty) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.sm, AppSpacing.lg, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.menu_book, size: 14, color: AppTheme.primaryGreen),
-              const SizedBox(width: 4),
+              Icon(Icons.menu_book, size: 14, color: AppColors.accent),
+              const SizedBox(width: AppSpacing.xs),
               Text(
-                'Đọc trước khi tập',
+                'Doc truoc khi tap',
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppTheme.primaryGreen,
+                  color: AppColors.accent,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpacing.sm),
           Wrap(
-            spacing: 6,
-            runSpacing: 4,
+            spacing: AppSpacing.xs,
+            runSpacing: AppSpacing.xs,
             children: related.map((k) {
               return ActionChip(
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 padding: EdgeInsets.zero,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 6),
+                labelPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
                 label: Text(
                   k.titleVi ?? k.title,
                   style: const TextStyle(fontSize: 11),
@@ -517,5 +508,46 @@ class _LearningPathCard extends ConsumerWidget {
       default:
         return item.difficulty;
     }
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _PrimaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 18),
+                const SizedBox(width: AppSpacing.xs),
+              ],
+              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

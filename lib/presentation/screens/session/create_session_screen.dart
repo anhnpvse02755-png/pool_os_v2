@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
-import '../../../core/constants/app_constants.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 
 class CreateSessionScreen extends StatefulWidget {
   const CreateSessionScreen({super.key});
@@ -26,12 +26,11 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
 
     if (mounted) {
       setState(() => _isLoading = false);
-      // Navigate to drill categories
       context.go('/training/drills');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Đã tạo buổi chơi!'),
-          backgroundColor: AppTheme.success,
+          backgroundColor: AppColors.success,
         ),
       );
     }
@@ -40,15 +39,24 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Buổi chơi mới'),
+        backgroundColor: AppColors.lightSurface,
+        elevation: 0,
+        title: Text(
+          'Buổi chơi mới',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: Icon(Icons.close, color: AppColors.lightTextPrimary),
           onPressed: () => context.pop(),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,10 +64,11 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
             Text(
               'Loại buổi chơi',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.lightTextPrimary,
                   ),
             ).animate().fadeIn(),
-            const SizedBox(height: 12),
+            SizedBox(height: AppSpacing.sm),
             Row(
               children: [
                 Expanded(
@@ -70,7 +79,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                     onTap: () => setState(() => _selectedType = 'practice'),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: _TypeCard(
                     icon: Icons.emoji_events,
@@ -79,7 +88,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                     onTap: () => setState(() => _selectedType = 'tournament'),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: _TypeCard(
                     icon: Icons.people,
@@ -89,27 +98,25 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                   ),
                 ),
               ],
-            )
-                .animate()
-                .fadeIn(delay: 100.ms)
-                .slideY(begin: 0.1, end: 0),
-            const SizedBox(height: 24),
+            ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1, end: 0),
+            SizedBox(height: AppSpacing.xxl),
 
             // Readiness Section
             Text(
               'Tình trạng hiện tại',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.lightTextPrimary,
                   ),
             ).animate().fadeIn(delay: 200.ms),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.xs),
             Text(
               'Đánh giá tình trạng của bạn trước khi bắt đầu',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.lightTextSecondary,
                   ),
             ).animate().fadeIn(delay: 200.ms),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Energy Level
             _ReadinessSlider(
@@ -119,7 +126,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               labels: ['Thấp', 'Trung bình', 'Cao'],
               onChanged: (v) => setState(() => _energyLevel = v),
             ).animate().fadeIn(delay: 300.ms),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Focus Level
             _ReadinessSlider(
@@ -129,7 +136,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               labels: ['Mất tập trung', 'Bình thường', 'Rất tập trung'],
               onChanged: (v) => setState(() => _focusLevel = v),
             ).animate().fadeIn(delay: 400.ms),
-            const SizedBox(height: 16),
+            SizedBox(height: AppSpacing.lg),
 
             // Confidence Level
             _ReadinessSlider(
@@ -139,20 +146,28 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               labels: ['Không chắc', 'Bình thường', 'Rất tự tin'],
               onChanged: (v) => setState(() => _confidenceLevel = v),
             ).animate().fadeIn(delay: 500.ms),
-            const SizedBox(height: 32),
+            SizedBox(height: AppSpacing.xxl),
 
             // Coach Insight Preview
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppTheme.accentGold.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.accentGold.withValues(alpha: 0.3)),
+                color: AppColors.gold.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.lightbulb_outline, color: AppTheme.accentGold),
-                  const SizedBox(width: 12),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.gold.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.lightbulb_outline, color: AppColors.gold, size: 20),
+                  ),
+                  SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,15 +175,18 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                         Text(
                           'Mẹo từ Coach',
                           style: TextStyle(
-                            color: AppTheme.accentGold,
-                            fontWeight: FontWeight.bold,
+                            color: AppColors.gold,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
                           ),
                         ),
+                        SizedBox(height: AppSpacing.xs),
                         Text(
                           'Năng lượng thấp? Có thể ảnh hưởng đến độ chính xác của cú đánh. Cân nhắc khởi động kỹ hơn.',
                           style: TextStyle(
-                            color: AppTheme.accentGold.withValues(alpha: 0.8),
-                            fontSize: 12,
+                            color: AppColors.lightTextSecondary,
+                            fontSize: 13,
+                            height: 1.4,
                           ),
                         ),
                       ],
@@ -176,32 +194,24 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                   ),
                 ],
               ),
-            )
-                .animate()
-                .fadeIn(delay: 600.ms)
-                .slideY(begin: 0.1, end: 0),
-            const SizedBox(height: 24),
+            ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.1, end: 0),
+            SizedBox(height: AppSpacing.xl),
 
             // Start Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _startSession,
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text('Bắt đầu buổi chơi'),
-              ),
-            )
-                .animate()
-                .fadeIn(delay: 700.ms)
-                .slideY(begin: 0.2, end: 0),
+            _PrimaryButton(
+              onPressed: _isLoading ? null : _startSession,
+              label: _isLoading ? '' : 'Bắt đầu buổi chơi',
+              child: _isLoading
+                  ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+            ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2, end: 0),
           ],
         ),
       ),
@@ -224,34 +234,41 @@ class _TypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 200),
+        padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: isSelected ? AppColors.accent : AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
+            color: isSelected ? AppColors.accent : AppColors.lightBorder,
             width: isSelected ? 2 : 1,
           ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.accent.withValues(alpha: 0.2),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
         child: Column(
           children: [
             Icon(
               icon,
-              color: isSelected ? AppTheme.primaryGreen : Colors.grey,
+              color: isSelected ? Colors.white : AppColors.lightTextSecondary,
               size: 28,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: AppSpacing.sm),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade700,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? Colors.white : AppColors.lightTextSecondary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 fontSize: 12,
               ),
             ),
@@ -284,34 +301,46 @@ class _ReadinessSlider extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: AppTheme.primaryGreen),
-            const SizedBox(width: 8),
+            Icon(icon, size: 20, color: AppColors.accent),
+            SizedBox(width: AppSpacing.sm),
             Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-            const Spacer(),
-            Text(
-              labels[value - 1],
               style: TextStyle(
-                color: AppTheme.primaryGreen,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
+                color: AppColors.lightTextPrimary,
+              ),
+            ),
+            Spacer(),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              ),
+              child: Text(
+                labels[value - 1],
+                style: TextStyle(
+                  color: AppColors.accent,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.md),
         Row(
           children: List.generate(5, (index) {
             final isSelected = index < value;
             return Expanded(
               child: GestureDetector(
                 onTap: () => onChanged(index + 1),
-                child: Container(
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
                   height: 8,
-                  margin: EdgeInsets.only(right: index < 4 ? 4 : 0),
+                  margin: EdgeInsets.only(right: index < 4 ? 6 : 0),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
+                    color: isSelected ? AppColors.accent : AppColors.lightBorder,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -320,6 +349,51 @@ class _ReadinessSlider extends StatelessWidget {
           }),
         ),
       ],
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final Widget? child;
+
+  const _PrimaryButton({required this.onPressed, required this.label, this.child});
+
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null
+                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                : null,
+          ),
+          child: widget.child ??
+              Text(
+                widget.label,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+        ),
+      ),
     );
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/models/tournament.dart';
 
 class TournamentDetailScreen extends StatelessWidget {
@@ -15,8 +16,8 @@ class TournamentDetailScreen extends StatelessWidget {
 
     if (tournament == null) {
       return Scaffold(
-        appBar: AppBar(),
-        body: const Center(child: Text('Không tìm thấy giải đấu')),
+        appBar: AppBar(title: Text('Chi tiết giải đấu')),
+        body: Center(child: Text('Không tìm thấy giải đấu')),
       );
     }
 
@@ -27,10 +28,11 @@ class TournamentDetailScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
+            backgroundColor: _getStatusColor(tournament.status),
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 tournament.name,
-                style: const TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               background: Container(
                 decoration: BoxDecoration(
@@ -54,39 +56,36 @@ class TournamentDetailScreen extends StatelessWidget {
             ),
             actions: [
               if (tournament.status == 'upcoming')
-                TextButton(
+                _RegisterButton(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Text('Đăng ký thành công!'),
                         behavior: SnackBarBehavior.floating,
                       ),
                     );
                   },
-                  child: const Text(
-                    'ĐĂNG KÝ',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
                 ),
             ],
           ),
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Info Card
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.lightSurface,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
@@ -99,19 +98,19 @@ class TournamentDetailScreen extends StatelessWidget {
                               ? '${_formatDate(tournament.startDate!)} - ${_formatDate(tournament.endDate ?? tournament.startDate!)}'
                               : 'Chưa xác định',
                         ),
-                        const Divider(),
+                        Divider(color: AppColors.lightBorder),
                         _InfoRow(
                           icon: Icons.location_on,
                           label: 'Địa điểm',
                           value: tournament.venue ?? 'Chưa xác định',
                         ),
-                        const Divider(),
+                        Divider(color: AppColors.lightBorder),
                         _InfoRow(
                           icon: Icons.people,
                           label: 'Số người tham gia',
                           value: '${tournament.maxParticipants ?? 0}',
                         ),
-                        const Divider(),
+                        Divider(color: AppColors.lightBorder),
                         _InfoRow(
                           icon: Icons.category,
                           label: 'Loại giải',
@@ -121,27 +120,23 @@ class TournamentDetailScreen extends StatelessWidget {
                     ),
                   ).animate().fadeIn(),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: AppSpacing.xxl),
 
                   // Bracket Section
-                  Text(
-                    'Cặp đấu',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 12),
+                  _SectionHeader(title: 'Cặp đấu'),
+                  SizedBox(height: AppSpacing.sm),
 
                   // Demo bracket
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.lightSurface,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
@@ -156,7 +151,7 @@ class TournamentDetailScreen extends StatelessWidget {
                             _BracketMatch.demo(player1: 'Bùi Văn G', player2: 'Đỗ Văn H'),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xxl),
                         _BracketRound(
                           name: 'Tứ kết',
                           matches: [
@@ -164,14 +159,14 @@ class TournamentDetailScreen extends StatelessWidget {
                             _BracketMatch.demo(player1: 'Hoàng Văn E', player2: 'Đặng Văn F'),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xxl),
                         _BracketRound(
                           name: 'Bán kết',
                           matches: [
                             _BracketMatch.demo(player1: 'Nguyễn Văn A', player2: 'Hoàng Văn E'),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: AppSpacing.xxl),
                         _BracketRound(
                           name: 'Chung kết',
                           matches: [
@@ -182,26 +177,22 @@ class TournamentDetailScreen extends StatelessWidget {
                     ),
                   ).animate().fadeIn(delay: 200.ms),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: AppSpacing.xxl),
 
                   // Participants
-                  Text(
-                    'Người tham gia',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 12),
+                  _SectionHeader(title: 'Người tham gia'),
+                  SizedBox(height: AppSpacing.sm),
 
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.lightSurface,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
@@ -216,7 +207,7 @@ class TournamentDetailScreen extends StatelessWidget {
                     ),
                   ).animate().fadeIn(delay: 300.ms),
 
-                  const SizedBox(height: 100),
+                  SizedBox(height: 100),
                 ],
               ),
             ),
@@ -229,13 +220,13 @@ class TournamentDetailScreen extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'in_progress':
-        return Colors.green;
+        return AppColors.success;
       case 'upcoming':
-        return Colors.blue;
+        return AppColors.accent;
       case 'completed':
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
   }
 
@@ -267,6 +258,65 @@ class TournamentDetailScreen extends StatelessWidget {
   }
 }
 
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: AppColors.lightTextPrimary,
+      ),
+    );
+  }
+}
+
+class _RegisterButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  const _RegisterButton({required this.onPressed});
+
+  @override
+  State<_RegisterButton> createState() => _RegisterButtonState();
+}
+
+class _RegisterButtonState extends State<_RegisterButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _scale = 0.95),
+      onTapUp: (_) => setState(() => _scale = 1.0),
+      onTapCancel: () => setState(() => _scale = 1.0),
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          margin: EdgeInsets.only(right: AppSpacing.sm),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          ),
+          child: Text(
+            'ĐĂNG KÝ',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -281,20 +331,20 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: AppTheme.primaryGreen),
-          const SizedBox(width: 12),
+          Icon(icon, size: 20, color: AppColors.accent),
+          SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               label,
-              style: TextStyle(color: Colors.grey.shade600),
+              style: TextStyle(color: AppColors.lightTextSecondary),
             ),
           ),
           Text(
             value,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -319,14 +369,14 @@ class _BracketRound extends StatelessWidget {
         Text(
           name,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.grey.shade600,
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextSecondary,
             fontSize: 12,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: AppSpacing.sm),
         ...matches.map((m) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: EdgeInsets.only(bottom: AppSpacing.sm),
               child: m,
             )),
       ],
@@ -371,15 +421,13 @@ class _BracketMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasWinner = winner != null;
-
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: isFinal ? Colors.amber.shade50 : Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(8),
+        color: isFinal ? AppColors.gold.withValues(alpha: 0.08) : AppColors.lightSurfaceElevated,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         border: Border.all(
-          color: isFinal ? Colors.amber.shade300 : Colors.grey.shade300,
+          color: isFinal ? AppColors.gold : AppColors.lightBorder,
         ),
       ),
       child: Column(
@@ -389,7 +437,7 @@ class _BracketMatch extends StatelessWidget {
             score: score1,
             isWinner: winner == 1,
           ),
-          const Divider(height: 4),
+          Divider(height: 4, color: AppColors.lightBorder),
           _PlayerRow(
             name: player2,
             score: score2,
@@ -417,16 +465,16 @@ class _PlayerRow extends StatelessWidget {
     return Row(
       children: [
         if (isWinner)
-          Icon(Icons.check_circle, size: 16, color: AppTheme.primaryGreen)
+          Icon(Icons.check_circle, size: 16, color: AppColors.success)
         else
-          const SizedBox(width: 16),
-        const SizedBox(width: 8),
+          SizedBox(width: 16),
+        SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             name == '?' ? 'Chưa xác định' : name,
             style: TextStyle(
-              fontWeight: isWinner ? FontWeight.bold : FontWeight.normal,
-              color: name == '?' ? Colors.grey : Colors.black,
+              fontWeight: isWinner ? FontWeight.w600 : FontWeight.normal,
+              color: name == '?' ? AppColors.lightTextTertiary : AppColors.lightTextPrimary,
             ),
           ),
         ),
@@ -434,8 +482,8 @@ class _PlayerRow extends StatelessWidget {
           Text(
             '$score',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: isWinner ? AppTheme.primaryGreen : Colors.grey,
+              fontWeight: FontWeight.w600,
+              color: isWinner ? AppColors.success : AppColors.lightTextSecondary,
             ),
           ),
       ],
@@ -457,7 +505,7 @@ class _ParticipantRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
           Container(
@@ -470,26 +518,26 @@ class _ParticipantRow extends StatelessWidget {
             child: Center(
               child: Text(
                 '$rank',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 12,
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: AppSpacing.sm),
           Expanded(child: Text(name)),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: AppColors.lightSurfaceElevated,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               'Seed #$seed',
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: AppColors.lightTextSecondary,
                 fontSize: 11,
               ),
             ),
@@ -502,13 +550,13 @@ class _ParticipantRow extends StatelessWidget {
   Color _getRankColor(int rank) {
     switch (rank) {
       case 1:
-        return Colors.amber;
+        return AppColors.gold;
       case 2:
-        return Colors.grey.shade400;
+        return AppColors.lightTextSecondary;
       case 3:
-        return Colors.brown.shade300;
+        return Color(0xFFCD7F32);
       default:
-        return Colors.grey.shade300;
+        return AppColors.lightBorder;
     }
   }
 }

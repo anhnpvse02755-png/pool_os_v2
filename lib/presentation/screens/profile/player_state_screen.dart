@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/match.dart';
 import '../../../data/models/match_analysis.dart';
 import '../../../data/repositories/match_repository.dart';
 
-/// Player State screen — shows aggregated mental + physical axes from the
-/// last N matches, plus an editable snapshot for "now".
+/// Player State screen with Minimalist Luxury design.
 class PlayerStateScreen extends ConsumerStatefulWidget {
   const PlayerStateScreen({super.key});
 
@@ -79,32 +80,49 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
   }
 
   Widget _buildBar(String label, double value) {
+    Color barColor;
+    if (value <= 2) {
+      barColor = AppColors.error;
+    } else if (value <= 3) {
+      barColor = AppColors.warning;
+    } else {
+      barColor = AppColors.success;
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Expanded(child: Text(label)),
-              Text(value.toStringAsFixed(1) + '/5',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.lightTextPrimary,
+                  ),
+                ),
+              ),
+              Text(
+                value.toStringAsFixed(1) + '/5',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: barColor,
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.sm),
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             child: LinearProgressIndicator(
               value: (value / 5).clamp(0, 1),
               minHeight: 8,
-              backgroundColor: Colors.grey[200],
-              valueColor: AlwaysStoppedAnimation<Color>(
-                value <= 2
-                    ? Colors.red
-                    : value <= 3
-                        ? Colors.orange
-                        : Colors.green,
-              ),
+              backgroundColor: AppColors.lightBorder,
+              valueColor: AlwaysStoppedAnimation<Color>(barColor),
             ),
           ),
         ],
@@ -115,78 +133,135 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Player State')),
+      backgroundColor: AppColors.lightBackground,
+      appBar: AppBar(
+        backgroundColor: AppColors.lightBackground,
+        elevation: 0,
+        title: const Text(
+          'Player State',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.accent),
+            )
           : _states.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.psychology,
-                            size: 64, color: AppTheme.primary.withOpacity(0.4)),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Chưa có dữ liệu Player State',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Hoàn thành trận đấu đầu tiên để bắt đầu ghi nhận trạng thái tinh thần và thể chất.',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+              ? _buildEmptyState()
               : ListView(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(AppSpacing.lg),
                   children: [
                     _sectionTitle('Mental (trung bình ${_states.length} trận)'),
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            for (final entry in _averages.entries)
-                              if (!['sleep'].contains(entry.key))
-                                _buildBar(_labelize(entry.key), entry.value),
-                          ],
-                        ),
+                    const SizedBox(height: AppSpacing.md),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.lightSurface,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                        border: Border.all(color: AppColors.lightBorder),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ).animate().fadeIn(),
-                    const SizedBox(height: 16),
-                    _sectionTitle('Physical'),
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            for (final entry in _physicalAverages.entries)
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: Column(
+                        children: [
+                          for (final entry in _averages.entries)
+                            if (!['sleep'].contains(entry.key))
                               _buildBar(_labelize(entry.key), entry.value),
-                            if (_averages['sleep'] != null)
-                              _buildBar('Sleep (giờ/đêm)',
-                                  (_averages['sleep'] ?? 7) / 2.4),
-                          ],
-                        ),
+                        ],
                       ),
-                    ).animate().fadeIn(delay: 100.ms),
-                    const SizedBox(height: 16),
+                    ).animate().fadeIn(duration: 300.ms),
+                    const SizedBox(height: AppSpacing.lg),
+                    _sectionTitle('Physical'),
+                    const SizedBox(height: AppSpacing.md),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.lightSurface,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                        border: Border.all(color: AppColors.lightBorder),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: Column(
+                        children: [
+                          for (final entry in _physicalAverages.entries)
+                            _buildBar(_labelize(entry.key), entry.value),
+                          if (_averages['sleep'] != null)
+                            _buildBar('Sleep (giờ/đêm)',
+                                (_averages['sleep'] ?? 7) / 2.4),
+                        ],
+                      ),
+                    ).animate().fadeIn(duration: 300.ms, delay: 100.ms),
+                    const SizedBox(height: AppSpacing.lg),
                     _sectionTitle('Trận gần đây'),
-                    ..._states.reversed.take(5).map((s) => Card(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: _colorFor(s.confidence),
-                              child: Text('${s.confidence}',
-                                  style: const TextStyle(color: Colors.white)),
+                    const SizedBox(height: AppSpacing.md),
+                    ..._states.reversed.take(5).map((s) => Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.lightSurface,
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                              border: Border.all(color: AppColors.lightBorder),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.04),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
-                            title: Text(
-                                'Match ${s.matchId.substring(0, s.matchId.length.clamp(0, 10))}…'),
-                            subtitle: Text(
-                                'Focus ${s.focus}/5  •  Pressure ${s.pressure}/5  •  Tilt ${s.tilt}/5'),
-                            trailing: Text(_date(s.capturedAt)),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: _colorFor(s.confidence),
+                                child: Text(
+                                  '${s.confidence}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                'Match ${s.matchId.substring(0, s.matchId.length.clamp(0, 10))}…',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.lightTextPrimary,
+                                ),
+                              ),
+                              subtitle: Text(
+                                'Focus ${s.focus}/5  •  Pressure ${s.pressure}/5  •  Tilt ${s.tilt}/5',
+                                style: const TextStyle(
+                                  color: AppColors.lightTextSecondary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              trailing: Text(
+                                _date(s.capturedAt),
+                                style: const TextStyle(
+                                  color: AppColors.lightTextTertiary,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
                           ),
                         )),
                   ],
@@ -194,23 +269,65 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
     );
   }
 
-  Widget _sectionTitle(String s) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(children: [
-          Container(
-            width: 4,
-            height: 18,
-            decoration: BoxDecoration(
-              color: AppTheme.primary,
-              borderRadius: BorderRadius.circular(2),
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.space12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.xxl),
+              decoration: BoxDecoration(
+                color: AppColors.accentSubtleLight,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.psychology,
+                size: 64,
+                color: AppColors.accent.withValues(alpha: 0.6),
+              ),
             ),
+            const SizedBox(height: AppSpacing.xxl),
+            const Text(
+              'Chưa có dữ liệu Player State',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.lightTextPrimary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const Text(
+              'Hoàn thành trận đấu đầu tiên để bắt đầu ghi nhận trạng thái tinh thần và thể chất.',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.lightTextSecondary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String s) => Row(children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            color: AppColors.accent,
+            borderRadius: BorderRadius.circular(2),
           ),
-          const SizedBox(width: 8),
-          Text(s,
-              style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ]),
-      );
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Text(
+          s,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
+      ]);
 
   String _labelize(String key) {
     return key.replaceAllMapped(RegExp(r'([A-Z])'),
@@ -218,9 +335,9 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
   }
 
   Color _colorFor(int confidence) {
-    if (confidence <= 2) return Colors.red;
-    if (confidence <= 3) return Colors.orange;
-    return Colors.green;
+    if (confidence <= 2) return AppColors.error;
+    if (confidence <= 3) return AppColors.warning;
+    return AppColors.success;
   }
 
   String _date(DateTime d) =>

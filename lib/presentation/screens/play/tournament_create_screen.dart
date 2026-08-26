@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/models/tournament.dart';
 
 /// Tournament type enum
@@ -116,7 +117,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   Future<void> _selectEndDate() async {
     if (_startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Vui lòng chọn ngày bắt đầu trước'),
           behavior: SnackBarBehavior.floating,
         ),
@@ -164,7 +165,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
       SnackBar(
         content: Text('Đã tạo giải "${tournament.name}"'),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppTheme.primaryGreen,
+        backgroundColor: AppColors.accent,
       ),
     );
 
@@ -176,19 +177,19 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Huỷ tạo giải?'),
-        content: const Text('Dữ liệu đã nhập sẽ không được lưu.'),
+        title: Text('Huỷ tạo giải?'),
+        content: Text('Dữ liệu đã nhập sẽ không được lưu.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Không'),
+            child: Text('Không'),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               context.pop();
             },
-            child: const Text('Có, huỷ'),
+            child: Text('Có, huỷ'),
           ),
         ],
       ),
@@ -199,25 +200,25 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tạo giải đấu'),
+        title: Text('Tạo giải đấu'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back),
           onPressed: _cancel,
         ),
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Tournament Name
               _buildSectionTitle('Tên giải *'),
-              const SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'VD: Giải PoolOS Mùa 1',
                 ),
                 validator: (value) {
@@ -228,32 +229,32 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                 },
               ).animate().fadeIn(),
 
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xxl),
 
               // Tournament Type
               _buildSectionTitle('Loại giải *'),
-              const SizedBox(height: 12),
+              SizedBox(height: AppSpacing.sm),
               _buildTournamentTypeSelector().animate().fadeIn(delay: 100.ms),
 
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xxl),
 
               // Participant Count
               _buildSectionTitle('Số người chơi'),
-              const SizedBox(height: 12),
+              SizedBox(height: AppSpacing.sm),
               _buildParticipantSelector().animate().fadeIn(delay: 200.ms),
 
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xxl),
 
               // Race To
               _buildSectionTitle('Race to (số bi thắng mỗi trận)'),
-              const SizedBox(height: 12),
+              SizedBox(height: AppSpacing.sm),
               _buildRaceToSelector().animate().fadeIn(delay: 300.ms),
 
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xxl),
 
               // Date Selection
               _buildSectionTitle('Thời gian'),
-              const SizedBox(height: 12),
+              SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Expanded(
@@ -263,7 +264,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                       onTap: _selectStartDate,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _DatePickerField(
                       label: 'Ngày kết thúc',
@@ -275,41 +276,41 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                 ],
               ).animate().fadeIn(delay: 400.ms),
 
-              const SizedBox(height: 24),
+              SizedBox(height: AppSpacing.xxl),
 
-              // Venue (optional)
+              // venue (optional)
               _buildSectionTitle('Địa điểm (tùy chọn)'),
-              const SizedBox(height: 8),
+              SizedBox(height: AppSpacing.xs),
               TextFormField(
                 controller: _venueController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'VD: CLB Pool Hà Nội',
                 ),
               ).animate().fadeIn(delay: 500.ms),
 
-              const SizedBox(height: 32),
+              SizedBox(height: AppSpacing.xxl),
 
               // Action Buttons
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
+                    child: _SecondaryButton(
                       onPressed: _cancel,
-                      child: const Text('Huỷ'),
+                      label: 'Huỷ',
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: AppSpacing.md),
                   Expanded(
                     flex: 2,
-                    child: ElevatedButton(
+                    child: _PrimaryButton(
                       onPressed: _createTournament,
-                      child: const Text('Tạo giải'),
+                      label: 'Tạo giải',
                     ),
                   ),
                 ],
               ).animate().fadeIn(delay: 600.ms),
 
-              const SizedBox(height: 32),
+              SizedBox(height: AppSpacing.xxl),
             ],
           ),
         ),
@@ -320,9 +321,10 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
-        fontWeight: FontWeight.bold,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
         fontSize: 16,
+        color: AppColors.lightTextPrimary,
       ),
     );
   }
@@ -331,22 +333,22 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
+      physics: NeverScrollableScrollPhysics(),
+      mainAxisSpacing: AppSpacing.sm,
+      crossAxisSpacing: AppSpacing.sm,
       childAspectRatio: 1.3,
       children: TournamentFormatType.values.map((type) {
         final isSelected = _selectedType == type;
-        return InkWell(
+        return GestureDetector(
           onTap: () => setState(() => _selectedType = type),
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.all(12),
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            padding: EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: isSelected ? AppTheme.primaryGreen.withValues(alpha: 0.1) : Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              color: isSelected ? AppColors.accent.withValues(alpha: 0.08) : AppColors.lightSurface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(
-                color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
+                color: isSelected ? AppColors.accent : AppColors.lightBorder,
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -356,23 +358,23 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                 Icon(
                   type.icon,
                   size: 28,
-                  color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade600,
+                  color: isSelected ? AppColors.accent : AppColors.lightTextSecondary,
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: AppSpacing.sm),
                 Text(
                   type.displayName,
                   style: TextStyle(
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? AppTheme.primaryGreen : Colors.black87,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    color: isSelected ? AppColors.accent : AppColors.lightTextPrimary,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: AppSpacing.xs),
                 Text(
                   type.description,
                   style: TextStyle(
                     fontSize: 11,
-                    color: Colors.grey.shade600,
+                    color: AppColors.lightTextSecondary,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -391,23 +393,23 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(
-              right: count != _participantOptions.last ? 8 : 0,
+              right: count != _participantOptions.last ? AppSpacing.sm : 0,
             ),
-            child: InkWell(
+            child: GestureDetector(
               onTap: () => setState(() => _participantCount = count),
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8),
+                  color: isSelected ? AppColors.accent : AppColors.lightSurfaceElevated,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Center(
                   child: Text(
                     '$count',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : Colors.black87,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? Colors.white : AppColors.lightTextPrimary,
                     ),
                   ),
                 ),
@@ -426,23 +428,23 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
         return Expanded(
           child: Padding(
             padding: EdgeInsets.only(
-              right: value != _raceToOptions.last ? 8 : 0,
+              right: value != _raceToOptions.last ? AppSpacing.sm : 0,
             ),
-            child: InkWell(
+            child: GestureDetector(
               onTap: () => setState(() => _raceTo = value),
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8),
+                  color: isSelected ? AppColors.accent : AppColors.lightSurfaceElevated,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Center(
                   child: Text(
                     '$value',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : Colors.black87,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? Colors.white : AppColors.lightTextPrimary,
                     ),
                   ),
                 ),
@@ -474,42 +476,122 @@ class _DatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: enabled ? onTap : null,
-      borderRadius: BorderRadius.circular(12),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.md),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
+          color: AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(color: AppColors.lightBorder),
         ),
         child: Row(
           children: [
             Icon(
               Icons.calendar_today,
               size: 20,
-              color: enabled ? AppTheme.primaryGreen : Colors.grey,
+              color: enabled ? AppColors.accent : AppColors.lightTextTertiary,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
                 date != null ? _formatDate(date!) : label,
                 style: TextStyle(
                   color: date != null
-                      ? Colors.black87
+                      ? AppColors.lightTextPrimary
                       : enabled
-                          ? Colors.grey.shade600
-                          : Colors.grey.shade400,
+                          ? AppColors.lightTextSecondary
+                          : AppColors.lightTextTertiary,
                 ),
               ),
             ),
             if (date != null && enabled)
-              InkWell(
-                onTap: onTap,
-                child: const Icon(Icons.edit, size: 18, color: Colors.grey),
-              ),
+              Icon(Icons.edit, size: 18, color: AppColors.lightTextSecondary),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+
+  const _PrimaryButton({required this.onPressed, required this.label});
+
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null
+                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                : null,
+          ),
+          child: Text(
+            widget.label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SecondaryButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final String label;
+
+  const _SecondaryButton({required this.onPressed, required this.label});
+
+  @override
+  State<_SecondaryButton> createState() => _SecondaryButtonState();
+}
+
+class _SecondaryButtonState extends State<_SecondaryButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _scale = 0.96),
+      onTapUp: (_) => setState(() => _scale = 1.0),
+      onTapCancel: () => setState(() => _scale = 1.0),
+      onTap: widget.onPressed,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.lightSurface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(color: AppColors.lightBorder),
+          ),
+          child: Text(
+            widget.label,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.lightTextPrimary),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

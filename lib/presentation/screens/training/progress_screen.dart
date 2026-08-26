@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
-import '../../../core/providers/training_provider.dart';
 import '../../../core/services/coach_types.dart';
 
 class ProgressScreen extends ConsumerWidget {
@@ -16,11 +16,15 @@ class ProgressScreen extends ConsumerWidget {
     final progressMap = ref.watch(allDrillProgressProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Tiến độ của bạn'),
+        title: const Text('Tien do cua ban'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -28,32 +32,36 @@ class ProgressScreen extends ConsumerWidget {
             summaryAsync.when(
               data: (summary) => _SummaryCard(summary: summary),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox(),
+              error: (e, s) => const SizedBox(),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
 
             // Progress by Category
             Text(
-              'Tiến độ theo danh mục',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              'Tien do theo danh muc',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.lightTextPrimary,
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             _buildCategoryProgress(context, progressMap),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
 
             // Recent Activity
             Text(
-              'Hoạt động gần đây',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              'Hoat dong gan day',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.lightTextPrimary,
+              ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
 
             _buildRecentActivity(context, progressMap),
           ],
@@ -72,7 +80,7 @@ class ProgressScreen extends ConsumerWidget {
     return Column(
       children: progressList.map((progress) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: _ProgressCard(progress: progress),
         );
       }).toList(),
@@ -95,7 +103,7 @@ class ProgressScreen extends ConsumerWidget {
     return Column(
       children: sortedProgress.take(5).map((progress) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
           child: _ActivityTile(progress: progress),
         );
       }).toList(),
@@ -104,26 +112,27 @@ class ProgressScreen extends ConsumerWidget {
 
   Widget _buildEmptyProgress() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
       ),
       child: Column(
         children: [
-          Icon(Icons.fitness_center, size: 48, color: Colors.grey.shade400),
-          const SizedBox(height: 12),
+          Icon(Icons.fitness_center, size: 48, color: AppColors.lightTextTertiary),
+          const SizedBox(height: AppSpacing.md),
           Text(
-            'Chưa có tiến độ',
+            'Chua co tien do',
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.lightTextSecondary,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
-            'Bắt đầu tập để xem tiến độ của bạn',
-            style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
+            'Bat dau tap de xem tien do cua ban',
+            style: TextStyle(color: AppColors.lightTextTertiary, fontSize: 13),
           ),
         ],
       ),
@@ -132,19 +141,20 @@ class ProgressScreen extends ConsumerWidget {
 
   Widget _buildEmptyActivity() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
       ),
       child: Column(
         children: [
-          Icon(Icons.history, size: 48, color: Colors.grey.shade400),
-          const SizedBox(height: 12),
+          Icon(Icons.history, size: 48, color: AppColors.lightTextTertiary),
+          const SizedBox(height: AppSpacing.md),
           Text(
-            'Chưa có hoạt động',
+            'Chua co hoat dong',
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.lightTextSecondary,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -162,15 +172,15 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryGreen,
-            AppTheme.primaryGreen.withValues(alpha: 0.8),
+            AppColors.accent,
+            AppColors.accent.withValues(alpha: 0.8),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,9 +188,9 @@ class _SummaryCard extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.emoji_events, color: Colors.white, size: 28),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               const Text(
-                'Tổng quan',
+                'Tong quan',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -189,24 +199,24 @@ class _SummaryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.xxl),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _SummaryItem(
                 icon: Icons.fitness_center,
                 value: '${summary.totalSessions}',
-                label: 'Buổi tập',
+                label: 'Buoi tap',
               ),
               _SummaryItem(
                 icon: Icons.sports_cricket,
                 value: '${summary.totalShots}',
-                label: 'Tổng bi',
+                label: 'Tong bi',
               ),
               _SummaryItem(
                 icon: Icons.percent,
                 value: '${summary.overallAccuracy}%',
-                label: 'Độ chính xác',
+                label: 'Do chinh xac',
               ),
             ],
           ),
@@ -232,7 +242,7 @@ class _SummaryItem extends StatelessWidget {
     return Column(
       children: [
         Icon(icon, color: Colors.white70, size: 24),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           value,
           style: const TextStyle(
@@ -263,13 +273,13 @@ class _ProgressCard extends StatelessWidget {
     final rate = progress.successRate;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
           ),
         ],
@@ -282,14 +292,14 @@ class _ProgressCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   progress.drillName,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.lightTextPrimary),
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                 decoration: BoxDecoration(
                   color: _getRateColor(rate).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
                   '${rate.toStringAsFixed(0)}%',
@@ -301,20 +311,20 @@ class _ProgressCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             child: LinearProgressIndicator(
               value: rate / 100,
               minHeight: 8,
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: AppColors.lightBorder,
               valueColor: AlwaysStoppedAnimation(_getRateColor(rate)),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            '${progress.totalAttempts} lần tập • ${progress.successfulAttempts} thành công',
-            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            '${progress.totalAttempts} lan tap - ${progress.successfulAttempts} thanh cong',
+            style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 12),
           ),
         ],
       ),
@@ -322,9 +332,9 @@ class _ProgressCard extends StatelessWidget {
   }
 
   Color _getRateColor(double rate) {
-    if (rate >= 80) return Colors.green;
-    if (rate >= 60) return Colors.orange;
-    return Colors.red;
+    if (rate >= 80) return AppColors.success;
+    if (rate >= 60) return AppColors.warning;
+    return AppColors.error;
   }
 }
 
@@ -336,11 +346,11 @@ class _ActivityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade200),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        border: Border.all(color: AppColors.lightBorder),
       ),
       child: Row(
         children: [
@@ -348,34 +358,34 @@ class _ActivityTile extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.accent.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: const Icon(
               Icons.fitness_center,
-              color: AppTheme.primaryGreen,
+              color: AppColors.accent,
               size: 20,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   progress.drillName,
-                  style: const TextStyle(fontWeight: FontWeight.w500),
+                  style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.lightTextPrimary),
                 ),
                 Text(
                   _formatDate(progress.lastAttemptedAt),
-                  style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                  style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 12),
                 ),
               ],
             ),
           ),
           Text(
             '${progress.successRate.toStringAsFixed(0)}%',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.lightTextPrimary),
           ),
         ],
       ),
@@ -383,16 +393,16 @@ class _ActivityTile extends StatelessWidget {
   }
 
   String _formatDate(DateTime? date) {
-    if (date == null) return 'Chưa tập';
+    if (date == null) return 'Chua tap';
     final now = DateTime.now();
     final diff = now.difference(date);
 
     if (diff.inMinutes < 60) {
-      return '${diff.inMinutes} phút trước';
+      return '${diff.inMinutes} phut truoc';
     } else if (diff.inHours < 24) {
-      return '${diff.inHours} giờ trước';
+      return '${diff.inHours} gio truoc';
     } else if (diff.inDays < 7) {
-      return '${diff.inDays} ngày trước';
+      return '${diff.inDays} ngay truoc';
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/equipment.dart';
 
-/// Side-by-side comparison of 2-4 cues.
-///
-/// V1 parity: FEATURE_012 v2 — Compare (N) → EquipmentComparisonScreen.
+/// Side-by-side comparison of 2-4 cues with Minimalist Luxury design.
 class EquipmentComparisonScreen extends ConsumerWidget {
   final List<String> equipmentIds;
   const EquipmentComparisonScreen({super.key, required this.equipmentIds});
@@ -16,30 +17,72 @@ class EquipmentComparisonScreen extends ConsumerWidget {
     final equipmentAsync = ref.watch(allEquipmentProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: Text('Compare (${equipmentIds.length})'),
+        backgroundColor: AppColors.lightBackground,
+        elevation: 0,
+        title: Text(
+          'Compare (${equipmentIds.length})',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: equipmentAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, st) => Center(child: Text('Lỗi: $e')),
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: AppColors.accent),
+        ),
+        error: (e, st) => Center(
+          child: Text(
+            'Lỗi: $e',
+            style: const TextStyle(color: AppColors.error),
+          ),
+        ),
         data: (items) {
           final selected =
               items.where((e) => equipmentIds.contains(e.id)).toList();
           if (selected.isEmpty) {
-            return const Center(child: Text('Không có dụng cụ nào được chọn.'));
+            return const Center(
+              child: Text('Không có dụng cụ nào được chọn.'),
+            );
           }
           return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 24,
-              columns: selected
-                  .map((c) => DataColumn(
-                        label: Text(c.name,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14)),
-                      ))
-                  .toList(),
-              rows: _rows(selected),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: AppSpacing.xl,
+                headingRowColor: WidgetStateProperty.all(AppColors.accentSubtleLight),
+                columns: selected
+                    .map((c) => DataColumn(
+                          label: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
+                              vertical: AppSpacing.sm,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.accent,
+                              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                            ),
+                            child: Text(
+                              c.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                rows: _rows(selected),
+              ),
             ),
           );
         },
@@ -87,12 +130,45 @@ class EquipmentComparisonScreen extends ConsumerWidget {
 
     return rows.entries.map((entry) {
       final cells = entry.value.split('|').skip(1).toList();
-      return DataRow(cells: [
-        DataCell(Text(entry.key,
-            style: TextStyle(
-                color: Colors.grey.shade700, fontWeight: FontWeight.w600))),
-        ...cells.map((v) => DataCell(Text(v.isEmpty ? '—' : v))),
-      ]);
+      return DataRow(
+        color: WidgetStateProperty.all(
+          entry.key.contains('Tổng') ? AppColors.accentSubtleLight : Colors.transparent,
+        ),
+        cells: [
+          DataCell(
+            Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppSpacing.md,
+                horizontal: AppSpacing.sm,
+              ),
+              child: Text(
+                entry.key,
+                style: const TextStyle(
+                  color: AppColors.lightTextSecondary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          ),
+          ...cells.map((v) => DataCell(
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.md,
+                    horizontal: AppSpacing.sm,
+                  ),
+                  child: Text(
+                    v.isEmpty ? '—' : v,
+                    style: const TextStyle(
+                      color: AppColors.lightTextPrimary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              )),
+        ],
+      );
     }).toList();
   }
 }

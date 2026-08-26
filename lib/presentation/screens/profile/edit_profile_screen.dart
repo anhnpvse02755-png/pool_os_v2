@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -44,35 +46,45 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Chỉnh sửa thông tin'),
+        backgroundColor: AppColors.lightBackground,
+        elevation: 0,
+        title: const Text(
+          'Chỉnh sửa thông tin',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          onPressed: () => context.pop(),
+        ),
         actions: [
-          TextButton(
+          _SaveButton(
+            isLoading: _isLoading,
             onPressed: _isLoading ? null : _saveProfile,
-            child: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Lưu'),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: AppSpacing.lg),
               // Avatar
               _buildAvatarSection(),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Basic Info
               _buildSectionTitle('Thông tin cơ bản'),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               _buildTextField(
                 controller: _nameController,
@@ -85,7 +97,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               _buildTextField(
                 controller: _emailController,
@@ -102,7 +114,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               _buildTextField(
                 controller: _phoneController,
@@ -110,21 +122,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 icon: Icons.phone_outlined,
                 keyboardType: TextInputType.phone,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Personal Info
               _buildSectionTitle('Thông tin cá nhân'),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               _buildDatePicker(),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               _buildGenderSelector(),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Pool Info
               _buildSectionTitle('Thông tin billiards'),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.md),
 
               _buildLevelSelector(),
               const SizedBox(height: 100),
@@ -146,12 +158,21 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 height: 100,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.primaryGreen,
-                      AppTheme.primaryGreen.withValues(alpha: 0.7),
+                      AppColors.accent,
+                      AppColors.accent.withValues(alpha: 0.7),
                     ],
                   ),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
                 child: Center(
                   child: Text(
@@ -170,11 +191,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 bottom: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGreen,
+                    color: AppColors.accent,
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.accent.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: const Icon(
                     Icons.camera_alt,
@@ -185,29 +213,40 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           TextButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Tính năng đang phát triển'),
+                SnackBar(
+                  content: const Text('Tính năng đang phát triển'),
                   behavior: SnackBarBehavior.floating,
+                  backgroundColor: AppColors.accent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
                 ),
               );
             },
-            child: const Text('Thay đổi ảnh'),
+            child: const Text(
+              'Thay đổi ảnh',
+              style: TextStyle(
+                color: AppColors.accent,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),
-    ).animate().fadeIn();
+    ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.95, 0.95));
   }
 
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
       style: const TextStyle(
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w600,
         fontSize: 16,
+        color: AppColors.lightTextPrimary,
       ),
     );
   }
@@ -221,12 +260,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -234,15 +275,35 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         controller: controller,
         keyboardType: keyboardType,
         validator: validator,
+        style: const TextStyle(
+          fontSize: 15,
+          color: AppColors.lightTextPrimary,
+        ),
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: AppTheme.primaryGreen),
+          labelStyle: const TextStyle(
+            color: AppColors.lightTextSecondary,
+            fontSize: 14,
+          ),
+          prefixIcon: Icon(icon, color: AppColors.accent),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             borderSide: BorderSide.none,
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            borderSide: const BorderSide(color: AppColors.accent, width: 2),
+          ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: AppColors.lightSurface,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
         ),
       ),
     );
@@ -256,50 +317,73 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           initialDate: _selectedDate,
           firstDate: DateTime(1950),
           lastDate: DateTime.now(),
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: const ColorScheme.light(
+                  primary: AppColors.accent,
+                  onPrimary: Colors.white,
+                  surface: AppColors.lightSurface,
+                ),
+              ),
+              child: child!,
+            );
+          },
         );
         if (date != null) {
           setState(() => _selectedDate = date);
         }
       },
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          border: Border.all(color: AppColors.lightBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Row(
           children: [
-            Icon(Icons.calendar_today, color: AppTheme.primaryGreen),
-            const SizedBox(width: 16),
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.accentSubtleLight,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              ),
+              child: const Icon(Icons.calendar_today, color: AppColors.accent, size: 20),
+            ),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Ngày sinh',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: AppColors.lightTextSecondary,
                       fontSize: 12,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                      color: AppColors.lightTextPrimary,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.grey.shade400),
+            const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
           ],
         ),
       ),
@@ -308,14 +392,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget _buildGenderSelector() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -324,15 +410,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.wc, color: AppTheme.primaryGreen),
-              const SizedBox(width: 16),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.accentSubtleLight,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: const Icon(Icons.wc, color: AppColors.accent, size: 20),
+              ),
+              const SizedBox(width: AppSpacing.md),
               const Text(
                 'Giới tính',
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                  color: AppColors.lightTextPrimary,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             children: [
               Expanded(
@@ -345,7 +442,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   },
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: _GenderOption(
                   label: 'Nữ',
@@ -356,7 +453,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   },
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: _GenderOption(
                   label: 'Khác',
@@ -376,21 +473,23 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   Widget _buildLevelSelector() {
     final levels = [
-      ('beginner', 'Mới chơi', Colors.green),
-      ('intermediate', 'Trung bình', Colors.blue),
-      ('advanced', 'Nâng cao', Colors.orange),
-      ('expert', 'Chuyên nghiệp', Colors.red),
+      ('beginner', 'Mới chơi', AppColors.success),
+      ('intermediate', 'Trung bình', AppColors.accent),
+      ('advanced', 'Nâng cao', AppColors.warning),
+      ('expert', 'Chuyên nghiệp', AppColors.error),
     ];
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -399,44 +498,58 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.pool, color: AppTheme.primaryGreen),
-              const SizedBox(width: 16),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.accentSubtleLight,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: const Icon(Icons.pool, color: AppColors.accent, size: 20),
+              ),
+              const SizedBox(width: AppSpacing.md),
               const Text(
                 'Trình độ',
-                style: TextStyle(fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                  color: AppColors.lightTextPrimary,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
             children: levels.map((level) {
               final isSelected = _selectedLevel == level.$1;
               return InkWell(
                 onTap: () {
                   setState(() => _selectedLevel = level.$1);
                 },
-                borderRadius: BorderRadius.circular(8),
-                child: Container(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? level.$3.withValues(alpha: 0.2)
-                        : Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(8),
+                        ? level.$3.withValues(alpha: 0.15)
+                        : AppColors.lightBackground,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     border: Border.all(
-                      color: isSelected ? level.$3 : Colors.transparent,
+                      color: isSelected ? level.$3 : AppColors.lightBorder,
+                      width: isSelected ? 1.5 : 1,
                     ),
                   ),
                   child: Text(
                     level.$2,
                     style: TextStyle(
-                      color: isSelected ? level.$3 : Colors.grey.shade600,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? level.$3 : AppColors.lightTextSecondary,
+                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                      fontSize: 13,
                     ),
                   ),
                 ),
@@ -457,16 +570,83 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         if (mounted) {
           setState(() => _isLoading = false);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Lưu thông tin thành công!'),
+            SnackBar(
+              content: const Text('Lưu thông tin thành công!'),
               behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.green,
+              backgroundColor: AppColors.success,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              ),
             ),
           );
           context.pop();
         }
       });
     }
+  }
+}
+
+class _SaveButton extends StatefulWidget {
+  final bool isLoading;
+  final VoidCallback? onPressed;
+
+  const _SaveButton({required this.isLoading, this.onPressed});
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          margin: const EdgeInsets.only(right: AppSpacing.sm),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            boxShadow: widget.onPressed != null
+                ? [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: widget.isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : const Text(
+                  'Lưu',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+        ),
+      ),
+    );
   }
 }
 
@@ -489,24 +669,27 @@ class _GenderOption extends StatelessWidget {
 
     return InkWell(
       onTap: () => onChanged(value),
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-              : Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(8),
+              ? AppColors.accent.withValues(alpha: 0.1)
+              : AppColors.lightBackground,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryGreen : Colors.transparent,
+            color: isSelected ? AppColors.accent : AppColors.lightBorder,
+            width: isSelected ? 1.5 : 1,
           ),
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade600,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              color: isSelected ? AppColors.accent : AppColors.lightTextSecondary,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              fontSize: 13,
             ),
           ),
         ),

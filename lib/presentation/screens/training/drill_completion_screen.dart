@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/drill_session.dart';
@@ -13,15 +14,6 @@ import '../../../data/repositories/personal_best_repository.dart';
 import '../../widgets/reflection_card.dart';
 import '../../widgets/next_action_panel.dart';
 
-/// Sprint 3A Task 2 — Completion Experience (Task 3 — Reflection).
-///
-/// Reached from DrillSessionScreen after `_finishSession()` calls
-/// `DrillSessionRecoveryService.complete()`. The user should perceive this
-/// as a distinct state from the instructions view, not a state-flip on the
-/// same screen.
-///
-/// Read-only View: never mutates business data. PB save happens in the
-/// completion boundary (DrillSessionScreen._finishSession()).
 class DrillCompletionScreen extends ConsumerWidget {
   final DrillSession session;
   final String drillCode;
@@ -98,14 +90,16 @@ class DrillCompletionScreen extends ConsumerWidget {
     final duration = Duration(minutes: session.totalMinutes);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Buổi tập hoàn thành'),
+        title: const Text('Buoi tap hoan thanh'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Pop back to the DrillSessionScreen so the user can review
-            // the instructions / start a fresh session without leaving
-            // the training flow.
             if (context.canPop()) {
               context.pop();
             } else {
@@ -115,12 +109,12 @@ class DrillCompletionScreen extends ConsumerWidget {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
 
               // Hero pass / fail indicator.
               _CompletionHero(
@@ -131,88 +125,101 @@ class DrillCompletionScreen extends ConsumerWidget {
                   .fadeIn(duration: 300.ms)
                   .scale(begin: const Offset(0.9, 0.9)),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Stat cards.
               Row(
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Thời gian',
+                      label: 'Thoi gian',
                       value: '${duration.inMinutes}',
-                      unit: 'phút',
+                      unit: 'phut',
                       icon: Icons.timer_outlined,
+                      color: AppColors.accent,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Lần đánh',
+                      label: 'Lan danh',
                       value: '${session.attempts.length}',
-                      unit: 'lần',
+                      unit: 'lan',
                       icon: Icons.sports_esports_outlined,
+                      color: AppColors.accent,
                     ),
                   ),
                 ],
               ).animate().fadeIn(delay: 100.ms),
 
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
 
               Row(
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Chính xác',
+                      label: 'Chinh xac',
                       value: _accuracy.toStringAsFixed(0),
                       unit: '%',
                       icon: Icons.percent_outlined,
+                      color: AppColors.success,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Trượt',
+                      label: 'Truot',
                       value: '${session.totalShotsMissed}',
-                      unit: 'lần',
+                      unit: 'lan',
                       icon: Icons.cancel_outlined,
+                      color: AppColors.error,
                     ),
                   ),
                 ],
               ).animate().fadeIn(delay: 200.ms),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
 
               // Pass-criteria line.
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: _passed
-                      ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-                      : Colors.orange.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                      ? AppColors.success.withValues(alpha: 0.1)
+                      : AppColors.warning.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                  border: Border.all(
+                    color: _passed
+                        ? AppColors.success.withValues(alpha: 0.3)
+                        : AppColors.warning.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       _passed ? Icons.verified_outlined : Icons.info_outline,
-                      color: _passed ? AppTheme.primaryGreen : Colors.orange,
+                      color: _passed ? AppColors.success : AppColors.warning,
+                      size: 24,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
                         _passed
-                            ? 'Đạt tiêu chí ($_passThreshold lần thành công).'
-                            : 'Chưa đạt — cần $_passThreshold lần thành công để qua mức.',
-                        style: theme.textTheme.bodyMedium,
+                            ? 'Dat tieu chi ($_passThreshold lan thanh cong).'
+                            : 'Chua dat - can $_passThreshold lan thanh cong de qua muc.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: AppColors.lightTextPrimary,
+                          height: 1.4,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ).animate().fadeIn(delay: 300.ms),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
 
-              // Sprint 3A Task 3 — Reflection block (read-only View).
+              // Reflection block
               FutureBuilder<_ReflectionData>(
                 future: _loadReflection(ref),
                 builder: (context, snapshot) {
@@ -232,9 +239,9 @@ class DrillCompletionScreen extends ConsumerWidget {
                 },
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
 
-              // Sprint 3A Task 4 — Next Action (Forward Path).
+              // Next Action
               FutureBuilder<_ReflectionData>(
                 future: _loadReflection(ref),
                 builder: (context, snapshot) {
@@ -259,7 +266,6 @@ class DrillCompletionScreen extends ConsumerWidget {
   }
 }
 
-/// Snapshot of the data the Reflection block needs.
 class _ReflectionData {
   final double? previousAccuracy;
   final double? pb;
@@ -283,32 +289,45 @@ class _CompletionHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = passed ? AppTheme.primaryGreen : Colors.orange;
+    final color = passed ? AppColors.success : AppColors.warning;
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         children: [
-          Icon(
-            passed ? Icons.emoji_events_outlined : Icons.flag_outlined,
-            size: 64,
-            color: color,
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              passed ? Icons.emoji_events_outlined : Icons.flag_outlined,
+              size: 48,
+              color: color,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Text(
             drillTitle,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
+              color: AppColors.lightTextPrimary,
             ),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            passed ? 'Hoàn thành xuất sắc' : 'Hoàn thành, tiếp tục cố gắng',
-            style: theme.textTheme.bodyMedium?.copyWith(color: color),
+            passed ? 'Hoan thanh xuat sac' : 'Hoan thanh, tiep tuc co gang',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: color,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
@@ -321,26 +340,28 @@ class _StatCard extends StatelessWidget {
   final String value;
   final String unit;
   final IconData icon;
+  final Color color;
 
   const _StatCard({
     required this.label,
     required this.value,
     required this.unit,
     required this.icon,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.shadowLight,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -351,17 +372,25 @@ class _StatCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 18, color: AppTheme.textSecondary),
-              const SizedBox(width: 6),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: Icon(icon, size: 18, color: color),
+              ),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 label,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.lightTextSecondary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -370,13 +399,14 @@ class _StatCard extends StatelessWidget {
                 value,
                 style: theme.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: color,
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.xs),
               Text(
                 unit,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.lightTextSecondary,
                 ),
               ),
             ],

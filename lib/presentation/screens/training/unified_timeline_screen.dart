@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/providers/repository_providers.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 
-/// Sprint 4C Task 19 — Unified Timeline
+/// Sprint 4C Task 19 - Unified Timeline
 ///
 /// Combines training sessions + match history into a single chronological view.
 /// Coach AI reads temporal patterns across domains from this data.
@@ -43,9 +45,9 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
           type: _EntryType.training,
           date: session.completedAt,
           title: session.drillName,
-          subtitle: 'Score: ${session.score}% • ${session.duration}m',
+          subtitle: 'Score: ${session.score}% - ${session.duration}m',
           icon: Icons.fitness_center,
-          color: Colors.blue,
+          color: AppColors.accent,
           drillCode: session.drillCode,
         ));
       }
@@ -58,7 +60,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
           title: 'vs ${match.opponentName ?? match.opponent ?? 'Unknown'}',
           subtitle: match.resultSummary ?? '${match.playerScore}-${match.opponentScore}',
           icon: match.isWin ? Icons.emoji_events : Icons.sports,
-          color: match.isWin ? Colors.green : Colors.red,
+          color: match.isWin ? AppColors.success : AppColors.error,
         ));
       }
 
@@ -82,8 +84,12 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         title: const Text('Timeline'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -92,7 +98,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text('Lỗi: $_error'))
+              ? Center(child: Text('Loi: $_error'))
               : _entries.isEmpty
                   ? _buildEmpty()
                   : _buildTimeline(),
@@ -104,13 +110,13 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.timeline, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
-          const Text('Chưa có hoạt động nào'),
-          const SizedBox(height: 8),
+          Icon(Icons.timeline, size: 64, color: AppColors.lightTextTertiary),
+          const SizedBox(height: AppSpacing.lg),
+          const Text('Chua co hoat dong nao'),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            'Bắt đầu tập luyện hoặc ghi trận đấu để xem timeline.',
-            style: TextStyle(color: Colors.grey.shade600),
+            'Bat dau tap luyen hoac ghi tran dau de xem timeline.',
+            style: TextStyle(color: AppColors.lightTextSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -129,7 +135,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       itemCount: grouped.length,
       itemBuilder: (context, index) {
         final date = grouped.keys.elementAt(index);
@@ -140,19 +146,19 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
           children: [
             // Date header
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
               child: Text(
                 _formatDateHeader(date),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade600,
+                  color: AppColors.lightTextSecondary,
                   fontSize: 13,
                 ),
               ),
             ),
             // Entries for this date
             ...dayEntries.map((e) => _buildEntryCard(e)),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
           ],
         );
       },
@@ -164,14 +170,19 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
     final today = DateFormat('EEEE, dd/MM').format(now);
     final yesterday = DateFormat('EEEE, dd/MM').format(now.subtract(const Duration(days: 1)));
 
-    if (formatted == today) return 'Hôm nay';
-    if (formatted == yesterday) return 'Hôm qua';
+    if (formatted == today) return 'Hom nay';
+    if (formatted == yesterday) return 'Hom qua';
     return formatted;
   }
 
   Widget _buildEntryCard(_TimelineEntry entry) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
+      ),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: entry.color.withValues(alpha: 0.15),
@@ -179,7 +190,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
         ),
         title: Text(
           entry.title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.lightTextPrimary),
         ),
         subtitle: Row(
           children: [
@@ -187,25 +198,25 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: entry.type == _EntryType.training
-                    ? Colors.blue.withValues(alpha: 0.1)
-                    : Colors.purple.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(4),
+                    ? AppColors.accent.withValues(alpha: 0.1)
+                    : const Color(0xFF8B5CF6).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(
-                entry.type == _EntryType.training ? 'Tập' : 'Đấu',
+                entry.type == _EntryType.training ? 'Tap' : 'Dau',
                 style: TextStyle(
                   fontSize: 10,
-                  color: entry.type == _EntryType.training ? Colors.blue : Colors.purple,
+                  color: entry.type == _EntryType.training ? AppColors.accent : const Color(0xFF8B5CF6),
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            Text(entry.subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+            const SizedBox(width: AppSpacing.sm),
+            Text(entry.subtitle, style: TextStyle(fontSize: 12, color: AppColors.lightTextSecondary)),
           ],
         ),
         trailing: Text(
           DateFormat('HH:mm').format(entry.date),
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+          style: TextStyle(fontSize: 12, color: AppColors.lightTextTertiary),
         ),
         onTap: () {
           if (entry.type == _EntryType.training) {

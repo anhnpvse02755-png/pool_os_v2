@@ -4,13 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/equipment_constants.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/equipment.dart';
 
-/// Equipment Edit / Add Screen.
-///
-/// Restored V1 multi-section form covering every cue/shaft/tip/accessory
-/// field, plus V2 extensions for pricing, condition, usage hours.
+/// Equipment Edit / Add Screen with Minimalist Luxury design.
 class EquipmentEditScreen extends ConsumerStatefulWidget {
   final String? equipmentId;
   const EquipmentEditScreen({super.key, this.equipmentId});
@@ -127,7 +126,14 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_nameCtrl.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập tên.')),
+        SnackBar(
+          content: const Text('Vui lòng nhập tên.'),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.error,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          ),
+        ),
       );
       return;
     }
@@ -194,26 +200,42 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   Widget build(BuildContext context) {
     final isEdit = widget.equipmentId != null;
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: Text(isEdit ? 'Chỉnh sửa dụng cụ' : 'Thêm dụng cụ'),
-        actions: [
-          TextButton(
-            onPressed: _save,
-            child: const Text('Lưu',
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: AppColors.lightBackground,
+        elevation: 0,
+        title: Text(
+          isEdit ? 'Chỉnh sửa dụng cụ' : 'Thêm dụng cụ',
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.lightTextPrimary,
           ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          onPressed: () => context.pop(),
+        ),
+        actions: [
+          _SaveButton(onPressed: _save),
         ],
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           children: [
             _buildCategorySection(),
+            const SizedBox(height: AppSpacing.md),
             _buildIdentitySection(),
-            if (_category == 'cue') _buildCueSection(),
+            if (_category == 'cue') ...[
+              const SizedBox(height: AppSpacing.md),
+              _buildCueSection(),
+            ],
+            const SizedBox(height: AppSpacing.md),
             _buildPriceSection(),
+            const SizedBox(height: AppSpacing.md),
             _buildNotesSection(),
             const SizedBox(height: 80),
           ],
@@ -227,51 +249,75 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildCategorySection() {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Category',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 12),
+    return Container(
+      decoration: _cardDecoration(),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionTitle('Category'),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: EquipmentConstants.equipmentCategories.map((c) {
+              final selected = c == _category;
+              return ChoiceChip(
+                label: Text(EquipmentConstants.categoryLabels[c]!),
+                selected: selected,
+                selectedColor: AppColors.accent,
+                backgroundColor: AppColors.lightBackground,
+                labelStyle: TextStyle(
+                  color: selected ? Colors.white : AppColors.lightTextSecondary,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                  side: BorderSide(
+                    color: selected ? AppColors.accent : AppColors.lightBorder,
+                  ),
+                ),
+                onSelected: (_) => setState(() => _category = c),
+              );
+            }).toList(),
+          ),
+          if (_category == 'cue') ...[
+            const SizedBox(height: AppSpacing.lg),
+            const Text(
+              'Cue Type',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: AppColors.lightTextPrimary,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: EquipmentConstants.equipmentCategories.map((c) {
-                final selected = c == _category;
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: EquipmentConstants.cueTypes.map((t) {
+                final selected = t == _cueType;
                 return ChoiceChip(
-                  label: Text(EquipmentConstants.categoryLabels[c]!),
+                  label: Text(EquipmentConstants.cueTypeLabels[t]!),
                   selected: selected,
-                  selectedColor: AppTheme.primaryGreen,
-                  onSelected: (_) => setState(() => _category = c),
+                  selectedColor: AppColors.warning,
+                  backgroundColor: AppColors.lightBackground,
+                  labelStyle: TextStyle(
+                    color: selected ? Colors.white : AppColors.lightTextSecondary,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    side: BorderSide(
+                      color: selected ? AppColors.warning : AppColors.lightBorder,
+                    ),
+                  ),
+                  onSelected: (_) => setState(() => _cueType = t),
                 );
               }).toList(),
             ),
-            if (_category == 'cue') ...[
-              const SizedBox(height: 16),
-              const Text('Cue Type',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: EquipmentConstants.cueTypes.map((t) {
-                  final selected = t == _cueType;
-                  return ChoiceChip(
-                    label: Text(EquipmentConstants.cueTypeLabels[t]!),
-                    selected: selected,
-                    selectedColor: Colors.orange,
-                    onSelected: (_) => setState(() => _cueType = t),
-                  );
-                }).toList(),
-              ),
-            ],
           ],
-        ),
+        ],
       ),
     );
   }
@@ -281,48 +327,40 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildIdentitySection() {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Identity',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _nameCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Tên dụng cụ *',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _brand,
-              decoration: const InputDecoration(
-                labelText: 'Brand',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.cueBrands.map((b) =>
-                    DropdownMenuItem(value: b, child: Text(b))),
-              ],
-              onChanged: (v) => setState(() => _brand = v),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _modelCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Model',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
+    return Container(
+      decoration: _cardDecoration(),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionTitle('Identity'),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _nameCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Tên dụng cụ *'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: _brand,
+            value: _brand,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Brand'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.cueBrands.map((b) =>
+                  DropdownMenuItem(value: b, child: Text(b))),
+            ],
+            onChanged: (v) => setState(() => _brand = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _modelCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Model'),
+          ),
+        ],
       ),
     );
   }
@@ -332,239 +370,252 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildCueSection() {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Specifications',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 12),
+    return Container(
+      decoration: _cardDecoration(),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionTitle('Specifications'),
+          const SizedBox(height: AppSpacing.md),
 
-            // Shaft
-            DropdownButtonFormField<String>(
-              initialValue: _shaftMaterial,
-              decoration: const InputDecoration(
-                labelText: 'Shaft material',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.shaftMaterials.map((m) =>
-                    DropdownMenuItem(value: m, child: Text(m))),
-              ],
-              onChanged: (v) => setState(() => _shaftMaterial = v),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<double>(
-              initialValue: _shaftDiameterCtrl.text.isEmpty
-                  ? null
-                  : double.tryParse(_shaftDiameterCtrl.text),
-              decoration: const InputDecoration(
-                labelText: 'Shaft diameter (mm)',
-                border: OutlineInputBorder(),
-              ),
-              items: EquipmentConstants.shaftDiameters
-                  .map((d) => DropdownMenuItem(
-                        value: d,
-                        child: Text('${d.toStringAsFixed(2)} mm'),
-                      ))
-                  .toList(),
-              onChanged: (v) =>
-                  setState(() => _shaftDiameterCtrl.text = v?.toString() ?? ''),
-            ),
-            const SizedBox(height: 12),
+          // Shaft
+          DropdownButtonFormField<String>(
+            initialValue: _shaftMaterial,
+            value: _shaftMaterial,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Shaft material'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.shaftMaterials.map((m) =>
+                  DropdownMenuItem(value: m, child: Text(m))),
+            ],
+            onChanged: (v) => setState(() => _shaftMaterial = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<double>(
+            initialValue: _shaftDiameterCtrl.text.isEmpty
+                ? null
+                : double.tryParse(_shaftDiameterCtrl.text),
+            value: _shaftDiameterCtrl.text.isEmpty
+                ? null
+                : double.tryParse(_shaftDiameterCtrl.text),
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Shaft diameter (mm)'),
+            items: EquipmentConstants.shaftDiameters
+                .map((d) => DropdownMenuItem(
+                      value: d,
+                      child: Text('${d.toStringAsFixed(2)} mm'),
+                    ))
+                .toList(),
+            onChanged: (v) =>
+                setState(() => _shaftDiameterCtrl.text = v?.toString() ?? ''),
+          ),
+          const SizedBox(height: AppSpacing.md),
 
-            // Tip
-            DropdownButtonFormField<String>(
-              initialValue: _tipBrand,
-              decoration: const InputDecoration(
-                labelText: 'Tip brand',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.tipBrands.map((b) =>
-                    DropdownMenuItem(value: b, child: Text(b))),
-              ],
-              onChanged: (v) => setState(() => _tipBrand = v),
+          // Tip
+          DropdownButtonFormField<String>(
+            initialValue: _tipBrand,
+            value: _tipBrand,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Tip brand'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.tipBrands.map((b) =>
+                  DropdownMenuItem(value: b, child: Text(b))),
+            ],
+            onChanged: (v) => setState(() => _tipBrand = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<double>(
+            initialValue: _tipDiameterCtrl.text.isEmpty
+                ? null
+                : double.tryParse(_tipDiameterCtrl.text),
+            value: _tipDiameterCtrl.text.isEmpty
+                ? null
+                : double.tryParse(_tipDiameterCtrl.text),
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Tip diameter (mm)'),
+            items: EquipmentConstants.tipDiameters
+                .map((d) => DropdownMenuItem(
+                      value: d,
+                      child: Text('${d.toStringAsFixed(2)} mm'),
+                    ))
+                .toList(),
+            onChanged: (v) =>
+                setState(() => _tipDiameterCtrl.text = v?.toString() ?? ''),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: _tipHardness,
+            value: _tipHardness,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Tip hardness'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.tipHardnesses.map((h) =>
+                  DropdownMenuItem(value: h, child: Text(h))),
+            ],
+            onChanged: (v) => setState(() => _tipHardness = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Last tip change',
+              style: TextStyle(color: AppColors.lightTextSecondary),
             ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<double>(
-              initialValue: _tipDiameterCtrl.text.isEmpty
-                  ? null
-                  : double.tryParse(_tipDiameterCtrl.text),
-              decoration: const InputDecoration(
-                labelText: 'Tip diameter (mm)',
-                border: OutlineInputBorder(),
-              ),
-              items: EquipmentConstants.tipDiameters
-                  .map((d) => DropdownMenuItem(
-                        value: d,
-                        child: Text('${d.toStringAsFixed(2)} mm'),
-                      ))
-                  .toList(),
-              onChanged: (v) =>
-                  setState(() => _tipDiameterCtrl.text = v?.toString() ?? ''),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _tipHardness,
-              decoration: const InputDecoration(
-                labelText: 'Tip hardness',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.tipHardnesses.map((h) =>
-                    DropdownMenuItem(value: h, child: Text(h))),
-              ],
-              onChanged: (v) => setState(() => _tipHardness = v),
-            ),
-            const SizedBox(height: 12),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Last tip change'),
-              subtitle: Text(_lastTipChange == null
+            subtitle: Text(
+              _lastTipChange == null
                   ? 'Not set'
-                  : _formatDate(_lastTipChange!)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: _lastTipChange ?? DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime.now(),
-                );
-                if (picked != null) setState(() => _lastTipChange = picked);
-              },
+                  : _formatDate(_lastTipChange!),
+              style: const TextStyle(
+                color: AppColors.lightTextPrimary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
+            trailing: Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.accentSubtleLight,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              ),
+              child: const Icon(Icons.calendar_today, color: AppColors.accent, size: 18),
+            ),
+            onTap: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: _lastTipChange ?? DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime.now(),
+              );
+              if (picked != null) setState(() => _lastTipChange = picked);
+            },
+          ),
 
-            const Divider(),
-            const SizedBox(height: 12),
+          const Divider(color: AppColors.lightBorder),
+          const SizedBox(height: AppSpacing.md),
 
-            // Butt
-            TextFormField(
-              controller: _weightCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Weight (oz)',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _balance,
-              decoration: const InputDecoration(
-                labelText: 'Balance',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.balances.map((b) =>
-                    DropdownMenuItem(value: b, child: Text(b))),
-              ],
-              onChanged: (v) => setState(() => _balance = v),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _joint,
-              decoration: const InputDecoration(
-                labelText: 'Joint',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.joints.map((j) =>
-                    DropdownMenuItem(value: j, child: Text(j))),
-              ],
-              onChanged: (v) => setState(() => _joint = v),
-            ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _wrap,
-              decoration: const InputDecoration(
-                labelText: 'Wrap',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.wraps.map((w) =>
-                    DropdownMenuItem(value: w, child: Text(w))),
-              ],
-              onChanged: (v) => setState(() => _wrap = v),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _ferruleCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Ferrule',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _extensionCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Extension',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _caseCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Cue case',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _chalkCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Chalk brand',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _gloveCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Glove',
-                border: OutlineInputBorder(),
-              ),
-            ),
+          // Butt
+          TextFormField(
+            controller: _weightCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Weight (oz)'),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: _balance,
+            value: _balance,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Balance'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.balances.map((b) =>
+                  DropdownMenuItem(value: b, child: Text(b))),
+            ],
+            onChanged: (v) => setState(() => _balance = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: _joint,
+            value: _joint,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Joint'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.joints.map((j) =>
+                  DropdownMenuItem(value: j, child: Text(j))),
+            ],
+            onChanged: (v) => setState(() => _joint = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: _wrap,
+            value: _wrap,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Wrap'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.wraps.map((w) =>
+                  DropdownMenuItem(value: w, child: Text(w))),
+            ],
+            onChanged: (v) => setState(() => _wrap = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _ferruleCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Ferrule'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _extensionCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Extension'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _caseCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Cue case'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _chalkCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Chalk brand'),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _gloveCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Glove'),
+          ),
 
-            const Divider(),
-            const SizedBox(height: 12),
+          const Divider(color: AppColors.lightBorder),
+          const SizedBox(height: AppSpacing.md),
 
-            // Roles
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Active playing cue'),
-              value: _isActive,
-              onChanged: (v) => setState(() => _isActive = v),
-              activeThumbColor: AppTheme.primaryGreen,
+          // Roles
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Active playing cue',
+              style: TextStyle(color: AppColors.lightTextPrimary),
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Active break cue'),
-              value: _isBreakCue,
-              onChanged: (v) => setState(() => _isBreakCue = v),
-              activeThumbColor: Colors.orange,
+            value: _isActive,
+            onChanged: (v) => setState(() => _isActive = v),
+            activeColor: AppColors.accent,
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Active break cue',
+              style: TextStyle(color: AppColors.lightTextPrimary),
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Active jump cue'),
-              value: _isJumpCue,
-              onChanged: (v) => setState(() => _isJumpCue = v),
-              activeThumbColor: Colors.blue,
+            value: _isBreakCue,
+            onChanged: (v) => setState(() => _isBreakCue = v),
+            activeColor: AppColors.warning,
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Active jump cue',
+              style: TextStyle(color: AppColors.lightTextPrimary),
             ),
-          ],
-        ),
+            value: _isJumpCue,
+            onChanged: (v) => setState(() => _isJumpCue = v),
+            activeColor: AppColors.accent,
+          ),
+        ],
       ),
     );
   }
@@ -574,85 +625,97 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildPriceSection() {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Purchase & Condition',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 12),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Purchase date'),
-              subtitle: Text(_purchaseDate == null
+    return Container(
+      decoration: _cardDecoration(),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionTitle('Purchase & Condition'),
+          const SizedBox(height: AppSpacing.md),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Purchase date',
+              style: TextStyle(color: AppColors.lightTextSecondary),
+            ),
+            subtitle: Text(
+              _purchaseDate == null
                   ? 'Not set'
-                  : _formatDate(_purchaseDate!)),
-              trailing: const Icon(Icons.calendar_today),
-              onTap: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: _purchaseDate ?? DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime.now(),
-                );
-                if (picked != null) setState(() => _purchaseDate = picked);
-              },
-            ),
-            TextFormField(
-              controller: _priceCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Purchase price (USD)',
-                border: OutlineInputBorder(),
+                  : _formatDate(_purchaseDate!),
+              style: const TextStyle(
+                color: AppColors.lightTextPrimary,
+                fontWeight: FontWeight.w500,
               ),
-              keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _valueCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Current value (USD)',
-                border: OutlineInputBorder(),
+            trailing: Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.accentSubtleLight,
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              keyboardType: TextInputType.number,
+              child: const Icon(Icons.calendar_today, color: AppColors.accent, size: 18),
             ),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _condition,
-              decoration: const InputDecoration(
-                labelText: 'Condition',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem(value: null, child: Text('—')),
-                ...EquipmentConstants.conditions.map((c) =>
-                    DropdownMenuItem(value: c, child: Text(c))),
-              ],
-              onChanged: (v) => setState(() => _condition = v),
+            onTap: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: _purchaseDate ?? DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime.now(),
+              );
+              if (picked != null) setState(() => _purchaseDate = picked);
+            },
+          ),
+          TextFormField(
+            controller: _priceCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Purchase price (USD)'),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _valueCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Current value (USD)'),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          DropdownButtonFormField<String>(
+            initialValue: _condition,
+            value: _condition,
+            dropdownColor: AppColors.lightSurface,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Condition'),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('—')),
+              ...EquipmentConstants.conditions.map((c) =>
+                  DropdownMenuItem(value: c, child: Text(c))),
+            ],
+            onChanged: (v) => setState(() => _condition = v),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _usageCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: _inputDecoration('Usage hours'),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: const Text(
+              'Archive',
+              style: TextStyle(color: AppColors.lightTextPrimary),
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _usageCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Usage hours',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
+            subtitle: const Text(
+              'Hide from main list',
+              style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 12),
             ),
-            const SizedBox(height: 12),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Archive'),
-              subtitle: const Text('Hide from main list'),
-              value: _isArchived,
-              onChanged: (v) => setState(() => _isArchived = v),
-              activeThumbColor: Colors.grey,
-            ),
-          ],
-        ),
+            value: _isArchived,
+            onChanged: (v) => setState(() => _isArchived = v),
+            activeColor: AppColors.lightTextSecondary,
+          ),
+        ],
       ),
     );
   }
@@ -662,31 +725,153 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildNotesSection() {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Notes',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _notesCtrl,
-              decoration: const InputDecoration(
-                hintText: 'Ghi chú...',
-                border: OutlineInputBorder(),
+    return Container(
+      decoration: _cardDecoration(),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _SectionTitle('Notes'),
+          const SizedBox(height: AppSpacing.md),
+          TextFormField(
+            controller: _notesCtrl,
+            style: const TextStyle(color: AppColors.lightTextPrimary),
+            decoration: InputDecoration(
+              hintText: 'Ghi chú...',
+              hintStyle: const TextStyle(color: AppColors.lightTextTertiary),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                borderSide: const BorderSide(color: AppColors.lightBorder),
               ),
-              maxLines: 4,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                borderSide: const BorderSide(color: AppColors.lightBorder),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+              ),
+              filled: true,
+              fillColor: AppColors.lightBackground,
             ),
-          ],
-        ),
+            maxLines: 4,
+          ),
+        ],
       ),
+    );
+  }
+
+  // ===========================================================================
+  // Helpers
+  // ===========================================================================
+
+  BoxDecoration _cardDecoration() {
+    return BoxDecoration(
+      color: AppColors.lightSurface,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+      border: Border.all(color: AppColors.lightBorder),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.04),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    );
+  }
+
+  InputDecoration _inputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderSide: const BorderSide(color: AppColors.lightBorder),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderSide: const BorderSide(color: AppColors.lightBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        borderSide: const BorderSide(color: AppColors.accent, width: 2),
+      ),
+      filled: true,
+      fillColor: AppColors.lightBackground,
     );
   }
 
   String _formatDate(DateTime d) =>
       '${d.day.toString().padLeft(2, "0")}/${d.month.toString().padLeft(2, "0")}/${d.year}';
+}
+
+class _SaveButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+
+  const _SaveButton({required this.onPressed});
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 100),
+        child: Container(
+          margin: const EdgeInsets.only(right: AppSpacing.md),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.sm,
+          ),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            boxShadow: widget.onPressed != null
+                ? [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: const Text(
+            'Lưu',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String label;
+  const _SectionTitle(this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: const TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 15,
+        color: AppColors.lightTextPrimary,
+      ),
+    );
+  }
 }

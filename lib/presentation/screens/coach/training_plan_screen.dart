@@ -4,11 +4,15 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/shadows.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_service.dart';
 import '../../../core/services/coach_types.dart';
 
 /// Training Plan Screen - Weekly Plan
+/// Redesigned with Minimalist Luxury Design System
 class TrainingPlanScreen extends ConsumerWidget {
   const TrainingPlanScreen({super.key});
 
@@ -17,19 +21,30 @@ class TrainingPlanScreen extends ConsumerWidget {
     final learningPathAsync = ref.watch(learningPathProvider);
     final today = DateTime.now();
     final weekStart = today.subtract(Duration(days: today.weekday - 1));
+    final brightness = Theme.of(context).brightness;
 
     return Scaffold(
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        title: const Text('Kế hoạch tuần này'),
+        backgroundColor: AppColors.background(brightness),
+        elevation: 0,
+        title: Text(
+          'Kế hoạch tuần này',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary(brightness),
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: Icon(Icons.refresh, color: AppColors.textSecondary(brightness)),
             onPressed: () {
-              // Refresh plan
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
+                SnackBar(
                   content: Text('Đang cập nhật kế hoạch...'),
                   behavior: SnackBarBehavior.floating,
+                  backgroundColor: AppColors.accentColor(brightness),
                 ),
               );
             },
@@ -37,28 +52,24 @@ class TrainingPlanScreen extends ConsumerWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Week Header
-            _buildWeekHeader(context, weekStart),
-            const SizedBox(height: 24),
-
-            // AI Summary
-            _buildAISummary(context),
-            const SizedBox(height: 24),
-
-            // Daily Plan
+            _buildWeekHeader(context, weekStart, brightness),
+            const SizedBox(height: AppSpacing.xxl),
+            _buildAISummary(context, brightness),
+            const SizedBox(height: AppSpacing.xxl),
             Text(
               'Lịch tập',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary(brightness),
+              ),
             ),
-            const SizedBox(height: 12),
-
-            _buildDailyPlan(context, ref, weekStart, learningPathAsync),
+            const SizedBox(height: AppSpacing.md),
+            _buildDailyPlan(context, ref, weekStart, learningPathAsync, brightness),
             const SizedBox(height: 100),
           ],
         ),
@@ -66,20 +77,28 @@ class TrainingPlanScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildWeekHeader(BuildContext context, DateTime weekStart) {
+  Widget _buildWeekHeader(BuildContext context, DateTime weekStart, Brightness brightness) {
     final weekEnd = weekStart.add(const Duration(days: 6));
     final dateFormat = '${weekStart.day}/${weekStart.month} - ${weekEnd.day}/${weekEnd.month}';
+    final accentColor = AppColors.accentColor(brightness);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryGreen,
-            AppTheme.primaryGreen.withValues(alpha: 0.8),
+            accentColor,
+            accentColor.withValues(alpha: 0.8),
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,15 +109,15 @@ class TrainingPlanScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
-                child: const Icon(Icons.calendar_month, color: Colors.white),
+                child: Icon(Icons.calendar_month, color: Colors.white, size: 24),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.lg),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Tuần này',
                     style: TextStyle(
                       color: Colors.white,
@@ -117,7 +136,7 @@ class TrainingPlanScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
               _WeekStat(
@@ -125,13 +144,13 @@ class TrainingPlanScreen extends ConsumerWidget {
                 value: '5',
                 label: 'bài tập',
               ),
-              const SizedBox(width: 24),
+              const SizedBox(width: AppSpacing.xxl),
               _WeekStat(
                 icon: Icons.timer,
                 value: '2h',
                 label: 'tổng thời gian',
               ),
-              const SizedBox(width: 24),
+              const SizedBox(width: AppSpacing.xxl),
               _WeekStat(
                 icon: Icons.local_fire_department,
                 value: '7',
@@ -144,25 +163,25 @@ class TrainingPlanScreen extends ConsumerWidget {
     ).animate().fadeIn();
   }
 
-  Widget _buildAISummary(BuildContext context) {
+  Widget _buildAISummary(BuildContext context, Brightness brightness) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue.shade100),
+        color: AppColors.accentColor(brightness).withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.accentColor(brightness).withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.blue.shade100,
-              borderRadius: BorderRadius.circular(12),
+              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: Icon(Icons.auto_awesome, color: Colors.blue.shade700),
+            child: Icon(Icons.auto_awesome, color: AppColors.accentColor(brightness), size: 24),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,14 +190,14 @@ class TrainingPlanScreen extends ConsumerWidget {
                   'AI nhận xét',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade900,
+                    color: AppColors.textPrimary(brightness),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Tuần này tập trung vào Position Control. Bạn đang tiến bộ tốt, hãy duy trì nhịp độ!',
                   style: TextStyle(
-                    color: Colors.blue.shade700,
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 13,
                   ),
                 ),
@@ -195,11 +214,12 @@ class TrainingPlanScreen extends ConsumerWidget {
     WidgetRef ref,
     DateTime weekStart,
     AsyncValue<List<LearningPathItem>> learningPathAsync,
+    Brightness brightness,
   ) {
     final days = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
     final today = DateTime.now().weekday - 1;
+    final accentColor = AppColors.accentColor(brightness);
 
-    // Demo plan
     final plan = [
       ['position', 'draw'],
       ['stop', 'knowledge'],
@@ -218,38 +238,32 @@ class TrainingPlanScreen extends ConsumerWidget {
         final isTest = dayPlan[0] == 'test';
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               color: isToday
-                  ? AppTheme.primaryGreen.withValues(alpha: 0.05)
-                  : Colors.white,
-              borderRadius: BorderRadius.circular(16),
+                  ? accentColor.withValues(alpha: 0.05)
+                  : AppColors.surface(brightness),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
               border: Border.all(
                 color: isToday
-                    ? AppTheme.primaryGreen
-                    : Colors.grey.shade200,
+                    ? accentColor
+                    : AppColors.lightBorder,
                 width: isToday ? 2 : 1,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03),
-                  blurRadius: 8,
-                ),
-              ],
+              boxShadow: AppShadows.sm(brightness),
             ),
             child: Row(
               children: [
-                // Day
                 Container(
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
                     color: isToday
-                        ? AppTheme.primaryGreen
-                        : Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12),
+                        ? accentColor
+                        : AppColors.background(brightness),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -258,7 +272,8 @@ class TrainingPlanScreen extends ConsumerWidget {
                         days[index],
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: isToday ? Colors.white : Colors.grey.shade600,
+                          fontSize: 14,
+                          color: isToday ? Colors.white : AppColors.textSecondary(brightness),
                         ),
                       ),
                       Text(
@@ -267,29 +282,28 @@ class TrainingPlanScreen extends ConsumerWidget {
                           fontSize: 11,
                           color: isToday
                               ? Colors.white.withValues(alpha: 0.8)
-                              : Colors.grey.shade500,
+                              : AppColors.textTertiary(brightness),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppSpacing.lg),
 
-                // Content
                 Expanded(
                   child: isRest
                       ? Row(
                           children: [
                             Icon(
                               Icons.spa,
-                              color: Colors.green.shade400,
+                              color: AppColors.success,
                               size: 20,
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: AppSpacing.sm),
                             Text(
                               'Nghỉ ngơi',
                               style: TextStyle(
-                                color: Colors.grey.shade600,
+                                color: AppColors.textSecondary(brightness),
                                 fontStyle: FontStyle.italic,
                               ),
                             ),
@@ -300,13 +314,16 @@ class TrainingPlanScreen extends ConsumerWidget {
                               children: [
                                 Icon(
                                   Icons.workspace_premium,
-                                  color: Colors.amber.shade600,
+                                  color: AppColors.gold,
                                   size: 20,
                                 ),
-                                const SizedBox(width: 8),
-                                const Text(
+                                const SizedBox(width: AppSpacing.sm),
+                                Text(
                                   'Kiểm tra cuối tuần',
-                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.textPrimary(brightness),
+                                  ),
                                 ),
                               ],
                             )
@@ -320,7 +337,7 @@ class TrainingPlanScreen extends ConsumerWidget {
                                     color: _getDrillColor(dayPlan[0]!),
                                   ),
                                 if (dayPlan[1] != null) ...[
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: AppSpacing.sm),
                                   _PlanItem(
                                     icon: Icons.article,
                                     label: dayPlan[1] == 'knowledge'
@@ -333,12 +350,11 @@ class TrainingPlanScreen extends ConsumerWidget {
                             ),
                 ),
 
-                // Action
                 if (!isRest && !isTest)
                   IconButton(
                     icon: Icon(
                       isToday ? Icons.play_circle_filled : Icons.play_circle_outline,
-                      color: isToday ? AppTheme.primaryGreen : Colors.grey.shade400,
+                      color: isToday ? accentColor : AppColors.textTertiary(brightness),
                       size: 32,
                     ),
                     onPressed: () {
@@ -396,15 +412,15 @@ class TrainingPlanScreen extends ConsumerWidget {
       case 'position':
         return Colors.purple;
       case 'stop':
-        return Colors.orange;
+        return AppColors.warning;
       case 'draw':
         return Colors.blue;
       case 'follow':
-        return Colors.green;
+        return AppColors.success;
       case 'safety':
         return Colors.teal;
       default:
-        return Colors.grey;
+        return AppColors.lightTextSecondary;
     }
   }
 }
@@ -431,7 +447,7 @@ class _WeekStat extends StatelessWidget {
           children: [
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -469,14 +485,17 @@ class _PlanItem extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           ),
           child: Icon(icon, color: color, size: 16),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpacing.sm),
         Text(
           label,
-          style: const TextStyle(fontSize: 13),
+          style: TextStyle(
+            fontSize: 13,
+            color: AppColors.textPrimary(Theme.of(context).brightness),
+          ),
         ),
       ],
     );

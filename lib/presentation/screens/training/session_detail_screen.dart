@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/providers/repository_providers.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../data/models/training_session.dart';
 
-/// Sprint 4A Task 11 — Session Detail Screen.
+/// Sprint 4A Task 11 - Session Detail Screen.
 ///
 /// Shows detailed view of a completed training session.
 /// Accessed from TrainingHistoryScreen.
@@ -23,29 +25,42 @@ class SessionDetailScreen extends ConsumerWidget {
     final historyAsync = ref.watch(trainingHistoryProvider);
 
     return historyAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      loading: () => Scaffold(
+        backgroundColor: AppColors.lightBackground,
+        body: const Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: const Text('Lỗi')),
-        body: Center(child: Text('Lỗi: $error')),
+        backgroundColor: AppColors.lightBackground,
+        appBar: AppBar(
+          title: const Text('Loi'),
+          backgroundColor: AppColors.lightSurface,
+          foregroundColor: AppColors.lightTextPrimary,
+          elevation: 0,
+        ),
+        body: Center(child: Text('Loi: $error')),
       ),
       data: (sessions) {
         final session = sessions.where((s) => s.id == sessionId).firstOrNull;
         if (session == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Không tìm thấy')),
+            backgroundColor: AppColors.lightBackground,
+            appBar: AppBar(
+              title: const Text('Khong tim thay'),
+              backgroundColor: AppColors.lightSurface,
+              foregroundColor: AppColors.lightTextPrimary,
+              elevation: 0,
+            ),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.search_off, size: 64, color: Colors.grey.shade300),
-                  const SizedBox(height: 16),
-                  const Text('Không tìm thấy buổi tập này'),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
+                  Icon(Icons.search_off, size: 64, color: AppColors.lightTextTertiary),
+                  const SizedBox(height: AppSpacing.lg),
+                  const Text('Khong tim thay buoi tap nay'),
+                  const SizedBox(height: AppSpacing.xxl),
+                  _PrimaryButton(
                     onPressed: () => context.go('/training/history'),
-                    child: const Text('Quay lại lịch sử'),
+                    label: 'Quay lai lich su',
                   ),
                 ],
               ),
@@ -70,27 +85,31 @@ class _SessionDetailView extends StatelessWidget {
         : 0;
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         title: Text(session.drillName),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/training/history'),
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
           // Score card
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.xxl),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.primaryGreen,
-                  AppTheme.primaryGreen.withOpacity(0.7),
+                  AppColors.accent,
+                  AppColors.accent.withValues(alpha: 0.7),
                 ],
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             ),
             child: Column(
               children: [
@@ -102,7 +121,7 @@ class _SessionDetailView extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   session.drillName,
                   style: const TextStyle(
@@ -112,50 +131,50 @@ class _SessionDetailView extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          ).animate().scale(duration: 400.ms, curve: Curves.easeOut),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Stats
           Row(
             children: [
               Expanded(child: _StatCard(
                 icon: Icons.timer,
-                label: 'Thời gian',
+                label: 'Thoi gian',
                 value: '${session.duration}m',
-                color: Colors.orange,
+                color: AppColors.warning,
               )),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(child: _StatCard(
-                icon: Icons.sports_cricket,
+                icon: Icons.gps_fixed,
                 label: 'Accuracy',
                 value: '$accuracy%',
-                color: Colors.blue,
+                color: AppColors.accent,
               )),
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
 
           Row(
             children: [
               Expanded(child: _StatCard(
                 icon: Icons.check_circle,
-                label: 'Thành công',
+                label: 'Thanh cong',
                 value: '${session.shotsMade}',
-                color: Colors.green,
+                color: AppColors.success,
               )),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(child: _StatCard(
                 icon: Icons.cancel,
-                label: 'Trượt',
+                label: 'Truot',
                 value: '${session.shotsMissed}',
-                color: Colors.red,
+                color: AppColors.error,
               )),
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
 
           Row(
             children: [
@@ -163,38 +182,36 @@ class _SessionDetailView extends StatelessWidget {
                 icon: Icons.leaderboard,
                 label: 'Level',
                 value: '${session.level}',
-                color: Colors.purple,
+                color: const Color(0xFF8B5CF6),
               )),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(child: _StatCard(
                 icon: Icons.calendar_today,
-                label: 'Ngày',
+                label: 'Ngay',
                 value: _formatDate(session.completedAt),
-                color: Colors.teal,
+                color: const Color(0xFF14B8A6),
               )),
             ],
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxl),
 
           // Actions
-          FilledButton.icon(
+          _PrimaryButton(
             onPressed: () => context.push('/training/drill/${session.drillCode}'),
-            icon: const Icon(Icons.replay),
-            label: const Text('Tập lại'),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppTheme.primaryGreen,
-              minimumSize: const Size(double.infinity, 48),
-            ),
+            label: 'Tap lai',
+            icon: Icons.replay,
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
 
           OutlinedButton.icon(
             onPressed: () => context.go('/training/history'),
             icon: const Icon(Icons.list),
-            label: const Text('Xem lịch sử'),
+            label: const Text('Xem lich su'),
             style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.accent,
+              side: BorderSide(color: AppColors.accent),
               minimumSize: const Size(double.infinity, 48),
             ),
           ),
@@ -224,13 +241,13 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
           ),
         ],
@@ -238,7 +255,7 @@ class _StatCard extends StatelessWidget {
       child: Column(
         children: [
           Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
             style: TextStyle(
@@ -247,15 +264,55 @@ class _StatCard extends StatelessWidget {
               color: color,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey.shade600,
+              color: AppColors.lightTextSecondary,
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _PrimaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 18),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+            ],
+          ),
+        ),
       ),
     );
   }

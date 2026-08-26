@@ -3,7 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../knowledge/knowledge_provider.dart';
 import '../../../knowledge/knowledge_models.dart';
 import '../../../knowledge/drill_code_bridge.dart';
@@ -19,9 +20,15 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
     if (knowledge == null) {
       return Scaffold(
-        appBar: AppBar(),
+        backgroundColor: AppColors.lightBackground,
+        appBar: AppBar(
+          title: const Text('Loi'),
+          backgroundColor: AppColors.lightSurface,
+          foregroundColor: AppColors.lightTextPrimary,
+          elevation: 0,
+        ),
         body: const Center(
-          child: Text('Không tìm thấy bài viết'),
+          child: Text('Khong tim thay bai viet'),
         ),
       );
     }
@@ -36,16 +43,19 @@ class KnowledgeDetailScreen extends ConsumerWidget {
     final relatedDrills = ref.read(knowledgeProvider.notifier).getKnowledgeForDrill(knowledge.id);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       body: CustomScrollView(
         slivers: [
           // App Bar
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
+            backgroundColor: AppColors.lightSurface,
+            foregroundColor: AppColors.lightTextPrimary,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 knowledge.titleVi ?? knowledge.title,
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               background: Container(
                 decoration: BoxDecoration(
@@ -53,8 +63,8 @@ class KnowledgeDetailScreen extends ConsumerWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppTheme.primaryGreen,
-                      AppTheme.primaryGreen.withValues(alpha: 0.7),
+                      AppColors.accent,
+                      AppColors.accent.withValues(alpha: 0.7),
                     ],
                   ),
                 ),
@@ -72,34 +82,34 @@ class KnowledgeDetailScreen extends ConsumerWidget {
           // Content
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Meta info
                   _buildMetaInfo(knowledge, category),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Main content
                   _buildContent(knowledge),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
                   // Related Drills
                   if (relatedDrills.isNotEmpty) ...[
                     _buildRelatedDrills(context, relatedDrills),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
 
                   // Related Knowledge
                   if (relatedKnowledge.isNotEmpty) ...[
                     _buildRelatedKnowledge(context, relatedKnowledge),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
 
                   // Tags
                   if (knowledge.tagIds.isNotEmpty) ...[
                     _buildTags(context, knowledge.tagIds, ref),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
 
                   const SizedBox(height: 100),
@@ -115,41 +125,39 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
   Widget _buildMetaInfo(KnowledgeItem knowledge, KnowledgeCategory? category) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder),
       ),
       child: Row(
         children: [
-          // Difficulty
           _MetaBadge(
             icon: Icons.signal_cellular_alt,
             label: knowledge.difficulty.label,
             color: _getDifficultyColor(knowledge.difficulty),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
 
-          // Category
           if (category != null)
             _MetaBadge(
               icon: _getCategoryIcon(category.icon),
               label: category.nameVi ?? category.name,
-              color: AppTheme.primaryGreen,
+              color: AppColors.accent,
             ),
 
           const Spacer(),
 
-          // Related drills count
           if (knowledge.relatedDrillCodes.isNotEmpty)
             Row(
               children: [
-                Icon(Icons.fitness_center, size: 16, color: Colors.grey.shade600),
-                const SizedBox(width: 4),
+                Icon(Icons.fitness_center, size: 16, color: AppColors.lightTextSecondary),
+                const SizedBox(width: AppSpacing.xs),
                 Text(
                   '${knowledge.relatedDrillCodes.length} drills',
                   style: TextStyle(
-                    color: Colors.grey.shade600,
+                    color: AppColors.lightTextSecondary,
                     fontSize: 13,
                   ),
                 ),
@@ -162,8 +170,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
   Widget _buildContent(KnowledgeItem knowledge) {
     final content = knowledge.contentVi ?? knowledge.content;
-
-    // Parse markdown-like content
     final sections = _parseContent(content);
 
     return Column(
@@ -174,23 +180,24 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
         if (section['type'] == 'header') {
           return Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            padding: const EdgeInsets.only(top: AppSpacing.lg, bottom: AppSpacing.sm),
             child: Text(
               section['text']!,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
+                color: AppColors.lightTextPrimary,
               ),
             ),
           ).animate().fadeIn(delay: (index * 50).ms);
         } else if (section['type'] == 'list') {
           return Padding(
-            padding: const EdgeInsets.only(left: 8),
+            padding: const EdgeInsets.only(left: AppSpacing.sm),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: (section['items'] as List).asMap().entries.map((item) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
+                  padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -206,7 +213,7 @@ class KnowledgeDetailScreen extends ConsumerWidget {
           ).animate().fadeIn(delay: (index * 50).ms);
         } else {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: _parseInlineText(section['text']!),
           ).animate().fadeIn(delay: (index * 50).ms);
         }
@@ -225,7 +232,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
       if (line.isEmpty) continue;
 
       if (line.startsWith('## ')) {
-        // Flush previous list
         if (currentList != null) {
           sections.add({'type': 'list', 'items': currentList});
           currentList = null;
@@ -238,7 +244,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
         currentList ??= [];
         currentList.add(line.replaceFirst(RegExp(r'^\d+\.\s'), ''));
       } else {
-        // Flush previous list
         if (currentList != null) {
           sections.add({'type': 'list', 'items': currentList});
           currentList = null;
@@ -247,7 +252,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
       }
     }
 
-    // Flush final list
     if (currentList != null) {
       sections.add({'type': 'list', 'items': currentList});
     }
@@ -256,7 +260,6 @@ class KnowledgeDetailScreen extends ConsumerWidget {
   }
 
   Widget _parseInlineText(String text) {
-    // Simple bold parsing
     final spans = <TextSpan>[];
     final regex = RegExp(r'\*\*(.*?)\*\*');
     var lastEnd = 0;
@@ -278,7 +281,7 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
     return Text.rich(
       TextSpan(
-        style: const TextStyle(fontSize: 15, height: 1.6),
+        style: const TextStyle(fontSize: 15, height: 1.6, color: AppColors.lightTextPrimary),
         children: spans.isEmpty ? [TextSpan(text: text)] : spans,
       ),
     );
@@ -290,24 +293,25 @@ class KnowledgeDetailScreen extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.fitness_center, size: 20, color: AppTheme.primaryGreen),
-            const SizedBox(width: 8),
+            Icon(Icons.fitness_center, size: 20, color: AppColors.accent),
+            const SizedBox(width: AppSpacing.sm),
             const Text(
-              'Bài tập liên quan',
+              'Bai tap lien quan',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
+                color: AppColors.lightTextPrimary,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: drills.map((drill) {
             return ActionChip(
-              avatar: Icon(Icons.play_arrow, size: 18, color: AppTheme.primaryGreen),
+              avatar: Icon(Icons.play_arrow, size: 18, color: AppColors.accent),
               label: Text(drill.titleVi ?? drill.title),
               onPressed: () {
                 final v2code = resolveDrillCodes(drill.relatedDrillCodes).firstOrNull;
@@ -328,29 +332,30 @@ class KnowledgeDetailScreen extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.link, size: 20, color: AppTheme.primaryGreen),
-            const SizedBox(width: 8),
+            Icon(Icons.link, size: 20, color: AppColors.accent),
+            const SizedBox(width: AppSpacing.sm),
             const Text(
-              'Bài viết liên quan',
+              'Bai viet lien quan',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
+                color: AppColors.lightTextPrimary,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         ...related.map((k) {
           return Container(
-            margin: const EdgeInsets.only(bottom: 8),
+            margin: const EdgeInsets.only(bottom: AppSpacing.sm),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade200),
-              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.lightBorder),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: ListTile(
-              leading: Icon(Icons.article, color: Colors.grey.shade600),
-              title: Text(k.titleVi ?? k.title),
-              trailing: const Icon(Icons.chevron_right),
+              leading: Icon(Icons.article, color: AppColors.lightTextSecondary),
+              title: Text(k.titleVi ?? k.title, style: const TextStyle(color: AppColors.lightTextPrimary)),
+              trailing: Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
               onTap: () {
                 context.push('/training/knowledge/${k.slug}');
               },
@@ -369,28 +374,29 @@ class KnowledgeDetailScreen extends ConsumerWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.label, size: 20, color: Colors.grey.shade600),
-            const SizedBox(width: 8),
+            Icon(Icons.label, size: 20, color: AppColors.lightTextSecondary),
+            const SizedBox(width: AppSpacing.sm),
             const Text(
               'Tags',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
+                color: AppColors.lightTextPrimary,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: tagIds.map((tagId) {
             final tag = notifier.getTagById(tagId);
             return Chip(
               label: Text(tag?.nameVi ?? tag?.name ?? tagId),
               backgroundColor: tag?.color != null
                   ? Color(int.parse(tag!.color!.replaceFirst('#', '0xFF'))).withValues(alpha: 0.1)
-                  : Colors.grey.shade100,
+                  : AppColors.lightBackground,
             );
           }).toList(),
         ),
@@ -400,12 +406,12 @@ class KnowledgeDetailScreen extends ConsumerWidget {
 
   Widget _buildBottomBar(BuildContext context, KnowledgeItem knowledge) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -419,29 +425,30 @@ class KnowledgeDetailScreen extends ConsumerWidget {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Đã lưu vào bookmark'),
+                      content: Text('Da luu vao bookmark'),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
                 },
                 icon: const Icon(Icons.bookmark_outline),
-                label: const Text('Lưu'),
+                label: const Text('Luu'),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: AppColors.accent),
+                  foregroundColor: AppColors.accent,
+                ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: ElevatedButton.icon(
+              child: _PrimaryButton(
                 onPressed: () {
                   final v2code = resolveDrillCodes(knowledge.relatedDrillCodes).firstOrNull;
                   if (v2code != null) {
                     context.push('/training/session/new?drill=$v2code');
                   }
                 },
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Luyện tập'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
-                ),
+                label: 'Luyen tap',
+                icon: Icons.play_arrow,
               ),
             ),
           ],
@@ -476,13 +483,13 @@ class KnowledgeDetailScreen extends ConsumerWidget {
   Color _getDifficultyColor(DifficultyLevel level) {
     switch (level) {
       case DifficultyLevel.beginner:
-        return Colors.green;
+        return AppColors.success;
       case DifficultyLevel.intermediate:
-        return Colors.blue;
+        return AppColors.accent;
       case DifficultyLevel.advanced:
-        return Colors.orange;
+        return AppColors.warning;
       case DifficultyLevel.expert:
-        return Colors.red;
+        return AppColors.error;
     }
   }
 }
@@ -501,16 +508,16 @@ class _MetaBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 14, color: color),
-          const SizedBox(width: 4),
+          const SizedBox(width: AppSpacing.xs),
           Text(
             label,
             style: TextStyle(
@@ -520,6 +527,46 @@ class _MetaBadge extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _PrimaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 18),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+            ],
+          ),
+        ),
       ),
     );
   }

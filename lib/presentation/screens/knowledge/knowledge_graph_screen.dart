@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/repository_providers.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../data/models/knowledge_node.dart';
 import '../../../domain/services/knowledge_graph_service.dart';
 
-/// Knowledge graph visualization — simple 2D layered DAG.
-///
+/// Knowledge graph visualization - Redesigned with Minimalist Luxury
 /// Nodes are placed top-to-bottom by depth; edges are drawn as connectors.
-/// Tapping a node surfaces its prerequisites + drills.
 class KnowledgeGraphScreen extends StatefulWidget {
   const KnowledgeGraphScreen({super.key});
 
@@ -22,11 +22,18 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
   List<List<String>> _edges = [];
   Map<int, List<KnowledgeNode>> _layers = {};
   bool _loading = true;
+  late Brightness _brightness;
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _brightness = Theme.of(context).brightness;
   }
 
   Future<void> _load() async {
@@ -74,18 +81,34 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Knowledge Graph')),
+      backgroundColor: AppColors.background(_brightness),
+      appBar: AppBar(
+        backgroundColor: AppColors.background(_brightness),
+        elevation: 0,
+        title: Text(
+          'Knowledge Graph',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary(_brightness),
+          ),
+        ),
+      ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: AppColors.accentColor(_brightness)))
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Articles in prerequisite order (top = no prerequisites).',
+                  Text(
+                    'Articles in prerequisite order',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary(_brightness),
+                    ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   ..._layers.entries.map((entry) => _layerView(entry.key, entry.value)),
                 ],
               ),
@@ -95,30 +118,33 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
 
   Widget _layerView(int depth, List<KnowledgeNode> nodes) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 32,
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
             decoration: BoxDecoration(
-              color: AppTheme.primary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: AppColors.accentColor(_brightness).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Center(
-              child: Text('$depth',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(
+                '$depth',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.accentColor(_brightness),
+                ),
+              ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: nodes
-                  .map((n) => _nodeChip(n))
-                  .toList(),
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: nodes.map((n) => _nodeChip(n)).toList(),
             ),
           ),
         ],
@@ -136,28 +162,40 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
         color = Colors.red;
         break;
       case 'intermediate':
-        color = Colors.orange;
+        color = AppColors.warning;
         break;
       default:
-        color = AppTheme.primary;
+        color = AppColors.accentColor(_brightness);
     }
+
     return InkWell(
       onTap: () => _onTap(n),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           border: Border.all(color: color),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(n.title,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-            Text(n.category,
-                style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            Text(
+              n.title,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary(_brightness),
+              ),
+            ),
+            Text(
+              n.category,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary(_brightness),
+              ),
+            ),
           ],
         ),
       ),
@@ -167,32 +205,84 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
   void _onTap(KnowledgeNode n) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: AppColors.surface(_brightness),
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (_) => Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(n.title,
-                style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text('Category: ${n.category}'),
-            Text('Difficulty: ${n.difficulty}'),
+            Text(
+              n.title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary(_brightness),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _DetailRow(label: 'Category', value: n.category),
+            _DetailRow(label: 'Difficulty', value: n.difficulty),
             if (n.prerequisites.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              const Text('Prerequisites:',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
-              ...n.prerequisites.map((p) => Text('  • $p')),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Prerequisites:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary(_brightness),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              ...n.prerequisites.map((p) => Text('  • $p', style: TextStyle(color: AppColors.textSecondary(_brightness)))),
             ],
             if (n.relatedDrills.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              const Text('Related drills:',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
-              ...n.relatedDrills.map((d) => Text('  • $d')),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Related drills:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary(_brightness),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              ...n.relatedDrills.map((d) => Text('  • $d', style: TextStyle(color: AppColors.textSecondary(_brightness)))),
             ],
+            const SizedBox(height: AppSpacing.lg),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _DetailRow({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Text(
+            '$label: ',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary(brightness),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(color: AppColors.textSecondary(brightness)),
+          ),
+        ],
       ),
     );
   }

@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/providers/repository_providers.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../domain/services/trend_engine.dart';
 
-/// Sprint 4C Task 20 — Trend Dashboard
+/// Sprint 4C Task 20 - Trend Dashboard
 ///
 /// Displays computed trends from TrendEngine.
 /// Coach AI reads this data for pattern detection.
@@ -55,8 +57,12 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Xu hướng'),
+        title: const Text('Xu huong'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -71,7 +77,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text('Lỗi: $_error'))
+              ? Center(child: Text('Loi: $_error'))
               : _summary == null
                   ? _buildEmpty()
                   : _buildDashboard(),
@@ -83,13 +89,13 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.analytics, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
-          const Text('Chưa có đủ dữ liệu'),
-          const SizedBox(height: 8),
+          Icon(Icons.analytics, size: 64, color: AppColors.lightTextTertiary),
+          const SizedBox(height: AppSpacing.lg),
+          const Text('Chua co du du lieu'),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            'Cần ít nhất 2 buổi tập để xem xu hướng.',
-            style: TextStyle(color: Colors.grey.shade600),
+            'Can it nhat 2 buoi tap de xem xu huong.',
+            style: TextStyle(color: AppColors.lightTextSecondary),
           ),
         ],
       ),
@@ -100,56 +106,60 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
     final s = _summary!;
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
         // Overall status
         _buildOverallStatus(s),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
 
         // Training trend
         _buildTrendCard(
-          'Xu hướng tập luyện',
+          'Xu huong tap luyen',
           s.trainingTrend,
           Icons.fitness_center,
-          Colors.blue,
+          AppColors.accent,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
 
         // Match trend
         _buildTrendCard(
-          'Xu hướng thi đấu',
+          'Xu huong thi dau',
           s.matchTrend,
           Icons.sports,
-          Colors.purple,
+          const Color(0xFF8B5CF6),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
 
         // Consistency
         _buildConsistencyCard(s.consistencyScore),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
 
         // Streaks
         Row(
           children: [
-            Expanded(child: _buildStreakCard('Win streak', s.currentWinStreak, Colors.green)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildStreakCard('Loss streak', s.currentLossStreak, Colors.red)),
+            Expanded(child: _buildStreakCard('Win streak', s.currentWinStreak, AppColors.success)),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(child: _buildStreakCard('Loss streak', s.currentLossStreak, AppColors.error)),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xxl),
 
         // Drill trends
         if (s.drillTrends.isNotEmpty) ...[
-          const Text(
-            'Xu hướng theo bài tập',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Text(
+            'Xu huong theo bai tap',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: AppColors.lightTextPrimary,
+            ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           ...s.drillTrends.values.map((t) => _buildDrillTrendCard(t)),
         ],
 
         // Summary stats
-        const SizedBox(height: 24),
+        const SizedBox(height: AppSpacing.xxl),
         _buildSummaryStats(s),
       ],
     );
@@ -160,14 +170,14 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
         (s.matchTrend == TrendResult.improving || s.matchTrend == TrendResult.stable);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: isGood
-              ? [Colors.green, Colors.green.shade400]
-              : [Colors.orange, Colors.orange.shade400],
+              ? [AppColors.success, AppColors.success.withValues(alpha: 0.7)]
+              : [AppColors.warning, AppColors.warning.withValues(alpha: 0.7)],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       child: Row(
         children: [
@@ -176,24 +186,24 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
             color: Colors.white,
             size: 48,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isGood ? 'Xu hướng tích cực' : 'Cần cải thiện',
+                  isGood ? 'Xu huong tich cuc' : 'Can cai thien',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   isGood
-                      ? 'Bạn đang tiến bộ hoặc duy trì phong độ'
-                      : 'Cần tập trung vào những điểm yếu',
+                      ? 'Ban dang tien bo hoac duy tri phong do'
+                      : 'Can tap trung vao nhung diem yeu',
                   style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
@@ -206,20 +216,20 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
   Widget _buildTrendCard(String title, TrendResult trend, IconData icon, Color color) {
     final (label, trendIcon, trendColor) = switch (trend) {
-      TrendResult.improving => ('Đang tiến bộ', Icons.trending_up, Colors.green),
-      TrendResult.stable => ('Ổn định', Icons.trending_flat, Colors.blue),
-      TrendResult.declining => ('Cần cải thiện', Icons.trending_down, Colors.orange),
-      TrendResult.insufficient => ('Chưa đủ dữ liệu', Icons.help_outline, Colors.grey),
+      TrendResult.improving => ('Dang tien bo', Icons.trending_up, AppColors.success),
+      TrendResult.stable => ('On dinh', Icons.trending_flat, AppColors.accent),
+      TrendResult.declining => ('Can cai thien', Icons.trending_down, AppColors.warning),
+      TrendResult.insufficient => ('Chua du du lieu', Icons.help_outline, AppColors.lightTextSecondary),
     };
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
           ),
         ],
@@ -230,12 +240,12 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
             backgroundColor: color.withValues(alpha: 0.1),
             child: Icon(icon, color: color),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+                Text(title, style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.lightTextPrimary)),
                 Text(
                   label,
                   style: TextStyle(fontSize: 13, color: trendColor),
@@ -250,16 +260,16 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
   }
 
   Widget _buildConsistencyCard(int score) {
-    final color = score >= 70 ? Colors.green : (score >= 40 ? Colors.orange : Colors.red);
+    final color = score >= 70 ? AppColors.success : (score >= 40 ? AppColors.warning : AppColors.error);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
           ),
         ],
@@ -270,14 +280,14 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
             backgroundColor: color.withValues(alpha: 0.1),
             child: Icon(Icons.speed, color: color),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Độ ổn định', style: TextStyle(fontWeight: FontWeight.w500)),
+                Text('Do on dinh', style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.lightTextPrimary)),
                 Text(
-                  score >= 70 ? 'Tốt' : (score >= 40 ? 'Trung bình' : 'Cần cải thiện'),
+                  score >= 70 ? 'Tot' : (score >= 40 ? 'Trung binh' : 'Can cai thien'),
                   style: TextStyle(fontSize: 13, color: color),
                 ),
               ],
@@ -298,10 +308,10 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
   Widget _buildStreakCard(String title, int value, Color color) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
         children: [
@@ -324,21 +334,26 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
   Widget _buildDrillTrendCard(DrillTrend t) {
     final (label, icon, color) = switch (t.trend) {
-      TrendResult.improving => ('Tiến bộ', Icons.trending_up, Colors.green),
-      TrendResult.stable => ('Ổn định', Icons.trending_flat, Colors.blue),
-      TrendResult.declining => ('Cần cải thiện', Icons.trending_down, Colors.orange),
-      TrendResult.insufficient => ('Chưa đủ dữ liệu', Icons.help_outline, Colors.grey),
+      TrendResult.improving => ('Tien bo', Icons.trending_up, AppColors.success),
+      TrendResult.stable => ('On dinh', Icons.trending_flat, AppColors.accent),
+      TrendResult.declining => ('Can cai thien', Icons.trending_down, AppColors.warning),
+      TrendResult.insufficient => ('Chua du du lieu', Icons.help_outline, AppColors.lightTextSecondary),
     };
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
+      ),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: color.withValues(alpha: 0.15),
           child: Icon(icon, color: color, size: 20),
         ),
-        title: Text(t.drillName),
-        subtitle: Text('$label • ${t.sessionCount} sessions'),
+        title: Text(t.drillName, style: TextStyle(color: AppColors.lightTextPrimary)),
+        subtitle: Text('$label - ${t.sessionCount} sessions', style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 12)),
         trailing: t.trend != TrendResult.insufficient
             ? Text(
                 '${t.delta > 0 ? '+' : ''}${t.delta.toStringAsFixed(0)}%',
@@ -354,22 +369,26 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
   Widget _buildSummaryStats(TrendSummary s) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.lightBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Tổng kết',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            'Tong ket',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.lightTextPrimary,
+            ),
           ),
-          const SizedBox(height: 8),
-          Text('Tổng buổi tập: ${s.totalSessions}'),
-          Text('Tổng trận đấu: ${s.totalMatches}'),
-          Text('Bài tập đã tập: ${s.drillTrends.length}'),
+          const SizedBox(height: AppSpacing.sm),
+          Text('Tong buoi tap: ${s.totalSessions}', style: TextStyle(color: AppColors.lightTextSecondary)),
+          Text('Tong tran dau: ${s.totalMatches}', style: TextStyle(color: AppColors.lightTextSecondary)),
+          Text('Bai tap da tap: ${s.drillTrends.length}', style: TextStyle(color: AppColors.lightTextSecondary)),
         ],
       ),
     );

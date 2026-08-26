@@ -3,18 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 
-/// Sprint 3A Task Fix — Recording Preparation Screen.
-///
-/// Sits between DrillDetailScreen and DrillSessionScreen.
-/// Its sole responsibility is to prepare the player for the session:
-/// - Confirm drill + level
-/// - Show objective / setup
-/// - Let player verify readiness
-///
-/// Does NOT record. Does NOT start the session. Only confirms readiness
-/// and hands off to DrillSessionScreen.
 class DrillRecordingPreparationScreen extends StatefulWidget {
   final String drillCode;
   final int level;
@@ -67,11 +59,14 @@ class _DrillRecordingPreparationScreenState
     final drill = _drill;
     final level = _selectedLevel;
 
-    // Error state: drill not found
     if (drill == null) {
       return Scaffold(
+        backgroundColor: AppColors.lightBackground,
         appBar: AppBar(
-          title: const Text('Lỗi'),
+          title: const Text('Loi'),
+          backgroundColor: AppColors.lightSurface,
+          foregroundColor: AppColors.lightTextPrimary,
+          elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
@@ -79,45 +74,36 @@ class _DrillRecordingPreparationScreenState
         ),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.xxl),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.error_outline,
                   size: 80,
-                  color: Colors.orange.shade400,
+                  color: AppColors.warning,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xxl),
                 Text(
-                  'Không tìm thấy bài tập này',
+                  'Khong tim thay bai tap nay',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Text(
-                  'Bài tập với mã "${widget.drillCode}" không tồn tại hoặc đã bị xóa.',
+                  'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.lightTextSecondary,
                     fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
+                const SizedBox(height: AppSpacing.xxl),
+                _PrimaryButton(
                   onPressed: () => context.go('/training/drills'),
-                  icon: const Icon(Icons.fitness_center),
-                  label: const Text('Quay về thư viện bài tập'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
+                  label: 'Quay ve thu vien bai tap',
                 ),
               ],
             ),
@@ -127,8 +113,12 @@ class _DrillRecordingPreparationScreenState
     }
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Chuẩn bị ghi'),
+        title: const Text('Chuan bi ghi'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -136,43 +126,37 @@ class _DrillRecordingPreparationScreenState
       ),
       body: Column(
         children: [
-          // Content
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Drill & Level Header
                   _DrillLevelHeader(
                     drillName: drill.nameVi,
                     level: level?.level ?? widget.level,
                   ).animate().fadeIn(duration: 300.ms),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
-                  // Objective Card
                   _ObjectiveCard(
                     criteriaText: level?.criteriaText ?? drill.goal,
                   ).animate().fadeIn(delay: 100.ms),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
-                  // Setup Instructions
                   _SetupInstructions(
                     setup: drill.setup,
                   ).animate().fadeIn(delay: 200.ms),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
 
-                  // Steps Summary
                   _StepsSummary(
                     steps: drill.steps,
                   ).animate().fadeIn(delay: 300.ms),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
 
-                  // Readiness Checkbox
                   _ReadinessCheckbox(
                     isReady: _isReady,
                     onChanged: (value) => setState(() => _isReady = value ?? false),
@@ -182,7 +166,6 @@ class _DrillRecordingPreparationScreenState
             ),
           ),
 
-          // Bottom CTA
           _BottomCTA(
             isReady: _isReady,
             onStartRecording: _startRecording,
@@ -193,7 +176,6 @@ class _DrillRecordingPreparationScreenState
   }
 }
 
-/// Shows drill name and selected level.
 class _DrillLevelHeader extends StatelessWidget {
   final String drillName;
   final int level;
@@ -206,17 +188,17 @@ class _DrillLevelHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryGreen,
-            AppTheme.primaryGreen.withValues(alpha: 0.8),
+            AppColors.accent,
+            AppColors.accent.withValues(alpha: 0.8),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
       child: Row(
         children: [
@@ -225,7 +207,7 @@ class _DrillLevelHeader extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: const Icon(
               Icons.fitness_center,
@@ -233,7 +215,7 @@ class _DrillLevelHeader extends StatelessWidget {
               size: 32,
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSpacing.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,15 +227,15 @@ class _DrillLevelHeader extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                   ),
                   child: Text(
                     'Level $level',
@@ -272,7 +254,6 @@ class _DrillLevelHeader extends StatelessWidget {
   }
 }
 
-/// Shows the level's objective / criteria.
 class _ObjectiveCard extends StatelessWidget {
   final String criteriaText;
 
@@ -281,34 +262,34 @@ class _ObjectiveCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppTheme.accentGold.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.gold.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         border: Border.all(
-          color: AppTheme.accentGold.withValues(alpha: 0.3),
+          color: AppColors.gold.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
         children: [
           Icon(
             Icons.track_changes,
-            color: AppTheme.accentGold,
+            color: AppColors.gold,
             size: 28,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Mục tiêu Level',
+                  'Muc tieu Level',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppTheme.accentGold,
+                        color: AppColors.gold,
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   criteriaText,
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -322,7 +303,6 @@ class _ObjectiveCard extends StatelessWidget {
   }
 }
 
-/// Shows table/camera setup instructions.
 class _SetupInstructions extends StatelessWidget {
   final String setup;
 
@@ -331,34 +311,35 @@ class _SetupInstructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder),
       ),
       child: Row(
         children: [
           Icon(
             Icons.settings_outlined,
-            color: AppTheme.textSecondary,
+            color: AppColors.lightTextSecondary,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Cách setup bàn / camera',
+                  'Cach setup ban / camera',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: AppColors.lightTextPrimary,
                       ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
                   setup,
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.lightTextSecondary,
                     fontSize: 13,
                   ),
                 ),
@@ -371,7 +352,6 @@ class _SetupInstructions extends StatelessWidget {
   }
 }
 
-/// Shows a brief steps summary with expandable option.
 class _StepsSummary extends StatelessWidget {
   final List<String> steps;
 
@@ -379,68 +359,75 @@ class _StepsSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      leading: Icon(
-        Icons.list_alt_outlined,
-        color: AppTheme.textSecondary,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.lightBorder),
       ),
-      title: Text(
-        'Các bước thực hiện',
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-      ),
-      subtitle: Text(
-        '${steps.length} bước',
-        style: TextStyle(
-          color: AppTheme.textSecondary,
-          fontSize: 12,
+      child: ExpansionTile(
+        leading: Icon(
+          Icons.list_alt_outlined,
+          color: AppColors.lightTextSecondary,
         ),
-      ),
-      children: steps.asMap().entries.map((entry) {
-        return Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 8,
+        title: Text(
+          'Cac buoc thuc hien',
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.lightTextPrimary,
+              ),
+        ),
+        subtitle: Text(
+          '${steps.length} buoc',
+          style: TextStyle(
+            color: AppColors.lightTextSecondary,
+            fontSize: 12,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    '${entry.key + 1}',
-                    style: TextStyle(
-                      color: AppTheme.primaryGreen,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
+        ),
+        children: steps.asMap().entries.map((entry) {
+          return Padding(
+            padding: const EdgeInsets.only(
+              left: AppSpacing.lg,
+              right: AppSpacing.lg,
+              bottom: AppSpacing.sm,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppColors.accent.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${entry.key + 1}',
+                      style: TextStyle(
+                        color: AppColors.accent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  entry.value,
-                  style: Theme.of(context).textTheme.bodySmall,
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Text(
+                    entry.value,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      }).toList(),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }
 
-/// Readiness confirmation checkbox.
 class _ReadinessCheckbox extends StatelessWidget {
   final bool isReady;
   final ValueChanged<bool?> onChanged;
@@ -454,18 +441,18 @@ class _ReadinessCheckbox extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => onChanged(!isReady),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
           color: isReady
-              ? AppTheme.primaryGreen.withValues(alpha: 0.1)
-              : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(12),
+              ? AppColors.success.withValues(alpha: 0.1)
+              : AppColors.lightBackground,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           border: Border.all(
             color: isReady
-                ? AppTheme.primaryGreen
-                : Colors.grey.shade300,
+                ? AppColors.success
+                : AppColors.lightBorder,
             width: isReady ? 2 : 1,
           ),
         ),
@@ -473,28 +460,28 @@ class _ReadinessCheckbox extends StatelessWidget {
           children: [
             Icon(
               isReady ? Icons.check_circle : Icons.circle_outlined,
-              color: isReady ? AppTheme.primaryGreen : Colors.grey.shade400,
+              color: isReady ? AppColors.success : AppColors.lightTextTertiary,
               size: 28,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Tôi đã sẵn sàng',
+                    'Toi da san sang',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: isReady
-                              ? AppTheme.primaryGreen
-                              : AppTheme.textPrimary,
+                              ? AppColors.success
+                              : AppColors.lightTextPrimary,
                         ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Bàn đã setup đúng, camera sẵn sàng, tôi tập trung.',
+                    'Ban da setup dung, camera san sang, toi tap trung.',
                     style: TextStyle(
-                      color: AppTheme.textSecondary,
+                      color: AppColors.lightTextSecondary,
                       fontSize: 12,
                     ),
                   ),
@@ -508,7 +495,6 @@ class _ReadinessCheckbox extends StatelessWidget {
   }
 }
 
-/// Bottom CTA bar with "Bắt đầu ghi" button.
 class _BottomCTA extends StatelessWidget {
   final bool isReady;
   final VoidCallback onStartRecording;
@@ -521,45 +507,61 @@ class _BottomCTA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.lightSurface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppColors.shadowLight,
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
         ],
       ),
       child: SafeArea(
-        child: ElevatedButton(
+        child: _PrimaryButton(
           onPressed: isReady ? onStartRecording : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryGreen,
-            foregroundColor: Colors.white,
-            disabledBackgroundColor: Colors.grey.shade300,
-            disabledForegroundColor: Colors.grey.shade500,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+          label: isReady ? 'Bat dau ghi' : 'Xac nhan san sang',
+          icon: isReady ? Icons.videocam : Icons.videocam_off,
+        ),
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _PrimaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(isReady ? Icons.videocam : Icons.videocam_off),
-              const SizedBox(width: 8),
-              Text(
-                isReady ? 'Bắt đầu ghi' : 'Xác nhận sẵn sàng',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 20),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Text(widget.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
             ],
-          ),
-        ),
+          )),
       ),
     );
   }

@@ -112,6 +112,11 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
           unselectedLabelColor: AppColors.lightTextSecondary,
           labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          tabs: const [
+            Tab(text: 'Shot Map'),
+            Tab(text: 'Heat Map'),
+            Tab(text: 'Pocket'),
+          ],
         ),
       ),
       body: _buildBody(),

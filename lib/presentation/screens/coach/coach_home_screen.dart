@@ -1,10 +1,10 @@
 // ============================================================================
 // COACH HOME SCREEN - Phase 7B.1 / Phase 8
 // ONE Priority Coach Home - The App Dashboard
+// Redesigned with Minimalist Luxury Design System
 //
 // Principle: ONE Priority Only. Everything else is secondary.
 // Coach Voice: Natural, like a real coach, not AI.
-// Phase 8: Added "Từ trận đấu gần nhất" section
 // ============================================================================
 
 import 'package:flutter/material.dart';
@@ -13,10 +13,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/shadows.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/player_provider.dart' as player;
 import '../../../core/services/coach_voice_service.dart';
-import '../../../core/models/match_stats.dart'; // Sprint-11: MatchRackAnalysis
+import '../../../core/models/match_stats.dart';
 import '../../widgets/coach/recommendation_card.dart';
 import '../../widgets/coach/continue_session_card.dart';
 import '../../widgets/coach/coach_empty_state.dart';
@@ -50,7 +53,6 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
     });
 
     try {
-      // Load data from providers
       await Future.delayed(const Duration(milliseconds: 500));
       if (mounted) {
         setState(() {
@@ -69,16 +71,14 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Watch Coach State from Brain
     final coachState = ref.watch(coachStateProvider);
     final coachVoice = CoachVoiceService();
+    final brightness = Theme.of(context).brightness;
 
-    // Loading state
     if (coachState.isLoading || _isLoading) {
       return const CoachLoadingState();
     }
 
-    // Error state
     if (coachState.error != null || _error != null) {
       return CoachErrorState(
         onRetry: _loadData,
@@ -86,50 +86,40 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
       );
     }
 
-    return _buildCoachHome(context, coachState, coachVoice);
+    return _buildCoachHome(context, coachState, coachVoice, brightness);
   }
 
-  Widget _buildCoachHome(BuildContext context, CoachState coachState, CoachVoiceService coachVoice) {
-    // Get player name from provider
+  Widget _buildCoachHome(BuildContext context, CoachState coachState, CoachVoiceService coachVoice, Brightness brightness) {
     final playerAsync = ref.watch(player.playerProvider);
     final playerName = playerAsync.whenOrNull(
       data: (player) => player?.name,
     );
 
-    // Get real recommendation from Coach Brain
     final recommendation = coachState.currentRecommendation;
-
-    // Check data sufficiency from PlayerIntelligence
     final hasEnoughData = coachState.playerIntelligence.practicePatterns.totalSessions > 0;
-
-    // Check for interrupted session
     final interruptedSession = _checkInterruptedSession();
-
-    // PHASE 8: Get match analysis
     final matchAnalysis = ref.watch(latestMatchAnalysisProvider);
     final matchInsight = ref.watch(coachMatchInsightProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.background(brightness),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: _loadData,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Greeting
-                _buildGreeting(context, playerName),
-                const SizedBox(height: 24),
+                _buildGreeting(context, playerName, brightness),
+                const SizedBox(height: AppSpacing.xxl),
 
-                // PHASE 8: Match Analysis Section
                 if (matchAnalysis != null) ...[
-                  _buildMatchAnalysisSection(context, matchAnalysis, matchInsight),
-                  const SizedBox(height: 24),
+                  _buildMatchAnalysisSection(context, matchAnalysis, matchInsight, brightness),
+                  const SizedBox(height: AppSpacing.xxl),
                 ],
 
-                // MAIN CONTENT: ONE Priority Only (from Coach Brain)
                 if (!hasEnoughData)
                   CoachEmptyState(
                     onStartDrill: () => _navigateToDrill(context, 'straight_shot'),
@@ -148,10 +138,8 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                     onStart: () => _navigateToDrill(context, recommendation.drillCode),
                   ),
 
-                const SizedBox(height: 32),
-
-                // Secondary: Quick Actions
-                _buildQuickActions(context),
+                const SizedBox(height: AppSpacing.xxl),
+                _buildQuickActions(context, brightness),
               ],
             ),
           ),
@@ -160,7 +148,7 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
     );
   }
 
-  Widget _buildGreeting(BuildContext context, String? name) {
+  Widget _buildGreeting(BuildContext context, String? name, Brightness brightness) {
     final hour = DateTime.now().hour;
     String greeting;
     if (hour < 12) {
@@ -178,33 +166,37 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
       children: [
         Text(
           'Xin chào $displayName!',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary(brightness),
+          ),
         ).animate().fadeIn(duration: 300.ms),
         const SizedBox(height: 4),
         Text(
           greeting,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+          style: TextStyle(
+            fontSize: 16,
+            color: AppColors.textSecondary(brightness),
+          ),
         ).animate().fadeIn(delay: 100.ms),
       ],
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions(BuildContext context, Brightness brightness) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Hoặc',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary(brightness),
+          ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.md),
         Row(
           children: [
             Expanded(
@@ -212,22 +204,25 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                 icon: Icons.sports,
                 label: 'Đấu trận',
                 onTap: () => context.push('/play/recording'),
+                brightness: brightness,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: _QuickActionButton(
                 icon: Icons.chat_bubble_outline,
                 label: 'Hỏi Coach',
                 onTap: () => context.push('/coach/chat'),
+                brightness: brightness,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: _QuickActionButton(
                 icon: Icons.history,
                 label: 'Lịch sử',
                 onTap: () => context.push('/training/timeline'),
+                brightness: brightness,
               ),
             ),
           ],
@@ -236,83 +231,69 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
     );
   }
 
-  // ==========================================================================
-  // PHASE 8: MATCH ANALYSIS SECTION
-  // ==========================================================================
-
-  /// Build the "Từ trận đấu gần nhất" section
-  /// Sprint-11: MatchAnalysis renamed to MatchRackAnalysis
-  Widget _buildMatchAnalysisSection(BuildContext context, MatchRackAnalysis analysis, String? insight) {
+  Widget _buildMatchAnalysisSection(BuildContext context, MatchRackAnalysis analysis, String? insight, Brightness brightness) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: AppColors.surface(brightness),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: AppShadows.md(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.analytics, color: AppTheme.primaryGreen),
-                const SizedBox(width: 8),
+                Icon(Icons.analytics, color: AppColors.accentColor(brightness), size: 20),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Từ trận đấu gần nhất',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.primaryGreen,
-                      ),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.accentColor(brightness),
+                  ),
                 ),
               ],
             ),
           ),
 
-          // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Coach Insight
                 if (insight != null) ...[
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen.withValues(alpha: 0.05),
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppColors.accentColor(brightness).withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.auto_awesome, size: 20, color: AppTheme.primaryGreen),
-                        const SizedBox(width: 8),
+                        Icon(Icons.auto_awesome, size: 20, color: AppColors.accentColor(brightness)),
+                        const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             insight,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: AppTheme.textPrimary,
-                                ),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textPrimary(brightness),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                 ],
 
-                // Stats Grid
                 Row(
                   children: [
                     Expanded(
@@ -321,22 +302,24 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                         'Win Rate',
                         '${analysis.winRate.toStringAsFixed(0)}%',
                         Icons.emoji_events,
-                        analysis.winRate >= 50 ? Colors.green : Colors.orange,
+                        analysis.winRate >= 50 ? AppColors.success : AppColors.warning,
+                        brightness,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: _buildStatCard(
                         context,
                         'Long Run',
                         '${analysis.longestRun} bi',
                         Icons.trending_up,
-                        AppTheme.primaryGreen,
+                        AppColors.accentColor(brightness),
+                        brightness,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.md),
                 Row(
                   children: [
                     Expanded(
@@ -346,9 +329,10 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                         '${analysis.totalBallsPotted}',
                         Icons.circle,
                         Colors.blue,
+                        brightness,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: _buildStatCard(
                         context,
@@ -356,29 +340,31 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                         '${analysis.totalRacks}',
                         Icons.layers,
                         Colors.purple,
+                        brightness,
                       ),
                     ),
                   ],
                 ),
 
-                // Strengths
                 if (analysis.strengths.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Điểm mạnh',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary(brightness),
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
                     children: analysis.strengths.map<Widget>((s) {
                       return Chip(
-                        avatar: const Icon(Icons.check_circle, size: 16, color: Colors.green),
+                        avatar: Icon(Icons.check_circle, size: 16, color: AppColors.success),
                         label: Text(s, style: const TextStyle(fontSize: 12)),
-                        backgroundColor: Colors.green.shade50,
+                        backgroundColor: AppColors.success.withValues(alpha: 0.1),
                         side: BorderSide.none,
                         padding: EdgeInsets.zero,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -387,24 +373,25 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                   ),
                 ],
 
-                // Weaknesses
                 if (analysis.commonMistakes.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Cần cải thiện',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary(brightness),
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.sm),
                   Wrap(
                     spacing: 8,
                     runSpacing: 4,
                     children: analysis.commonMistakes.map<Widget>((m) {
                       return Chip(
-                        avatar: const Icon(Icons.warning, size: 16, color: Colors.orange),
+                        avatar: Icon(Icons.warning, size: 16, color: AppColors.warning),
                         label: Text(m, style: const TextStyle(fontSize: 12)),
-                        backgroundColor: Colors.orange.shade50,
+                        backgroundColor: AppColors.warning.withValues(alpha: 0.1),
                         side: BorderSide.none,
                         padding: EdgeInsets.zero,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -413,17 +400,17 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                   ),
                 ],
 
-                // Recommendations
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.lg),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () => context.push('/coach/analysis'),
-                    icon: const Icon(Icons.lightbulb_outline),
-                    label: const Text('Xem đề xuất từ Coach'),
+                    icon: Icon(Icons.lightbulb_outline, color: AppColors.accentColor(brightness)),
+                    label: Text('Xem đề xuất từ Coach', style: TextStyle(color: AppColors.accentColor(brightness))),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.primaryGreen,
-                      side: const BorderSide(color: AppTheme.primaryGreen),
+                      foregroundColor: AppColors.accentColor(brightness),
+                      side: BorderSide(color: AppColors.accentColor(brightness)),
+                      padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                     ),
                   ),
                 ),
@@ -435,37 +422,38 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
     ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.1, end: 0);
   }
 
-  Widget _buildStatCard(BuildContext context, String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(BuildContext context, String label, String value, IconData icon, Color color, Brightness brightness) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, color: color, size: 20),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
           Text(
             label,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary(brightness),
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Check if there's an interrupted session (from Coach Brain)
   Map<String, dynamic>? _checkInterruptedSession() {
     final coachNotifier = ref.read(coachStateProvider.notifier);
     final sessionMemory = coachNotifier.sessionMemory;
@@ -496,7 +484,6 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
     final drillCode = session['drillCode'] as String?;
     if (drillCode == null) return;
 
-    // Navigate to continue the drill
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -510,38 +497,40 @@ class _QuickActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
+  final Brightness brightness;
 
   const _QuickActionButton({
     required this.icon,
     required this.label,
     required this.onTap,
+    required this.brightness,
   });
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
+      color: AppColors.surface(brightness),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.grey.shade200,
-            ),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(color: AppColors.lightBorder),
+            boxShadow: AppShadows.sm(brightness),
           ),
           child: Column(
             children: [
-              Icon(icon, color: AppTheme.primaryGreen),
-              const SizedBox(height: 8),
+              Icon(icon, color: AppColors.accentColor(brightness)),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textSecondary,
-                    ),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary(brightness),
+                ),
               ),
             ],
           ),

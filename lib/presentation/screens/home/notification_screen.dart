@@ -3,37 +3,54 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/providers/notification_provider.dart';
 import '../../../core/services/notification_service.dart';
 
+/// Notification Screen - Redesigned with Minimalist Luxury
 class NotificationScreen extends ConsumerWidget {
   const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notificationState = ref.watch(notificationProvider);
+    final brightness = Theme.of(context).brightness;
 
     return Scaffold(
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        title: const Text('Thông báo'),
+        backgroundColor: AppColors.background(brightness),
+        elevation: 0,
+        title: Text(
+          'Thông báo',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary(brightness),
+          ),
+        ),
         actions: [
           if (notificationState.notifications.isNotEmpty)
             TextButton(
               onPressed: () {
                 ref.read(notificationProvider.notifier).markAllAsRead();
               },
-              child: const Text('Đánh dấu đã đọc'),
+              child: Text(
+                'Đánh dấu đã đọc',
+                style: TextStyle(color: AppColors.accentColor(brightness)),
+              ),
             ),
         ],
       ),
       body: notificationState.notifications.isEmpty
-          ? _buildEmptyState()
-          : _buildNotificationList(context, ref, notificationState),
+          ? _buildEmptyState(brightness)
+          : _buildNotificationList(context, ref, notificationState, brightness),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(Brightness brightness) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -41,21 +58,21 @@ class NotificationScreen extends ConsumerWidget {
           Icon(
             Icons.notifications_none,
             size: 64,
-            color: Colors.grey.shade300,
+            color: AppColors.textTertiary(brightness),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           Text(
             'Không có thông báo',
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary(brightness),
               fontSize: 16,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'Thông báo sẽ hiện khi bạn cần',
             style: TextStyle(
-              color: Colors.grey.shade500,
+              color: AppColors.textTertiary(brightness),
               fontSize: 13,
             ),
           ),
@@ -68,20 +85,22 @@ class NotificationScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     NotificationState state,
+    Brightness brightness,
   ) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       itemCount: state.notifications.length,
       itemBuilder: (context, index) {
         final notification = state.notifications[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.only(bottom: AppSpacing.md),
           child: _NotificationCard(
             notification: notification,
             onTap: () => _handleNotificationTap(context, ref, notification),
             onDismiss: () {
               ref.read(notificationProvider.notifier).removeNotification(notification.id);
             },
+            brightness: brightness,
           ).animate().fadeIn(delay: (index * 50).ms),
         );
       },
@@ -93,10 +112,8 @@ class NotificationScreen extends ConsumerWidget {
     WidgetRef ref,
     PoolNotification notification,
   ) {
-    // Mark as read
     ref.read(notificationProvider.notifier).markAsRead(notification.id);
 
-    // Navigate if has action
     if (notification.actionRoute != null) {
       context.push(notification.actionRoute!);
     }
@@ -107,27 +124,29 @@ class _NotificationCard extends StatelessWidget {
   final PoolNotification notification;
   final VoidCallback onTap;
   final VoidCallback onDismiss;
+  final Brightness brightness;
 
   const _NotificationCard({
     required this.notification,
     required this.onTap,
     required this.onDismiss,
+    required this.brightness,
   });
 
   Color _getTypeColor() {
     switch (notification.type) {
       case 'streak_warning':
-        return Colors.orange;
+        return AppColors.warning;
       case 'level_up':
-        return Colors.green;
+        return AppColors.success;
       case 'test_available':
-        return Colors.blue;
+        return AppColors.accentColor(brightness);
       case 'match_analysis':
         return Colors.purple;
       case 'streak_milestone':
-        return Colors.amber;
+        return AppColors.gold;
       default:
-        return Colors.grey;
+        return AppColors.textSecondary(brightness);
     }
   }
 
@@ -161,37 +180,37 @@ class _NotificationCard extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: Colors.red.shade400,
-          borderRadius: BorderRadius.circular(12),
+          color: AppColors.error,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Icon(Icons.delete, color: Colors.white),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: isUnread
                 ? color.withValues(alpha: 0.05)
-                : Colors.white,
-            borderRadius: BorderRadius.circular(12),
+                : AppColors.surface(brightness),
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
               color: isUnread
                   ? color.withValues(alpha: 0.2)
-                  : Colors.grey.shade200,
+                  : AppColors.lightBorder,
             ),
+            boxShadow: AppShadows.sm(brightness),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Icon
               Container(
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Icon(
                   _getTypeIcon(),
@@ -199,9 +218,7 @@ class _NotificationCard extends StatelessWidget {
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 12),
-
-              // Content
+              const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,10 +229,9 @@ class _NotificationCard extends StatelessWidget {
                           child: Text(
                             notification.title,
                             style: TextStyle(
-                              fontWeight: isUnread
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
+                              fontWeight: isUnread ? FontWeight.bold : FontWeight.w500,
                               fontSize: 15,
+                              color: AppColors.textPrimary(brightness),
                             ),
                           ),
                         ),
@@ -234,13 +250,13 @@ class _NotificationCard extends StatelessWidget {
                     Text(
                       notification.body,
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: AppColors.textSecondary(brightness),
                         fontSize: 13,
                         height: 1.4,
                       ),
                     ),
                     if (notification.actionLabel != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpacing.sm),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 10,

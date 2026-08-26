@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/providers/repository_providers.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../../../data/models/training_session.dart';
 
 class TrainingHistoryScreen extends ConsumerStatefulWidget {
@@ -57,8 +58,12 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
     final historyAsync = ref.watch(trainingHistoryProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Lịch sử tập luyện'),
+        title: const Text('Lich su tap luyen'),
+        backgroundColor: AppColors.lightSurface,
+        foregroundColor: AppColors.lightTextPrimary,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -76,9 +81,9 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 48, color: Colors.red.shade300),
-              const SizedBox(height: 16),
-              Text('Lỗi: $error', textAlign: TextAlign.center),
+              Icon(Icons.error_outline, size: 48, color: AppColors.error),
+              const SizedBox(height: AppSpacing.lg),
+              Text('Loi: $error', textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -99,12 +104,12 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
                 child: filtered.isEmpty
                     ? _buildEmptyState()
                     : ListView.builder(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(AppSpacing.lg),
                         itemCount: filtered.length,
                         itemBuilder: (context, index) {
                           final session = filtered[index];
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.only(bottom: AppSpacing.md),
                             child: _HistoryCard(
                               session: session,
                               onTap: () => context.push('/training/session/${session.id}'),
@@ -122,14 +127,14 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
 
   Widget _buildSummaryStats(Map<String, dynamic> stats) {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.lightSurface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.shadowLight,
             blurRadius: 10,
           ),
         ],
@@ -140,26 +145,26 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           _SummaryItem(
             icon: Icons.fitness_center,
             value: '${stats['sessions']}',
-            label: 'Buổi tập',
-            color: Colors.blue,
+            label: 'Buoi tap',
+            color: AppColors.accent,
           ),
           _SummaryItem(
             icon: Icons.timer,
             value: '${stats['minutes']}m',
-            label: 'Tổng thời gian',
-            color: Colors.orange,
+            label: 'Tong thoi gian',
+            color: AppColors.warning,
           ),
           _SummaryItem(
             icon: Icons.star,
             value: '${stats['avgScore']}%',
-            label: 'Điểm TB',
-            color: Colors.amber,
+            label: 'Diem TB',
+            color: AppColors.gold,
           ),
           _SummaryItem(
             icon: Icons.sports_cricket,
             value: '${stats['shots']}',
-            label: 'Bi đánh',
-            color: Colors.green,
+            label: 'Bi danh',
+            color: AppColors.success,
           ),
         ],
       ),
@@ -169,39 +174,39 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
   Widget _buildFilterChips() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
         children: [
           ChoiceChip(
-            label: const Text('Tất cả'),
+            label: const Text('Tat ca'),
             selected: _selectedFilter == 'all',
             onSelected: (_) => setState(() => _selectedFilter = 'all'),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Stop'),
             selected: _selectedFilter == 'STOP',
             onSelected: (_) => setState(() => _selectedFilter = 'STOP'),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Draw'),
             selected: _selectedFilter == 'DRAW',
             onSelected: (_) => setState(() => _selectedFilter = 'DRAW'),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Follow'),
             selected: _selectedFilter == 'FOLLOW',
             onSelected: (_) => setState(() => _selectedFilter = 'FOLLOW'),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Position'),
             selected: _selectedFilter == 'POSITION',
             onSelected: (_) => setState(() => _selectedFilter = 'POSITION'),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Bank'),
             selected: _selectedFilter == 'BANK',
@@ -217,31 +222,28 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.history, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
+          Icon(Icons.history, size: 64, color: AppColors.lightTextTertiary),
+          const SizedBox(height: AppSpacing.lg),
           Text(
-            'Chưa có lịch sử tập luyện',
+            'Chua co lich su tap luyen',
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.lightTextSecondary,
               fontSize: 16,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(
-            'Bắt đầu một bài tập để xem lịch sử',
+            'Bat dau mot bai tap de xem lich su',
             style: TextStyle(
-              color: Colors.grey.shade500,
+              color: AppColors.lightTextTertiary,
               fontSize: 13,
             ),
           ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
+          const SizedBox(height: AppSpacing.xxl),
+          _PrimaryButton(
             onPressed: () => context.push('/training/session/new'),
-            icon: const Icon(Icons.play_arrow),
-            label: const Text('Bắt đầu tập'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryGreen,
-            ),
+            label: 'Bat dau tap',
+            icon: Icons.play_arrow,
           ),
         ],
       ),
@@ -252,35 +254,35 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
       ),
       builder: (context) => Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Bộ lọc',
+              'Bo loc',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             ListTile(
               leading: const Icon(Icons.sort),
-              title: const Text('Sắp xếp theo ngày'),
-              subtitle: const Text('Mới nhất trước'),
+              title: const Text('Sap xep theo ngay'),
+              subtitle: const Text('Moi nhat truoc'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.star),
-              title: const Text('Sắp xếp theo điểm'),
-              subtitle: const Text('Cao nhất trước'),
+              title: const Text('Sap xep theo diem'),
+              subtitle: const Text('Cao nhat truoc'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.timeline),
-              title: const Text('Sắp xếp theo cải thiện'),
-              subtitle: const Text('Tiến bộ nhiều nhất'),
+              title: const Text('Sap xep theo cai thien'),
+              subtitle: const Text('Tien bo nhieu nhat'),
               onTap: () => Navigator.pop(context),
             ),
           ],
@@ -321,14 +323,14 @@ class _SummaryItem extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           value,
           style: TextStyle(
@@ -340,7 +342,7 @@ class _SummaryItem extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.grey.shade600,
+            color: AppColors.lightTextSecondary,
             fontSize: 11,
           ),
         ),
@@ -359,9 +361,9 @@ class _HistoryCard extends StatelessWidget {
   });
 
   Color _getScoreColor(int score) {
-    if (score >= 80) return Colors.green;
-    if (score >= 60) return Colors.orange;
-    return Colors.red;
+    if (score >= 80) return AppColors.success;
+    if (score >= 60) return AppColors.warning;
+    return AppColors.error;
   }
 
   String _formatDate(DateTime date) {
@@ -369,9 +371,9 @@ class _HistoryCard extends StatelessWidget {
     final diff = now.difference(date);
 
     if (diff.inHours < 24) {
-      return '${diff.inHours}h trước';
+      return '${diff.inHours}h truoc';
     } else if (diff.inDays < 7) {
-      return '${diff.inDays} ngày trước';
+      return '${diff.inDays} ngay truoc';
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }
@@ -385,15 +387,16 @@ class _HistoryCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.lightSurface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          border: Border.all(color: AppColors.lightBorder),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: AppColors.shadowLight,
               blurRadius: 10,
             ),
           ],
@@ -404,30 +407,30 @@ class _HistoryCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    color: AppColors.accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                   child: const Icon(
                     Icons.fitness_center,
-                    color: AppTheme.primaryGreen,
+                    color: AppColors.accent,
                     size: 20,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         session.drillName,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.lightTextPrimary),
                       ),
                       Text(
                         _formatDate(session.completedAt),
                         style: TextStyle(
-                          color: Colors.grey.shade500,
+                          color: AppColors.lightTextSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -440,16 +443,16 @@ class _HistoryCard extends StatelessWidget {
                     Text(
                       '${session.duration}m',
                       style: TextStyle(
-                        color: Colors.grey.shade600,
+                        color: AppColors.lightTextSecondary,
                         fontSize: 12,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpacing.xs),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                       decoration: BoxDecoration(
                         color: _getScoreColor(session.score).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Text(
                         '${session.score}%',
@@ -464,25 +467,25 @@ class _HistoryCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Row(
               children: [
                 _StatChip(
                   label: 'Accuracy',
                   value: '$accuracy%',
-                  color: Colors.blue,
+                  color: AppColors.accent,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _StatChip(
                   label: 'Shots',
                   value: '${session.shotsMade}/${session.shotsMade + session.shotsMissed}',
-                  color: Colors.teal,
+                  color: const Color(0xFF14B8A6),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpacing.sm),
                 _StatChip(
                   label: 'Level',
                   value: '${session.level}',
-                  color: Colors.purple,
+                  color: const Color(0xFF8B5CF6),
                 ),
               ],
             ),
@@ -507,10 +510,10 @@ class _StatChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -518,7 +521,7 @@ class _StatChip extends StatelessWidget {
           Text(
             '$label: ',
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.lightTextSecondary,
               fontSize: 11,
             ),
           ),
@@ -531,6 +534,47 @@ class _StatChip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PrimaryButton extends StatefulWidget {
+  final VoidCallback? onPressed;
+  final String label;
+  final IconData? icon;
+  const _PrimaryButton({required this.onPressed, required this.label, this.icon});
+  @override
+  State<_PrimaryButton> createState() => _PrimaryButtonState();
+}
+class _PrimaryButtonState extends State<_PrimaryButton> {
+  double _scale = 1.0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
+      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
+      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
+      child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+          decoration: BoxDecoration(
+            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, color: Colors.white, size: 18),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+            ],
+          ),
+        ),
       ),
     );
   }

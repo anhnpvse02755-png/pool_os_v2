@@ -1,12 +1,15 @@
 // ============================================================================
 // COACH ONBOARDING SCREEN - Phase 7B.4
 // 3 screens introducing Coach AI
+// Redesigned with Minimalist Luxury Design System
 // ============================================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/spacing.dart';
 import '../training/drill_detail_screen.dart';
 
 /// Coach Onboarding Screen - 3 screens
@@ -25,6 +28,19 @@ class CoachOnboardingScreen extends StatefulWidget {
 class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
+  late Brightness _brightness;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _brightness = Theme.of(context).brightness;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   final _pages = [
     _OnboardingPage(
@@ -54,27 +70,23 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
   ];
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background(_brightness),
       body: SafeArea(
         child: Column(
           children: [
-            // Skip button
             Align(
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: widget.onComplete,
-                child: const Text('Bỏ qua'),
+                child: Text(
+                  'Bỏ qua',
+                  style: TextStyle(color: AppColors.textSecondary(_brightness)),
+                ),
               ),
             ),
 
-            // Pages
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -90,12 +102,9 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
               ),
             ),
 
-            // Page indicator
             _buildPageIndicator(),
-
-            // Button
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xxl),
               child: _buildButton(),
             ),
           ],
@@ -116,8 +125,8 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
           height: 8,
           decoration: BoxDecoration(
             color: _currentPage == index
-                ? AppTheme.primaryGreen
-                : Colors.grey.shade300,
+                ? AppColors.accentColor(_brightness)
+                : AppColors.textTertiary(_brightness),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -126,71 +135,92 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
   }
 
   Widget _buildButton() {
+    final accentColor = AppColors.accentColor(_brightness);
+
     if (_currentPage == _pages.length - 1) {
-      return SizedBox(
-        width: double.infinity,
-        height: 56,
-        child: ElevatedButton(
-          onPressed: widget.onComplete,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryGreen,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 0,
+      return _OnboardingButton(
+        onPressed: widget.onComplete,
+        label: 'BẮT ĐẦU',
+        icon: Icons.arrow_forward,
+        brightness: _brightness,
+      );
+    }
+
+    return _OnboardingButton(
+      onPressed: () {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      },
+      label: 'TIẾP TỤC',
+      icon: Icons.arrow_forward,
+      brightness: _brightness,
+    );
+  }
+}
+
+class _OnboardingButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final String label;
+  final IconData icon;
+  final Brightness brightness;
+
+  const _OnboardingButton({
+    required this.onPressed,
+    required this.label,
+    required this.icon,
+    required this.brightness,
+  });
+
+  @override
+  State<_OnboardingButton> createState() => _OnboardingButtonState();
+}
+
+class _OnboardingButtonState extends State<_OnboardingButton> {
+  double _scale = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final accentColor = AppColors.accentColor(widget.brightness);
+
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _scale = 0.96),
+      onTapUp: (_) => setState(() => _scale = 1.0),
+      onTapCancel: () => setState(() => _scale = 1.0),
+      child: AnimatedScale(
+        scale: _scale,
+        duration: Duration(milliseconds: 100),
+        child: Container(
+          width: double.infinity,
+          height: 56,
+          decoration: BoxDecoration(
+            color: accentColor,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: [
+              BoxShadow(
+                color: accentColor.withValues(alpha: 0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'BẮT ĐẦU',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
+                widget.label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  letterSpacing: 1,
+                ),
               ),
-              const SizedBox(width: 8),
-              const Icon(Icons.arrow_forward, color: Colors.white),
+              const SizedBox(width: AppSpacing.sm),
+              Icon(widget.icon, color: Colors.white, size: 20),
             ],
           ),
-        ),
-      );
-    }
-
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
-        onPressed: () {
-          _pageController.nextPage(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryGreen,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'TIẾP TỤC',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  ),
-            ),
-            const SizedBox(width: 8),
-            const Icon(Icons.arrow_forward, color: Colors.white),
-          ],
         ),
       ),
     );
@@ -212,59 +242,60 @@ class _OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final accentColor = AppColors.accentColor(brightness);
+
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.all(AppSpacing.xxl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+              color: accentColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: 80,
-              color: AppTheme.primaryGreen,
+              color: accentColor,
             ),
-          )
-              .animate()
-              .scale(duration: 400.ms, curve: Curves.elasticOut),
+          ).animate().scale(duration: 400.ms, curve: Curves.elasticOut),
 
           const SizedBox(height: 40),
 
-          // Title
           Text(
             title,
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary(brightness),
+            ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 200.ms),
 
           const SizedBox(height: 8),
 
-          // Subtitle
           Text(
             subtitle,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppTheme.primaryGreen,
-                  fontWeight: FontWeight.w500,
-                ),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+              color: accentColor,
+            ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 300.ms),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
 
-          // Description
           Text(
             description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppTheme.textSecondary,
-                  height: 1.6,
-                ),
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.textSecondary(brightness),
+              height: 1.6,
+            ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 400.ms),
         ],
