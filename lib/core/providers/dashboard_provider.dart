@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/drill_progress.dart';
 import '../../core/providers/repository_providers.dart';
+import 'training_provider.dart';
 
 /// Dashboard Context - Trạng thái của Dashboard
 /// Thay đổi theo hành động của người dùng
@@ -229,6 +230,9 @@ final dashboardProvider =
 });
 
 /// Today's Goals Provider
+/// Sprint-18 Part 2: Now reads from persistent TrainingNotifier to count
+/// completed drills for today. This replaces the hardcoded StateProvider
+/// that was never updated when drills were completed.
 class TodayGoals {
   final int drillsCompleted;
   final int drillsTarget;
@@ -249,7 +253,44 @@ class TodayGoals {
       drillsTarget > 0 ? drillsCompleted / drillsTarget : 0;
 }
 
-final todayGoalsProvider = StateProvider<TodayGoals>((ref) => TodayGoals());
+/// Calculates how many drills were completed today from training sessions.
+int _countTodaySessions(List<dynamic> sessions) {
+  if (sessions.isEmpty) return 0;
+
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+
+  int count = 0;
+  for (final session in sessions) {
+    final date = session.date as DateTime?;
+    if (date == null) continue;
+
+    final sessionDay = DateTime(date.year, date.month, date.day);
+    if (sessionDay.isAtSameMomentAs(today)) {
+      count++;
+    }
+  }
+  return count;
+}
+
+/// Today Goals Provider - reads from persistent TrainingNotifier storage.
+/// Sprint-18 Part 2: This replaces the StateProvider pattern that was never
+/// updated. Now it reads from trainingNotifierProvider which persists to
+/// LocalStorageService, so the count survives app restarts.
+final todayGoalsProvider = Provider<TodayGoals>((ref) {
+  // Watch trainingNotifierProvider so this updates when sessions are added
+  final trainingState = ref.watch(trainingNotifierProvider);
+
+  // Count sessions completed today
+  final todayCount = _countTodaySessions(trainingState.sessions);
+
+  return TodayGoals(
+    drillsCompleted: todayCount,
+    drillsTarget: 2,
+    // Note: knowledgeRead and testPassed remain UI-only for now
+    // They would need persistent storage to track properly
+  );
+});
 
 /// Ongoing Drill Provider - Drill đang tập dở
 class OngoingDrill {
