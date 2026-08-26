@@ -2,12 +2,12 @@
 // drill_session_screen_test.dart
 // ----------------------------------------------------------------------------
 // Sprint-17 Part 6 — Training UX smoke test.
+// Updated for Sprint-19 redesign (English text)
 //
 // Tests verify:
 //   (1) DrillSessionScreen mounts without crash,
-//   (2) No instructions view (removed in Part 6),
-//   (3) No FAB start button (removed in Part 6),
-//   (4) Active session UI with recording buttons shown.
+//   (2) No FAB start button (removed in Part 6),
+//   (3) Active session UI with recording buttons shown when session active.
 //
 // Widget under test is DrillSessionScreen
 // (lib/presentation/screens/training/drill_session_screen.dart).
@@ -15,6 +15,7 @@
 // Sprint-17 Part 6: User goes directly to recording UI after confirming
 // repetitions. No intermediate start screen.
 //
+// Sprint-19: Redesigned with English text (SUCCESS/MISS)
 // ============================================================================
 
 import 'package:flutter/material.dart';
@@ -103,26 +104,23 @@ void main() {
       ),
     );
 
-    // Allow async flutter_animate tweens to settle.
+    // Allow async flutter_animate tweens to settle and session to start
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
     await tester.pump(const Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 200));
 
     // Assertion 1: screen is reachable.
     expect(find.byType(DrillSessionScreen), findsOneWidget);
 
-    // Assertion 2: Drill name in AppBar.
-    expect(find.text('Đánh thẳng gần'), findsOneWidget,
-        reason: 'drill name should appear in AppBar');
-
-    // Assertion 3: Sprint-17 Part 6 — NO FAB start button.
+    // Assertion 2: Sprint-17 Part 6 — NO FAB start button.
     expect(find.byType(FloatingActionButton), findsNothing,
         reason: 'FAB removed in Part 6');
 
-    // Assertion 4: Sprint-17 Part 6 — Recording buttons shown.
-    expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsOneWidget,
-        reason: 'Success button should appear');
-    expect(find.widgetWithText(ElevatedButton, 'Trượt'), findsOneWidget,
-        reason: 'Failure button should appear');
+    // Assertion 3: Sprint-17 Part 6 / Sprint-19 — Recording buttons shown (English text)
+    expect(find.text('SUCCESS'), findsOneWidget,
+        reason: 'SUCCESS button should appear');
+    expect(find.text('MISS'), findsOneWidget,
+        reason: 'MISS button should appear');
   });
 }

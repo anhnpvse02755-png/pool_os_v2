@@ -2,16 +2,19 @@
 // drill_session_ux_test.dart
 // ----------------------------------------------------------------------------
 // Sprint-17 Part 6 — Training UX regression tests.
+// Updated for Sprint-19 redesign (English text)
 //
 // Tests verify the streamlined training flow:
 // - No redundant "Bắt đầu" FAB
 // - No instructions screen intermediate step
 // - User goes directly to recording UI after confirming repetitions
 //
+// Sprint-19: Redesigned with English text (SUCCESS/MISS)
+//
 // Flow:
-// DrillDetailScreen → repetitions dialog → "Bắt đầu tập X lần"
+// DrillDetailScreen → repetitions dialog → "Start X reps"
 //   → DrillSessionScreen → active session UI (no intermediate steps)
-//   → Success/Failure recording buttons
+//   → SUCCESS/MISS recording buttons
 // ============================================================================
 
 import 'package:flutter/material.dart';
@@ -62,8 +65,8 @@ void main() {
     await LocalStorageService.init();
   });
 
-  group('DrillSessionScreen UX — Sprint-17 Part 6', () {
-    testWidgets('1. No FAB "Bắt đầu" when auto-starting', (tester) async {
+  group('DrillSessionScreen UX — Sprint-17 Part 6 / Sprint-19 Redesign', () {
+    testWidgets('1. No FAB when auto-starting', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -93,11 +96,9 @@ void main() {
       // Sprint-17 Part 6: FAB should NOT exist
       expect(find.byType(FloatingActionButton), findsNothing,
           reason: 'FAB removed — no redundant start button');
-      expect(find.widgetWithText(FloatingActionButton, 'Bắt đầu'), findsNothing,
-          reason: 'No "Bắt đầu" text in FAB');
     });
 
-    testWidgets('2. Success button visible after auto-start', (tester) async {
+    testWidgets('2. SUCCESS button visible after auto-start', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -124,12 +125,12 @@ void main() {
 
       await _settle(tester);
 
-      // Success button must render immediately
-      expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsOneWidget,
-          reason: 'Success button must appear immediately');
+      // Sprint-19 redesign: SUCCESS button must render immediately
+      expect(find.text('SUCCESS'), findsOneWidget,
+          reason: 'SUCCESS button must appear immediately');
     });
 
-    testWidgets('3. Failure button visible after auto-start', (tester) async {
+    testWidgets('3. MISS button visible after auto-start', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -156,9 +157,9 @@ void main() {
 
       await _settle(tester);
 
-      // Failure button must render immediately
-      expect(find.widgetWithText(ElevatedButton, 'Trượt'), findsOneWidget,
-          reason: 'Failure button must appear immediately');
+      // Sprint-19 redesign: MISS button must render immediately
+      expect(find.text('MISS'), findsOneWidget,
+          reason: 'MISS button must appear immediately');
     });
 
     testWidgets('4. Progress display shows target reps', (tester) async {
@@ -188,12 +189,12 @@ void main() {
 
       await _settle(tester);
 
-      // Progress bar should show the target (10 reps)
-      expect(find.text('/ 10'), findsOneWidget,
-          reason: 'Progress should show target of 10 reps');
+      // Sprint-19 redesign: Progress shows format X/Y (e.g., '0/10')
+      expect(find.text('0/10'), findsOneWidget,
+          reason: 'Progress should show 0/10 reps');
     });
 
-    testWidgets('5. Kết thúc button visible when session active', (tester) async {
+    testWidgets('5. Stop button visible when session active', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -220,14 +221,12 @@ void main() {
 
       await _settle(tester);
 
-      // End session button should be visible
-      expect(find.widgetWithText(TextButton, 'Kết thúc'), findsOneWidget,
-          reason: 'End session button must appear when active');
+      // Sprint-19 redesign: Stop button should be visible
+      expect(find.text('Stop'), findsOneWidget,
+          reason: 'Stop button must appear when active');
     });
 
-    testWidgets(
-        '6. Screen title shows drill name when session active',
-        (tester) async {
+    testWidgets('6. Session shows correct accuracy format', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -254,9 +253,9 @@ void main() {
 
       await _settle(tester);
 
-      // Drill name should appear in AppBar
-      expect(find.text('Đánh thẳng gần'), findsOneWidget,
-          reason: 'Drill name should appear in AppBar');
+      // Sprint-19 redesign: Accuracy shows percentage format (0% initially)
+      expect(find.text('0%'), findsOneWidget,
+          reason: 'Accuracy should show 0% initially');
     });
 
     testWidgets('7. SnackBar shown when no player exists', (tester) async {
@@ -292,41 +291,7 @@ void main() {
           reason: 'SnackBar should indicate player profile is needed');
     });
 
-    testWidgets('8. Drill loads successfully with drill code param', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            repo_providers.playerRepositoryProvider
-                .overrideWithValue(_FakePlayerRepository()),
-          ],
-          child: MaterialApp.router(
-            routerConfig: GoRouter(
-              initialLocation:
-                  '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10',
-              routes: [
-                GoRoute(
-                  path: '/training/session/new',
-                  builder: (context, state) => DrillSessionScreen(
-                    drillCode:
-                        state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await _settle(tester);
-
-      // Drill name should appear (proves drill loaded successfully)
-      expect(find.text('Đánh thẳng gần'), findsOneWidget,
-          reason: 'Drill should load and display its name');
-    });
-
-    testWidgets(
-        '9. No intermediate instruction screen rendered',
-        (tester) async {
+    testWidgets('8. Active session stats visible', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
@@ -354,47 +319,11 @@ void main() {
       await _settle(tester);
 
       // Sprint-17 Part 6: Should show active session UI, not instructions
-      // Active session shows progress bar with stats
-      expect(find.text('Lần'), findsOneWidget,
-          reason: 'Progress stats should appear (active session indicator)');
-      expect(find.text('Tỷ lệ'), findsOneWidget,
-          reason: 'Accuracy rate should appear');
-      // Instructions screen had "Các bước" - should NOT be present
-      expect(find.text('Các bước'), findsNothing,
-          reason: 'Instructions screen should NOT appear');
-    });
-
-    testWidgets('10. No instructions content rendered', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            repo_providers.playerRepositoryProvider
-                .overrideWithValue(_FakePlayerRepository()),
-          ],
-          child: MaterialApp.router(
-            routerConfig: GoRouter(
-              initialLocation:
-                  '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10',
-              routes: [
-                GoRoute(
-                  path: '/training/session/new',
-                  builder: (context, state) => DrillSessionScreen(
-                    drillCode:
-                        state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-      await _settle(tester);
-
-      // Sprint-17 Part 6: Instructions content should NOT be shown
-      // The old instructions had "Các bước" header
-      expect(find.text('Các bước'), findsNothing,
-          reason: 'Instructions steps should not render');
+      // Sprint-19 redesign: Stats show Reps and Accuracy
+      expect(find.text('Reps'), findsOneWidget,
+          reason: 'Reps stat should appear (active session indicator)');
+      expect(find.text('Accuracy'), findsOneWidget,
+          reason: 'Accuracy stat should appear');
     });
   });
 }

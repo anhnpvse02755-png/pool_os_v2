@@ -2,6 +2,7 @@
 // drill_session_auto_start_test.dart
 // ----------------------------------------------------------------------------
 // Sprint-17 Part 3 — Auto-start race condition regression tests.
+// Updated for Sprint-19 redesign (English text)
 //
 // Tests verify that DrillSessionScreen correctly auto-starts a session when:
 // 1. Navigating from DrillDetailScreen with level+target query params
@@ -130,9 +131,9 @@ void main() {
       expect(find.byType(DrillSessionScreen), findsOneWidget);
 
       // Verify session is active (auto-start fired)
-      // The recording bar should be visible when session is active
-      expect(find.text('Thành công'), findsAtLeastNWidgets(1));
-      expect(find.text('Trượt'), findsOneWidget);
+      // Sprint-19 redesign: English text 'SUCCESS' and 'MISS'
+      expect(find.text('SUCCESS'), findsAtLeastNWidgets(1));
+      expect(find.text('MISS'), findsOneWidget);
     });
 
     testWidgets('2. No query level param → does NOT auto-start, no FAB',
@@ -154,7 +155,8 @@ void main() {
       expect(find.byType(FloatingActionButton), findsNothing,
           reason: 'FAB removed in Part 6');
       // Recording buttons should NOT show (session not active)
-      expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsNothing,
+      // Sprint-19 redesign: English text
+      expect(find.text('SUCCESS'), findsNothing,
           reason: 'Recording buttons hidden when session not active');
     });
 
@@ -176,8 +178,9 @@ void main() {
       }
 
       // Session should be active (auto-start fired)
-      expect(find.text('Thành công'), findsAtLeastNWidgets(1));
-      expect(find.text('Trượt'), findsOneWidget);
+      // Sprint-19 redesign: English text
+      expect(find.text('SUCCESS'), findsAtLeastNWidgets(1));
+      expect(find.text('MISS'), findsOneWidget);
     });
 
     testWidgets('4. Invalid drill code → error state shown, no crash',
@@ -195,9 +198,9 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Should show error screen, not crash
-      expect(find.text('Không tìm thấy bài tập này'), findsOneWidget);
-      expect(find.text('Quay lại'), findsOneWidget);
+      // Sprint-19 redesign: English text 'Drill not found'
+      expect(find.text('Drill not found'), findsOneWidget);
+      expect(find.text('Go Back'), findsOneWidget);
     });
 
     testWidgets('5. Custom target value is read correctly',
@@ -215,8 +218,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Verify the custom target is displayed
-      expect(find.text('/ 50'), findsOneWidget);
+      // Sprint-19 redesign: Format is 'X/Y' e.g., '0/50'
+      expect(find.text('0/50'), findsOneWidget);
     });
 
     testWidgets('6. No query level param → session inactive with no manual start',
@@ -237,7 +240,8 @@ void main() {
       expect(find.byType(FloatingActionButton), findsNothing,
           reason: 'FAB removed in Part 6 — no manual start button');
       // Session should be inactive
-      expect(find.widgetWithText(ElevatedButton, 'Thành công'), findsNothing,
+      // Sprint-19 redesign: English text
+      expect(find.text('SUCCESS'), findsNothing,
           reason: 'Recording buttons hidden when session not active');
     });
   });
