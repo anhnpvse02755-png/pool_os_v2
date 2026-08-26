@@ -2,59 +2,93 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_service.dart';
 import '../../../core/services/coach_types.dart';
 
+/// PoolOS Analysis/Progress Screen - Redesigned with Minimalist Luxury
 class AnalysisScreen extends ConsumerWidget {
   const AnalysisScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
     final summaryAsync = ref.watch(performanceSummaryProvider);
     final weaknessesAsync = ref.watch(weaknessAnalysisProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Phân tích'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Overview Card
-            summaryAsync.when(
-              data: (summary) => _OverviewCard(summary: summary),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox(),
+      backgroundColor: AppColors.background(brightness),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // App Bar
+            SliverAppBar(
+              floating: true,
+              backgroundColor: AppColors.background(brightness),
+              elevation: 0,
+              title: Text(
+                'Progress',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary(brightness),
+                ),
+              ),
             ),
 
-            const SizedBox(height: 24),
-
-            // Strengths & Weaknesses
-            weaknessesAsync.when(
-              data: (weaknesses) => _WeaknessesSection(weaknesses: weaknesses),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox(),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Recommendations
-            Text(
-              'Khuyến nghị',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            // Content
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.space4),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Overview Card
+                  summaryAsync.when(
+                    data: (summary) => _OverviewCard(
+                      summary: summary,
+                      brightness: brightness,
+                    ),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (_, __) => const SizedBox(),
                   ),
-            ),
-            const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.space6),
 
-            summaryAsync.when(
-              data: (summary) => _RecommendationsSection(summary: summary),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const SizedBox(),
+                  // Stats Row
+                  summaryAsync.when(
+                    data: (summary) => _StatsRow(
+                      summary: summary,
+                      brightness: brightness,
+                    ),
+                    loading: () => const SizedBox(),
+                    error: (_, __) => const SizedBox(),
+                  ),
+                  const SizedBox(height: AppSpacing.space6),
+
+                  // Weaknesses Section
+                  weaknessesAsync.when(
+                    data: (weaknesses) => _WeaknessesSection(
+                      weaknesses: weaknesses,
+                      brightness: brightness,
+                    ),
+                    loading: () => const SizedBox(),
+                    error: (_, __) => const SizedBox(),
+                  ),
+                  const SizedBox(height: AppSpacing.space6),
+
+                  // Recommendations Section
+                  summaryAsync.when(
+                    data: (summary) => _RecommendationsSection(
+                      summary: summary,
+                      brightness: brightness,
+                    ),
+                    loading: () => const SizedBox(),
+                    error: (_, __) => const SizedBox(),
+                  ),
+                  const SizedBox(height: 100), // Bottom nav spacing
+                ]),
+              ),
             ),
           ],
         ),
@@ -63,60 +97,80 @@ class AnalysisScreen extends ConsumerWidget {
   }
 }
 
+/// Overview Card with Gradient
 class _OverviewCard extends StatelessWidget {
   final PerformanceSummary summary;
+  final Brightness brightness;
 
-  const _OverviewCard({required this.summary});
+  const _OverviewCard({
+    required this.summary,
+    required this.brightness,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final accentColor = AppColors.accentColor(brightness);
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.space6),
       decoration: BoxDecoration(
         gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            Colors.indigo,
-            Colors.indigo.withValues(alpha: 0.8),
+            accentColor,
+            accentColor.withValues(alpha: 0.8),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.analytics, color: Colors.white),
-              const SizedBox(width: 8),
+              Icon(Icons.analytics, color: Colors.white, size: 20),
+              const SizedBox(width: AppSpacing.space2),
               const Text(
-                'Tổng quan',
+                'Overview',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpacing.space5),
+
           Row(
             children: [
               Expanded(
                 child: _OverviewStat(
-                  label: 'Tỷ lệ thành công',
-                  value: '${summary.overallAccuracy}%',
-                ),
-              ),
-              Expanded(
-                child: _OverviewStat(
-                  label: 'Tổng buổi',
+                  label: 'Sessions',
                   value: '${summary.totalSessions}',
+                  brightness: brightness,
                 ),
               ),
               Expanded(
                 child: _OverviewStat(
-                  label: 'Tổng bi',
+                  label: 'Shots',
                   value: '${summary.totalShots}',
+                  brightness: brightness,
+                ),
+              ),
+              Expanded(
+                child: _OverviewStat(
+                  label: 'Accuracy',
+                  value: '${summary.overallAccuracy}%',
+                  brightness: brightness,
                 ),
               ),
             ],
@@ -127,13 +181,16 @@ class _OverviewCard extends StatelessWidget {
   }
 }
 
+/// Overview Stat
 class _OverviewStat extends StatelessWidget {
   final String label;
   final String value;
+  final Brightness brightness;
 
   const _OverviewStat({
     required this.label,
     required this.value,
+    required this.brightness,
   });
 
   @override
@@ -144,7 +201,7 @@ class _OverviewStat extends StatelessWidget {
           value,
           style: const TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
             fontSize: 24,
           ),
         ),
@@ -153,19 +210,121 @@ class _OverviewStat extends StatelessWidget {
           label,
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.8),
-            fontSize: 11,
+            fontSize: 12,
           ),
-          textAlign: TextAlign.center,
         ),
       ],
     );
   }
 }
 
+/// Stats Row
+class _StatsRow extends StatelessWidget {
+  final PerformanceSummary summary;
+  final Brightness brightness;
+
+  const _StatsRow({
+    required this.summary,
+    required this.brightness,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _StatCard(
+            icon: Icons.local_fire_department,
+            value: '${summary.streakDays}',
+            label: 'Day Streak',
+            color: AppColors.gold,
+            brightness: brightness,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.space3),
+        Expanded(
+          child: _StatCard(
+            icon: Icons.fitness_center,
+            value: '${summary.totalSessions}',
+            label: 'Total Sessions',
+            color: AppColors.success,
+            brightness: brightness,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.space3),
+        Expanded(
+          child: _StatCard(
+            icon: Icons.track_changes,
+            value: '${summary.weakestDrill?.accuracy ?? 0}%',
+            label: 'Needs Work',
+            color: AppColors.warning,
+            brightness: brightness,
+          ),
+        ),
+      ],
+    ).animate().fadeIn(delay: 100.ms);
+  }
+}
+
+/// Stat Card
+class _StatCard extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+  final Color color;
+  final Brightness brightness;
+
+  const _StatCard({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.color,
+    required this.brightness,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        boxShadow: AppShadows.sm(brightness),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: AppSpacing.space2),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary(brightness),
+            ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: AppColors.textSecondary(brightness),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Weaknesses Section
 class _WeaknessesSection extends StatelessWidget {
   final List<WeaknessAnalysis> weaknesses;
+  final Brightness brightness;
 
-  const _WeaknessesSection({required this.weaknesses});
+  const _WeaknessesSection({
+    required this.weaknesses,
+    required this.brightness,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -174,33 +333,39 @@ class _WeaknessesSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.trending_down, color: Colors.red, size: 20),
-            const SizedBox(width: 8),
+            Icon(Icons.trending_down, color: AppColors.error, size: 20),
+            const SizedBox(width: AppSpacing.space2),
             Text(
-              'Điểm yếu cần cải thiện',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              'AREAS TO IMPROVE',
+              style: TextStyle(
+                color: AppColors.textSecondary(brightness),
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.5,
+              ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.space3),
 
         if (weaknesses.isEmpty)
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.space4),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              boxShadow: AppShadows.sm(brightness),
             ),
             child: Row(
               children: [
-                Icon(Icons.check_circle, color: AppTheme.primaryGreen),
-                const SizedBox(width: 12),
-                const Expanded(
+                Icon(Icons.check_circle, color: AppColors.success, size: 20),
+                const SizedBox(width: AppSpacing.space3),
+                Expanded(
                   child: Text(
-                    'Tuyệt vời! Bạn không có điểm yếu nào được phát hiện.',
-                    style: TextStyle(color: AppTheme.primaryGreen),
+                    'Great job! No weaknesses detected.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary(brightness),
+                    ),
                   ),
                 ),
               ],
@@ -209,34 +374,36 @@ class _WeaknessesSection extends StatelessWidget {
         else
           ...weaknesses.take(3).map((w) {
             return Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _WeaknessCard(weakness: w),
+              padding: const EdgeInsets.only(bottom: AppSpacing.space2),
+              child: _WeaknessCard(
+                weakness: w,
+                brightness: brightness,
+              ),
             );
           }),
       ],
-    );
+    ).animate().fadeIn(delay: 200.ms);
   }
 }
 
+/// Weakness Card
 class _WeaknessCard extends StatelessWidget {
   final WeaknessAnalysis weakness;
+  final Brightness brightness;
 
-  const _WeaknessCard({required this.weakness});
+  const _WeaknessCard({
+    required this.weakness,
+    required this.brightness,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.red.shade100),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-          ),
-        ],
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        boxShadow: AppShadows.sm(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,43 +411,41 @@ class _WeaknessCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.space2,
+                  vertical: AppSpacing.space1,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade50,
-                  borderRadius: BorderRadius.circular(8),
+                  color: AppColors.errorSubtleLight,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
                   '${weakness.currentRate}%',
                   style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
+                    color: AppColors.error,
+                    fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.space3),
               Expanded(
                 child: Text(
                   weakness.drillName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(brightness),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.space2),
           Text(
             weakness.suggestion,
             style: TextStyle(
-              color: Colors.grey.shade600,
+              color: AppColors.textSecondary(brightness),
               fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${weakness.attempts} lần thử',
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: 11,
             ),
           ),
         ],
@@ -289,100 +454,81 @@ class _WeaknessCard extends StatelessWidget {
   }
 }
 
+/// Recommendations Section
 class _RecommendationsSection extends StatelessWidget {
   final PerformanceSummary summary;
+  final Brightness brightness;
 
-  const _RecommendationsSection({required this.summary});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _RecommendationCard(
-          icon: Icons.fitness_center,
-          title: 'Tập trung vào điểm yếu',
-          description: 'Dành thời gian luyện tập các kỹ năng có tỷ lệ thành công thấp.',
-          color: Colors.orange,
-        ),
-        const SizedBox(height: 8),
-        _RecommendationCard(
-          icon: Icons.timer,
-          title: 'Luyện tập đều đặn',
-          description: 'Tập ít nhất 3 lần/tuần để cải thiện nhanh hơn.',
-          color: Colors.blue,
-        ),
-        const SizedBox(height: 8),
-        _RecommendationCard(
-          icon: Icons.psychology,
-          title: 'Học lý thuyết',
-          description: 'Đọc các bài viết trong Knowledge Library để hiểu rõ hơn.',
-          color: Colors.green,
-        ),
-      ],
-    ).animate().fadeIn(delay: 200.ms);
-  }
-}
-
-class _RecommendationCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final Color color;
-
-  const _RecommendationCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.color,
+  const _RecommendationsSection({
+    required this.summary,
+    required this.brightness,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
+    final accentColor = AppColors.accentColor(brightness);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'RECOMMENDATIONS',
+          style: TextStyle(
+            color: AppColors.textSecondary(brightness),
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: color),
+        ),
+        const SizedBox(height: AppSpacing.space3),
+
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: AppShadows.sm(brightness),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 12,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: accentColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    ),
+                    child: Icon(Icons.auto_awesome, color: accentColor, size: 20),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: AppSpacing.space3),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Focus on ${summary.weakestDrill?.drillName ?? "aiming drills"}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary(brightness),
+                          ),
+                        ),
+                        Text(
+                          summary.weakestDrill?.suggestion ?? 'Keep practicing!',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary(brightness),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ).animate().fadeIn(delay: 300.ms);
   }
 }

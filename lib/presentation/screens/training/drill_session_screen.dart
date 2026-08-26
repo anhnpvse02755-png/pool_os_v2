@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/providers/training_provider.dart';
@@ -13,6 +15,8 @@ import '../../../data/models/personal_best.dart';
 import '../../../data/repositories/personal_best_repository.dart';
 import '../../../domain/services/drill_session_recovery_service.dart';
 
+/// PoolOS Drill Session Screen - Redesigned with Minimalist Luxury
+/// Recording interface for training drills
 class DrillSessionScreen extends ConsumerStatefulWidget {
   final String drillCode;
 
@@ -29,8 +33,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   String? _error;
   Drill? _drill;
 
-  // Sprint 7B: custom target — user picks how many reps to do.
-  // Defaults to the level's default attempts if not provided via query param.
+  // Sprint 7B: custom target
   late int targetReps;
 
   // Shot recording
@@ -40,19 +43,14 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   DrillSession? _session;
   late final DrillSessionRecoveryService _recovery;
 
-  // Sprint-17 Part 3: Track whether auto-start has been triggered.
-  // Prevents duplicate session creation on rebuild.
+  // Sprint-17 Part 3: Track auto-start state
   bool _autoStarted = false;
-
-  // Sprint-17 Part 3: Track initialization state.
   bool _isInitialized = false;
 
   @override
   void initState() {
     print('[SPRINT17_STORAGE] SESSION_SCREEN_INIT_START');
     super.initState();
-    // Sprint-17 Part 9A: recovery service requires LocalStorageService to be initialized.
-    // This is now guaranteed by main.dart calling LocalStorageService.init().
     _recovery = DrillSessionRecoveryService(ref.read(drillSessionRepositoryProvider));
     print('[SPRINT17_STORAGE] SESSION_SCREEN_INIT: recovery service created');
     _loadDrill();
@@ -61,22 +59,9 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Sprint-17 Part 3: Extract auto-start logic into helper.
-    // Read query params and trigger auto-start if conditions met.
     _tryAutoStart();
   }
 
-  /// Sprint-17 Part 3: Helper to auto-start session when navigating from drill detail.
-  /// Called from:
-  /// 1. didChangeDependencies() — when widget is first built
-  /// 2. _loadDrill() completion — when drill async load finishes
-  ///
-  /// Guards against:
-  /// - Duplicate auto-start (tracked via _autoStarted)
-  /// - Starting while session already active
-  /// - Starting if drill not yet loaded
-  /// - Starting if no 'level' query param (not from drill detail)
-  /// - Starting after widget disposed
   void _tryAutoStart() {
     if (!mounted) return;
     if (_autoStarted) return;
@@ -85,9 +70,8 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
 
     final goState = GoRouterState.of(context);
     final level = goState.uri.queryParameters['level'];
-    if (level == null) return; // Not from drill detail — don't auto-start
+    if (level == null) return;
 
-    // Sprint 7B: read custom target reps from query param.
     final targetParam = goState.uri.queryParameters['target'];
     if (targetParam != null) {
       final t = int.tryParse(targetParam);
@@ -96,10 +80,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       }
     }
 
-    // Mark as started BEFORE async call to prevent race conditions
     _autoStarted = true;
-
-    // Defer to post-frame to avoid setState during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _startSession();
     });
@@ -118,7 +99,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     } else {
       setState(() {
         _drill = drill;
-        // Initialize target to level default if not yet set via query param.
         if (!_isInitialized) {
           targetReps = drill.levels.first.attempts;
           print('[SPRINT17_FLOW] LOAD_DRILL: set targetReps=$targetReps');
@@ -127,9 +107,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
         _error = null;
       });
 
-      // Sprint-17 Part 3: Trigger auto-start after drill loads.
-      // This fixes the race condition where didChangeDependencies()
-      // fired before _drill was set.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _tryAutoStart();
       });
@@ -145,7 +122,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     final player = await ref.read(currentPlayerProvider.future);
     print('[SPRINT17_FLOW] START_SESSION: player=${player?.id ?? "null"}');
     if (player == null) {
-      // No player profile — cannot persist. Surface failure cleanly.
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cần hoàn tất hồ sơ trước khi tập.')),
@@ -161,7 +137,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     );
 
     print('[SPRINT17_STORAGE] START_SESSION: recovery.pause ENTER');
-    await _recovery.pause(session); // creates the active session row.
+    await _recovery.pause(session);
     print('[SPRINT17_STORAGE] START_SESSION: recovery.pause COMPLETE');
     if (!mounted) return;
 
@@ -193,9 +169,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       lastShotResult = result;
     });
 
-    // Sprint 7B: auto-finish when user reaches their target reps.
     if (currentRep >= targetReps) {
-      // Small delay so the success/miss feedback animation plays first.
       await Future<void>.delayed(const Duration(milliseconds: 700));
       if (!mounted) return;
       await _finishSession();
@@ -207,16 +181,9 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     if (session == null) return;
     final completed = await _recovery.complete(session);
     if (!mounted) return;
-    // Sprint 3A Task 3: commit PersonalBest at the completion boundary.
-    // Completion Experience remains a read-only View — it must not
-    // mutate business data so re-entry / refresh / deep-link stay
-    // side-effect free.
     await _commitPersonalBest(completed);
-    // Sprint 4A Task 10: sync to TrainingSession for history display.
     await _syncToTrainingHistory(completed);
     if (!mounted) return;
-    // Sprint 3A Task 2: navigate to the dedicated Completion Experience
-    // surface instead of falling back to the instructions view.
     context.push(
       '/training/session/complete?drill=${widget.drillCode}',
       extra: completed,
@@ -257,19 +224,14 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     }
   }
 
-  /// Sprint 4A Task 10: sync completed session to TrainingSession for history.
-  /// Sprint 4A Task 13: update DrillProgress for Coach AI.
-  /// Sprint-10C P0: Wire to TrainingNotifier so Coach AI receives updates.
   Future<void> _syncToTrainingHistory(DrillSession completed) async {
     final drillRepo = ref.read(drillRepositoryProvider);
     final trainingNotifier = ref.read(trainingNotifierProvider.notifier);
 
-    // Save to TrainingNotifier (what Coach listens to)
     final trainingSessionMap = completed.toTrainingSessionMap();
     final trainingSession = TrainingSession.fromJson(trainingSessionMap);
     await trainingNotifier.addSession(trainingSession);
 
-    // Also save to drill repository for progress tracking.
     final progressList = await drillRepo.getUserProgress();
     final existingProgress = progressList
         .where((p) => p.drillCode == widget.drillCode)
@@ -292,57 +254,49 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     // Show error screen if drill not found
     if (_error != null) {
       return Scaffold(
+        backgroundColor: AppColors.background(brightness),
         appBar: AppBar(
-          title: const Text('Lỗi'),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.pop(),
-          ),
+          backgroundColor: AppColors.background(brightness),
+          title: const Text('Error'),
         ),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.space6),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   Icons.error_outline,
                   size: 80,
-                  color: Colors.orange.shade400,
+                  color: AppColors.error,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.space6),
                 Text(
-                  'Không tìm thấy bài tập này',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+                  'Drill not found',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(brightness),
                   ),
-                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpacing.space3),
                 Text(
                   _error!,
                   style: TextStyle(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
-                ElevatedButton.icon(
+                const SizedBox(height: AppSpacing.space8),
+                ElevatedButton(
                   onPressed: () => context.pop(),
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Quay lại'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
-                    ),
-                  ),
+                  child: const Text('Go Back'),
                 ),
               ],
             ),
@@ -354,66 +308,85 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     // Show loading if drill not loaded yet
     if (_drill == null) {
       return Scaffold(
-        appBar: AppBar(),
+        backgroundColor: AppColors.background(brightness),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    // Sprint-17 Part 6: Show active session UI directly.
-    // Instructions screen removed — user goes straight to recording.
-    // Auto-start initializes session on mount.
+    // Active session UI
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_drill!.nameVi),
-        actions: [
-          if (isSessionActive)
-            TextButton.icon(
-              onPressed: () => _finishSession(),
-              icon: const Icon(Icons.stop, color: Colors.red),
-              label: const Text('Kết thúc', style: TextStyle(color: Colors.red)),
+      backgroundColor: AppColors.background(brightness),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header
+            _SessionHeader(
+              drillName: _drill!.nameVi,
+              isActive: isSessionActive,
+              onStop: _finishSession,
+              brightness: brightness,
             ),
-        ],
+
+            // Main content
+            Expanded(
+              child: _buildActiveSession(brightness),
+            ),
+
+            // Recording bar
+            if (isSessionActive)
+              _RecordingBar(
+                onSuccess: () => _recordShot(ShotResult.success),
+                onMiss: () => _recordShot(ShotResult.miss),
+                brightness: brightness,
+              ),
+          ],
+        ),
       ),
-      // Sprint-17 Part 8/9: Recording bar is now part of body for reliable web visibility.
-      // Recording bar is rendered INSIDE _buildActiveSession() to avoid Column flex conflicts.
-      body: Column(
-        children: [
-          Expanded(child: _buildActiveSession()),
-        ],
-      ),
-      // Removed bottomNavigationBar - now using Column for reliability
     );
   }
 
-  Widget _buildActiveSession() {
+  Widget _buildActiveSession(Brightness brightness) {
+    final accentColor = AppColors.accentColor(brightness);
+
     return Column(
       children: [
-        // Progress
+        // Progress stats
         Container(
-          padding: const EdgeInsets.all(16),
-          color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          margin: const EdgeInsets.all(AppSpacing.space4),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: AppShadows.sm(brightness),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _StatItem(
-                label: 'Lần',
-                value: '$currentRep',
-                total: '/ $targetReps',
+              _StatDisplay(
+                value: '$currentRep/$targetReps',
+                label: 'Reps',
+                brightness: brightness,
               ),
-              _StatItem(
-                label: 'Thành công',
-                value: '$successCount',
+              Container(
+                width: 1,
+                height: 40,
+                color: AppColors.border(brightness),
               ),
-              _StatItem(
-                label: 'Tỷ lệ',
+              _StatDisplay(
                 value: '${successRate.toStringAsFixed(0)}%',
-                color: successRate >= 70 ? Colors.green : Colors.orange,
+                label: 'Accuracy',
+                brightness: brightness,
+                valueColor: successRate >= 70
+                    ? AppColors.success
+                    : successRate >= 50
+                        ? AppColors.warning
+                        : AppColors.error,
               ),
             ],
           ),
-        ),
+        ).animate().fadeIn(),
 
-        // Visual feedback - takes remaining space but NOT all
+        // Visual feedback area
         Expanded(
           child: Center(
             child: Column(
@@ -421,115 +394,217 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
               children: [
                 // Last result feedback
                 if (lastShotResult != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: lastShotResult == ShotResult.success
-                          ? Colors.green.withValues(alpha: 0.1)
-                          : Colors.red.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      lastShotResult == ShotResult.success
-                          ? Icons.check_circle
-                          : Icons.cancel,
-                      size: 80,
-                      color: lastShotResult == ShotResult.success
-                          ? Colors.green
-                          : Colors.red,
-                    ),
+                  _LastResultFeedback(
+                    result: lastShotResult!,
+                    brightness: brightness,
                   ).animate().scale(duration: 200.ms),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.space6),
 
+                // Status text
                 Text(
                   lastShotResult != null
-                      ? (lastShotResult == ShotResult.success ? 'Thành công!' : 'Chưa được')
-                      : 'Bạn đã sẵn sàng!',
-                  style: Theme.of(context).textTheme.headlineSmall,
+                      ? (lastShotResult == ShotResult.success ? 'Success!' : 'Miss')
+                      : 'Ready to start!',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(brightness),
+                  ),
                 ),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.space2),
 
                 Text(
-                  'Ấn nút bên dưới sau mỗi lần đánh',
-                  style: TextStyle(color: AppTheme.textSecondary),
+                  'Tap buttons below after each shot',
+                  style: TextStyle(
+                    color: AppColors.textSecondary(brightness),
+                    fontSize: 14,
+                  ),
                 ),
               ],
             ),
           ),
         ),
-
-        // Sprint-17 Part 9: Recording bar moved INSIDE _buildActiveSession()
-        // to avoid Column flex constraint conflicts where parent Expanded
-        // causes inner Expanded to consume all available height.
-        if (isSessionActive)
-          _buildRecordingBar(),
       ],
     );
   }
+}
 
-  Widget _buildRecordingBar() {
-    // Sprint-17 Part 9: Recording controls - simplified for reliable visibility
+/// Session Header
+class _SessionHeader extends StatelessWidget {
+  final String drillName;
+  final bool isActive;
+  final VoidCallback onStop;
+  final Brightness brightness;
+
+  const _SessionHeader({
+    required this.drillName,
+    required this.isActive,
+    required this.onStop,
+    required this.brightness,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: AppColors.textPrimary(brightness),
+            ),
+            onPressed: () => context.pop(),
+          ),
+          Expanded(
+            child: Text(
+              drillName,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary(brightness),
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          if (isActive)
+            TextButton.icon(
+              onPressed: onStop,
+              icon: Icon(Icons.stop, color: AppColors.error, size: 18),
+              label: Text(
+                'Stop',
+                style: TextStyle(color: AppColors.error),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Stat Display Widget
+class _StatDisplay extends StatelessWidget {
+  final String value;
+  final String label;
+  final Brightness brightness;
+  final Color? valueColor;
+
+  const _StatDisplay({
+    required this.value,
+    required this.label,
+    required this.brightness,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: valueColor ?? AppColors.textPrimary(brightness),
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.textSecondary(brightness),
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Last Result Feedback Widget
+class _LastResultFeedback extends StatelessWidget {
+  final ShotResult result;
+  final Brightness brightness;
+
+  const _LastResultFeedback({
+    required this.result,
+    required this.brightness,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isSuccess = result == ShotResult.success;
+    final color = isSuccess ? AppColors.success : AppColors.error;
+    final bgColor = isSuccess ? AppColors.successSubtleLight : AppColors.errorSubtleLight;
+
+    return Container(
+      width: 120,
+      height: 120,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: bgColor,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(
+        isSuccess ? Icons.check_circle : Icons.cancel,
+        size: 80,
+        color: color,
+      ),
+    );
+  }
+}
+
+/// Recording Bar with Success/Miss buttons
+class _RecordingBar extends StatelessWidget {
+  final VoidCallback onSuccess;
+  final VoidCallback onMiss;
+  final Brightness brightness;
+
+  const _RecordingBar({
+    required this.onSuccess,
+    required this.onMiss,
+    required this.brightness,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Theme.of(context).brightness == Brightness.light
+                ? const Color(0x0D000000)
+                : const Color(0x26000000),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
         ],
       ),
       child: SafeArea(
-        top: false, // Only safe area at bottom
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        top: false,
+        child: Row(
           children: [
-            Row(
-              children: [
-                // Success button
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _recordShot(ShotResult.success),
-                    icon: const Icon(Icons.check),
-                    label: const Text('Thành công'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                // Miss button
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _recordShot(ShotResult.miss),
-                    icon: const Icon(Icons.close),
-                    label: const Text('Trượt'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                  ),
-                ),
-              ],
+            // Success button
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.check,
+                label: 'SUCCESS',
+                color: AppColors.success,
+                brightness: brightness,
+                onTap: onSuccess,
+              ),
             ),
-            const SizedBox(height: 8),
-            // End session button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _finishSession(),
-                icon: const Icon(Icons.stop, color: Colors.red),
-                label: const Text('Kết thúc', style: TextStyle(color: Colors.red)),
+            const SizedBox(width: AppSpacing.space3),
+            // Miss button
+            Expanded(
+              child: _ActionButton(
+                icon: Icons.close,
+                label: 'MISS',
+                color: AppColors.error,
+                brightness: brightness,
+                onTap: onMiss,
               ),
             ),
           ],
@@ -539,54 +614,70 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 }
 
-class _StatItem extends StatelessWidget {
+/// Action Button Widget
+class _ActionButton extends StatefulWidget {
+  final IconData icon;
   final String label;
-  final String value;
-  final String? total;
-  final Color? color;
+  final Color color;
+  final Brightness brightness;
+  final VoidCallback onTap;
 
-  const _StatItem({
+  const _ActionButton({
+    required this.icon,
     required this.label,
-    required this.value,
-    this.total,
-    this.color,
+    required this.color,
+    required this.brightness,
+    required this.onTap,
   });
 
   @override
+  State<_ActionButton> createState() => _ActionButtonState();
+}
+
+class _ActionButtonState extends State<_ActionButton> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: AppTheme.textSecondary,
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              value,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
-                color: color ?? AppTheme.primaryGreen,
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) => setState(() => _isPressed = false),
+      onTapCancel: () => setState(() => _isPressed = false),
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+        child: Container(
+          height: 56,
+          decoration: BoxDecoration(
+            color: widget.color,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            boxShadow: [
+              BoxShadow(
+                color: widget.color.withValues(alpha: 0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
               ),
-            ),
-            if (total != null)
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(widget.icon, color: Colors.white, size: 24),
+              const SizedBox(width: AppSpacing.space2),
               Text(
-                total!,
-                style: TextStyle(
-                  color: AppTheme.textSecondary,
+                widget.label,
+                style: const TextStyle(
                   fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
                 ),
               ),
-          ],
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }

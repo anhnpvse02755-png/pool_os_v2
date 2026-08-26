@@ -3,332 +3,307 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/spacing.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../knowledge/knowledge_provider.dart';
 
+/// PoolOS Training Center Screen - Redesigned with Minimalist Luxury
 class TrainingCenterScreen extends ConsumerWidget {
   const TrainingCenterScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
     final knowledgeState = ref.watch(knowledgeProvider);
     final knowledgeCount = knowledgeState.allKnowledge.length;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Training Center'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            onPressed: () => context.push('/training/history'),
-            tooltip: 'Lịch sử tập',
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Learning Paths - AI Personalized
-            _buildSectionHeader(
-              context,
-              'Lộ trình của bạn',
-              subtitle: 'AI cá nhân hóa',
-              icon: Icons.auto_awesome,
-              color: AppTheme.accentGold,
-            ),
-            const SizedBox(height: 12),
-            _LearningPathsCard(
-              onTapRecommended: () => context.push('/training/recommended'),
-              onStartDrill: (code) => context.push('/training/session/new?drill=$code'),
-            ).animate().fadeIn(),
-
-            const SizedBox(height: 24),
-
-            // Quick Actions
-            Row(
-              children: [
-                Expanded(
-                  child: _QuickActionTile(
-                    icon: Icons.school,
-                    title: 'All Drills',
-                    subtitle: '${DrillLibrary.getAllDrills().length} bài tập',
-                    color: AppTheme.primaryGreen,
-                    onTap: () => context.push('/training/drills'),
-                  ),
+      backgroundColor: AppColors.background(brightness),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // App Bar
+            SliverAppBar(
+              floating: true,
+              backgroundColor: AppColors.background(brightness),
+              elevation: 0,
+              title: Text(
+                'Train',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary(brightness),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _QuickActionTile(
-                    icon: Icons.menu_book,
-                    title: 'Knowledge',
-                    subtitle: '$knowledgeCount bài viết',
-                    color: Colors.blue,
-                    onTap: () => context.push('/training/knowledge'),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.history,
+                    color: AppColors.textSecondary(brightness),
                   ),
+                  onPressed: () => context.push('/training/history'),
                 ),
               ],
-            ).animate().fadeIn(delay: 100.ms),
-
-            const SizedBox(height: 24),
-
-            // AI Coach
-            _buildSectionHeader(
-              context,
-              'AI Coach',
-              subtitle: 'Phân tích & đề xuất',
-              icon: Icons.psychology,
-              color: Colors.purple,
             ),
-            const SizedBox(height: 12),
-            _AICoachCard(
-              onTap: () => context.push('/coach'),
-            ).animate().fadeIn(delay: 200.ms),
 
-            const SizedBox(height: 24),
+            // Content
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.space4),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Search bar
+                  _SearchBar(brightness: brightness),
+                  const SizedBox(height: AppSpacing.space6),
 
-            // Progress
-            _buildSectionHeader(
-              context,
-              'Tiến độ của bạn',
-              subtitle: 'Theo dõi hành trình',
-              icon: Icons.trending_up,
-              color: Colors.teal,
+                  // Quick Actions
+                  _QuickActionsSection(
+                    drillsCount: DrillLibrary.getAllDrills().length,
+                    knowledgeCount: knowledgeCount,
+                    brightness: brightness,
+                  ),
+                  const SizedBox(height: AppSpacing.space6),
+
+                  // Categories
+                  _CategoriesSection(brightness: brightness),
+                  const SizedBox(height: 100), // Bottom nav spacing
+                ]),
+              ),
             ),
-            const SizedBox(height: 12),
-            _ProgressCard(
-              onTap: () => context.push('/training/progress'),
-            ).animate().fadeIn(delay: 300.ms),
-
-            const SizedBox(height: 24),
-
-            // Drill Categories
-            _buildSectionHeader(
-              context,
-              'Thư viện bài tập',
-              subtitle: 'Tất cả đều mở - Tự chọn bài tập bạn thích',
-              icon: Icons.fitness_center,
-              color: AppTheme.primaryGreen,
-            ),
-            const SizedBox(height: 12),
-            ...DrillLibrary.categories.asMap().entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _DrillCategoryTile(
-                  category: entry.value,
-                  color: _getCategoryColor(entry.key),
-                  onTap: () => context.push('/training/drills/${entry.value.id}'),
-                ),
-              ).animate().fadeIn(delay: (400 + entry.key * 50).ms);
-            }),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildSectionHeader(
-    BuildContext context,
-    String title, {
-    String? subtitle,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Row(
+/// Search Bar Widget
+class _SearchBar extends StatelessWidget {
+  final Brightness brightness;
+
+  const _SearchBar({required this.brightness});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        boxShadow: AppShadows.sm(brightness),
+      ),
+      child: TextField(
+        readOnly: true,
+        onTap: () => context.push('/training/drills'),
+        decoration: InputDecoration(
+          hintText: 'Search drills...',
+          prefixIcon: Icon(
+            Icons.search,
+            color: AppColors.textTertiary(brightness),
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space4,
+            vertical: AppSpacing.space3,
+          ),
+        ),
+      ),
+    ).animate().fadeIn();
+  }
+}
+
+/// Quick Actions Section
+class _QuickActionsSection extends StatelessWidget {
+  final int drillsCount;
+  final int knowledgeCount;
+  final Brightness brightness;
+
+  const _QuickActionsSection({
+    required this.drillsCount,
+    required this.knowledgeCount,
+    required this.brightness,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accentColor = AppColors.accentColor(brightness);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
+        Text(
+          'QUICK START',
+          style: TextStyle(
+            color: AppColors.textSecondary(brightness),
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
           ),
-          child: Icon(icon, color: color, size: 20),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        const SizedBox(height: AppSpacing.space3),
+
+        Row(
+          children: [
+            Expanded(
+              child: _QuickActionCard(
+                icon: Icons.fitness_center,
+                title: 'All Drills',
+                subtitle: '$drillsCount exercises',
+                color: accentColor,
+                brightness: brightness,
+                onTap: () => context.push('/training/drills'),
               ),
-              if (subtitle != null)
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-            ],
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            Expanded(
+              child: _QuickActionCard(
+                icon: Icons.menu_book,
+                title: 'Knowledge',
+                subtitle: '$knowledgeCount articles',
+                color: AppColors.gold,
+                brightness: brightness,
+                onTap: () => context.push('/training/knowledge'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ).animate().fadeIn(delay: 100.ms);
+  }
+}
+
+/// Quick Action Card
+class _QuickActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Color color;
+  final Brightness brightness;
+  final VoidCallback onTap;
+
+  const _QuickActionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.brightness,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.space4),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          boxShadow: AppShadows.sm(brightness),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(height: AppSpacing.space3),
+            Text(
+              title,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary(brightness),
+              ),
+            ),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary(brightness),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Categories Section
+class _CategoriesSection extends StatelessWidget {
+  final Brightness brightness;
+
+  const _CategoriesSection({required this.brightness});
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = DrillLibrary.categories;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'CATEGORIES',
+          style: TextStyle(
+            color: AppColors.textSecondary(brightness),
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
           ),
         ),
+        const SizedBox(height: AppSpacing.space3),
+
+        ...categories.asMap().entries.map((entry) {
+          final index = entry.key;
+          final category = entry.value;
+          final color = _getCategoryColor(index, brightness);
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.space2),
+            child: _CategoryTile(
+              title: category.nameVi,
+              subtitle: '${category.drills.length} drills',
+              color: color,
+              brightness: brightness,
+              onTap: () => context.push('/training/drills/${category.id}'),
+            ),
+          ).animate().fadeIn(delay: (200 + index * 50).ms);
+        }),
       ],
     );
   }
 
-  Color _getCategoryColor(int index) {
+  Color _getCategoryColor(int index, Brightness brightness) {
     final colors = [
-      Colors.blue,
-      Colors.orange,
+      AppColors.accentColor(brightness),
+      AppColors.warning,
       Colors.purple,
-      Colors.teal,
+      AppColors.success,
       Colors.pink,
     ];
     return colors[index % colors.length];
   }
 }
 
-class _LearningPathsCard extends StatelessWidget {
-  final VoidCallback onTapRecommended;
-  final Function(String) onStartDrill;
-
-  const _LearningPathsCard({
-    required this.onTapRecommended,
-    required this.onStartDrill,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Honest message - no data yet
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppTheme.accentGold.withValues(alpha: 0.1),
-            AppTheme.accentGold.withValues(alpha: 0.05),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.accentGold.withValues(alpha: 0.3)),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Icon(Icons.auto_awesome, color: AppTheme.accentGold, size: 40),
-          const SizedBox(height: 12),
-          Text(
-            'Chưa có đề xuất cá nhân hóa',
-            style: TextStyle(
-              color: AppTheme.accentGold,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Tập ít nhất 1 bài tập để Coach AI phân tích và đưa ra đề xuất phù hợp với bạn.',
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 13,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          OutlinedButton.icon(
-            onPressed: () => context.push('/training/drills'),
-            icon: const Icon(Icons.school),
-            label: const Text('Xem bài tập'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RecommendedDrillTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final int stars;
-  final String reason;
-  final Color color;
-  final VoidCallback onStart;
-
-  const _RecommendedDrillTile({
-    required this.icon,
-    required this.title,
-    required this.stars,
-    required this.reason,
-    required this.color,
-    required this.onStart,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(width: 8),
-                    Row(
-                      children: List.generate(
-                        5,
-                        (i) => Icon(
-                          i < stars ? Icons.star : Icons.star_border,
-                          size: 12,
-                          color: AppTheme.accentGold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  reason,
-                  style: TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          TextButton(
-            onPressed: onStart,
-            child: const Text('Tập'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _QuickActionTile extends StatelessWidget {
-  final IconData icon;
+/// Category Tile
+class _CategoryTile extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color color;
+  final Brightness brightness;
   final VoidCallback onTap;
 
-  const _QuickActionTile({
-    required this.icon,
+  const _CategoryTile({
     required this.title,
     required this.subtitle,
     required this.color,
+    required this.brightness,
     required this.onTap,
   });
 
@@ -336,273 +311,55 @@ class _QuickActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.space4),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Text(
-              subtitle,
-              style: TextStyle(
-                color: color.withValues(alpha: 0.7),
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _AICoachCard extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _AICoachCard({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.purple.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.purple.withValues(alpha: 0.2)),
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          boxShadow: AppShadows.sm(brightness),
         ),
         child: Row(
           children: [
             Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: Colors.purple.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.psychology, color: Colors.purple),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'AI Coach phân tích & đề xuất',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Xem phân tích chi tiết từ Coach',
-                    style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.purple),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgressCard extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _ProgressCard({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    // Real progress data will be loaded from drill sessions
-    // Using default placeholder until data is available
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.teal.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.teal.withValues(alpha: 0.2)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Tiến độ tập luyện',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  'Xem chi tiết',
-                  style: TextStyle(
-                    color: Colors.teal,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Placeholder - real data loaded from drill sessions
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Hoàn thành bài tập để xem tiến độ',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgressItem extends StatelessWidget {
-  final String label;
-  final double progress;
-  final Color color;
-
-  const _ProgressItem({
-    required this.label,
-    required this.progress,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 60,
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 12),
-          ),
-        ),
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 8,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation(color),
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          '${(progress * 100).toInt()}%',
-          style: TextStyle(
-            color: color,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DrillCategoryTile extends StatelessWidget {
-  final DrillCategory category;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _DrillCategoryTile({
-    required this.category,
-    required this.color,
-    required this.onTap,
-  });
-
-  IconData _getIcon() {
-    switch (category.icon) {
-      case 'sports':
-        return Icons.sports;
-      case 'gps_fixed':
-        return Icons.gps_fixed;
-      case 'shield':
-        return Icons.shield;
-      case 'flash_on':
-        return Icons.flash_on;
-      case 'star':
-        return Icons.star;
-      default:
-        return Icons.fitness_center;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: Icon(_getIcon(), color: color),
+              child: Icon(
+                Icons.category,
+                color: color,
+                size: 20,
+              ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppSpacing.space3),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    category.name,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary(brightness),
                     ),
                   ),
                   Text(
-                    '${category.drills.length} bài tập',
+                    subtitle,
                     style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 13,
+                      fontSize: 12,
+                      color: AppColors.textSecondary(brightness),
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.grey.shade400),
+            Icon(
+              Icons.chevron_right,
+              color: AppColors.textTertiary(brightness),
+            ),
           ],
         ),
       ),
