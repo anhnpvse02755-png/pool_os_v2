@@ -1,0 +1,3380 @@
+[
+  {
+    "id": "bridge.adaptive_bridge",
+    "slug": "bridge-adaptive_bridge",
+    "title": "Adaptive Bridge",
+    "titleVi": "Kỹ Thuật Tay Chống Thích Ứng",
+    "content": "# Adaptive Bridge\n\nAdaptive Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kỹ Thuật Tay Chống Thích Ứng\n\nGiải thích về Kỹ Thuật Tay Chống Thích Ứng.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "adaptive bridge",
+      "bridge.adaptive_bridge"
+    ],
+    "keywords": [
+      "adaptive bridge",
+      "bridge.adaptive_bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.adjustment",
+    "slug": "bridge-adjustment",
+    "title": "Bridge Adjustment",
+    "titleVi": "Điều Chỉnh Tay Chống",
+    "content": "# Bridge Adjustment\n\nBridge Adjustment explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Điều Chỉnh Tay Chống\n\nGiải thích về Điều Chỉnh Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge adjustment",
+      "bridge.adjustment"
+    ],
+    "keywords": [
+      "bridge adjustment",
+      "bridge.adjustment"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.closed_bridge",
+    "slug": "bridge-closed_bridge",
+    "title": "Closed Bridge",
+    "titleVi": "Tay Chống Kín",
+    "content": "# Closed Bridge\n\nClosed Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tay Chống Kín\n\nGiải thích về Tay Chống Kín.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.closed_bridge",
+      "closed bridge"
+    ],
+    "keywords": [
+      "bridge.closed_bridge",
+      "closed bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.comfort_check",
+    "slug": "bridge-comfort_check",
+    "title": "Comfort Check",
+    "titleVi": "Kiểm Tra Thoải Mái Tay Chống",
+    "content": "# Comfort Check\n\nComfort Check explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kiểm Tra Thoải Mái Tay Chống\n\nGiải thích về Kiểm Tra Thoải Mái Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.comfort_check",
+      "comfort check"
+    ],
+    "keywords": [
+      "bridge.comfort_check",
+      "comfort check"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.consistency",
+    "slug": "bridge-consistency",
+    "title": "Bridge Consistency",
+    "titleVi": "Tính Nhất Quán Tay Chống",
+    "content": "# Bridge Consistency\n\nBridge Consistency explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tính Nhất Quán Tay Chống\n\nGiải thích về Tính Nhất Quán Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge consistency",
+      "bridge.consistency"
+    ],
+    "keywords": [
+      "bridge consistency",
+      "bridge.consistency"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.distance",
+    "slug": "bridge-distance",
+    "title": "Bridge Distance",
+    "titleVi": "Khoảng Cách Tay Chống",
+    "content": "# Bridge Distance\n\nBridge Distance explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Khoảng Cách Tay Chống\n\nGiải thích về Khoảng Cách Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge distance",
+      "bridge.distance"
+    ],
+    "keywords": [
+      "bridge distance",
+      "bridge.distance"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.dominant_eye",
+    "slug": "bridge-dominant_eye",
+    "title": "Dominant Eye Alignment",
+    "titleVi": "Căn Chỉnh Mắt Thuận",
+    "content": "# Dominant Eye Alignment\n\nDominant Eye Alignment explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Căn Chỉnh Mắt Thuận\n\nGiải thích về Căn Chỉnh Mắt Thuận.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.dominant_eye",
+      "dominant eye alignment"
+    ],
+    "keywords": [
+      "bridge.dominant_eye",
+      "dominant eye alignment"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.elevated",
+    "slug": "bridge-elevated",
+    "title": "Elevated Bridge",
+    "titleVi": "Tay Chống Nâng Cao",
+    "content": "# Elevated Bridge\n\nElevated Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tay Chống Nâng Cao\n\nGiải thích về Tay Chống Nâng Cao.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "bridge.elevated",
+      "elevated bridge"
+    ],
+    "keywords": [
+      "bridge.elevated",
+      "elevated bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.fatigue_management",
+    "slug": "bridge-fatigue_management",
+    "title": "Fatigue Management",
+    "titleVi": "Quản Lý Mỏi Tay Chống",
+    "content": "# Fatigue Management\n\nFatigue Management explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Quản Lý Mỏi Tay Chống\n\nGiải thích về Quản Lý Mỏi Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "bridge.fatigue_management",
+      "fatigue management"
+    ],
+    "keywords": [
+      "bridge.fatigue_management",
+      "fatigue management"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.finger_placement",
+    "slug": "bridge-finger_placement",
+    "title": "Finger Placement",
+    "titleVi": "Vị Trí Ngón Tay",
+    "content": "# Finger Placement\n\nFinger Placement explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Vị Trí Ngón Tay\n\nGiải thích về Vị Trí Ngón Tay.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.finger_placement",
+      "finger placement"
+    ],
+    "keywords": [
+      "bridge.finger_placement",
+      "finger placement"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.finger_spread",
+    "slug": "bridge-finger_spread",
+    "title": "Finger Spread",
+    "titleVi": "Kỹ Thuật Xòe Ngón",
+    "content": "# Finger Spread\n\nFinger Spread explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kỹ Thuật Xòe Ngón\n\nGiải thích về Kỹ Thuật Xòe Ngón.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.finger_spread",
+      "finger spread"
+    ],
+    "keywords": [
+      "bridge.finger_spread",
+      "finger spread"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.fundamentals",
+    "slug": "bridge-fundamentals",
+    "title": "Bridge Fundamentals",
+    "titleVi": "Nền Tảng Tay Chống",
+    "content": "# Bridge Fundamentals\n\nBridge Fundamentals explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nền Tảng Tay Chống\n\nGiải thích về Nền Tảng Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge fundamentals",
+      "bridge.fundamentals"
+    ],
+    "keywords": [
+      "bridge fundamentals",
+      "bridge.fundamentals"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.hand_position",
+    "slug": "bridge-hand_position",
+    "title": "Hand Position",
+    "titleVi": "Vị Trí Tay",
+    "content": "# Hand Position\n\nHand Position explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Vị Trí Tay\n\nGiải thích về Vị Trí Tay.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.hand_position",
+      "hand position"
+    ],
+    "keywords": [
+      "bridge.hand_position",
+      "hand position"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.high",
+    "slug": "bridge-high",
+    "title": "High Bridge",
+    "titleVi": "Tay Chống Cao",
+    "content": "# High Bridge\n\nHigh Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tay Chống Cao\n\nGiải thích về Tay Chống Cao.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.high",
+      "high bridge"
+    ],
+    "keywords": [
+      "bridge.high",
+      "high bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.index_finger_hook",
+    "slug": "bridge-index_finger_hook",
+    "title": "Index Finger Hook",
+    "titleVi": "Móc Ngón Trỏ",
+    "content": "# Index Finger Hook\n\nIndex Finger Hook explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Móc Ngón Trỏ\n\nGiải thích về Móc Ngón Trỏ.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "bridge.index_finger_hook",
+      "index finger hook"
+    ],
+    "keywords": [
+      "bridge.index_finger_hook",
+      "index finger hook"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.jump_bridge",
+    "slug": "bridge-jump_bridge",
+    "title": "Jump Bridge",
+    "titleVi": "Kỹ Thuật Tay Chống Nhảy",
+    "content": "# Jump Bridge\n\nJump Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kỹ Thuật Tay Chống Nhảy\n\nGiải thích về Kỹ Thuật Tay Chống Nhảy.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "bridge.jump_bridge",
+      "jump bridge"
+    ],
+    "keywords": [
+      "bridge.jump_bridge",
+      "jump bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.length",
+    "slug": "bridge-length",
+    "title": "Bridge Length",
+    "titleVi": "Chiều Dài Tay Chống",
+    "content": "# Bridge Length\n\nBridge Length explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Chiều Dài Tay Chống\n\nGiải thích về Chiều Dài Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge length",
+      "bridge.length"
+    ],
+    "keywords": [
+      "bridge length",
+      "bridge.length"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.level_check",
+    "slug": "bridge-level_check",
+    "title": "Level Check",
+    "titleVi": "Kiểm Tra Độ Ngang Tay Chống",
+    "content": "# Level Check\n\nLevel Check explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kiểm Tra Độ Ngang Tay Chống\n\nGiải thích về Kiểm Tra Độ Ngang Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.level_check",
+      "level check"
+    ],
+    "keywords": [
+      "bridge.level_check",
+      "level check"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.low",
+    "slug": "bridge-low",
+    "title": "Low Bridge",
+    "titleVi": "Tay Chống Thấp",
+    "content": "# Low Bridge\n\nLow Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tay Chống Thấp\n\nGiải thích về Tay Chống Thấp.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.low",
+      "low bridge"
+    ],
+    "keywords": [
+      "bridge.low",
+      "low bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.mastery_checklist",
+    "slug": "bridge-mastery_checklist",
+    "title": "Mastery Checklist",
+    "titleVi": "Danh Sách Kiểm Tra Thành Thạo",
+    "content": "# Mastery Checklist\n\nMastery Checklist explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Danh Sách Kiểm Tra Thành Thạo\n\nGiải thích về Danh Sách Kiểm Tra Thành Thạo.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "bridge.mastery_checklist",
+      "mastery checklist"
+    ],
+    "keywords": [
+      "bridge.mastery_checklist",
+      "mastery checklist"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.mechanical_bridge",
+    "slug": "bridge-mechanical_bridge",
+    "title": "Mechanical Bridge",
+    "titleVi": "Gậy Chống Cơ Học",
+    "content": "# Mechanical Bridge\n\nMechanical Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Gậy Chống Cơ Học\n\nGiải thích về Gậy Chống Cơ Học.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.mechanical_bridge",
+      "mechanical bridge"
+    ],
+    "keywords": [
+      "bridge.mechanical_bridge",
+      "mechanical bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.open_bridge",
+    "slug": "bridge-open_bridge",
+    "title": "Open Bridge",
+    "titleVi": "Tay Chống Mở",
+    "content": "# Open Bridge\n\nOpen Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tay Chống Mở\n\nGiải thích về Tay Chống Mở.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.open_bridge",
+      "open bridge"
+    ],
+    "keywords": [
+      "bridge.open_bridge",
+      "open bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.pressure",
+    "slug": "bridge-pressure",
+    "title": "Bridge Pressure",
+    "titleVi": "Áp Lực Tay Chống",
+    "content": "# Bridge Pressure\n\nBridge Pressure explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Áp Lực Tay Chống\n\nGiải thích về Áp Lực Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge pressure",
+      "bridge.pressure"
+    ],
+    "keywords": [
+      "bridge pressure",
+      "bridge.pressure"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.rail_bridge",
+    "slug": "bridge-rail_bridge",
+    "title": "Rail Bridge",
+    "titleVi": "Tay Chống Băng",
+    "content": "# Rail Bridge\n\nRail Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tay Chống Băng\n\nGiải thích về Tay Chống Băng.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.rail_bridge",
+      "rail bridge"
+    ],
+    "keywords": [
+      "bridge.rail_bridge",
+      "rail bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.spider_bridge",
+    "slug": "bridge-spider_bridge",
+    "title": "Spider Bridge",
+    "titleVi": "Đầu Nhện",
+    "content": "# Spider Bridge\n\nSpider Bridge explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Đầu Nhện\n\nGiải thích về Đầu Nhện.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.spider_bridge",
+      "spider bridge"
+    ],
+    "keywords": [
+      "bridge.spider_bridge",
+      "spider bridge"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.stability",
+    "slug": "bridge-stability",
+    "title": "Bridge Stability",
+    "titleVi": "Độ Ổn Định Tay Chống",
+    "content": "# Bridge Stability\n\nBridge Stability explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Độ Ổn Định Tay Chống\n\nGiải thích về Độ Ổn Định Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge stability",
+      "bridge.stability"
+    ],
+    "keywords": [
+      "bridge stability",
+      "bridge.stability"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.tension_release",
+    "slug": "bridge-tension_release",
+    "title": "Tension Release",
+    "titleVi": "Giải Phóng Căng Thẳng Tay Chống",
+    "content": "# Tension Release\n\nTension Release explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Giải Phóng Căng Thẳng Tay Chống\n\nGiải thích về Giải Phóng Căng Thẳng Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.tension_release",
+      "tension release"
+    ],
+    "keywords": [
+      "bridge.tension_release",
+      "tension release"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.thumb_channel",
+    "slug": "bridge-thumb_channel",
+    "title": "Thumb Channel",
+    "titleVi": "Rãnh Ngón Cái",
+    "content": "# Thumb Channel\n\nThumb Channel explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Rãnh Ngón Cái\n\nGiải thích về Rãnh Ngón Cái.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge.thumb_channel",
+      "thumb channel"
+    ],
+    "keywords": [
+      "bridge.thumb_channel",
+      "thumb channel"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.transition",
+    "slug": "bridge-transition",
+    "title": "Bridge Transition",
+    "titleVi": "Chuyển Đổi Tay Chống",
+    "content": "# Bridge Transition\n\nBridge Transition explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Chuyển Đổi Tay Chống\n\nGiải thích về Chuyển Đổi Tay Chống.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "bridge transition",
+      "bridge.transition"
+    ],
+    "keywords": [
+      "bridge transition",
+      "bridge.transition"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "bridge.wrist_position",
+    "slug": "bridge-wrist_position",
+    "title": "Wrist Position",
+    "titleVi": "Vị Trí Cổ Tay",
+    "content": "# Wrist Position\n\nWrist Position explained.\n\n## Purpose\n\nA core fundamentals concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Vị Trí Cổ Tay\n\nGiải thích về Vị Trí Cổ Tay.\n\n## Purpose\n\nKhái niệm fundamentals cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "bridge.wrist_position",
+      "wrist position"
+    ],
+    "keywords": [
+      "bridge.wrist_position",
+      "wrist position"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_aiming",
+    "slug": "aiming",
+    "title": "Aiming",
+    "titleVi": "Ngắm Bắn",
+    "content": "Aiming is the foundation of every shot. Proper aiming technique ensures accuracy and consistency.\n\n## Ghost Ball Method\n\n1. **Visualize** - See where the cue ball needs to contact the object ball\n2. **Ghost Ball** - Imagine a ghost ball at the contact point\n3. **Aim at Ghost** - Align your cue to hit the ghost ball\n\n## Tips\n\n- Trust your alignment once you've aimed\n- Keep your head still during the stroke\n- Practice with center ball shots first",
+    "contentVi": "Ngắm bắn là nền tảng của mọi cú đánh. Kỹ thuật ngắm đúng đảm bảo độ chính xác và nhất quán.\n\n## Phương pháp Bi Ảo\n\n1. **Hình dung** - Thấy nơi bi trắng cần chạm bi đích\n2. **Bi Ảo** - Tưởng tượng bi ảo tại điểm tiếp xúc\n3. **Ngắm Bi Ảo** - Căn cue để đánh vào bi ảo\n\n## Mẹo\n\n- Tin tưởng đường ngắm sau khi đã căn\n- Giữ đầu đứng yên trong nhát đánh\n- Luyện với cú đánh tâm trước",
+    "categoryId": "cat_aiming",
+    "tagIds": [
+      "tag_basic",
+      "tag_aiming",
+      "tag_accuracy"
+    ],
+    "aliases": [
+      "aim",
+      "aiming",
+      "alignment"
+    ],
+    "keywords": [
+      "aiming",
+      "ghost ball",
+      "contact point",
+      "alignment"
+    ],
+    "difficulty": "beginner",
+    "relatedKnowledgeIds": [
+      "kn_stance",
+      "kn_bridge"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_bank_shot",
+    "slug": "bank-shot",
+    "title": "Bank Shot",
+    "titleVi": "Cú Đánh Băng",
+    "content": "A bank shot uses the rail to change the cue ball's direction to reach the target.\n\n## Basic Principles\n\n1. **Angle of Incidence** - Ball bounces at equal angle\n2. **Speed** - Speed affects rebound angle slightly\n3. **Practice** - Learn natural bank angles on your table\n\n## Tips\n\n- Find the kissing point where balls meet\n- Use ghost ball method for aim\n- Practice with simple one-rail banks first",
+    "contentVi": "Cú bank shot sử dụng đệm để thay đổi hướng bi trắng đến đích.\n\n## Nguyên tắc cơ bản\n\n1. **Góc Tới** - Bi nảy với góc bằng nhau\n2. **Tốc Độ** - Tốc độ ảnh hưởng nhẹ đến góc nảy\n3. **Luyện Tập** - Học góc bank tự nhiên trên bàn của bạn\n\n## Mẹo\n\n- Tìm điểm kiss nơi hai bi gặp nhau\n- Dùng phương pháp bi ảo để ngắm\n- Luyện bank một đệm đơn giản trước",
+    "categoryId": "cat_shotmaking",
+    "tagIds": [
+      "tag_intermediate",
+      "tag_bank",
+      "tag_rail"
+    ],
+    "aliases": [
+      "bank",
+      "bank shot",
+      "bounce",
+      "rail shot"
+    ],
+    "keywords": [
+      "bank shot",
+      "rail",
+      "bounce",
+      "reflection"
+    ],
+    "difficulty": "intermediate",
+    "relatedKnowledgeIds": [
+      "kn_aiming",
+      "kn_speed_control"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_bridge",
+    "slug": "bridge",
+    "title": "Bridge Hand",
+    "titleVi": "Tay Gác",
+    "content": "The bridge hand provides stability and guidance for your shot. A proper bridge is essential for accuracy.\n\n## Basic Bridge\n\n1. **Flat Surface** - Keep your hand flat on the table\n2. **Firm Grip** - Create a V-shape for the cue\n3. **Stable** - Keep your bridge steady throughout the shot\n\n## Variations\n\n- **Rail Bridge** - When balls block normal bridge\n- **Elevated Bridge** - For shots over obstacles\n- **Spot Shot Bridge** - For elevated shots",
+    "contentVi": "Tay gác tạo sự ổn định và hướng dẫn cho cú đánh. Tay gác đúng là thiết yếu cho độ chính xác.\n\n## Tay Gác Cơ Bản\n\n1. **Bàn Phẳng** - Giữ tay phẳng trên bàn\n2. **Nắm Chắc** - Tạo hình V cho cue\n3. **Ổn Định** - Giữ tay gác vững trong suốt cú đánh\n\n## Biến thể\n\n- **Gác Đường Ray** - Khi bi cản tay gác thường\n- **Gác Nâng** - Cho cú đánh qua vật cản\n- **Gác Spot** - Cho cú đánh nâng",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_technique",
+      "tag_bridge"
+    ],
+    "aliases": [
+      "bridge",
+      "bridge hand",
+      "grip"
+    ],
+    "keywords": [
+      "bridge",
+      "grip",
+      "stability",
+      "hand"
+    ],
+    "difficulty": "beginner",
+    "relatedKnowledgeIds": [
+      "kn_stance",
+      "kn_aiming"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_draw_shot",
+    "slug": "draw-shot",
+    "title": "Draw Shot",
+    "titleVi": "Cú Lùi",
+    "content": "A draw shot (also called backspin) causes the cue ball to reverse direction after contact, pulling back toward the player.\n\n## Key Points\n\n1. **Below Center** - Hit below the center of the cue ball\n2. **Bridging** - Extend your bridge hand for more power\n3. **Follow Through** - Follow through in the direction you want the ball to travel\n\n## Tips for Success\n\n- Chalk your tip before every shot\n- Keep your cue level to avoid miscues\n- Use a smooth, accelerating stroke",
+    "contentVi": "Draw shot (còn gọi là backspin) khiến bi trắng quay ngược lại phía người đánh sau khi chạm bi đích.\n\n## Điểm quan trọng\n\n1. **Dưới Tâm** - Đánh vào phía dưới tâm bi trắng\n2. **Gác Tay** - Duỗi tay gác để có thêm lực\n3. **Theo Qua** - Theo qua theo hướng bạn muốn bi đi\n\n## Mẹo thành công\n\n- Tẩy đầu cue trước mỗi cú đánh\n- Giữ cue ngang để tránh đánh trượt\n- Dùng động tác mượt mà, tăng tốc đều",
+    "categoryId": "cat_shotmaking",
+    "tagIds": [
+      "tag_basic",
+      "tag_shotmaking",
+      "tag_backspin"
+    ],
+    "aliases": [
+      "draw",
+      "backspin",
+      "pull",
+      "draw shot"
+    ],
+    "keywords": [
+      "draw shot",
+      "backspin",
+      "pull back",
+      "spin"
+    ],
+    "difficulty": "beginner",
+    "relatedKnowledgeIds": [
+      "kn_stop_shot",
+      "kn_follow_shot",
+      "kn_spin"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_follow_shot",
+    "slug": "follow-shot",
+    "title": "Follow Shot",
+    "titleVi": "Cú Theo",
+    "content": "A follow shot (topspin) causes the cue ball to continue rolling forward after contacting the object ball.\n\n## Key Points\n\n1. **Above Center** - Hit above center of the cue ball\n2. **Full Stroke** - Use a full, confident stroke\n3. **Elevate Slightly** - Slight elevation adds topspin effect\n\n## When to Use\n\n- When you need the cue ball to continue to another ball\n- For position play after pocketing\n- In combination shots",
+    "contentVi": "Follow shot (topspin) khiến bi trắng tiếp tục lăn về phía trước sau khi chạm bi đích.\n\n## Điểm quan trọng\n\n1. **Trên Tâm** - Đánh vào phía trên tâm bi trắng\n2. **Động tác đầy đủ** - Dùng nhát đánh đầy đủ, tự tin\n3. **Hơi Nâng** - Nâng nhẹ cue để tăng topspin\n\n## Khi nào sử dụng\n\n- Khi cần bi trắng tiếp tục đến bi khác\n- Cho position play sau khi đánh bi vào\n- Trong các cú combination",
+    "categoryId": "cat_shotmaking",
+    "tagIds": [
+      "tag_basic",
+      "tag_shotmaking",
+      "tag_topspin"
+    ],
+    "aliases": [
+      "follow",
+      "topspin",
+      "run",
+      "follow through"
+    ],
+    "keywords": [
+      "follow shot",
+      "topspin",
+      "forward roll"
+    ],
+    "difficulty": "beginner",
+    "relatedKnowledgeIds": [
+      "kn_stop_shot",
+      "kn_draw_shot",
+      "kn_position_play"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_position_play",
+    "slug": "position-play",
+    "title": "Position Play",
+    "titleVi": "Kiểm Soát Vị Trí",
+    "content": "Position play is the art of controlling where the cue ball ends up after each shot, setting up for the next shot.\n\n## Fundamentals\n\n1. **Speed Control** - The most important factor in position play\n2. **Natural Angle** - Use natural angles whenever possible\n3. **Plan Ahead** - Think 2-3 shots ahead\n\n## Techniques\n\n- **Natural Position** - Where the cue ball naturally goes\n- **Cheat the Pocket** - Adjust for difficult positions\n- **Safety First** - When position is impossible, play safe",
+    "contentVi": "Position play là nghệ thuật kiểm soát vị trí bi trắng sau mỗi cú đánh, chuẩn bị cho cú tiếp theo.\n\n## Nguyên tắc cơ bản\n\n1. **Kiểm Soát Lực** - Yếu tố quan trọng nhất\n2. **Góc Tự Nhiên** - Sử dụng góc tự nhiên khi có thể\n3. **Lên Kế Hoạch** - Nghĩ trước 2-3 cú đánh\n\n## Kỹ thuật\n\n- **Vị trí tự nhiên** - Nơi bi trắng đến một cách tự nhiên\n- **Cheat Pocket** - Điều chỉnh cho vị trí khó\n- **An Toàn Trước** - Khi không thể position, chơi an toàn",
+    "categoryId": "cat_positioning",
+    "tagIds": [
+      "tag_advanced",
+      "tag_positioning",
+      "tag_strategy"
+    ],
+    "aliases": [
+      "position",
+      "positioning",
+      "control",
+      "cue ball control"
+    ],
+    "keywords": [
+      "position play",
+      "cue ball control",
+      "speed",
+      "angle"
+    ],
+    "difficulty": "intermediate",
+    "relatedKnowledgeIds": [
+      "kn_stop_shot",
+      "kn_draw_shot",
+      "kn_follow_shot"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_safety_play",
+    "slug": "safety-play",
+    "title": "Safety Play",
+    "titleVi": "Chơi An Toàn",
+    "content": "Safety play is a defensive strategy when you cannot make a winning shot.\n\n## When to Play Safe\n\n1. No clear shot to pocket\n2. Difficult position required\n3. Opponent is strong in position play\n\n## Objectives\n\n- Leave opponent with difficult shot\n- Create opportunities for yourself\n- Avoid giving easy shots to opponent",
+    "contentVi": "Safety play là chiến lược phòng thủ khi bạn không thể đánh thắng.\n\n## Khi nào Chơi An Toàn\n\n1. Không có cú rõ ràng để đánh bi vào\n2. Vị trí khó đạt được\n3. Đối thủ mạnh về position play\n\n## Mục tiêu\n\n- Để đối thủ ở vị trí khó đánh\n- Tạo cơ hội cho bản thân\n- Tránh để đối thủ có cú dễ",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_advanced",
+      "tag_strategy",
+      "tag_defense"
+    ],
+    "aliases": [
+      "safety",
+      "safe play",
+      "defensive"
+    ],
+    "keywords": [
+      "safety",
+      "defensive",
+      "strategy",
+      "foul"
+    ],
+    "difficulty": "advanced",
+    "relatedKnowledgeIds": [
+      "kn_position_play",
+      "kn_rules"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_speed_control",
+    "slug": "speed-control",
+    "title": "Speed Control",
+    "titleVi": "Kiểm Soát Lực",
+    "content": "Speed control is perhaps the most important skill in billiards. Proper speed affects position, ball movement, and ultimately your game.\n\n## Understanding Speed\n\n1. **Soft** - For delicate position work\n2. **Medium** - Most common, versatile\n3. **Hard** - For power shots and long distances\n\n## Practice Drills\n\n- Stop ball at specific distances\n- Position cue ball on specific spots\n- Use speed to control rebound",
+    "contentVi": "Kiểm soát lực có lẽ là kỹ năng quan trọng nhất trong billiards. Lực đúng ảnh hưởng đến position, di chuyển bi, và cuối cùng là trò chơi của bạn.\n\n## Hiểu về Lực\n\n1. **Nhẹ** - Cho position tinh tế\n2. **Vừa** - Phổ biến nhất, linh hoạt\n3. **Mạnh** - Cho cú сильных và khoảng cách xa\n\n## Bài tập luyện\n\n- Dừng bi ở khoảng cách cụ thể\n- Đặt bi trắng ở vị trí cụ thể\n- Dùng lực để kiểm soát nảy",
+    "categoryId": "cat_positioning",
+    "tagIds": [
+      "tag_intermediate",
+      "tag_speed",
+      "tag_control"
+    ],
+    "aliases": [
+      "speed",
+      "power",
+      "force",
+      "control"
+    ],
+    "keywords": [
+      "speed",
+      "control",
+      "power",
+      "force"
+    ],
+    "difficulty": "intermediate",
+    "relatedKnowledgeIds": [
+      "kn_position_play",
+      "kn_stop_shot"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_stance",
+    "slug": "stance",
+    "title": "Stance",
+    "titleVi": "Tư Thế",
+    "content": "A proper stance provides balance and stability for a smooth, accurate stroke.\n\n## Basic Stance\n\n1. **Feet Position** - Feet shoulder-width apart\n2. **Body Angle** - Leaning slightly over the table\n3. **Weight Distribution** - Weight on front foot\n\n## Common Issues\n\n- Standing too upright\n- Feet too close together\n- Leaning backward",
+    "contentVi": "Tư thế đúng tạo sự cân bằng và ổn định cho nhát đánh mượt mà, chính xác.\n\n## Tư Thế Cơ Bản\n\n1. **Vị trí Chân** - Hai chân rộng bằng vai\n2. **Góc Người** - Hơi nghiêng người qua bàn\n3. **Phân Bổ Trọng Lượng** - Trọng lượng lên chân trước\n\n## Vấn đề thường gặp\n\n- Đứng quá thẳng\n- Hai chân quá sát nhau\n- Nghiêng người ra sau",
+    "categoryId": "cat_fundamentals",
+    "tagIds": [
+      "tag_basic",
+      "tag_posture",
+      "tag_stance"
+    ],
+    "aliases": [
+      "stance",
+      "posture",
+      "position",
+      "stand"
+    ],
+    "keywords": [
+      "stance",
+      "posture",
+      "balance",
+      "foot position"
+    ],
+    "difficulty": "beginner",
+    "relatedKnowledgeIds": [
+      "kn_bridge",
+      "kn_aiming"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "kn_stop_shot",
+    "slug": "stop-shot",
+    "title": "Stop Shot",
+    "titleVi": "Cú Dừng Bóng",
+    "content": "A stop shot is a shot where the cue ball stops immediately after contact with the object ball. This is one of the most fundamental skills in billiards.\n\n## Key Points\n\n1. **Center Ball** - Hit the cue ball at dead center\n2. **Straight Follow Through** - Keep your cue level and follow through straight\n3. **Controlled Speed** - Use moderate force, neither too soft nor too hard\n\n## Common Mistakes\n\n- Hitting too hard causes the cue ball to roll forward\n- Not following through results in miscues\n- Looking up too early breaks concentration\n\n## Practice Tips\n\n- Start close to the object ball\n- Focus on a smooth, pendulum-like motion\n- Gradually increase distance as you improve",
+    "contentVi": "Stop shot là cú đánh mà bi trắng dừng lại ngay tại chỗ sau khi chạm bi đích. Đây là một trong những kỹ năng nền tảng quan trọng nhất trong billiards.\n\n## Điểm quan trọng\n\n1. **Tâm Bi** - Đánh vào tâm bi trắng\n2. **Theo Qua Thẳng** - Giữ cue thẳng và theo qua đều\n3. **Lực Vừa** - Dùng lực vừa phải, không quá nhẹ cũng không quá mạnh\n\n## Lỗi thường gặp\n\n- Đánh quá mạnh khiến bi trắng lăn tiếp\n- Không theo qua dẫn đến đánh trượt\n- Nhìn lên quá sớm làm mất tập trung\n\n## Mẹo luyện tập\n\n- Bắt đầu ở khoảng cách gần\n- Tập trung vào động tác như con lắc\n- Tăng dần khoảng cách khi cải thiện",
+    "categoryId": "cat_shotmaking",
+    "tagIds": [
+      "tag_basic",
+      "tag_shotmaking",
+      "tag_cueball"
+    ],
+    "aliases": [
+      "stop",
+      "stop ball",
+      "halt",
+      "stop shot"
+    ],
+    "keywords": [
+      "stop shot",
+      "cue ball control",
+      "center ball",
+      "follow through"
+    ],
+    "difficulty": "beginner",
+    "relatedKnowledgeIds": [
+      "kn_draw_shot",
+      "kn_follow_shot",
+      "kn_bridge"
+    ],
+    "relatedDrillCodes": [],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.arousal_control",
+    "slug": "mental-arousal_control",
+    "title": "Arousal Control",
+    "titleVi": "Kiểm Soát Hưng Phấn",
+    "content": "# Arousal Control\n\nArousal Control explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kiểm Soát Hưng Phấn\n\nGiải thích về Kiểm Soát Hưng Phấn.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "arousal control",
+      "mental.arousal_control"
+    ],
+    "keywords": [
+      "arousal control",
+      "mental.arousal_control"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.attention_control",
+    "slug": "mental-attention_control",
+    "title": "Attention Control",
+    "titleVi": "Kiểm Soát Chú Ý",
+    "content": "# Attention Control\n\nAttention Control explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kiểm Soát Chú Ý\n\nGiải thích về Kiểm Soát Chú Ý.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "attention control",
+      "mental.attention_control"
+    ],
+    "keywords": [
+      "attention control",
+      "mental.attention_control"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.bounce_back",
+    "slug": "mental-bounce_back",
+    "title": "Bounce Back",
+    "titleVi": "Phục Hồi Sau Thất Bại",
+    "content": "# Bounce Back\n\nBounce Back explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phục Hồi Sau Thất Bại\n\nGiải thích về Phục Hồi Sau Thất Bại.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "bounce back",
+      "mental.bounce_back"
+    ],
+    "keywords": [
+      "bounce back",
+      "mental.bounce_back"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.breathing",
+    "slug": "mental-breathing",
+    "title": "Breathing",
+    "titleVi": "Hô Hấp",
+    "content": "# Breathing\n\nBreathing explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Hô Hấp\n\nGiải thích về Hô Hấp.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "breathing",
+      "mental.breathing"
+    ],
+    "keywords": [
+      "breathing",
+      "mental.breathing"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.competitive_mental",
+    "slug": "mental-competitive_mental",
+    "title": "Competitive Mental",
+    "titleVi": "Tâm Lý Thi Đấu",
+    "content": "# Competitive Mental\n\nCompetitive Mental explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tâm Lý Thi Đấu\n\nGiải thích về Tâm Lý Thi Đấu.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "competitive mental",
+      "mental.competitive_mental"
+    ],
+    "keywords": [
+      "competitive mental",
+      "mental.competitive_mental"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.composure",
+    "slug": "mental-composure",
+    "title": "Composure",
+    "titleVi": "Bình Tĩnh",
+    "content": "# Composure\n\nComposure explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Bình Tĩnh\n\nGiải thích về Bình Tĩnh.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "composure",
+      "mental.composure"
+    ],
+    "keywords": [
+      "composure",
+      "mental.composure"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.concentration",
+    "slug": "mental-concentration",
+    "title": "Concentration",
+    "titleVi": "Tập Trung",
+    "content": "# Concentration\n\nConcentration explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tập Trung\n\nGiải thích về Tập Trung.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "concentration",
+      "mental.concentration"
+    ],
+    "keywords": [
+      "concentration",
+      "mental.concentration"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.confidence",
+    "slug": "mental-confidence",
+    "title": "Confidence",
+    "titleVi": "Tự Tin",
+    "content": "# Confidence\n\nConfidence explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tự Tin\n\nGiải thích về Tự Tin.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "confidence",
+      "mental.confidence"
+    ],
+    "keywords": [
+      "confidence",
+      "mental.confidence"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.errors_recovery",
+    "slug": "mental-errors_recovery",
+    "title": "Error Recovery",
+    "titleVi": "Phục Hồi Sau Lỗi",
+    "content": "# Error Recovery\n\nError Recovery explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phục Hồi Sau Lỗi\n\nGiải thích về Phục Hồi Sau Lỗi.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "error recovery",
+      "mental.errors_recovery"
+    ],
+    "keywords": [
+      "error recovery",
+      "mental.errors_recovery"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.focus_recovery",
+    "slug": "mental-focus_recovery",
+    "title": "Focus Recovery",
+    "titleVi": "Phục Hồi Tập Trung",
+    "content": "# Focus Recovery\n\nFocus Recovery explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phục Hồi Tập Trung\n\nGiải thích về Phục Hồi Tập Trung.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "focus recovery",
+      "mental.focus_recovery"
+    ],
+    "keywords": [
+      "focus recovery",
+      "mental.focus_recovery"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.frustration",
+    "slug": "mental-frustration",
+    "title": "Frustration Management",
+    "titleVi": "Quản Lý Bực Bội",
+    "content": "# Frustration Management\n\nFrustration Management explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Quản Lý Bực Bội\n\nGiải thích về Quản Lý Bực Bội.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "frustration management",
+      "mental.frustration"
+    ],
+    "keywords": [
+      "frustration management",
+      "mental.frustration"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.fundamentals",
+    "slug": "mental-fundamentals",
+    "title": "Mental Fundamentals",
+    "titleVi": "Nền Tảng Tâm Lý",
+    "content": "# Mental Fundamentals\n\nMental Fundamentals explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nền Tảng Tâm Lý\n\nGiải thích về Nền Tảng Tâm Lý.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "mental fundamentals",
+      "mental.fundamentals"
+    ],
+    "keywords": [
+      "mental fundamentals",
+      "mental.fundamentals"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.goal_setting",
+    "slug": "mental-goal_setting",
+    "title": "Goal Setting",
+    "titleVi": "Đặt Mục Tiêu",
+    "content": "# Goal Setting\n\nGoal Setting explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Đặt Mục Tiêu\n\nGiải thích về Đặt Mục Tiêu.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "goal setting",
+      "mental.goal_setting"
+    ],
+    "keywords": [
+      "goal setting",
+      "mental.goal_setting"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.match_rhythm",
+    "slug": "mental-match_rhythm",
+    "title": "Match Rhythm",
+    "titleVi": "Nhịp Trận Đấu",
+    "content": "# Match Rhythm\n\nMatch Rhythm explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nhịp Trận Đấu\n\nGiải thích về Nhịp Trận Đấu.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "match rhythm",
+      "mental.match_rhythm"
+    ],
+    "keywords": [
+      "match rhythm",
+      "mental.match_rhythm"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.mental_assets",
+    "slug": "mental-mental_assets",
+    "title": "Mental Assets",
+    "titleVi": "Tài Sản Tâm Lý",
+    "content": "# Mental Assets\n\nMental Assets explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tài Sản Tâm Lý\n\nGiải thích về Tài Sản Tâm Lý.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "mental assets",
+      "mental.mental_assets"
+    ],
+    "keywords": [
+      "mental assets",
+      "mental.mental_assets"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.positive_self_talk",
+    "slug": "mental-positive_self_talk",
+    "title": "Positive Self-Talk",
+    "titleVi": "Tự Nói Chuyện Tích Cực",
+    "content": "# Positive Self-Talk\n\nPositive Self-Talk explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tự Nói Chuyện Tích Cực\n\nGiải thích về Tự Nói Chuyện Tích Cực.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "mental.positive_self_talk",
+      "positive self-talk"
+    ],
+    "keywords": [
+      "mental.positive_self_talk",
+      "positive self-talk"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.pre_match_routine",
+    "slug": "mental-pre_match_routine",
+    "title": "Pre-Match Routine",
+    "titleVi": "Thói Quen Trước Trận",
+    "content": "# Pre-Match Routine\n\nPre-Match Routine explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Thói Quen Trước Trận\n\nGiải thích về Thói Quen Trước Trận.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "mental.pre_match_routine",
+      "pre-match routine"
+    ],
+    "keywords": [
+      "mental.pre_match_routine",
+      "pre-match routine"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.pressure",
+    "slug": "mental-pressure",
+    "title": "Playing Under Pressure",
+    "titleVi": "Thi Đấu Dưới Áp Lực",
+    "content": "# Playing Under Pressure\n\nPlaying Under Pressure explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Thi Đấu Dưới Áp Lực\n\nGiải thích về Thi Đấu Dưới Áp Lực.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "mental.pressure",
+      "playing under pressure"
+    ],
+    "keywords": [
+      "mental.pressure",
+      "playing under pressure"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.routine",
+    "slug": "mental-routine",
+    "title": "Pre-shot Routine",
+    "titleVi": "Thói Quen Trước Cú",
+    "content": "# Pre-shot Routine\n\nPre-shot Routine explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Thói Quen Trước Cú\n\nGiải thích về Thói Quen Trước Cú.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "mental.routine",
+      "pre-shot routine"
+    ],
+    "keywords": [
+      "mental.routine",
+      "pre-shot routine"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.sport_psychology",
+    "slug": "mental-sport_psychology",
+    "title": "Sport Psychology",
+    "titleVi": "Tâm Lý Thể Thao",
+    "content": "# Sport Psychology\n\nSport Psychology explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tâm Lý Thể Thao\n\nGiải thích về Tâm Lý Thể Thao.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "mental.sport_psychology",
+      "sport psychology"
+    ],
+    "keywords": [
+      "mental.sport_psychology",
+      "sport psychology"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "mental.visualization",
+    "slug": "mental-visualization",
+    "title": "Mental Visualization",
+    "titleVi": "Hình Dung Tâm Lý",
+    "content": "# Mental Visualization\n\nMental Visualization explained.\n\n## Purpose\n\nA core mental concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Hình Dung Tâm Lý\n\nGiải thích về Hình Dung Tâm Lý.\n\n## Purpose\n\nKhái niệm mental cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_psychology",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "mental visualization",
+      "mental.visualization"
+    ],
+    "keywords": [
+      "mental visualization",
+      "mental.visualization"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.adaptive_planning",
+    "slug": "pattern-adaptive_planning",
+    "title": "Adaptive Planning",
+    "titleVi": "Kế Hoạch Thích Ứng",
+    "content": "# Adaptive Planning\n\nAdaptive Planning explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kế Hoạch Thích Ứng\n\nGiải thích về Kế Hoạch Thích Ứng.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "adaptive planning",
+      "pattern.adaptive_planning"
+    ],
+    "keywords": [
+      "adaptive planning",
+      "pattern.adaptive_planning"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.ball_distribution",
+    "slug": "pattern-ball_distribution",
+    "title": "Ball Distribution",
+    "titleVi": "Phân Bố Bóng",
+    "content": "# Ball Distribution\n\nBall Distribution explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phân Bố Bóng\n\nGiải thích về Phân Bố Bóng.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "ball distribution",
+      "pattern.ball_distribution"
+    ],
+    "keywords": [
+      "ball distribution",
+      "pattern.ball_distribution"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.break_layout",
+    "slug": "pattern-break_layout",
+    "title": "Break Layout",
+    "titleVi": "Bố Cục Sau Phá",
+    "content": "# Break Layout\n\nBreak Layout explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Bố Cục Sau Phá\n\nGiải thích về Bố Cục Sau Phá.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "break layout",
+      "pattern.break_layout"
+    ],
+    "keywords": [
+      "break layout",
+      "pattern.break_layout"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.cluster_identification",
+    "slug": "pattern-cluster_identification",
+    "title": "Cluster Identification",
+    "titleVi": "Nhận Biết Cụm Bóng",
+    "content": "# Cluster Identification\n\nCluster Identification explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nhận Biết Cụm Bóng\n\nGiải thích về Nhận Biết Cụm Bóng.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "cluster identification",
+      "pattern.cluster_identification"
+    ],
+    "keywords": [
+      "cluster identification",
+      "pattern.cluster_identification"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.consistency",
+    "slug": "pattern-consistency",
+    "title": "Pattern Consistency",
+    "titleVi": "Tính Nhất Quán Mẫu",
+    "content": "# Pattern Consistency\n\nPattern Consistency explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tính Nhất Quán Mẫu\n\nGiải thích về Tính Nhất Quán Mẫu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern consistency",
+      "pattern.consistency"
+    ],
+    "keywords": [
+      "pattern consistency",
+      "pattern.consistency"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.decision_making",
+    "slug": "pattern-decision_making",
+    "title": "Decision Making",
+    "titleVi": "Ra Quyết Định",
+    "content": "# Decision Making\n\nDecision Making explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Ra Quyết Định\n\nGiải thích về Ra Quyết Định.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "decision making",
+      "pattern.decision_making"
+    ],
+    "keywords": [
+      "decision making",
+      "pattern.decision_making"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.focus",
+    "slug": "pattern-focus",
+    "title": "Pattern Focus",
+    "titleVi": "Tập Trung Mẫu",
+    "content": "# Pattern Focus\n\nPattern Focus explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Tập Trung Mẫu\n\nGiải thích về Tập Trung Mẫu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "pattern focus",
+      "pattern.focus"
+    ],
+    "keywords": [
+      "pattern focus",
+      "pattern.focus"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.fundamentals",
+    "slug": "pattern-fundamentals",
+    "title": "Pattern Fundamentals",
+    "titleVi": "Nền Tảng Mẫu Đánh",
+    "content": "# Pattern Fundamentals\n\nPattern Fundamentals explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nền Tảng Mẫu Đánh\n\nGiải thích về Nền Tảng Mẫu Đánh.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "pattern fundamentals",
+      "pattern.fundamentals"
+    ],
+    "keywords": [
+      "pattern fundamentals",
+      "pattern.fundamentals"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.game_sense",
+    "slug": "pattern-game_sense",
+    "title": "Game Sense",
+    "titleVi": "Cảm Nhận Trận Đấu",
+    "content": "# Game Sense\n\nGame Sense explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Cảm Nhận Trận Đấu\n\nGiải thích về Cảm Nhận Trận Đấu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "game sense",
+      "pattern.game_sense"
+    ],
+    "keywords": [
+      "game sense",
+      "pattern.game_sense"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.improvement",
+    "slug": "pattern-improvement",
+    "title": "Pattern Improvement",
+    "titleVi": "Cải Thiện Mẫu",
+    "content": "# Pattern Improvement\n\nPattern Improvement explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Cải Thiện Mẫu\n\nGiải thích về Cải Thiện Mẫu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern improvement",
+      "pattern.improvement"
+    ],
+    "keywords": [
+      "pattern improvement",
+      "pattern.improvement"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.key_ball",
+    "slug": "pattern-key_ball",
+    "title": "Key Ball",
+    "titleVi": "Bóng Chìa Khoá",
+    "content": "# Key Ball\n\nKey Ball explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Bóng Chìa Khoá\n\nGiải thích về Bóng Chìa Khoá.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "key ball",
+      "pattern.key_ball"
+    ],
+    "keywords": [
+      "key ball",
+      "pattern.key_ball"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.long_term_planning",
+    "slug": "pattern-long_term_planning",
+    "title": "Long Term Planning",
+    "titleVi": "Kế Hoạch Dài Hạn",
+    "content": "# Long Term Planning\n\nLong Term Planning explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kế Hoạch Dài Hạn\n\nGiải thích về Kế Hoạch Dài Hạn.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "long term planning",
+      "pattern.long_term_planning"
+    ],
+    "keywords": [
+      "long term planning",
+      "pattern.long_term_planning"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.multiple_position",
+    "slug": "pattern-multiple_position",
+    "title": "Multiple Position",
+    "titleVi": "Đa Vị Trí",
+    "content": "# Multiple Position\n\nMultiple Position explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Đa Vị Trí\n\nGiải thích về Đa Vị Trí.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "multiple position",
+      "pattern.multiple_position"
+    ],
+    "keywords": [
+      "multiple position",
+      "pattern.multiple_position"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.pattern_repeat",
+    "slug": "pattern-pattern_repeat",
+    "title": "Pattern Repeat",
+    "titleVi": "Lặp Lại Mẫu",
+    "content": "# Pattern Repeat\n\nPattern Repeat explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Lặp Lại Mẫu\n\nGiải thích về Lặp Lại Mẫu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "pattern repeat",
+      "pattern.pattern_repeat"
+    ],
+    "keywords": [
+      "pattern repeat",
+      "pattern.pattern_repeat"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.pattern_transfer",
+    "slug": "pattern-pattern_transfer",
+    "title": "Pattern Transfer",
+    "titleVi": "Chuyển Giao Mẫu",
+    "content": "# Pattern Transfer\n\nPattern Transfer explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Chuyển Giao Mẫu\n\nGiải thích về Chuyển Giao Mẫu.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "pattern transfer",
+      "pattern.pattern_transfer"
+    ],
+    "keywords": [
+      "pattern transfer",
+      "pattern.pattern_transfer"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.percentage_play",
+    "slug": "pattern-percentage_play",
+    "title": "Percentage Play",
+    "titleVi": "Đánh Tỷ Lệ",
+    "content": "# Percentage Play\n\nPercentage Play explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Đánh Tỷ Lệ\n\nGiải thích về Đánh Tỷ Lệ.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern.percentage_play",
+      "percentage play"
+    ],
+    "keywords": [
+      "pattern.percentage_play",
+      "percentage play"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.plan_execution",
+    "slug": "pattern-plan_execution",
+    "title": "Plan Execution",
+    "titleVi": "Thực Thi Kế Hoạch",
+    "content": "# Plan Execution\n\nPlan Execution explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Thực Thi Kế Hoạch\n\nGiải thích về Thực Thi Kế Hoạch.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern.plan_execution",
+      "plan execution"
+    ],
+    "keywords": [
+      "pattern.plan_execution",
+      "plan execution"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.pocket_assignment",
+    "slug": "pattern-pocket_assignment",
+    "title": "Pocket Assignment",
+    "titleVi": "Phân Bổ Túi",
+    "content": "# Pocket Assignment\n\nPocket Assignment explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phân Bổ Túi\n\nGiải thích về Phân Bổ Túi.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern.pocket_assignment",
+      "pocket assignment"
+    ],
+    "keywords": [
+      "pattern.pocket_assignment",
+      "pocket assignment"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.position_planning",
+    "slug": "pattern-position_planning",
+    "title": "Position Planning",
+    "titleVi": "Kế Hoạch Vị Trí",
+    "content": "# Position Planning\n\nPosition Planning explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kế Hoạch Vị Trí\n\nGiải thích về Kế Hoạch Vị Trí.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern.position_planning",
+      "position planning"
+    ],
+    "keywords": [
+      "pattern.position_planning",
+      "position planning"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.risk_assessment",
+    "slug": "pattern-risk_assessment",
+    "title": "Risk Assessment",
+    "titleVi": "Đánh Giá Rủi Ro",
+    "content": "# Risk Assessment\n\nRisk Assessment explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Đánh Giá Rủi Ro\n\nGiải thích về Đánh Giá Rủi Ro.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern.risk_assessment",
+      "risk assessment"
+    ],
+    "keywords": [
+      "pattern.risk_assessment",
+      "risk assessment"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.run_out",
+    "slug": "pattern-run_out",
+    "title": "Run Out",
+    "titleVi": "Chạy Bàn",
+    "content": "# Run Out\n\nRun Out explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Chạy Bàn\n\nGiải thích về Chạy Bàn.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern.run_out",
+      "run out"
+    ],
+    "keywords": [
+      "pattern.run_out",
+      "run out"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.safety_alternatives",
+    "slug": "pattern-safety_alternatives",
+    "title": "Safety Alternatives",
+    "titleVi": "Phương Án An Toàn",
+    "content": "# Safety Alternatives\n\nSafety Alternatives explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phương Án An Toàn\n\nGiải thích về Phương Án An Toàn.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern.safety_alternatives",
+      "safety alternatives"
+    ],
+    "keywords": [
+      "pattern.safety_alternatives",
+      "safety alternatives"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.shape_recognition",
+    "slug": "pattern-shape_recognition",
+    "title": "Shape Recognition",
+    "titleVi": "Nhận Biết Hình Dạng",
+    "content": "# Shape Recognition\n\nShape Recognition explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nhận Biết Hình Dạng\n\nGiải thích về Nhận Biết Hình Dạng.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern.shape_recognition",
+      "shape recognition"
+    ],
+    "keywords": [
+      "pattern.shape_recognition",
+      "shape recognition"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.speed_control",
+    "slug": "pattern-speed_control",
+    "title": "Speed Control",
+    "titleVi": "Kiểm Soát Lực",
+    "content": "# Speed Control\n\nSpeed Control explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Kiểm Soát Lực\n\nGiải thích về Kiểm Soát Lực.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern.speed_control",
+      "speed control"
+    ],
+    "keywords": [
+      "pattern.speed_control",
+      "speed control"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.spin_application",
+    "slug": "pattern-spin_application",
+    "title": "Spin Application",
+    "titleVi": "Áp Dụng Xoáy",
+    "content": "# Spin Application\n\nSpin Application explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Áp Dụng Xoáy\n\nGiải thích về Áp Dụng Xoáy.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern.spin_application",
+      "spin application"
+    ],
+    "keywords": [
+      "pattern.spin_application",
+      "spin application"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.table_reading",
+    "slug": "pattern-table_reading",
+    "title": "Table Reading",
+    "titleVi": "Đọc Bàn",
+    "content": "# Table Reading\n\nTable Reading explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Đọc Bàn\n\nGiải thích về Đọc Bàn.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "pattern.table_reading",
+      "table reading"
+    ],
+    "keywords": [
+      "pattern.table_reading",
+      "table reading"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.transition_zones",
+    "slug": "pattern-transition_zones",
+    "title": "Transition Zones",
+    "titleVi": "Vùng Chuyển Tiếp",
+    "content": "# Transition Zones\n\nTransition Zones explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Vùng Chuyển Tiếp\n\nGiải thích về Vùng Chuyển Tiếp.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "pattern.transition_zones",
+      "transition zones"
+    ],
+    "keywords": [
+      "pattern.transition_zones",
+      "transition zones"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "pattern.visualization",
+    "slug": "pattern-visualization",
+    "title": "Visualization",
+    "titleVi": "Hình Dung",
+    "content": "# Visualization\n\nVisualization explained.\n\n## Purpose\n\nA core strategy concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Hình Dung\n\nGiải thích về Hình Dung.\n\n## Purpose\n\nKhái niệm strategy cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_strategy",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "pattern.visualization",
+      "visualization"
+    ],
+    "keywords": [
+      "pattern.visualization",
+      "visualization"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.ball_in_hand",
+    "slug": "safety-ball_in_hand",
+    "title": "Ball in Hand",
+    "titleVi": "Bóng Trên Tay",
+    "content": "# Ball in Hand\n\nBall in Hand explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Bóng Trên Tay\n\nGiải thích về Bóng Trên Tay.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "ball in hand",
+      "safety.ball_in_hand"
+    ],
+    "keywords": [
+      "ball in hand",
+      "safety.ball_in_hand"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.bank_safety",
+    "slug": "safety-bank_safety",
+    "title": "Bank Safety",
+    "titleVi": "An Toàn Băng Tường",
+    "content": "# Bank Safety\n\nBank Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Băng Tường\n\nGiải thích về An Toàn Băng Tường.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "bank safety",
+      "safety.bank_safety"
+    ],
+    "keywords": [
+      "bank safety",
+      "safety.bank_safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.break_safe",
+    "slug": "safety-break_safe",
+    "title": "Break Safe",
+    "titleVi": "Phá An Toàn",
+    "content": "# Break Safe\n\nBreak Safe explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phá An Toàn\n\nGiải thích về Phá An Toàn.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "break safe",
+      "safety.break_safe"
+    ],
+    "keywords": [
+      "break safe",
+      "safety.break_safe"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.contact_point",
+    "slug": "safety-contact_point",
+    "title": "Contact Point",
+    "titleVi": "Điểm Tiếp Xúc",
+    "content": "# Contact Point\n\nContact Point explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Điểm Tiếp Xúc\n\nGiải thích về Điểm Tiếp Xúc.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "contact point",
+      "safety.contact_point"
+    ],
+    "keywords": [
+      "contact point",
+      "safety.contact_point"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.cue_ball_position",
+    "slug": "safety-cue_ball_position",
+    "title": "Cue Ball Position",
+    "titleVi": "Vị Trí Bi Cái",
+    "content": "# Cue Ball Position\n\nCue Ball Position explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Vị Trí Bi Cái\n\nGiải thích về Vị Trí Bi Cái.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "cue ball position",
+      "safety.cue_ball_position"
+    ],
+    "keywords": [
+      "cue ball position",
+      "safety.cue_ball_position"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.defense_basics",
+    "slug": "safety-defense_basics",
+    "title": "Defensive Basics",
+    "titleVi": "Cơ Bản Phòng Thủ",
+    "content": "# Defensive Basics\n\nDefensive Basics explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Cơ Bản Phòng Thủ\n\nGiải thích về Cơ Bản Phòng Thủ.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "defensive basics",
+      "safety.defense_basics"
+    ],
+    "keywords": [
+      "defensive basics",
+      "safety.defense_basics"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.defensive_roll",
+    "slug": "safety-defensive_roll",
+    "title": "Defensive Roll",
+    "titleVi": "Lăn Phòng Thủ",
+    "content": "# Defensive Roll\n\nDefensive Roll explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Lăn Phòng Thủ\n\nGiải thích về Lăn Phòng Thủ.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "defensive roll",
+      "safety.defensive_roll"
+    ],
+    "keywords": [
+      "defensive roll",
+      "safety.defensive_roll"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.escape_sequence",
+    "slug": "safety-escape_sequence",
+    "title": "Escape Sequence",
+    "titleVi": "Trình Tự Thoát",
+    "content": "# Escape Sequence\n\nEscape Sequence explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Trình Tự Thoát\n\nGiải thích về Trình Tự Thoát.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "escape sequence",
+      "safety.escape_sequence"
+    ],
+    "keywords": [
+      "escape sequence",
+      "safety.escape_sequence"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.fundamentals",
+    "slug": "safety-fundamentals",
+    "title": "Safety Fundamentals",
+    "titleVi": "Nền Tảng An Toàn",
+    "content": "# Safety Fundamentals\n\nSafety Fundamentals explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Nền Tảng An Toàn\n\nGiải thích về Nền Tảng An Toàn.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "safety fundamentals",
+      "safety.fundamentals"
+    ],
+    "keywords": [
+      "safety fundamentals",
+      "safety.fundamentals"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.hide",
+    "slug": "safety-hide",
+    "title": "Hide the Cue Ball",
+    "titleVi": "Giấu Bi Cái",
+    "content": "# Hide the Cue Ball\n\nHide the Cue Ball explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Giấu Bi Cái\n\nGiải thích về Giấu Bi Cái.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "hide the cue ball",
+      "safety.hide"
+    ],
+    "keywords": [
+      "hide the cue ball",
+      "safety.hide"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.hook",
+    "slug": "safety-hook",
+    "title": "Hook the Cue Ball",
+    "titleVi": "Móc Bi Cái",
+    "content": "# Hook the Cue Ball\n\nHook the Cue Ball explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Móc Bi Cái\n\nGiải thích về Móc Bi Cái.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "hook the cue ball",
+      "safety.hook"
+    ],
+    "keywords": [
+      "hook the cue ball",
+      "safety.hook"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.jail",
+    "slug": "safety-jail",
+    "title": "Jail Escape",
+    "titleVi": "Thoát Khỏi Tù",
+    "content": "# Jail Escape\n\nJail Escape explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Thoát Khỏi Tù\n\nGiải thích về Thoát Khỏi Tù.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "jail escape",
+      "safety.jail"
+    ],
+    "keywords": [
+      "jail escape",
+      "safety.jail"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.kick_safety",
+    "slug": "safety-kick_safety",
+    "title": "Kick Safety",
+    "titleVi": "An Toàn Đá",
+    "content": "# Kick Safety\n\nKick Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Đá\n\nGiải thích về An Toàn Đá.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "kick safety",
+      "safety.kick_safety"
+    ],
+    "keywords": [
+      "kick safety",
+      "safety.kick_safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.leave_options",
+    "slug": "safety-leave_options",
+    "title": "Leave Options",
+    "titleVi": "Để Lại Lựa Chọn",
+    "content": "# Leave Options\n\nLeave Options explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Để Lại Lựa Chọn\n\nGiải thích về Để Lại Lựa Chọn.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "leave options",
+      "safety.leave_options"
+    ],
+    "keywords": [
+      "leave options",
+      "safety.leave_options"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.long_safety",
+    "slug": "safety-long_safety",
+    "title": "Long Safety",
+    "titleVi": "An Toàn Xa",
+    "content": "# Long Safety\n\nLong Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Xa\n\nGiải thích về An Toàn Xa.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "long safety",
+      "safety.long_safety"
+    ],
+    "keywords": [
+      "long safety",
+      "safety.long_safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.object_ball_distance",
+    "slug": "safety-object_ball_distance",
+    "title": "Object Ball Distance",
+    "titleVi": "Khoảng Cách Bi Đích",
+    "content": "# Object Ball Distance\n\nObject Ball Distance explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Khoảng Cách Bi Đích\n\nGiải thích về Khoảng Cách Bi Đích.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "object ball distance",
+      "safety.object_ball_distance"
+    ],
+    "keywords": [
+      "object ball distance",
+      "safety.object_ball_distance"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.rail_safety",
+    "slug": "safety-rail_safety",
+    "title": "Rail Safety",
+    "titleVi": "An Toàn Băng",
+    "content": "# Rail Safety\n\nRail Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Băng\n\nGiải thích về An Toàn Băng.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "rail safety",
+      "safety.rail_safety"
+    ],
+    "keywords": [
+      "rail safety",
+      "safety.rail_safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.return_safe",
+    "slug": "safety-return_safe",
+    "title": "Return Safe",
+    "titleVi": "Trả An Toàn",
+    "content": "# Return Safe\n\nReturn Safe explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Trả An Toàn\n\nGiải thích về Trả An Toàn.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "return safe",
+      "safety.return_safe"
+    ],
+    "keywords": [
+      "return safe",
+      "safety.return_safe"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.safety_response",
+    "slug": "safety-safety_response",
+    "title": "Safety Response",
+    "titleVi": "Phản Ứng An Toàn",
+    "content": "# Safety Response\n\nSafety Response explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# Phản Ứng An Toàn\n\nGiải thích về Phản Ứng An Toàn.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "safety response",
+      "safety.safety_response"
+    ],
+    "keywords": [
+      "safety response",
+      "safety.safety_response"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.short_safety",
+    "slug": "safety-short_safety",
+    "title": "Short Safety",
+    "titleVi": "An Toàn Gần",
+    "content": "# Short Safety\n\nShort Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Gần\n\nGiải thích về An Toàn Gần.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_basic"
+    ],
+    "difficulty": "beginner",
+    "aliases": [
+      "safety.short_safety",
+      "short safety"
+    ],
+    "keywords": [
+      "safety.short_safety",
+      "short safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.snooker",
+    "slug": "safety-snooker",
+    "title": "Snooker Safety",
+    "titleVi": "An Toàn Cản Trở",
+    "content": "# Snooker Safety\n\nSnooker Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Cản Trở\n\nGiải thích về An Toàn Cản Trở.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_intermediate"
+    ],
+    "difficulty": "intermediate",
+    "aliases": [
+      "safety.snooker",
+      "snooker safety"
+    ],
+    "keywords": [
+      "safety.snooker",
+      "snooker safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.tactical_safe",
+    "slug": "safety-tactical_safe",
+    "title": "Tactical Safety",
+    "titleVi": "An Toàn Chiến Thuật",
+    "content": "# Tactical Safety\n\nTactical Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Chiến Thuật\n\nGiải thích về An Toàn Chiến Thuật.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_advanced"
+    ],
+    "difficulty": "advanced",
+    "aliases": [
+      "safety.tactical_safe",
+      "tactical safety"
+    ],
+    "keywords": [
+      "safety.tactical_safe",
+      "tactical safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  },
+  {
+    "id": "safety.three_rail",
+    "slug": "safety-three_rail",
+    "title": "Three Rail Safety",
+    "titleVi": "An Toàn Ba Băng",
+    "content": "# Three Rail Safety\n\nThree Rail Safety explained.\n\n## Purpose\n\nA core safety concept for billiards players.\n\n## Setup\n\n1. Establish a stable baseline.\n2. Position cue and body for the technique.\n\n## Execution\n\n1. Apply the technique step by step.\n2. Verify alignment before contact.\n\n## Success Criteria\n\n- [ ] Smooth execution.\n- [ ] Predictable result.\n\n## Failure Criteria\n\n- Jerky motion.\n- Inconsistent result.\n\n## Common Mistakes\n\n- **Rushing the technique.**\n  - Fix: Slow down and focus on form.\n\n## Sources\n\n- Pool OS V1 Verified",
+    "contentVi": "# An Toàn Ba Băng\n\nGiải thích về An Toàn Ba Băng.\n\n## Purpose\n\nKhái niệm safety cốt lõi cho người chơi billiards.",
+    "categoryId": "cat_strategy",
+    "tagIds": [
+      "tag_defense",
+      "tag_expert"
+    ],
+    "difficulty": "expert",
+    "aliases": [
+      "safety.three_rail",
+      "three rail safety"
+    ],
+    "keywords": [
+      "safety.three_rail",
+      "three rail safety"
+    ],
+    "relatedKnowledgeIds": [],
+    "relatedDrillCodes": [],
+    "readingTimeMinutes": 10,
+    "media": {},
+    "sources": [
+      "Pool OS V1 Verified"
+    ],
+    "imageUrl": null
+  }
+]
