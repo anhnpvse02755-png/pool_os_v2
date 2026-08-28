@@ -229,6 +229,7 @@ class _PrevButtonState extends State<_PrevButton> {
   Widget build(BuildContext context) {
     final isEnabled = widget.onPressed != null;
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: isEnabled ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: isEnabled ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: isEnabled ? () => setState(() => _scale = 1.0) : null,
@@ -276,6 +277,7 @@ class _NextButtonState extends State<_NextButton> {
   Widget build(BuildContext context) {
     final isEnabled = widget.onPressed != null;
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: isEnabled ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: isEnabled ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: isEnabled ? () => setState(() => _scale = 1.0) : null,

@@ -19,7 +19,7 @@ class LearningPathScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Lo trinh cua ban'),
+        title: const Text('Lộ trình của bạn'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -27,7 +27,7 @@ class LearningPathScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.invalidate(learningPathProvider),
-            tooltip: 'Lam moi',
+            tooltip: 'Làm mới',
           ),
         ],
       ),
@@ -40,11 +40,11 @@ class LearningPathScreen extends ConsumerWidget {
             children: [
               Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: AppSpacing.lg),
-              Text('Loi: $error'),
+              Text('Lỗi: $error'),
               const SizedBox(height: AppSpacing.lg),
               _PrimaryButton(
                 onPressed: () => ref.invalidate(learningPathProvider),
-                label: 'Thu lai',
+                label: 'Thử lại',
               ),
             ],
           ),
@@ -83,7 +83,7 @@ class LearningPathScreen extends ConsumerWidget {
                     const Icon(Icons.auto_awesome, color: Colors.white),
                     const SizedBox(width: AppSpacing.sm),
                     const Text(
-                      'Tuan nay',
+                      'Tuần này',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -114,7 +114,7 @@ class LearningPathScreen extends ConsumerWidget {
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Dang theo lo trinh AI...'),
+                        content: Text('Đang theo lộ trình AI...'),
                         behavior: SnackBarBehavior.floating,
                       ),
                     );
@@ -127,7 +127,7 @@ class LearningPathScreen extends ConsumerWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => context.push('/training/drills'),
                   icon: const Icon(Icons.skip_next),
-                  label: const Text('Tu chon'),
+                  label: const Text('Tự chọn'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                     side: BorderSide(color: AppColors.accent),
@@ -158,7 +158,7 @@ class LearningPathScreen extends ConsumerWidget {
                 onSkip: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Da bo qua'),
+                      content: Text('Đã bỏ qua'),
                       behavior: SnackBarBehavior.floating,
                       duration: Duration(seconds: 1),
                     ),
@@ -213,21 +213,21 @@ class LearningPathScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.xxl),
             Text(
-              'Chua co lo trinh',
+              'Chưa có lộ trình',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: AppColors.lightTextSecondary,
                   ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'Tap it nhat 1 bai tap de nhan de xuat tu Coach',
+              'Tập ít nhất 1 bài tập để nhận đề xuất từ Coach',
               style: TextStyle(color: AppColors.lightTextSecondary),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xxl),
             _PrimaryButton(
               onPressed: () => context.push('/onboarding/interests'),
-              label: 'Chon so thich',
+              label: 'Chọn sở thích',
             ),
           ],
         ),
@@ -263,11 +263,11 @@ class _LearningPathCard extends ConsumerWidget {
   String _getPriorityLabel() {
     switch (item.priority) {
       case 1:
-        return 'Uu tien cao';
+        return 'Ưu tiên cao';
       case 2:
-        return 'Kuyen nghi';
+        return 'Khuyến nghị';
       default:
-        return 'Bo sung';
+        return 'Bổ sung';
     }
   }
 
@@ -413,7 +413,7 @@ class _LearningPathCard extends ConsumerWidget {
                 TextButton.icon(
                   onPressed: onSkip,
                   icon: const Icon(Icons.skip_next, size: 18),
-                  label: const Text('Bo qua'),
+                  label: const Text('Bỏ qua'),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.lightTextSecondary,
                   ),
@@ -421,7 +421,7 @@ class _LearningPathCard extends ConsumerWidget {
                 const Spacer(),
                 _PrimaryButton(
                   onPressed: onStart,
-                  label: 'Bat dau',
+                  label: 'Bắt đầu',
                   icon: Icons.play_arrow,
                 ),
               ],
@@ -461,7 +461,7 @@ class _LearningPathCard extends ConsumerWidget {
               Icon(Icons.menu_book, size: 14, color: AppColors.accent),
               const SizedBox(width: AppSpacing.xs),
               Text(
-                'Doc truoc khi tap',
+                'Đọc trước khi tập',
                 style: TextStyle(
                   fontSize: 11,
                   color: AppColors.accent,
@@ -524,6 +524,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

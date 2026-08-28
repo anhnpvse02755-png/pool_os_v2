@@ -59,7 +59,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Xu huong'),
+        title: const Text('Xu hướng'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -77,7 +77,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text('Loi: $_error'))
+              ? Center(child: Text('Lỗi: $_error'))
               : _summary == null
                   ? _buildEmpty()
                   : _buildDashboard(),
@@ -91,10 +91,10 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
         children: [
           Icon(Icons.analytics, size: 64, color: AppColors.lightTextTertiary),
           const SizedBox(height: AppSpacing.lg),
-          const Text('Chua co du du lieu'),
+          const Text('Chưa có đủ dữ liệu'),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Can it nhat 2 buoi tap de xem xu huong.',
+            'Cần ít nhất 2 buổi tập để xem xu hướng.',
             style: TextStyle(color: AppColors.lightTextSecondary),
           ),
         ],
@@ -114,7 +114,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
         // Training trend
         _buildTrendCard(
-          'Xu huong tap luyen',
+          'Xu hướng tập luyện',
           s.trainingTrend,
           Icons.fitness_center,
           AppColors.accent,
@@ -123,7 +123,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
         // Match trend
         _buildTrendCard(
-          'Xu huong thi dau',
+          'Xu hướng thi đấu',
           s.matchTrend,
           Icons.sports,
           const Color(0xFF8B5CF6),
@@ -147,7 +147,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
         // Drill trends
         if (s.drillTrends.isNotEmpty) ...[
           Text(
-            'Xu huong theo bai tap',
+            'Xu hướng theo bài tập',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -192,7 +192,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isGood ? 'Xu huong tich cuc' : 'Can cai thien',
+                  isGood ? 'Xu hướng tích cực' : 'Cần cải thiện',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -202,8 +202,8 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   isGood
-                      ? 'Ban dang tien bo hoac duy tri phong do'
-                      : 'Can tap trung vao nhung diem yeu',
+                      ? 'Bạn đang tiến bộ hoặc duy trì phong độ'
+                      : 'Cần tập trung vào những điểm yếu',
                   style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
               ],
@@ -216,10 +216,10 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
   Widget _buildTrendCard(String title, TrendResult trend, IconData icon, Color color) {
     final (label, trendIcon, trendColor) = switch (trend) {
-      TrendResult.improving => ('Dang tien bo', Icons.trending_up, AppColors.success),
-      TrendResult.stable => ('On dinh', Icons.trending_flat, AppColors.accent),
-      TrendResult.declining => ('Can cai thien', Icons.trending_down, AppColors.warning),
-      TrendResult.insufficient => ('Chua du du lieu', Icons.help_outline, AppColors.lightTextSecondary),
+      TrendResult.improving => ('Đang tiến bộ', Icons.trending_up, AppColors.success),
+      TrendResult.stable => ('Ổn định', Icons.trending_flat, AppColors.accent),
+      TrendResult.declining => ('Cần cải thiện', Icons.trending_down, AppColors.warning),
+      TrendResult.insufficient => ('Chưa đủ dữ liệu', Icons.help_outline, AppColors.lightTextSecondary),
     };
 
     return Container(
@@ -285,9 +285,9 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Do on dinh', style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.lightTextPrimary)),
+                Text('Độ ổn định', style: TextStyle(fontWeight: FontWeight.w500, color: AppColors.lightTextPrimary)),
                 Text(
-                  score >= 70 ? 'Tot' : (score >= 40 ? 'Trung binh' : 'Can cai thien'),
+                  score >= 70 ? 'Tốt' : (score >= 40 ? 'Trung bình' : 'Cần cải thiện'),
                   style: TextStyle(fontSize: 13, color: color),
                 ),
               ],
@@ -334,10 +334,10 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
 
   Widget _buildDrillTrendCard(DrillTrend t) {
     final (label, icon, color) = switch (t.trend) {
-      TrendResult.improving => ('Tien bo', Icons.trending_up, AppColors.success),
-      TrendResult.stable => ('On dinh', Icons.trending_flat, AppColors.accent),
-      TrendResult.declining => ('Can cai thien', Icons.trending_down, AppColors.warning),
-      TrendResult.insufficient => ('Chua du du lieu', Icons.help_outline, AppColors.lightTextSecondary),
+      TrendResult.improving => ('Tiến bộ', Icons.trending_up, AppColors.success),
+      TrendResult.stable => ('Ổn định', Icons.trending_flat, AppColors.accent),
+      TrendResult.declining => ('Cần cải thiện', Icons.trending_down, AppColors.warning),
+      TrendResult.insufficient => ('Chưa đủ dữ liệu', Icons.help_outline, AppColors.lightTextSecondary),
     };
 
     return Container(
@@ -379,7 +379,7 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Tong ket',
+            'Tổng kết',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: AppColors.lightTextPrimary,

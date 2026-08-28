@@ -92,7 +92,7 @@ class DrillCompletionScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Buoi tap hoan thanh'),
+        title: const Text('Buổi tập hoàn thành'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -132,9 +132,9 @@ class DrillCompletionScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Thoi gian',
+                      label: 'Thời gian',
                       value: '${duration.inMinutes}',
-                      unit: 'phut',
+                      unit: 'phút',
                       icon: Icons.timer_outlined,
                       color: AppColors.accent,
                     ),
@@ -142,7 +142,7 @@ class DrillCompletionScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Lan danh',
+                      label: 'Lần đánh',
                       value: '${session.attempts.length}',
                       unit: 'lan',
                       icon: Icons.sports_esports_outlined,
@@ -158,7 +158,7 @@ class DrillCompletionScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Chinh xac',
+                      label: 'Chính xác',
                       value: _accuracy.toStringAsFixed(0),
                       unit: '%',
                       icon: Icons.percent_outlined,
@@ -168,7 +168,7 @@ class DrillCompletionScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Truot',
+                      label: 'Trượt',
                       value: '${session.totalShotsMissed}',
                       unit: 'lan',
                       icon: Icons.cancel_outlined,
@@ -323,7 +323,7 @@ class _CompletionHero extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            passed ? 'Hoan thanh xuat sac' : 'Hoan thanh, tiep tuc co gang',
+            passed ? 'Hoàn thành xuất sắc' : 'Hoàn thành, tiếp tục cố gắng',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: color,
               fontWeight: FontWeight.w500,

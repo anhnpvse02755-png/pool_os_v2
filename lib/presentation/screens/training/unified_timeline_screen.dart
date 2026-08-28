@@ -98,7 +98,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(child: Text('Loi: $_error'))
+              ? Center(child: Text('Lỗi: $_error'))
               : _entries.isEmpty
                   ? _buildEmpty()
                   : _buildTimeline(),
@@ -112,10 +112,10 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
         children: [
           Icon(Icons.timeline, size: 64, color: AppColors.lightTextTertiary),
           const SizedBox(height: AppSpacing.lg),
-          const Text('Chua co hoat dong nao'),
+          const Text('Chưa có hoạt động nào'),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Bat dau tap luyen hoac ghi tran dau de xem timeline.',
+            'Bắt đầu tập luyện hoặc ghi trận đấu để xem timeline.',
             style: TextStyle(color: AppColors.lightTextSecondary),
             textAlign: TextAlign.center,
           ),
@@ -170,8 +170,8 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
     final today = DateFormat('EEEE, dd/MM').format(now);
     final yesterday = DateFormat('EEEE, dd/MM').format(now.subtract(const Duration(days: 1)));
 
-    if (formatted == today) return 'Hom nay';
-    if (formatted == yesterday) return 'Hom qua';
+    if (formatted == today) return 'Hôm nay';
+    if (formatted == yesterday) return 'Hôm qua';
     return formatted;
   }
 
@@ -203,7 +203,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(
-                entry.type == _EntryType.training ? 'Tap' : 'Dau',
+                entry.type == _EntryType.training ? 'Tập' : 'Đấu',
                 style: TextStyle(
                   fontSize: 10,
                   color: entry.type == _EntryType.training ? AppColors.accent : const Color(0xFF8B5CF6),

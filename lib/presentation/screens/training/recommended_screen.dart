@@ -19,9 +19,9 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
   final List<Map<String, dynamic>> _recommendations = [
     {
       'type': 'personalized',
-      'title': 'Cai thien Draw Shot',
-      'subtitle': 'Dua tren phong cach choi cua ban',
-      'reason': 'Ban co xu huong danh manh. Hay tap trung vao kiem soat luc.',
+      'title': 'Cải thiện Draw Shot',
+      'subtitle': 'Dựa trên phong cách chơi của bạn',
+      'reason': 'Bạn có xu hướng đánh mạnh. Hãy tập trung vào kiểm soát lực.',
       'drills': [
         {'name': 'Draw Shot Lv1', 'duration': '15 phut', 'difficulty': 'Easy'},
         {'name': 'Draw Shot Lv2', 'duration': '20 phut', 'difficulty': 'Medium'},
@@ -32,9 +32,9 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
     },
     {
       'type': 'weakness',
-      'title': 'Position Play yeu',
-      'subtitle': 'Diem can cai thien',
-      'reason': 'Ty le kiem soat vi tri cua ban thap hon muc trung binh.',
+      'title': 'Position Play yếu',
+      'subtitle': 'Điểm cần cải thiện',
+      'reason': 'Tỷ lệ kiểm soát vị trí của bạn thấp hơn mức trung bình.',
       'drills': [
         {'name': 'Position Control Lv1', 'duration': '25 phut', 'difficulty': 'Medium'},
         {'name': 'Position Control Lv2', 'duration': '30 phut', 'difficulty': 'Hard'},
@@ -45,9 +45,9 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
     },
     {
       'type': 'challenge',
-      'title': 'Thu thach: Bank Shot',
-      'subtitle': 'Nang cao ky nang',
-      'reason': 'Ban chua tap Bank Shot. Day la ky nang quan trong.',
+      'title': 'Thử thách: Bank Shot',
+      'subtitle': 'Nâng cao kỹ năng',
+      'reason': 'Bạn chưa tập Bank Shot. Đây là kỹ năng quan trọng.',
       'drills': [
         {'name': 'Bank Shot Lv1', 'duration': '20 phut', 'difficulty': 'Medium'},
         {'name': 'Bank Shot Lv2', 'duration': '25 phut', 'difficulty': 'Hard'},
@@ -58,9 +58,9 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
     },
     {
       'type': 'maintenance',
-      'title': 'On tap: Stop Shot',
-      'subtitle': 'Duy tri ky nang',
-      'reason': 'Da 3 ngay khong tap Stop Shot. Hay on lai de duy tri.',
+      'title': 'Ôn tập: Stop Shot',
+      'subtitle': 'Duy trì kỹ năng',
+      'reason': 'Đã 3 ngày không tập Stop Shot. Hãy ôn lại để duy trì.',
       'drills': [
         {'name': 'Stop Shot Lv1', 'duration': '10 phut', 'difficulty': 'Easy'},
         {'name': 'Stop Shot Lv2', 'duration': '15 phut', 'difficulty': 'Medium'},
@@ -76,7 +76,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('AI de xuat'),
+        title: const Text('AI đề xuất'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -84,7 +84,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _refreshRecommendations,
-            tooltip: 'Lam moi',
+            tooltip: 'Làm mới',
           ),
         ],
       ),
@@ -133,34 +133,34 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
         child: Row(
           children: [
             _GoalChip(
-              label: 'Tat ca',
+              label: 'Tất cả',
               isSelected: _selectedGoal == 'all',
               onTap: () => setState(() => _selectedGoal = 'all'),
             ),
             const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Ca nhan hoa',
+              label: 'Cá nhân hóa',
               isSelected: _selectedGoal == 'personalized',
               onTap: () => setState(() => _selectedGoal = 'personalized'),
               icon: Icons.person,
             ),
             const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Diem yeu',
+              label: 'Điểm yếu',
               isSelected: _selectedGoal == 'weakness',
               onTap: () => setState(() => _selectedGoal = 'weakness'),
               icon: Icons.trending_down,
             ),
             const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'Thu thach',
+              label: 'Thử thách',
               isSelected: _selectedGoal == 'challenge',
               onTap: () => setState(() => _selectedGoal = 'challenge'),
               icon: Icons.emoji_events,
             ),
             const SizedBox(width: AppSpacing.sm),
             _GoalChip(
-              label: 'On tap',
+              label: 'Ôn tập',
               isSelected: _selectedGoal == 'maintenance',
               onTap: () => setState(() => _selectedGoal = 'maintenance'),
               icon: Icons.refresh,
@@ -215,7 +215,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => context.push('/training/assessment'),
                 icon: const Icon(Icons.psychology),
-                label: const Text('Danh gia lai'),
+                label: const Text('Đánh giá lại'),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: AppColors.accent),
                   foregroundColor: AppColors.accent,
@@ -236,7 +236,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
                     }
                   }
                 },
-                label: 'Bat dau',
+                label: 'Bắt đầu',
                 icon: Icons.play_arrow,
               ),
             ),
@@ -257,7 +257,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Da lam moi de xuat'),
+        content: Text('Đã làm mới đề xuất'),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -391,7 +391,7 @@ class _RecommendationCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Phan tich AI',
+                        'Phân tích AI',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: color,
@@ -417,7 +417,7 @@ class _RecommendationCard extends StatelessWidget {
           // Progress
           if (recommendation['progress'] > 0) ...[
             Text(
-              'Tien do',
+              'Tiến độ',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.lightTextPrimary,
@@ -452,7 +452,7 @@ class _RecommendationCard extends StatelessWidget {
 
           // Drills
           Text(
-            'Bai tap de xuat',
+            'Bài tập đề xuất',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.lightTextPrimary,
@@ -595,6 +595,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

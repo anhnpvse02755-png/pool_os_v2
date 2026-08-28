@@ -28,7 +28,7 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Kien thuc'),
+        title: const Text('Kiến thức'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -67,7 +67,7 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
         itemBuilder: (context, index) {
           if (index == 0) {
             return _CategoryChip(
-              label: 'Tat ca',
+              label: 'Tất cả',
               isSelected: _selectedCategoryId == null,
               onTap: () => setState(() => _selectedCategoryId = null),
             );
@@ -95,7 +95,7 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
         itemBuilder: (context, index) {
           if (index == 0) {
             return _CategoryChip(
-              label: 'Tat ca',
+              label: 'Tất cả',
               isSelected: _selectedDifficulty == null,
               onTap: () => setState(() => _selectedDifficulty = null),
             );
@@ -135,7 +135,7 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
             Icon(Icons.article_outlined, size: 64, color: AppColors.lightTextTertiary),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Khong co bai viet',
+              'Không có bài viết',
               style: TextStyle(color: AppColors.lightTextSecondary),
             ),
           ],
@@ -381,7 +381,7 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
     if (query.isEmpty) {
       return Center(
         child: Text(
-          'Nhap tu khoa de tim kiem',
+          'Nhập từ khóa để tìm kiếm',
           style: TextStyle(color: AppColors.lightTextSecondary),
         ),
       );
@@ -407,7 +407,7 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
             Icon(Icons.search_off, size: 64, color: AppColors.lightTextTertiary),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Khong tim thay ket qua',
+              'Không tìm thấy kết quả',
               style: TextStyle(color: AppColors.lightTextSecondary),
             ),
           ],

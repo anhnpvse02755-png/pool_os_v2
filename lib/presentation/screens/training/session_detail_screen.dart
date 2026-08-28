@@ -32,12 +32,12 @@ class SessionDetailScreen extends ConsumerWidget {
       error: (error, _) => Scaffold(
         backgroundColor: AppColors.lightBackground,
         appBar: AppBar(
-          title: const Text('Loi'),
+          title: const Text('Lỗi'),
           backgroundColor: AppColors.lightSurface,
           foregroundColor: AppColors.lightTextPrimary,
           elevation: 0,
         ),
-        body: Center(child: Text('Loi: $error')),
+        body: Center(child: Text('Lỗi: $error')),
       ),
       data: (sessions) {
         final session = sessions.where((s) => s.id == sessionId).firstOrNull;
@@ -45,7 +45,7 @@ class SessionDetailScreen extends ConsumerWidget {
           return Scaffold(
             backgroundColor: AppColors.lightBackground,
             appBar: AppBar(
-              title: const Text('Khong tim thay'),
+              title: const Text('Không tìm thấy'),
               backgroundColor: AppColors.lightSurface,
               foregroundColor: AppColors.lightTextPrimary,
               elevation: 0,
@@ -56,11 +56,11 @@ class SessionDetailScreen extends ConsumerWidget {
                 children: [
                   Icon(Icons.search_off, size: 64, color: AppColors.lightTextTertiary),
                   const SizedBox(height: AppSpacing.lg),
-                  const Text('Khong tim thay buoi tap nay'),
+                  const Text('Không tìm thấy buổi tập này'),
                   const SizedBox(height: AppSpacing.xxl),
                   _PrimaryButton(
                     onPressed: () => context.go('/training/history'),
-                    label: 'Quay lai lich su',
+                    label: 'Quay lại lịch sử',
                   ),
                 ],
               ),
@@ -140,14 +140,14 @@ class _SessionDetailView extends StatelessWidget {
             children: [
               Expanded(child: _StatCard(
                 icon: Icons.timer,
-                label: 'Thoi gian',
+                label: 'Thời gian',
                 value: '${session.duration}m',
                 color: AppColors.warning,
               )),
               const SizedBox(width: AppSpacing.md),
               Expanded(child: _StatCard(
                 icon: Icons.gps_fixed,
-                label: 'Accuracy',
+                label: 'Tỷ lệ',
                 value: '$accuracy%',
                 color: AppColors.accent,
               )),
@@ -160,14 +160,14 @@ class _SessionDetailView extends StatelessWidget {
             children: [
               Expanded(child: _StatCard(
                 icon: Icons.check_circle,
-                label: 'Thanh cong',
+                label: 'Thành công',
                 value: '${session.shotsMade}',
                 color: AppColors.success,
               )),
               const SizedBox(width: AppSpacing.md),
               Expanded(child: _StatCard(
                 icon: Icons.cancel,
-                label: 'Truot',
+                label: 'Trượt',
                 value: '${session.shotsMissed}',
                 color: AppColors.error,
               )),
@@ -187,7 +187,7 @@ class _SessionDetailView extends StatelessWidget {
               const SizedBox(width: AppSpacing.md),
               Expanded(child: _StatCard(
                 icon: Icons.calendar_today,
-                label: 'Ngay',
+                label: 'Ngày',
                 value: _formatDate(session.completedAt),
                 color: const Color(0xFF14B8A6),
               )),
@@ -199,7 +199,7 @@ class _SessionDetailView extends StatelessWidget {
           // Actions
           _PrimaryButton(
             onPressed: () => context.push('/training/drill/${session.drillCode}'),
-            label: 'Tap lai',
+            label: 'Tập lại',
             icon: Icons.replay,
           ),
 
@@ -208,7 +208,7 @@ class _SessionDetailView extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: () => context.go('/training/history'),
             icon: const Icon(Icons.list),
-            label: const Text('Xem lich su'),
+            label: const Text('Xem lịch sử'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.accent,
               side: BorderSide(color: AppColors.accent),
@@ -291,6 +291,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

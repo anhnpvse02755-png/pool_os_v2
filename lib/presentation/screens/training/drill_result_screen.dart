@@ -21,10 +21,10 @@ class DrillResultScreen extends StatelessWidget {
   double get successRate => totalReps > 0 ? (successCount / totalReps) * 100 : 0;
 
   String get rating {
-    if (successRate >= 90) return 'Xuat sac!';
-    if (successRate >= 70) return 'Tot lam!';
-    if (successRate >= 50) return 'Can co gang hon';
-    return 'Can luyen tap them';
+    if (successRate >= 90) return 'Xuất sắc!';
+    if (successRate >= 70) return 'Tốt lắm!';
+    if (successRate >= 50) return 'Cần cố gắng hơn';
+    return 'Cần luyện tập thêm';
   }
 
   Color get ratingColor {
@@ -92,7 +92,7 @@ class DrillResultScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _StatCard(
-                      label: 'Tong lan',
+                      label: 'Tổng lần',
                       value: '$totalReps',
                       icon: Icons.repeat,
                       color: AppColors.accent,
@@ -101,7 +101,7 @@ class DrillResultScreen extends StatelessWidget {
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: _StatCard(
-                      label: 'Thanh cong',
+                      label: 'Thành công',
                       value: '$successCount',
                       icon: Icons.check_circle,
                       color: AppColors.success,
@@ -144,7 +144,7 @@ class DrillResultScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     const Text(
-                      'Ty le thanh cong',
+                      'Tỷ lệ thành công',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
@@ -186,7 +186,7 @@ class DrillResultScreen extends StatelessWidget {
                         Icon(Icons.lightbulb, color: AppColors.gold, size: 24),
                         const SizedBox(width: AppSpacing.sm),
                         Text(
-                          'AI Coach goi y',
+                          'AI Coach gợi ý',
                           style: TextStyle(
                             color: AppColors.gold,
                             fontWeight: FontWeight.bold,
@@ -217,7 +217,7 @@ class DrillResultScreen extends StatelessWidget {
                 width: double.infinity,
                 child: _PrimaryButton(
                   onPressed: () => context.go('/training'),
-                  label: 'Ve Training Center',
+                  label: 'Về Training Center',
                 ),
               ).animate().fadeIn(delay: 700.ms),
 
@@ -229,7 +229,7 @@ class DrillResultScreen extends StatelessWidget {
                   onPressed: () {
                     context.go('/training/session/new?drill=$drillCode');
                   },
-                  label: 'Tap lai',
+                  label: 'Tập lại',
                   icon: Icons.replay,
                 ),
               ).animate().fadeIn(delay: 800.ms),
@@ -318,6 +318,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
@@ -347,6 +348,7 @@ class _SecondaryButtonState extends State<_SecondaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

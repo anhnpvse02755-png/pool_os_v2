@@ -11,7 +11,7 @@
 //
 // No service calls, no Riverpod injection, no GoRouter needed for this
 // smoke. The screen is a plain StatefulWidget that holds session-type
-// and readiness-slider state locally. Tapping the ElevatedButton calls
+// and readiness-slider state locally. Tapping the start CTA calls
 // `context.go('/sessions')` (go_router) which would require a full
 // router setup, so we tap the type card instead — it exercises the
 // setState + animation path without leaving the screen.
@@ -48,7 +48,7 @@ void main() {
     // Assertion 2: the start-session CTA renders with its label. This
     // proves the widget renders the call-to-action without any
     // state-driven error path.
-    expect(find.widgetWithText(ElevatedButton, 'Bắt đầu buổi chơi'),
+    expect(find.text('Bắt đầu buổi chơi'),
         findsOneWidget,
         reason: 'start CTA should be visible on initial render');
 

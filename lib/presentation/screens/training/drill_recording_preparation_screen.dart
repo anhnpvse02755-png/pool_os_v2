@@ -63,7 +63,7 @@ class _DrillRecordingPreparationScreenState
       return Scaffold(
         backgroundColor: AppColors.lightBackground,
         appBar: AppBar(
-          title: const Text('Loi'),
+          title: const Text('Lỗi'),
           backgroundColor: AppColors.lightSurface,
           foregroundColor: AppColors.lightTextPrimary,
           elevation: 0,
@@ -85,7 +85,7 @@ class _DrillRecordingPreparationScreenState
                 ),
                 const SizedBox(height: AppSpacing.xxl),
                 Text(
-                  'Khong tim thay bai tap nay',
+                  'Không tìm thấy bài tập này',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -103,7 +103,7 @@ class _DrillRecordingPreparationScreenState
                 const SizedBox(height: AppSpacing.xxl),
                 _PrimaryButton(
                   onPressed: () => context.go('/training/drills'),
-                  label: 'Quay ve thu vien bai tap',
+                  label: 'Quay về thư viện bài tập',
                 ),
               ],
             ),
@@ -115,7 +115,7 @@ class _DrillRecordingPreparationScreenState
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Chuan bi ghi'),
+        title: const Text('Chuẩn bị ghi'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -283,7 +283,7 @@ class _ObjectiveCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Muc tieu Level',
+                  'Mục tiêu Level',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: AppColors.gold,
                         fontWeight: FontWeight.bold,
@@ -371,7 +371,7 @@ class _StepsSummary extends StatelessWidget {
           color: AppColors.lightTextSecondary,
         ),
         title: Text(
-          'Cac buoc thuc hien',
+          'Các bước thực hiện',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.lightTextPrimary,
@@ -469,7 +469,7 @@ class _ReadinessCheckbox extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Toi da san sang',
+                    'Tôi đã sẵn sàng',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: isReady
@@ -479,7 +479,7 @@ class _ReadinessCheckbox extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
-                    'Ban da setup dung, camera san sang, toi tap trung.',
+                    'Bàn đã setup đúng, camera sẵn sàng, tôi tập trung.',
                     style: TextStyle(
                       color: AppColors.lightTextSecondary,
                       fontSize: 12,
@@ -521,7 +521,7 @@ class _BottomCTA extends StatelessWidget {
       child: SafeArea(
         child: _PrimaryButton(
           onPressed: isReady ? onStartRecording : null,
-          label: isReady ? 'Bat dau ghi' : 'Xac nhan san sang',
+          label: isReady ? 'Bắt đầu ghi' : 'Xác nhận sẵn sàng',
           icon: isReady ? Icons.videocam : Icons.videocam_off,
         ),
       ),
@@ -542,6 +542,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

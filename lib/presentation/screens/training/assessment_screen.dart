@@ -18,82 +18,82 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
   final List<Map<String, dynamic>> _questions = [
     {
-      'question': 'Khi thuc hien Stop Shot, ban danh vao vi tri nao cua bi cai?',
+      'question': 'Khi thực hiện Stop Shot, bạn đánh vào vị trí nào của bi cái?',
       'options': [
-        {'text': 'Tren tam bi cai', 'score': 0},
-        {'text': 'Duoi tam bi cai', 'score': 0},
-        {'text': 'Tam bi cai', 'score': 2},
-        {'text': 'Khong chac', 'score': 1},
+        {'text': 'Trên tâm bi cái', 'score': 0},
+        {'text': 'Dưới tâm bi cái', 'score': 0},
+        {'text': 'Tâm bi cái', 'score': 2},
+        {'text': 'Không chắc', 'score': 1},
       ],
       'category': 'shotmaking',
     },
     {
-      'question': 'Khi nao nen su dung Draw Shot?',
+      'question': 'Khi nào nên sử dụng Draw Shot?',
       'options': [
-        {'text': 'Khi can bi cai quay nguoc lai', 'score': 2},
-        {'text': 'Khi can bi cai di xa hon', 'score': 0},
-        {'text': 'Khi danh bi vao lo', 'score': 0},
-        {'text': 'Khi choi safety', 'score': 1},
+        {'text': 'Khi cần bi cái quay ngược lại', 'score': 2},
+        {'text': 'Khi cần bi cái đi xa hơn', 'score': 0},
+        {'text': 'Khi đánh bi vào lỗ', 'score': 0},
+        {'text': 'Khi chơi safety', 'score': 1},
       ],
       'category': 'shotmaking',
     },
     {
-      'question': 'Khoang cach toi uu de quan sat duong ngam la bao nhieu?',
+      'question': 'Khoảng cách tối ưu để quan sát đường ngắm là bao nhiêu?',
       'options': [
         {'text': '30-40cm tu mui cue den bi cai', 'score': 0},
         {'text': '15-20cm tu mui cue den bi cai', 'score': 2},
-        {'text': 'Cang gan cang tot', 'score': 1},
-        {'text': 'Khong quan trong', 'score': 0},
+        {'text': 'Càng gần càng tốt', 'score': 1},
+        {'text': 'Không quan trọng', 'score': 0},
       ],
       'category': 'fundamentals',
     },
     {
-      'question': 'Phuong phap Ghost Ball dung de lam gi?',
+      'question': 'Phương pháp Ghost Ball dùng để làm gì?',
       'options': [
-        {'text': 'Xac dinh diem ngam chinh xac', 'score': 2},
-        {'text': 'Tang luc danh', 'score': 0},
-        {'text': 'Cai thien tu the', 'score': 0},
-        {'text': 'Kiem soat bi cai', 'score': 1},
+        {'text': 'Xác định điểm ngắm chính xác', 'score': 2},
+        {'text': 'Tăng lực đánh', 'score': 0},
+        {'text': 'Cải thiện tư thế', 'score': 0},
+        {'text': 'Kiểm soát bi cái', 'score': 1},
       ],
       'category': 'aiming',
     },
     {
-      'question': 'Yeu to nao quan trong nhat trong Position Play?',
+      'question': 'Yếu tố nào quan trọng nhất trong Position Play?',
       'options': [
-        {'text': 'Kiem soat luc', 'score': 2},
-        {'text': 'Danh manh', 'score': 0},
-        {'text': 'Chon goc dep', 'score': 1},
-        {'text': 'Danh nhanh', 'score': 0},
+        {'text': 'Kiểm soát lực', 'score': 2},
+        {'text': 'Đánh mạnh', 'score': 0},
+        {'text': 'Chọn góc đẹp', 'score': 1},
+        {'text': 'Đánh nhanh', 'score': 0},
       ],
       'category': 'positioning',
     },
     {
-      'question': 'Khi nao nen choi Safety thay vi danh ghi diem?',
+      'question': 'Khi nào nên chơi Safety thay vì đánh ghi điểm?',
       'options': [
-        {'text': 'Khi khong co duong ngam ro rang', 'score': 2},
-        {'text': 'Luon luon', 'score': 0},
-        {'text': 'Khi thang roi', 'score': 0},
-        {'text': 'Khong bao gio', 'score': 1},
+        {'text': 'Khi không có đường ngắm rõ ràng', 'score': 2},
+        {'text': 'Luôn luôn', 'score': 0},
+        {'text': 'Khi thắng rồi', 'score': 0},
+        {'text': 'Không bao giờ', 'score': 1},
       ],
       'category': 'strategy',
     },
     {
-      'question': 'Tu the dung khi danh billiards la?',
+      'question': 'Tư thế đứng khi đánh billiards là?',
       'options': [
-        {'text': 'Thang dung', 'score': 0},
-        {'text': 'Hoi nghien ve phia truoc', 'score': 2},
-        {'text': 'Ngoi xos', 'score': 0},
-        {'text': 'Nghien ra sau', 'score': 0},
+        {'text': 'Thẳng đứng', 'score': 0},
+        {'text': 'Hơi nghiêng về phía trước', 'score': 2},
+        {'text': 'Ngồi xổm', 'score': 0},
+        {'text': 'Nghiêng ra sau', 'score': 0},
       ],
       'category': 'fundamentals',
     },
     {
       'question': 'Loi "Scratch" trong billiards la gi?',
       'options': [
-        {'text': 'Danh bi cai ra ngoai ban', 'score': 2},
-        {'text': 'Danh khong trung bi dich', 'score': 0},
-        {'text': 'Danh bi vao lo sai', 'score': 1},
-        {'text': 'Danh cham qua', 'score': 0},
+        {'text': 'Đánh bi cái ra ngoài bàn', 'score': 2},
+        {'text': 'Đánh không trúng bi đích', 'score': 0},
+        {'text': 'Đánh bi vào lỗ sai', 'score': 1},
+        {'text': 'Đánh chậm quá', 'score': 0},
       ],
       'category': 'rules',
     },
@@ -108,7 +108,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Danh gia ky nang'),
+        title: const Text('Đánh giá kỹ năng'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -205,7 +205,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Ket qua danh gia'),
+        title: const Text('Kết quả đánh giá'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -241,7 +241,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                       ),
                     ),
                     Text(
-                      'Diem: $_totalScore/$maxScore',
+                      'Điểm: $_totalScore/$maxScore',
                       style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
@@ -284,7 +284,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
             // Strengths
             if (strengths.isNotEmpty) ...[
               _buildSection(
-                'Diem manh',
+                'Điểm mạnh',
                 Icons.thumb_up,
                 AppColors.success,
                 strengths,
@@ -295,7 +295,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
             // Weaknesses
             if (weaknesses.isNotEmpty) ...[
               _buildSection(
-                'Can cai thien',
+                'Cần cải thiện',
                 Icons.trending_up,
                 AppColors.warning,
                 weaknesses,
@@ -322,14 +322,14 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                     ),
-                    child: const Text('Lam lai'),
+                    child: const Text('Làm lại'),
                   ),
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: _PrimaryButton(
                     onPressed: () => Navigator.pop(context),
-                    label: 'Bat dau tap',
+                    label: 'Bắt đầu tập',
                   ),
                 ),
               ],
@@ -402,7 +402,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
               Icon(Icons.lightbulb, color: AppColors.accent),
               const SizedBox(width: AppSpacing.sm),
               const Text(
-                'De xuat tu AI Coach',
+                'Đề xuất từ AI Coach',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: AppColors.accent,
@@ -443,19 +443,19 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
   }
 
   String _getLevel(int percentage) {
-    if (percentage >= 90) return 'Chuyen gia';
-    if (percentage >= 75) return 'Nang cao';
-    if (percentage >= 50) return 'Trung binh';
-    return 'So cap';
+    if (percentage >= 90) return 'Chuyên gia';
+    if (percentage >= 75) return 'Nâng cao';
+    if (percentage >= 50) return 'Trung bình';
+    return 'Sơ cấp';
   }
 
   Color _getLevelColor(String level) {
     switch (level) {
-      case 'Chuyen gia':
+      case 'Chuyên gia':
         return const Color(0xFF8B5CF6);
-      case 'Nang cao':
+      case 'Nâng cao':
         return AppColors.accent;
-      case 'Trung binh':
+      case 'Trung bình':
         return AppColors.warning;
       default:
         return AppColors.error;
@@ -464,11 +464,11 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
   IconData _getLevelIcon(String level) {
     switch (level) {
-      case 'Chuyen gia':
+      case 'Chuyên gia':
         return Icons.emoji_events;
-      case 'Nang cao':
+      case 'Nâng cao':
         return Icons.star;
-      case 'Trung binh':
+      case 'Trung bình':
         return Icons.trending_up;
       default:
         return Icons.school;
@@ -497,17 +497,17 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
   String _getCategoryName(String category) {
     switch (category) {
       case 'shotmaking':
-        return 'Ky thuat danh';
+        return 'Kỹ thuật đánh';
       case 'aiming':
-        return 'Ngam ban';
+        return 'Ngắm bàn';
       case 'positioning':
-        return 'Vi tri';
+        return 'Vị trí';
       case 'strategy':
-        return 'Chien luoc';
+        return 'Chiến lược';
       case 'fundamentals':
-        return 'Nen tang';
+        return 'Nền tảng';
       case 'rules':
-        return 'Luat choi';
+        return 'Luật chơi';
       default:
         return category;
     }
@@ -515,27 +515,27 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
   List<String> _getStrengths() {
     final strengths = <String>[];
-    if (_totalScore >= 12) strengths.add('Kien thuc ky thuat danh tot');
-    if (_totalScore >= 10) strengths.add('Hieu biet ve ngam ban');
-    if (_totalScore >= 8) strengths.add('Nam vung nen tang co ban');
+    if (_totalScore >= 12) strengths.add('Kiến thức kỹ thuật đánh tốt');
+    if (_totalScore >= 10) strengths.add('Hiểu biết về ngắm bàn');
+    if (_totalScore >= 8) strengths.add('Nắm vững nền tảng cơ bản');
     return strengths;
   }
 
   List<String> _getWeaknesses() {
     final weaknesses = <String>[];
-    if (_totalScore < 12) weaknesses.add('Can cai thien ky thuat danh');
-    if (_totalScore < 10) weaknesses.add('Nen hoc them ve ngam ban');
-    if (_totalScore < 8) weaknesses.add('Can on lai nen tang');
+    if (_totalScore < 12) weaknesses.add('Cần cải thiện kỹ thuật đánh');
+    if (_totalScore < 10) weaknesses.add('Nên học thêm về ngắm bàn');
+    if (_totalScore < 8) weaknesses.add('Cần ôn lại nền tảng');
     return weaknesses;
   }
 
   String _getRecommendation(String level) {
     switch (level) {
-      case 'Chuyen gia':
+      case 'Chuyên gia':
         return 'Ban da co nen tang rat tot! Hay tap trung vao cac bai tap nang cao nhu Position Play phuc tap va cac cu bank shot kho.';
-      case 'Nang cao':
+      case 'Nâng cao':
         return 'Kien thuc kha vung. Hay tap trung vao Position Play va cac tinh huong chien thuat de nang cao trinh do thi dau.';
-      case 'Trung binh':
+      case 'Trung bình':
         return 'Ban co nen tang co ban. Hay bat dau voi cac bai tap Stop Shot, Draw Shot va Follow Shot de cai thien kiem soat bi cai.';
       default:
         return 'Ban moi bat dau. Hay tap trung vao cac bai tap co ban: tu the, cach cam cue, va cac cu danh don gian truoc.';
@@ -611,6 +611,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

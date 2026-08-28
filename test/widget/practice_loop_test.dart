@@ -120,11 +120,11 @@ void main() {
     expect(find.widgetWithText(FloatingActionButton, 'Bắt đầu'),
         findsNothing,
         reason: 'FAB removed in Part 6 — no redundant start button');
-    // Sprint-17 Part 6: Recording buttons should be visible
-    expect(find.widgetWithText(ElevatedButton, 'Thành công'),
+    // Sprint-19 redesign: recording buttons use English labels (SUCCESS/MISS)
+    expect(find.text('SUCCESS'),
         findsOneWidget,
         reason: 'Success button must render immediately');
-    expect(find.widgetWithText(ElevatedButton, 'Trượt'),
+    expect(find.text('MISS'),
         findsOneWidget,
         reason: 'Failure button must render immediately');
   });

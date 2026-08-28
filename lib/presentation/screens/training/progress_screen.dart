@@ -18,7 +18,7 @@ class ProgressScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Tien do cua ban'),
+        title: const Text('Tiến độ của bạn'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -39,7 +39,7 @@ class ProgressScreen extends ConsumerWidget {
 
             // Progress by Category
             Text(
-              'Tien do theo danh muc',
+              'Tiến độ theo danh mục',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -54,7 +54,7 @@ class ProgressScreen extends ConsumerWidget {
 
             // Recent Activity
             Text(
-              'Hoat dong gan day',
+              'Hoạt động gần đây',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -123,7 +123,7 @@ class ProgressScreen extends ConsumerWidget {
           Icon(Icons.fitness_center, size: 48, color: AppColors.lightTextTertiary),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Chua co tien do',
+            'Chưa có tiến độ',
             style: TextStyle(
               color: AppColors.lightTextSecondary,
               fontWeight: FontWeight.bold,
@@ -131,7 +131,7 @@ class ProgressScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Bat dau tap de xem tien do cua ban',
+            'Bắt đầu tập để xem tiến độ của bạn',
             style: TextStyle(color: AppColors.lightTextTertiary, fontSize: 13),
           ),
         ],
@@ -152,7 +152,7 @@ class ProgressScreen extends ConsumerWidget {
           Icon(Icons.history, size: 48, color: AppColors.lightTextTertiary),
           const SizedBox(height: AppSpacing.md),
           Text(
-            'Chua co hoat dong',
+            'Chưa có hoạt động',
             style: TextStyle(
               color: AppColors.lightTextSecondary,
               fontWeight: FontWeight.bold,
@@ -190,7 +190,7 @@ class _SummaryCard extends StatelessWidget {
               const Icon(Icons.emoji_events, color: Colors.white, size: 28),
               const SizedBox(width: AppSpacing.md),
               const Text(
-                'Tong quan',
+                'Tổng quan',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -206,17 +206,17 @@ class _SummaryCard extends StatelessWidget {
               _SummaryItem(
                 icon: Icons.fitness_center,
                 value: '${summary.totalSessions}',
-                label: 'Buoi tap',
+                label: 'Buổi tập',
               ),
               _SummaryItem(
                 icon: Icons.sports_cricket,
                 value: '${summary.totalShots}',
-                label: 'Tong bi',
+                label: 'Tổng bi',
               ),
               _SummaryItem(
                 icon: Icons.percent,
                 value: '${summary.overallAccuracy}%',
-                label: 'Do chinh xac',
+                label: 'Độ chính xác',
               ),
             ],
           ),
@@ -393,7 +393,7 @@ class _ActivityTile extends StatelessWidget {
   }
 
   String _formatDate(DateTime? date) {
-    if (date == null) return 'Chua tap';
+    if (date == null) return 'Chưa tập';
     final now = DateTime.now();
     final diff = now.difference(date);
 

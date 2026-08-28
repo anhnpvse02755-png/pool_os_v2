@@ -64,7 +64,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
       setState(() {
         _match = match;
         _isLoading = false;
-        _error = match == null ? 'Khong tim thay tran dau' : null;
+        _error = match == null ? 'Không tìm thấy trận đấu' : null;
       });
     } catch (e) {
       setState(() {
@@ -83,7 +83,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Phan tich tran dau',
+          'Phân tích trận đấu',
           style: TextStyle(
             color: AppColors.lightTextPrimary,
             fontWeight: FontWeight.w600,
@@ -102,7 +102,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
                   _showHeatMap = !_showHeatMap;
                 });
               },
-              tooltip: _showHeatMap ? 'Tat Heat Map' : 'Bat Heat Map',
+              tooltip: _showHeatMap ? 'Tắt Heat Map' : 'Bật Heat Map',
             ),
         ],
         bottom: TabBar(
@@ -167,7 +167,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
-              'Loi: $_error',
+              'Lỗi: $_error',
               style: TextStyle(
                 color: AppColors.lightTextPrimary,
                 fontSize: 16,
@@ -203,7 +203,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
-              'Chua co du lieu tran dau',
+              'Chưa có dữ liệu trận đấu',
               style: TextStyle(
                 color: AppColors.lightTextPrimary,
                 fontSize: 18,
@@ -212,7 +212,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             ),
             SizedBox(height: AppSpacing.sm),
             Text(
-              'Ghi lai it nhat 1 tran dau de xem phan tich',
+              'Ghi lại ít nhất 1 trận đấu để xem phân tích',
               style: TextStyle(
                 color: AppColors.lightTextSecondary,
                 fontSize: 14,
@@ -241,6 +241,7 @@ class _RetryButtonState extends State<_RetryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
@@ -257,7 +258,7 @@ class _RetryButtonState extends State<_RetryButton> {
                 ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
                 : null,
           ),
-          child: Text('Thu lai', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
+          child: Text('Thử lại', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
         ),
       ),
     );
@@ -273,7 +274,7 @@ class _ShotMapTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (match.racks.isEmpty) {
-      return _buildNoDataState(context, 'Chua co du lieu shot trong tran dau nay');
+      return _buildNoDataState(context, 'Chưa có dữ liệu shot trong trận đấu này');
     }
 
     return SingleChildScrollView(
@@ -344,13 +345,13 @@ class _ShotMapTab extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _LegendItem(color: Colors.white, label: 'Bi trang', border: Colors.black),
+        _LegendItem(color: Colors.white, label: 'Bi trắng', border: Colors.black),
         SizedBox(width: AppSpacing.md),
-        _LegendItem(color: Colors.yellow, label: 'Bi muc tieu'),
+        _LegendItem(color: Colors.yellow, label: 'Bi mục tiêu'),
         SizedBox(width: AppSpacing.md),
-        _LegendItem(color: AppColors.success, label: 'Trung', line: true),
+        _LegendItem(color: AppColors.success, label: 'Trúng', line: true),
         SizedBox(width: AppSpacing.md),
-        _LegendItem(color: Colors.redAccent, label: 'Truot', line: true),
+        _LegendItem(color: Colors.redAccent, label: 'Trượt', line: true),
       ],
     );
   }
@@ -372,7 +373,7 @@ class _ShotMapTab extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _StatItem(label: 'Racks', value: '${match.racks.length}'),
-          _StatItem(label: 'Tong shots', value: '$totalShots'),
+          _StatItem(label: 'Tổng shots', value: '$totalShots'),
           _StatItem(
             label: 'Win Rate',
             value: '${match.winner == 'player' ? 100 : 0}%',
@@ -419,7 +420,7 @@ class _HeatMapTab extends StatelessWidget {
             Icon(Icons.gps_off, size: 48, color: AppColors.lightTextTertiary),
             SizedBox(height: AppSpacing.md),
             Text(
-              'Chua co du lieu shot',
+              'Chưa có dữ liệu shot',
               style: TextStyle(
                 color: AppColors.lightTextSecondary,
                 fontSize: 16,
@@ -506,7 +507,7 @@ class _HeatMapTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Phan tich',
+            'Phân tích',
             style: TextStyle(
               color: AppColors.lightTextPrimary,
               fontSize: 16,
@@ -515,7 +516,7 @@ class _HeatMapTab extends StatelessWidget {
           ),
           SizedBox(height: AppSpacing.sm),
           Text(
-            'Tong so cu danh: $totalShots',
+            'Tổng số cú đánh: $totalShots',
             style: TextStyle(
               color: AppColors.lightTextPrimary,
               fontSize: 14,
@@ -523,7 +524,7 @@ class _HeatMapTab extends StatelessWidget {
           ),
           SizedBox(height: AppSpacing.xs),
           Text(
-            'Du lieu heat map duoc tinh tu vi tri shot gan nhat.',
+            'Dữ liệu heat map được tính từ vị trí shot gần nhất.',
             style: TextStyle(
               color: AppColors.lightTextSecondary,
               fontSize: 13,
@@ -561,7 +562,7 @@ class _PocketAccuracyTab extends StatelessWidget {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
-                    'Pocket Accuracy the hien ti le trung theo tung lo tren ban.',
+                    'Pocket Accuracy thể hiện tỉ lệ trúng theo từng lỗ trên bàn.',
                     style: TextStyle(
                       color: AppColors.lightTextSecondary,
                       fontSize: 13,

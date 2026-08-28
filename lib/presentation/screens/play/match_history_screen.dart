@@ -353,63 +353,66 @@ class _MatchHistoryScreenState extends ConsumerState<MatchHistoryScreen>
           ),
         ],
       ),
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: isSelected
-                ? AppColors.accent
-                : color.withValues(alpha: 0.12),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: isSelected
-                ? Icon(Icons.check, color: Colors.white, size: 20)
-                : Icon(icon, color: color, size: 20),
-          ),
-        ),
-        title: Text(
-          'vs ${m.opponentName ?? m.opponent ?? 'Unknown'}',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 4),
-            Text(
-              '${MatchTypes.labels[m.gameType] ?? m.gameType} • ${m.resultSummary ?? '${m.playerScore}-${m.opponentScore}'}',
-              style: TextStyle(fontSize: 13, color: AppColors.lightTextSecondary),
+      child: Material(
+        type: MaterialType.transparency,
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+          leading: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? AppColors.accent
+                  : color.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
             ),
-            SizedBox(height: 2),
-            Text(
-              fmt.format(m.createdAt),
-              style: TextStyle(fontSize: 12, color: AppColors.lightTextTertiary),
+            child: Center(
+              child: isSelected
+                  ? Icon(Icons.check, color: Colors.white, size: 20)
+                  : Icon(icon, color: color, size: 20),
             ),
-          ],
-        ),
-        trailing: isSelected
-            ? Icon(Icons.check_circle, color: AppColors.accent)
-            : Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
-        onTap: () {
-          if (_selectedMatches.isNotEmpty) {
+          ),
+          title: Text(
+            'vs ${m.opponentName ?? m.opponent ?? 'Unknown'}',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 4),
+              Text(
+                '${MatchTypes.labels[m.gameType] ?? m.gameType} • ${m.resultSummary ?? '${m.playerScore}-${m.opponentScore}'}',
+                style: TextStyle(fontSize: 13, color: AppColors.lightTextSecondary),
+              ),
+              SizedBox(height: 2),
+              Text(
+                fmt.format(m.createdAt),
+                style: TextStyle(fontSize: 12, color: AppColors.lightTextTertiary),
+              ),
+            ],
+          ),
+          trailing: isSelected
+              ? Icon(Icons.check_circle, color: AppColors.accent)
+              : Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+          onTap: () {
+            if (_selectedMatches.isNotEmpty) {
+              setState(() {
+                if (isSelected) {
+                  _selectedMatches.remove(m.id);
+                } else if (_selectedMatches.length < 2) {
+                  _selectedMatches.add(m.id);
+                }
+              });
+            } else {
+              context.push('/play/match/${m.id}/summary');
+            }
+          },
+          onLongPress: () {
             setState(() {
-              if (isSelected) {
-                _selectedMatches.remove(m.id);
-              } else if (_selectedMatches.length < 2) {
-                _selectedMatches.add(m.id);
-              }
+              _selectedMatches.add(m.id);
             });
-          } else {
-            context.push('/play/match/${m.id}/summary');
-          }
-        },
-        onLongPress: () {
-          setState(() {
-            _selectedMatches.add(m.id);
-          });
-        },
+          },
+        ),
       ),
     ).animate().fadeIn(duration: 200.ms).slideY(begin: 0.05);
   }

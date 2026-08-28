@@ -216,6 +216,7 @@ class _GradeButtonState extends State<_GradeButton> {
     final color = widget.grade <= 2 ? AppColors.error : AppColors.success;
 
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: (_) => setState(() => _scale = 0.9),
       onTapUp: (_) => setState(() => _scale = 1.0),
       onTapCancel: () => setState(() => _scale = 1.0),

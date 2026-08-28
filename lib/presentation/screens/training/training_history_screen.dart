@@ -60,7 +60,7 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
-        title: const Text('Lich su tap luyen'),
+        title: const Text('Lịch sử tập luyện'),
         backgroundColor: AppColors.lightSurface,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 0,
@@ -83,7 +83,7 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
             children: [
               Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: AppSpacing.lg),
-              Text('Loi: $error', textAlign: TextAlign.center),
+              Text('Lỗi: $error', textAlign: TextAlign.center),
             ],
           ),
         ),
@@ -145,25 +145,25 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           _SummaryItem(
             icon: Icons.fitness_center,
             value: '${stats['sessions']}',
-            label: 'Buoi tap',
+            label: 'Buổi tập',
             color: AppColors.accent,
           ),
           _SummaryItem(
             icon: Icons.timer,
             value: '${stats['minutes']}m',
-            label: 'Tong thoi gian',
+            label: 'Tổng thời gian',
             color: AppColors.warning,
           ),
           _SummaryItem(
             icon: Icons.star,
             value: '${stats['avgScore']}%',
-            label: 'Diem TB',
+            label: 'Điểm TB',
             color: AppColors.gold,
           ),
           _SummaryItem(
             icon: Icons.sports_cricket,
             value: '${stats['shots']}',
-            label: 'Bi danh',
+            label: 'Bi đánh',
             color: AppColors.success,
           ),
         ],
@@ -178,7 +178,7 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
       child: Row(
         children: [
           ChoiceChip(
-            label: const Text('Tat ca'),
+            label: const Text('Tất cả'),
             selected: _selectedFilter == 'all',
             onSelected: (_) => setState(() => _selectedFilter = 'all'),
           ),
@@ -225,7 +225,7 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           Icon(Icons.history, size: 64, color: AppColors.lightTextTertiary),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Chua co lich su tap luyen',
+            'Chưa có lịch sử tập luyện',
             style: TextStyle(
               color: AppColors.lightTextSecondary,
               fontSize: 16,
@@ -233,7 +233,7 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           ),
           const SizedBox(height: AppSpacing.sm),
           Text(
-            'Bat dau mot bai tap de xem lich su',
+            'Bắt đầu một bài tập để xem lịch sử',
             style: TextStyle(
               color: AppColors.lightTextTertiary,
               fontSize: 13,
@@ -242,7 +242,7 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           const SizedBox(height: AppSpacing.xxl),
           _PrimaryButton(
             onPressed: () => context.push('/training/session/new'),
-            label: 'Bat dau tap',
+            label: 'Bắt đầu tập',
             icon: Icons.play_arrow,
           ),
         ],
@@ -263,26 +263,26 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Bo loc',
+              'Bộ lọc',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.lg),
             ListTile(
               leading: const Icon(Icons.sort),
-              title: const Text('Sap xep theo ngay'),
-              subtitle: const Text('Moi nhat truoc'),
+              title: const Text('Sắp xếp theo ngày'),
+              subtitle: const Text('Mới nhất trước'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.star),
-              title: const Text('Sap xep theo diem'),
-              subtitle: const Text('Cao nhat truoc'),
+              title: const Text('Sắp xếp theo điểm'),
+              subtitle: const Text('Cao nhất trước'),
               onTap: () => Navigator.pop(context),
             ),
             ListTile(
               leading: const Icon(Icons.timeline),
-              title: const Text('Sap xep theo cai thien'),
-              subtitle: const Text('Tien bo nhieu nhat'),
+              title: const Text('Sắp xếp theo cải thiện'),
+              subtitle: const Text('Tiến bộ nhiều nhất'),
               onTap: () => Navigator.pop(context),
             ),
           ],
@@ -471,7 +471,7 @@ class _HistoryCard extends StatelessWidget {
             Row(
               children: [
                 _StatChip(
-                  label: 'Accuracy',
+                  label: 'Tỷ lệ',
                   value: '$accuracy%',
                   color: AppColors.accent,
                 ),
@@ -552,6 +552,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

@@ -80,3 +80,6 @@ node_modules/
 
 # Agent scratch (R3)
 /.ua/tmp/
+
+# Git worktrees (local only)
+.worktrees/

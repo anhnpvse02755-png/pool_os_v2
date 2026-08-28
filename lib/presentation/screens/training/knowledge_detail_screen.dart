@@ -22,13 +22,13 @@ class KnowledgeDetailScreen extends ConsumerWidget {
       return Scaffold(
         backgroundColor: AppColors.lightBackground,
         appBar: AppBar(
-          title: const Text('Loi'),
+          title: const Text('Lỗi'),
           backgroundColor: AppColors.lightSurface,
           foregroundColor: AppColors.lightTextPrimary,
           elevation: 0,
         ),
         body: const Center(
-          child: Text('Khong tim thay bai viet'),
+          child: Text('Không tìm thấy bài viết'),
         ),
       );
     }
@@ -296,7 +296,7 @@ class KnowledgeDetailScreen extends ConsumerWidget {
             Icon(Icons.fitness_center, size: 20, color: AppColors.accent),
             const SizedBox(width: AppSpacing.sm),
             const Text(
-              'Bai tap lien quan',
+              'Bài tập liên quan',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -335,7 +335,7 @@ class KnowledgeDetailScreen extends ConsumerWidget {
             Icon(Icons.link, size: 20, color: AppColors.accent),
             const SizedBox(width: AppSpacing.sm),
             const Text(
-              'Bai viet lien quan',
+              'Bài viết liên quan',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -425,13 +425,13 @@ class KnowledgeDetailScreen extends ConsumerWidget {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Da luu vao bookmark'),
+                      content: Text('Đã lưu vào bookmark'),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
                 },
                 icon: const Icon(Icons.bookmark_outline),
-                label: const Text('Luu'),
+                label: const Text('Lưu'),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: AppColors.accent),
                   foregroundColor: AppColors.accent,
@@ -447,7 +447,7 @@ class KnowledgeDetailScreen extends ConsumerWidget {
                     context.push('/training/session/new?drill=$v2code');
                   }
                 },
-                label: 'Luyen tap',
+                label: 'Luyện tập',
                 icon: Icons.play_arrow,
               ),
             ),
@@ -545,6 +545,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,

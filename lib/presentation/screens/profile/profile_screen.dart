@@ -7,6 +7,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../../data/models/player.dart';
 
 /// PoolOS Profile Screen - Redesigned with Minimalist Luxury
 class ProfileScreen extends ConsumerWidget {
@@ -34,7 +35,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildLoadedContent(
     BuildContext context,
     WidgetRef ref,
-    dynamic player,
+    Player player,
     Brightness brightness,
   ) {
     return SingleChildScrollView(
@@ -79,7 +80,7 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.space6),
             Text(
-              'Complete onboarding to view your profile',
+              'Hoàn tất onboarding để xem hồ sơ',
               style: TextStyle(
                 color: AppColors.textSecondary(brightness),
                 fontSize: 16,
@@ -95,7 +96,7 @@ class ProfileScreen extends ConsumerWidget {
 
 /// Profile Header
 class _ProfileHeader extends StatelessWidget {
-  final dynamic player;
+  final Player player;
   final Brightness brightness;
 
   const _ProfileHeader({
@@ -138,7 +139,7 @@ class _ProfileHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  player.name ?? 'Player',
+                  player.name,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -155,7 +156,7 @@ class _ProfileHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Level ${player.level ?? 1}',
+                      'Level ${player.currentLevel}',
                       style: TextStyle(
                         fontSize: 13,
                         color: accentColor,

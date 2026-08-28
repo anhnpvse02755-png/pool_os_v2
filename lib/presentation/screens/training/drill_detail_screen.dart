@@ -30,7 +30,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       return Scaffold(
         backgroundColor: AppColors.lightBackground,
         appBar: AppBar(
-          title: const Text('Loi'),
+          title: const Text('Lỗi'),
           backgroundColor: AppColors.lightSurface,
           foregroundColor: AppColors.lightTextPrimary,
           elevation: 0,
@@ -61,7 +61,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xxl),
                 Text(
-                  'Khong tim thay bai tap nay',
+                  'Không tìm thấy bài tập này',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.lightTextPrimary,
@@ -82,7 +82,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   width: double.infinity,
                   child: _PrimaryButton(
                     onPressed: () => context.go('/training/drills'),
-                    label: 'Quay ve thu vien bai tap',
+                    label: 'Quay về thư viện bài tập',
                   ),
                 ),
               ],
@@ -135,7 +135,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Chia se bai tap - Tinh nang dang phat trien'),
+                      content: const Text('Chia sẻ bài tập - Tính năng đang phát triển'),
                       backgroundColor: AppColors.warning,
                     ),
                   );
@@ -165,7 +165,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Levels Section
-                  _buildSectionTitle(context, 'Cac cap do'),
+                  _buildSectionTitle(context, 'Các cấp độ'),
                   const SizedBox(height: AppSpacing.md),
                   _buildLevelsList(drill),
                   const SizedBox(height: AppSpacing.xxl),
@@ -191,7 +191,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Steps
-                  _buildSectionTitle(context, 'Cac buoc'),
+                  _buildSectionTitle(context, 'Các bước'),
                   const SizedBox(height: AppSpacing.md),
                   ...drill.steps.asMap().entries.map((entry) {
                     return _buildStep(entry.key + 1, entry.value);
@@ -199,7 +199,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Goal
-                  _buildSectionTitle(context, 'Muc tieu'),
+                  _buildSectionTitle(context, 'Mục tiêu'),
                   const SizedBox(height: AppSpacing.sm),
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
@@ -221,7 +221,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Common Mistakes
-                  _buildSectionTitle(context, 'Loi thuong gap'),
+                  _buildSectionTitle(context, 'Lỗi thường gặp'),
                   const SizedBox(height: AppSpacing.sm),
                   _buildCommonMistakes(drill.code),
                   const SizedBox(height: AppSpacing.xxl),
@@ -231,10 +231,10 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Knowledge Link
-                  _buildSectionTitle(context, 'Kien thuc lien quan'),
+                  _buildSectionTitle(context, 'Kiến thức liên quan'),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'Kien thuc khong bi khoa. Ban co the hoc bat ky luc nao.',
+                    'Kiến thức không bị khóa. Bạn có thể học bất kỳ lúc nào.',
                     style: TextStyle(
                       color: AppColors.lightTextSecondary,
                       fontStyle: FontStyle.italic,
@@ -246,7 +246,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Related Drills
-                  _buildSectionTitle(context, 'Bai tap lien quan'),
+                  _buildSectionTitle(context, 'Bài tập liên quan'),
                   const SizedBox(height: AppSpacing.md),
                   _buildRelatedDrills(drill.code),
                   const SizedBox(height: 100),
@@ -520,9 +520,9 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   static const _genericMistakes = [
-    'Danh qua manh hoac qua nhe',
-    'Tu the khong vung',
-    'Khong follow through day du',
+    'Đánh quá mạnh hoặc quá nhẹ',
+    'Tư thế không vững',
+    'Không follow through đầy đủ',
   ];
 
   Widget _buildContentSections(String drillCode) {
@@ -535,41 +535,41 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (content.equipment.isNotEmpty) ...[
-          _buildSectionTitle(context, 'Dung cu can thiet'),
+          _buildSectionTitle(context, 'Dụng cụ cần thiết'),
           const SizedBox(height: AppSpacing.sm),
           _buildBulletList(content.equipment, Icons.sports_baseball),
           const SizedBox(height: AppSpacing.lg),
         ],
 
-        _buildSectionTitle(context, 'Tu the dung'),
+        _buildSectionTitle(context, 'Tư thế đứng'),
         const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.stance),
         const SizedBox(height: AppSpacing.lg),
 
-        _buildSectionTitle(context, 'Cau tay'),
+        _buildSectionTitle(context, 'Cầu tay'),
         const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.bridge),
         const SizedBox(height: AppSpacing.lg),
 
-        _buildSectionTitle(context, 'Ky thuat ra co'),
+        _buildSectionTitle(context, 'Kỹ thuật ra cơ'),
         const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.stroke),
         const SizedBox(height: AppSpacing.lg),
 
-        _buildSectionTitle(context, 'He thong ngam'),
+        _buildSectionTitle(context, 'Hệ thống ngắm'),
         const SizedBox(height: AppSpacing.sm),
         _buildTextCard(content.aiming),
         const SizedBox(height: AppSpacing.lg),
 
         if (content.keyPoints.isNotEmpty) ...[
-          _buildSectionTitle(context, 'Diem can nho'),
+          _buildSectionTitle(context, 'Điểm cần nhớ'),
           const SizedBox(height: AppSpacing.sm),
           _buildBulletList(content.keyPoints, Icons.check_circle_outline),
           const SizedBox(height: AppSpacing.lg),
         ],
 
         if (content.proTips.isNotEmpty) ...[
-          _buildSectionTitle(context, 'Meo tu pro'),
+          _buildSectionTitle(context, 'Mẹo từ pro'),
           const SizedBox(height: AppSpacing.sm),
           _buildBulletList(content.proTips, Icons.star, color: AppColors.gold),
           const SizedBox(height: AppSpacing.lg),
@@ -636,7 +636,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Dang cap nhat',
+                  'Đang cập nhật',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
@@ -645,7 +645,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'Huong dan chi tiet cho bai tap nay sap ra mat.',
+                  'Hướng dẫn chi tiết cho bài tập này sắp ra mắt.',
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.lightTextSecondary,
@@ -708,7 +708,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
     if (relatedDrills.isEmpty) {
       return Text(
-        'Khong co bai tap lien quan',
+        'Không có bài tập liên quan',
         style: TextStyle(color: AppColors.lightTextSecondary),
       );
     }
@@ -841,6 +841,7 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
       onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
@@ -880,7 +881,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
       ),
-      title: const Text('Chon so lan tap'),
+      title: const Text('Chọn số lần tập'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -926,7 +927,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
             const SizedBox(height: AppSpacing.xxl),
 
             const Text(
-              'Hoac nhap so lan tuy chinh:',
+              'Hoặc nhập số lần tùy chỉnh:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -950,7 +951,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
 
             const SizedBox(height: AppSpacing.sm),
             Text(
-              'So lan lon giup tang do chinh xac',
+              'Số lần lớn giúp tăng độ chính xác',
               style: TextStyle(
                 color: AppColors.lightTextSecondary,
                 fontSize: 12,
@@ -963,7 +964,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Huy', style: TextStyle(color: AppColors.lightTextSecondary)),
+          child: Text('Hủy', style: TextStyle(color: AppColors.lightTextSecondary)),
         ),
         _DialogButton(
           onPressed: () {
@@ -989,6 +990,7 @@ class _DialogButtonState extends State<_DialogButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
       onTapCancel: () => setState(() => _scale = 1.0),

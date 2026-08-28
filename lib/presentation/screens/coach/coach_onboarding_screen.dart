@@ -185,6 +185,7 @@ class _OnboardingButtonState extends State<_OnboardingButton> {
     final accentColor = AppColors.accentColor(widget.brightness);
 
     return GestureDetector(
+      onTap: widget.onPressed,
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
       onTapCancel: () => setState(() => _scale = 1.0),
