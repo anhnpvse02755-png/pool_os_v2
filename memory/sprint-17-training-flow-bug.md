@@ -67,6 +67,8 @@ Previous attempt routed to `/play/vision` (VisionRecordingScreen) - THIS WAS WRO
 ✅ Error state now returns to DrillDetail screen instead of jumping to Training History
 ✅ Button label changed to "Quay lại" with back arrow icon
 
-## Status
-- Code fix applied in working tree
-- Awaiting test run and Flutter build
+## Status: ✅ RESOLVED (verified Aug 28, 2026)
+- Fix committed in `9ef72d8` (Sprint-19 Training/Progress/Profile redesign)
+- Verified: `context.go('/training/history')` no longer present in `drill_session_screen.dart`; `context.pop()` at lines 298 and 459
+- Test run: 15/15 drill session tests green after Sprint-19 migration
+- `flutter analyze` clean

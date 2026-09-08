@@ -1,18 +1,33 @@
 ---
 name: pool-os-project
-description: Pool OS v2 is a Coach AI product for pool service businesses
+description: PoolOS_v2 is an AI-powered billiard (bi-a) training platform built with Flutter
 metadata:
   type: project
 ---
 
-Pool OS là nền tảng quản lý cho các doanh nghiệp dịch vụ bể bơi. Phiên bản hiện tại là v2, tập trung vào **Coach AI** — một AI assistant giúp coach technicians và pool service businesses.
+**PoolOS_v2 là nền tảng huấn luyện bi-a (billiard/pool) thông minh** — dùng AI phân tích lối chơi và đưa khuyến nghị cá nhân hoá cho người chơi.
 
-**Current Phase:** Phase 3 (Sprint-8 complete)
+⚠️ **KHÔNG phải** phần mềm quản lý dịch vụ bể bơi. Memory cũ ghi sai điều này (đã sửa 28/8/2026). Từ "Pool" ở đây là **bi-a**, không phải hồ bơi.
 
-**Sprint Baseline:** `9d784e8` — Sprint-8 Match Recording → Coach AI integration
+**Tính năng chính:**
+- Theo dõi buổi chơi: ghi chi tiết trận đấu, rack, cú đánh
+- Coach AI: phân tích lối chơi từ dữ liệu thực tế
+- Thống kê cá nhân + lộ trình luyện tập
+- Xếp hạng: Beginner → K → I → H → G → F
 
-**Next Work:** Sprint-9 Planning
+**Tech stack:**
+| Thành phần | Công nghệ |
+|---|---|
+| Framework | Flutter 3.44.6 |
+| State | Riverpod 2.x |
+| Navigation | GoRouter |
+| Backend | Supabase (Auth, DB, Edge Functions) |
+| UI | Material Design 3 |
 
-**Why:** Sprint-8 đã hoàn thành Match Recording → Coach AI integration. Sprint-9 cần định hướng mới.
+**Version:** 0.9.0+900 · **Repo:** https://github.com/anhnpvse02755-png/pool_os_v2
 
-**How to apply:** Sprint-9 chỉ xử lý requirements mới hoặc regression được phát hiện. Không modify Sprint-8 architecture.
+**Quy mô:** 67 file screen trong `lib/presentation/screens/`, chia 13 nhóm: auth, coach, community, home, knowledge, match, onboarding, play, profile, reports, session, shell, training.
+
+**Why:** Ghi sai domain khiến mọi suy luận downstream lệch hướng — dễ đề xuất tính năng hồ bơi cho một app bi-a.
+
+**How to apply:** Khi đọc code, hiểu "pool" = bi-a. Xem [[sprint-status]] để biết sprint hiện tại, [[design-system-tokens]] trước khi sửa UI.

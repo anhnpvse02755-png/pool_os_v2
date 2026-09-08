@@ -1,50 +1,42 @@
 ---
 name: sprint-status
-description: Sprint completion status tracker
+description: Sprint completion status tracker - Sprint-19 closed, next sprint TBD
 metadata:
   type: project
 ---
 
-**Completed Sprints:**
+**Cập nhật lần cuối:** 28/8/2026 (memory cũ dừng sai ở "Sprint-9 Planning")
 
-| Sprint | Status | Focus | Closed |
-|--------|--------|-------|--------|
-| 3A | ✅ Done | Engineering | Aug 6 |
-| 3B | ✅ Done | Engineering | Aug 7 |
-| 4A | ✅ Done | Engineering | Aug 7 |
-| 4B | ✅ Done | Engineering | Aug 7 |
-| 4C | ✅ Done | Engineering | Aug 7 |
-| 5A | ✅ Done | Knowledge Graph | Aug 7 |
-| 5B | ✅ Done | Reasoning Chain | Aug 7 |
-| 5C | ✅ Done | Decision Engine | Aug 7 |
-| 6A | ✅ Done | Player Intelligence Model | Aug 7 |
-| 6B | ✅ Done | Priority Engine | Aug 7 |
-| 7A | ✅ Done | Conversation Engine | Aug 7 |
-| 7B | ✅ Done | Coach Preview UI | Aug 7 |
-| Sprint-8 | ✅ Done | Match Recording → Coach AI | Aug 20 |
+## Completed
 
-**Current/Next:**
+| Sprint | Focus | Closed |
+|--------|-------|--------|
+| 3A–3B | Engineering | Aug 6–7 |
+| 4A–4C | Engineering | Aug 7 |
+| 5A–5C | Knowledge Graph / Reasoning Chain / Decision Engine | Aug 7 |
+| 6A–6B | Player Intelligence Model / Priority Engine | Aug 7 |
+| 7A–7B | Conversation Engine / Coach Preview UI | Aug 7 |
+| Sprint-8 | Match Recording → Coach AI | Aug 20 |
+| Sprint-17 | Drill session / Training flow | Aug 24 |
+| **Sprint-19** | **Minimalist Luxury UI redesign** | **Aug 28** |
 
-| Sprint | Status | Focus |
-|--------|--------|-------|
-| Sprint-9 | 🟡 Planning | TBD |
+## Sprint-19 (mới nhất)
 
----
+Migrate toàn bộ presentation layer từ `AppTheme` cũ sang design tokens mới. Xem [[design-system-tokens]].
 
-### Sprint-8 Post-Closure Notes
+- ~50 file, +9,257 dòng
+- `flutter analyze` sạch lỗi ✅
+- Test Sprint-17 drill session: 15/15 pass ✅
+- Commits: `f438cd3` (redesign) → `80e09e8` (3 regression) → `2e7b792` (fix CI base href)
+- Đã push lên `origin/main`
 
-**Baseline commit:** `9d784e8` — Match Recording → Coach AI integration
+## Đang mở
 
-**Closed with:** Static analysis ✅ + Release build ✅ + Integration code ✅
+| Việc | Trạng thái |
+|---|---|
+| E2E Playwright | 🔴 Fail — xem [[e2e-playwright-accessibility]] |
+| Sprint tiếp theo | 🟡 Chưa định hướng |
 
-**Post-Sprint Verification (Sprint-9 / Regression):**
-- `flutter test` — unit/integration tests
-- Device/emulator E2E: Match Recording → Coach flow
-- Restart app → Match Analysis persists ✅ (implemented, not verified)
-- New match → old analysis cleared ✅ (implemented, not verified)
+**Why:** Theo dõi sprint giúp không làm trùng việc và biết baseline nào đang đóng băng.
 
-**Architecture freeze:** Sprint-8 baseline (`9d784e8`) — no architectural changes unless regression found.
-
-**Why:** Tracking sprint completion giúp maintain visibility on project progress.
-
-**How to apply:** Check sprint status trước khi plan sprint mới để tránh duplicate work.
+**How to apply:** Đọc file này trước khi plan sprint mới. Cập nhật bảng khi đóng một sprint.
