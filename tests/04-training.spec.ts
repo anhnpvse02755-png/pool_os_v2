@@ -5,27 +5,43 @@ test.describe('Training Center', () => {
     await page.goto('/training');
   });
 
-  test('should display training center screen', async ({ trainingCenterPage }) => {
-    await expect(trainingCenterPage.learningPathCard).toBeVisible();
+  test('should display training center screen', async ({
+    trainingCenterPage,
+  }) => {
+    await expect(trainingCenterPage.allDrillsButton.first()).toBeVisible();
+    await expect(trainingCenterPage.knowledgeButton.first()).toBeVisible();
   });
 
-  test('should navigate to learning path', async ({ page, trainingCenterPage }) => {
-    await trainingCenterPage.clickLearningPath();
-    await page.waitForURL(/\/training\/path/);
-  });
-
+  // These navigate with context.push, which does not change the browser URL,
+  // so each test asserts the destination screen rendered.
   test('should navigate to all drills', async ({ page, trainingCenterPage }) => {
     await trainingCenterPage.clickAllDrills();
-    await page.waitForURL(/\/training\/drills/);
+    await expect(
+      page.getByRole('button', { name: /ngắm đánh/i }).first(),
+    ).toBeVisible();
   });
 
   test('should navigate to knowledge', async ({ page, trainingCenterPage }) => {
     await trainingCenterPage.clickKnowledge();
-    await page.waitForURL(/\/training\/knowledge/);
+    await expect(
+      page.getByRole('checkbox', { name: 'Nền Tảng', exact: true }).first(),
+    ).toBeVisible();
   });
 
-  test('should navigate to AI coach', async ({ page, trainingCenterPage }) => {
-    await trainingCenterPage.clickAICoach();
-    await page.waitForURL(/\/coach/);
-  });
+  test.fixme(
+    'should navigate to learning path',
+    async () => {
+      // training_center_screen.dart has no entry point to /training/path.
+      // The route and the screen exist, but nothing links to them.
+    },
+  );
+
+  test.fixme(
+    'should navigate to AI coach',
+    async () => {
+      // Likewise, no AI-coach card exists on this screen; its only
+      // navigations are /training/history, /training/drills and
+      // /training/knowledge.
+    },
+  );
 });

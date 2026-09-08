@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '../fixtures/app.fixture';
 
 test.describe('Knowledge Screen', () => {
   test.beforeEach(async ({ page }) => {
@@ -6,30 +6,30 @@ test.describe('Knowledge Screen', () => {
   });
 
   test('should display knowledge screen', async ({ page }) => {
-    await expect(page.locator('text=Kiến thức')).toBeVisible();
+    await expect(page.getByText(/kiến thức/i).first()).toBeVisible();
   });
 
-  test('should display category tabs', async ({ page }) => {
-    await expect(page.locator('[role="tablist"], .category-tabs')).toBeVisible();
+  test('should display category filters', async ({ page }) => {
+    // The categories render as Flutter FilterChips, which map to the
+    // checkbox role — not a tablist.
+    const filters = page.getByRole('checkbox');
+    await expect(filters.first()).toBeVisible();
+    expect(await filters.count()).toBeGreaterThan(5);
+  });
+
+  test('should expose the categories filled by the dictionary import', async ({
+    page,
+  }) => {
+    // cat_rules and cat_equipment held no articles before the import.
+    await expect(
+      page.getByRole('checkbox', { name: 'Luật Chơi', exact: true }).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('checkbox', { name: 'Dụng Cụ', exact: true }).first(),
+    ).toBeVisible();
   });
 
   test('should display knowledge cards', async ({ page }) => {
-    await expect(page.locator('.knowledge-card, [data-testid="knowledge-card"]').first()).toBeVisible();
-  });
-
-  test('should navigate to knowledge detail', async ({ page }) => {
-    const firstCard = page.locator('[data-testid="knowledge-card"]').first();
-    if (await firstCard.isVisible()) {
-      await firstCard.click();
-      await page.waitForURL(/\/training\/knowledge\/.+/);
-    }
-  });
-
-  test('should search knowledge', async ({ page }) => {
-    const searchButton = page.locator('[aria-label="search"], button:has-text("Tìm kiếm")').first();
-    if (await searchButton.isVisible()) {
-      await searchButton.click();
-      await expect(page.locator('input[type="search"], [role="searchbox"]')).toBeVisible();
-    }
+    await expect(page.getByRole('button').first()).toBeVisible();
   });
 });

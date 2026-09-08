@@ -6,7 +6,6 @@ test.describe('Welcome Screen', () => {
   });
 
   test('should display welcome screen', async ({ page }) => {
-    // Check page title
     await expect(page).toHaveTitle(/PoolOS/i);
   });
 
@@ -14,8 +13,16 @@ test.describe('Welcome Screen', () => {
     await expect(welcomePage.getStartedButton).toBeVisible();
   });
 
-  test('should navigate to onboarding when clicking get started', async ({ page, welcomePage }) => {
+  test('should navigate to onboarding when clicking get started', async ({
+    welcomePage,
+    onboardingPage,
+  }) => {
     await welcomePage.clickGetStarted();
-    await page.waitForURL(/\/onboarding/);
+
+    // welcome_screen.dart uses `context.push('/onboarding')`, and GoRouter's
+    // imperative push leaves the browser URL on /welcome. Assert the screen
+    // actually changed instead of waiting for a URL that never updates.
+    await expect(onboardingPage.continueButton.first()).toBeVisible();
+    await expect(welcomePage.getStartedButton).toBeHidden();
   });
 });

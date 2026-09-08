@@ -23,4 +23,14 @@ export default defineConfig({
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
   ],
   timeout: 30000,
+
+  // Without this, `npx playwright test` runs against nothing and every spec
+  // fails on connection refused. The server needs SPA fallback because the
+  // app's routes (/welcome, /home, ...) are not real files on disk.
+  webServer: {
+    command: 'node tools/e2e-server.js 8080',
+    url: 'http://localhost:8080/',
+    reuseExistingServer: !process.env.CI,
+    timeout: 60_000,
+  },
 });

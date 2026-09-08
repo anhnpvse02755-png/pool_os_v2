@@ -6,26 +6,34 @@ test.describe('Home Screen', () => {
   });
 
   test('should display home screen with navigation', async ({ homePage }) => {
-    await expect(homePage.statsCard).toBeVisible();
+    await expect(homePage.startTrainingButton).toBeVisible();
+    await expect(homePage.homeTab).toBeVisible();
+    await expect(homePage.trainingTab).toBeVisible();
   });
 
+  // The bottom nav uses context.go, so these do update the browser URL.
   test('should navigate to training center', async ({ page, homePage }) => {
     await homePage.navigateToTraining();
-    await page.waitForURL(/\/training/);
-  });
-
-  test('should navigate to play screen', async ({ page, homePage }) => {
-    await homePage.navigateToPlay();
-    await page.waitForURL(/\/play/);
-  });
-
-  test('should navigate to coach', async ({ page, homePage }) => {
-    await homePage.navigateToCoach();
-    await page.waitForURL(/\/coach/);
+    await expect(page).toHaveURL(/\/training/);
   });
 
   test('should navigate to profile', async ({ page, homePage }) => {
     await homePage.navigateToProfile();
-    await page.waitForURL(/\/profile/);
+    await expect(page).toHaveURL(/\/profile/);
   });
+
+  test('progress tab should open coach analysis', async ({ page, homePage }) => {
+    // main_shell.dart maps the "Progress" destination to /coach/analysis.
+    await homePage.navigateToProgress();
+    await expect(page).toHaveURL(/\/coach\/analysis/);
+  });
+
+  test.fixme(
+    'should navigate to play screen',
+    async () => {
+      // There is no route to /play from Home. The bottom nav has only
+      // Home, Train, Progress and Profile, and no card on the Home body
+      // links to Play either. Needs a product decision, not a test fix.
+    },
+  );
 });
