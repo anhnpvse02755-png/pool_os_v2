@@ -1,39 +1,62 @@
 ---
 name: e2e-playwright-accessibility
-description: Playwright E2E fails because Flutter Web canvas hides semantics behind an "Enable accessibility" button
+description: Four things that break Playwright against this Flutter Web app - hash routing, boot race, canvas semantics, and data-testid selectors
 metadata:
   type: project
 ---
 
-**Trạng thái: 🔴 CHƯA SỬA** (phát hiện 28/8/2026, `test-results/.last-run.json` → failed)
+**Trạng thái: ✅ ĐÃ SỬA** (commit `ce2391f`, 8/9/2026). Suite: 5 pass → 22 pass
+(44 khi tính cả Chromium + Firefox), 4 skip có chủ đích.
 
-## Triệu chứng
+Ghi chú cũ của memory này ("2 test fail, click nút Enable accessibility là
+xong") **sai ở cả quy mô lẫn cách sửa**. Thực tế 22/27 test fail, và
+`locator.click()` lên placeholder luôn ném *"Element is outside of the
+viewport"*.
 
-`tests/01-welcome.spec.ts` fail 2 test:
-- `should have get started button`
-- `should navigate to onboarding when clicking get started`
+## Bốn thứ làm Playwright không chạy được với app này
 
-```
-Error: expect(locator).toBeVisible() failed
-Locator: getByRole('button', { name: /bắt đầu|get started/i })
-Error: element(s) not found
-```
+**1. Hash routing.** App dùng hash strategy (không có `usePathUrlStrategy`
+trong `main.dart`). `page.goto('/home')` → server trả index.html → router
+boot ở `initialLocation: '/welcome'` → URL thành `/home#/welcome`, hiển thị
+màn **Welcome**. Phải đi `/#/home`.
 
-## Nguyên nhân gốc
+**2. Boot race.** `goto` trả về trước khi Flutter khởi động ~4-6s. Trong lúc
+đó `document.title` vẫn là `pool_os_v2` (index.html), chỉ sau khi boot mới
+thành `PoolOS`.
 
-Accessibility snapshot của trang chỉ chứa đúng một phần tử:
-```yaml
-- button "Enable accessibility"
-```
+**3. Canvas semantics.** `getByRole`/`getByText` không thấy gì cho tới khi
+kích hoạt `flt-semantics-placeholder`. Nút đó nằm ngoài viewport → phải
+`dispatchEvent('click')`, không dùng `.click()`. Tín hiệu "đã sẵn sàng":
+`flt-semantics-host` có `childElementCount > 0`.
 
-Flutter Web render bằng **canvas** — semantics tree không được dựng cho tới khi có người bấm nút placeholder "Enable accessibility". Nên `getByRole()` không thấy widget nào.
+**4. `data-testid` không tồn tại.** Flutter chỉ phát ra semantics node. App
+không dùng `Semantics(identifier:)` ở đâu, nên mọi selector `[data-testid]`
+vĩnh viễn không khớp. Dùng role + accessible name.
 
-**Đây KHÔNG phải lỗi UI.** Nút thật có trong code: `lib/presentation/screens/onboarding/welcome_screen.dart:110` → `label: 'Bắt đầu ngay'`, khớp regex của test.
+Cả bốn đã xử lý trong `fixtures/app.fixture.ts` (bọc `page.goto`) và
+`pages/*.ts`.
 
-## Hướng sửa
+## `push` không đồng bộ URL — đừng assert `page.url()` bừa
 
-Click nút "Enable accessibility" trong `fixtures/app.fixture.ts` trước khi trả `page` cho test. Sửa một chỗ ở fixture thì cả 6 spec (`01`–`06`) đều được, vì tất cả đều dùng chung fixture này.
+| Điều hướng | Màn đổi | URL đổi |
+|---|---|---|
+| Bottom nav (`context.go`) | ✅ | ✅ |
+| Training / Play / welcome→onboarding (`context.push`) | ✅ | ❌ |
 
-**Why:** Triệu chứng ("không tìm thấy nút") trông hệt như lỗi UI hoặc lỗi đổi label sau redesign Sprint-19 — dễ đi sửa nhầm screen thay vì sửa test harness.
+Nơi app dùng `context.push`, hãy kiểm tra **nội dung màn đích**, không phải
+URL. Lưu ý bottom nav "Progress" đi tới `/coach/analysis`, không phải
+`/progress`.
 
-**How to apply:** Trước khi debug bất kỳ E2E fail nào của app này, kiểm tra accessibility snapshot có chỉ chứa "Enable accessibility" không. Xem [[sprint-status]].
+## Còn 4 test `test.fixme` — chờ quyết định sản phẩm
+
+Không phải lỗi test, mà là UI chưa tồn tại: onboarding không có nút Skip;
+Home không có đường vào `/play`; Training Center không có entry point tới
+`/training/path` và `/coach`.
+
+**Why:** Triệu chứng ("không tìm thấy nút") trông hệt lỗi UI hoặc lỗi đổi
+label sau redesign — rất dễ đi sửa nhầm screen thay vì sửa test harness.
+
+**How to apply:** Trước khi debug E2E fail của app này, kiểm tra 4 nguyên
+nhân trên trước. Chạy `npx playwright test` là đủ — `webServer` trong
+`playwright.config.ts` tự build-serve, nhưng cần `flutter build web
+--release --base-href /` trước. Xem [[sprint-status]].
