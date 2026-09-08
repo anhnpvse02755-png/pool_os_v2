@@ -28,14 +28,14 @@ void main() {
   }
 
   test(
-      'KnowledgeNotifier loads 112 articles from bundled asset '
+      'KnowledgeNotifier loads 138 articles from bundled asset '
       '(not from 10-article const fallback)', () async {
-    // First, confirm the asset itself contains 112 entries (proves asset
+    // First, confirm the asset itself contains 138 entries (proves asset
     // bundling works).
     final raw = await rootBundle.loadString('assets/knowledge/knowledge.json');
     final rawCount = (json.decode(raw) as List).length;
-    expect(rawCount, 112,
-        reason: 'Bundled asset must contain 112 articles.');
+    expect(rawCount, 138,
+        reason: 'Bundled asset must contain 138 articles.');
 
     // Now exercise the notifier — the production loading path.
     final container = ProviderContainer();
@@ -43,8 +43,8 @@ void main() {
 
     final state = await awaitLoad(container);
 
-    expect(state.allKnowledge.length, 112,
-        reason: 'Notifier must resolve 112 articles from asset. '
+    expect(state.allKnowledge.length, 138,
+        reason: 'Notifier must resolve 138 articles from asset. '
             'Got ${state.allKnowledge.length} — fallback was used.');
     expect(state.fromAssets, true,
         reason: 'fromAssets flag must be true after asset load.');
@@ -82,10 +82,10 @@ void main() {
     final stopShot = notifier.getBySlug('stop-shot');
     expect(stopShot, isNotNull,
         reason: 'Live article kn_stop_shot must be present in asset.');
-    expect(stopShot!.titleVi, 'Cú Dừng Bóng');
+    expect(stopShot!.titleVi, 'Stun shot — Đánh dừng');
   });
 
-  test('all 112 articles have valid DifficultyLevel', () async {
+  test('all 138 articles have valid DifficultyLevel', () async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await awaitLoad(container);
