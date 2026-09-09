@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/theme/colors.dart';
-import 'package:pool_os_v2/core/theme/spacing.dart';
 import 'package:pool_os_v2/core/theme/shadows.dart';
+import 'package:pool_os_v2/core/theme/spacing.dart';
+import 'package:pool_os_v2/core/theme/typography.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('Bảng màu sáng', () {
     test('nền là kem ấm, không phải trắng xám', () {
       expect(AppColors.lightBackground, const Color(0xFFF7F4EC));
@@ -112,6 +117,49 @@ void main() {
       final light = AppShadows.soft(Brightness.light);
       final dark = AppShadows.soft(Brightness.dark);
       expect(dark.first.color.a, greaterThan(light.first.color.a));
+    });
+  });
+
+  group('Typography', () {
+    // Doc ma nguon thay vi goi AppTypography.displayLg: cac getter do goi
+    // GoogleFonts.plusJakartaSans(), kich hoat mot luot tai font bat dong bo.
+    // Trong moi truong test font khong co san, no nem loi SAU KHI test da ket
+    // thuc ("This test failed after it had already completed") nen khong bat
+    // duoc, va lam do mot test khac khong lien quan.
+    //
+    // Kiem tra o tang ma nguon giu dung y dinh — chan doi font, doi co, doi do
+    // dam — ma khong dung toi may tai font.
+    final source = File('lib/core/theme/typography.dart').readAsStringSync();
+
+    String styleBody(String name) {
+      final m = RegExp('static TextStyle get ' + name + r' =>(.*?);',
+              dotAll: true)
+          .firstMatch(source);
+      expect(m, isNotNull, reason: 'khong tim thay style ' + name);
+      return m!.group(1)!;
+    }
+
+    int sizeOf(String body) =>
+        int.parse(RegExp(r'fontSize: (\d+)').firstMatch(body)!.group(1)!);
+
+    test('van dung Plus Jakarta Sans', () {
+      expect(source, contains('plusJakartaSans'));
+    });
+
+    test('tieu de trang to va rat dam', () {
+      final body = styleBody('displayLg');
+      expect(sizeOf(body), greaterThanOrEqualTo(28));
+      expect(body, contains('FontWeight.w800'));
+    });
+
+    test('tieu de the to gan bang tieu de trang', () {
+      final body = styleBody('cardTitle');
+      expect(sizeOf(body), greaterThanOrEqualTo(22));
+      expect(body, contains('FontWeight.w700'));
+    });
+
+    test('co style nhan hanh dong', () {
+      expect(styleBody('actionLabel'), contains('FontWeight.w600'));
     });
   });
 }

@@ -128,4 +128,34 @@ class AppTypography {
         height: 1.2,
         color: color,
       );
+
+  // ========================================================================
+  // NEW STYLES — Task 3
+  // ========================================================================
+
+  /// Tiêu đề trang — "Thể thức thi đấu"
+  static TextStyle get displayLg => TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 30,
+        fontWeight: FontWeight.w800,
+        height: 1.2,
+        letterSpacing: -0.5,
+      );
+
+  /// Tiêu đề thẻ / tên người chơi — trong thiết kế tham chiếu, tên người
+  /// chơi to gần bằng tiêu đề trang.
+  static TextStyle get cardTitle => TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        height: 1.25,
+      );
+
+  /// Nhãn hành động — "Chọn làm người bắn"
+  static TextStyle get actionLabel => TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        height: 1.4,
+      );
 }
