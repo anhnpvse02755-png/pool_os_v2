@@ -83,3 +83,4 @@ node_modules/
 
 # Git worktrees (local only)
 .worktrees/
+deploy/backups/
