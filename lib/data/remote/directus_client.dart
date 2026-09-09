@@ -148,6 +148,33 @@ class DirectusClient {
     return session;
   }
 
+  /// Đăng ký tài khoản mới (không cần token).
+  ///
+  /// Dùng `/users/register`, không phải `/users` — endpoint sau đòi quyền
+  /// admin trên `directus_users`. Server phải bật `public_registration` và
+  /// đặt `public_registration_role`, nếu không sẽ trả lỗi quyền.
+  ///
+  /// Trả 204 không body, nên không có id ở đây; lấy id từ token sau khi đăng
+  /// nhập.
+  Future<void> register({
+    required String email,
+    required String password,
+    String? firstName,
+    String? lastName,
+  }) async {
+    await _send(
+      'POST',
+      '/users/register',
+      body: {
+        'email': email,
+        'password': password,
+        if (firstName != null) 'first_name': firstName,
+        if (lastName != null) 'last_name': lastName,
+      },
+      authenticated: false,
+    );
+  }
+
   /// Gia hạn phiên bằng refresh token đang lưu.
   Future<DirectusSession> refresh() async {
     final current = await _tokenStore.read();

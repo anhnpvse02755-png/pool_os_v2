@@ -52,11 +52,38 @@ import '../../presentation/screens/community/community_screen.dart';
 import '../../presentation/screens/shell/main_shell.dart';
 import '../../presentation/screens/auth/login_screen.dart';
 import '../../presentation/screens/auth/register_screen.dart';
+import '../../presentation/screens/auth/reset_password_screen.dart';
 import '../../beta/presentation/screens/black_box_export_screen.dart';
+
+/// Điểm vào khi mở app.
+///
+/// Link đặt lại mật khẩu có dạng `https://.../reset-password?token=...`. App
+/// dùng hash routing nên GoRouter không thấy phần path đó — phải tự đọc từ
+/// [Uri.base] và chuyển hướng. Không dùng `#` trong link vì file .env của
+/// Directus cắt cụt giá trị tại dấu thăng.
+String initialLocationFromUrl([Uri? url]) {
+  final uri = url ?? Uri.base;
+
+  // Token có thể nằm ở query thường (link Directus gửi ra) HOẶC trong
+  // fragment (nếu bị chuyển hướng qua dạng hash). Phải bắt cả hai, không thì
+  // người dùng bấm link trong email sẽ rơi về Welcome và luồng quên mật khẩu
+  // đứt ở đúng bước cuối.
+  final fragment = Uri.parse(uri.fragment);
+  final token =
+      uri.queryParameters['token'] ?? fragment.queryParameters['token'];
+
+  final wantsReset = uri.path.contains('reset-password') ||
+      uri.fragment.contains('reset-password');
+
+  if (token != null && token.isNotEmpty && wantsReset) {
+    return '/reset-password?token=$token';
+  }
+  return '/welcome';
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/welcome',
+    initialLocation: initialLocationFromUrl(),
     routes: [
       // Onboarding Flow
       GoRoute(
@@ -80,6 +107,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/auth/login',
         name: 'login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/reset-password',
+        name: 'reset-password',
+        builder: (context, state) => ResetPasswordScreen(
+          token: state.uri.queryParameters['token'],
+        ),
       ),
       GoRoute(
         path: '/auth/register',

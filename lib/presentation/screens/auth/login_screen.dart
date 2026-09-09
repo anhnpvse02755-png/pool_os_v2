@@ -56,10 +56,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  Future<void> _signInWithGoogle() async {
-    await ref.read(authProvider.notifier).signInWithGoogle();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -244,27 +240,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               const SizedBox(height: AppSpacing.lg),
 
-              // Google Sign In
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: AppColors.lightBorder),
-                ),
-                child: OutlinedButton.icon(
-                  onPressed: _signInWithGoogle,
-                  icon: const Icon(Icons.g_mobiledata, size: 24),
-                  label: const Text('Đăng nhập với Google'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.lightTextPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                    side: BorderSide.none,
-                  ),
-                ),
-              ).animate().fadeIn(delay: 700.ms),
 
               const SizedBox(height: AppSpacing.xl),
 

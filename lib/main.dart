@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/config/supabase_config.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
@@ -83,8 +82,6 @@ void main() async {
     await _migrate(prefs, persistedVersion);
   }
 
-  // 3. Optional: Supabase (no-op if env vars missing — app stays offline).
-  await SupabaseConfig.initialize();
 
   runApp(const ProviderScope(child: PoolOSApp()));
 }

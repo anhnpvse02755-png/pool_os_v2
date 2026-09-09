@@ -1,40 +1,43 @@
+// ============================================================================
+// AUTH PROVIDER — trên nền Directus
+// ============================================================================
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../data/remote/directus_client.dart';
+import '../../data/remote/prefs_token_store.dart';
+import '../config/directus_config.dart';
 import '../services/auth_service.dart';
-import '../services/player_service.dart';
 
-/// Supabase Client Provider
-final supabaseClientProvider = Provider<SupabaseClient>((ref) {
-  return Supabase.instance.client;
+/// Client Directus dùng chung. Phiên đăng nhập lưu xuống SharedPreferences
+/// nên đóng app mở lại vẫn còn.
+final directusClientProvider = Provider<DirectusClient>((ref) {
+  return DirectusClient(
+    baseUrl: DirectusConfig.baseUrl,
+    tokenStore: PrefsTokenStore(),
+  );
 });
 
-/// Auth Service Provider
 final authServiceProvider = Provider<AuthService>((ref) {
-  final client = ref.watch(supabaseClientProvider);
-  return AuthService(client);
+  return AuthService(ref.watch(directusClientProvider));
 });
 
-/// Player Service Provider
-final playerServiceProvider = Provider<PlayerService>((ref) {
-  final client = ref.watch(supabaseClientProvider);
-  return PlayerService(client);
-});
-
-/// Auth State
 enum AuthStatus { unknown, authenticated, unauthenticated }
 
 class AuthState {
-  final AuthStatus status;
-  final String? userId;
-  final String? email;
-  final String? error;
-
   const AuthState({
     this.status = AuthStatus.unknown,
     this.userId,
     this.email,
     this.error,
   });
+
+  final AuthStatus status;
+  final String? userId;
+  final String? email;
+
+  /// Thông báo tiếng Việt cho người dùng, không phải lỗi kỹ thuật.
+  final String? error;
 
   bool get isAuthenticated => status == AuthStatus.authenticated;
   bool get isLoading => status == AuthStatus.unknown;
@@ -49,84 +52,67 @@ class AuthState {
       status: status ?? this.status,
       userId: userId ?? this.userId,
       email: email ?? this.email,
-      error: error ?? this.error,
+      error: error,
     );
   }
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthService _authService;
-
-  AuthNotifier(this._authService) : super(const AuthState()) {
-    _checkAuthStatus();
+  AuthNotifier(this._auth) : super(const AuthState()) {
+    _restore();
   }
 
-  Future<void> _checkAuthStatus() async {
-    final user = _authService.currentUser;
-    if (user != null) {
-      state = AuthState(
-        status: AuthStatus.authenticated,
-        userId: user.id,
-        email: user.email,
-      );
-    } else {
-      state = const AuthState(status: AuthStatus.unauthenticated);
-    }
+  final AuthService _auth;
+
+  /// Khôi phục phiên đã lưu khi mở app.
+  Future<void> _restore() async {
+    final userId = await _auth.currentUserId();
+    state = userId == null
+        ? const AuthState(status: AuthStatus.unauthenticated)
+        : AuthState(status: AuthStatus.authenticated, userId: userId);
   }
 
   Future<bool> signIn(String email, String password) async {
-    try {
-      await _authService.signIn(email: email, password: password);
-      final user = _authService.currentUser;
-      if (user != null) {
-        state = AuthState(
-          status: AuthStatus.authenticated,
-          userId: user.id,
-          email: user.email,
-        );
-        return true;
-      }
-      return false;
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-      return false;
-    }
+    state = state.copyWith(error: null);
+    final r = await _auth.signIn(email: email, password: password);
+    state = r.ok
+        ? AuthState(
+            status: AuthStatus.authenticated, userId: r.userId, email: email)
+        : state.copyWith(
+            status: AuthStatus.unauthenticated, error: r.errorMessage);
+    return r.ok;
   }
 
   Future<bool> signUp(String email, String password) async {
-    try {
-      await _authService.signUp(email: email, password: password);
-      return true;
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-      return false;
-    }
+    state = state.copyWith(error: null);
+    final r = await _auth.signUp(email: email, password: password);
+    state = r.ok
+        ? AuthState(
+            status: AuthStatus.authenticated, userId: r.userId, email: email)
+        : state.copyWith(error: r.errorMessage);
+    return r.ok;
+  }
+
+  Future<bool> requestPasswordReset(String email) async {
+    state = state.copyWith(error: null);
+    final r = await _auth.requestPasswordReset(email);
+    if (!r.ok) state = state.copyWith(error: r.errorMessage);
+    return r.ok;
+  }
+
+  Future<bool> resetPassword(String token, String newPassword) async {
+    state = state.copyWith(error: null);
+    final r = await _auth.resetPassword(token: token, newPassword: newPassword);
+    if (!r.ok) state = state.copyWith(error: r.errorMessage);
+    return r.ok;
   }
 
   Future<void> signOut() async {
-    await _authService.signOut();
+    await _auth.signOut();
     state = const AuthState(status: AuthStatus.unauthenticated);
-  }
-
-  Future<void> signInWithGoogle() async {
-    try {
-      await _authService.signInWithGoogle();
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-    }
-  }
-
-  Future<void> signInWithApple() async {
-    try {
-      await _authService.signInWithApple();
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-    }
   }
 }
 
-/// Auth Provider
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
-  final authService = ref.watch(authServiceProvider);
-  return AuthNotifier(authService);
+  return AuthNotifier(ref.watch(authServiceProvider));
 });

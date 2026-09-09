@@ -4,6 +4,11 @@ import '../models/player_interests.dart';
 import '../services/player_service.dart';
 import 'auth_provider.dart';
 
+/// PlayerService dùng chung client Directus với auth.
+final playerServiceProvider = Provider<PlayerService>((ref) {
+  return PlayerService(ref.watch(directusClientProvider));
+});
+
 /// Player Profile Provider
 final playerProvider = FutureProvider<Player?>((ref) async {
   final playerService = ref.watch(playerServiceProvider);

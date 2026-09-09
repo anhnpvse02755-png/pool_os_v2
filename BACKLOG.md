@@ -39,7 +39,7 @@ khuếch đại rủi ro rò rỉ dữ liệu.
 | # | Sprint | Trạng thái đầu vào |
 |---|---|---|
 | 1 | ~~**Chốt Row-Level Security / ownership trên Directus**~~ — **XONG 09/09.** Kích hoạt license Open Innovation Grant (miễn phí) trên Directus 12.3.1. Đã chứng minh cách ly bằng runtime hai user thật. | ✅ VERIFIED |
-| 2 | **Nối Authentication app → Directus**, rồi gỡ `supabase_flutter` | 🟡 BACKEND READY |
+| 2 | ~~**Nối Authentication app → Directus**, rồi gỡ `supabase_flutter`~~ — **XONG 09/09.** Đăng nhập/đăng ký/quên mật khẩu chạy trên link thật, đã gỡ `supabase_flutter`. | ✅ VERIFIED |
 | 3 | **Nối Drill Progress** — vertical slice đầu tiên chứng minh app đã online | 🟡 BACKEND READY |
 | 4 | **Nối các repository còn lại** theo luồng người dùng: auth → profile → training → progress → match → analytics. **Không sửa 10 repository một lúc** | ⬜ TODO |
 | 5 | **Drift + Sync Engine** — thiết kế local-first + sync, KHÔNG biến Directus thành dependency bắt buộc cho mọi thao tác | ⬜ TODO |
@@ -194,12 +194,18 @@ khẩn nhất trong cả phiên.
 | Đăng nhập / đăng ký | runtime | curl vào API thật, trả token |
 | Quên mật khẩu đầu-cuối | runtime | HTTP 204 → mail vào Mailpit → link `/reset-password?token=…` đúng domain app |
 | `DirectusClient` (Flutter) | test + runtime | 11 unit test + đối chiếu API thật: login, CRUD item, reset, logout, sai mật khẩu → `INVALID_CREDENTIALS/401` |
+| **App đăng nhập được trên link thật** | runtime | `200 POST /auth/login` → chuyển sang `#/home`, 0 lỗi JS |
+| **Quên mật khẩu đầu-cuối trên link thật** | runtime | yêu cầu → mail vào Mailpit → mở link → màn đặt lại hiện đúng kèm token |
+| Đăng ký công khai | runtime | `public_registration` bật, role `PoolOS Player`, `/users/register` → 204 → đăng nhập được |
 | 6 collection `poolos_*` | runtime | players, drill_sessions, drill_progress, matches, personal_bests, equipment |
 | 24 quyền + role + policy | runtime | `read`/`update`/`delete` **lọc theo `user_created = $CURRENT_USER`**, đã kiểm chứng cách ly bằng 2 user thật |
 | Mailpit | runtime | https://poolos-mail.kjdybl.easypanel.host |
 
-**Chưa nối:** `AuthService` và `auth_provider` vẫn trỏ Supabase. **10/10
-repository provider vẫn trả `Local*`.** Dữ liệu nằm trong SharedPreferences.
+**Đã nối:** auth chạy hoàn toàn trên Directus, `supabase_flutter` đã gỡ khỏi
+`pubspec.yaml` và không còn import nào trong `lib/`.
+
+**Chưa nối:** **10/10 repository provider vẫn trả `Local*`.** Dữ liệu nghiệp vụ
+vẫn nằm trong SharedPreferences — đó là sprint 3 và 4.
 
 Chi tiết hạ tầng + 6 bẫy đã vấp: `.claude/memory/backend-directus.md`
 
