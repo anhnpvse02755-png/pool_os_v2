@@ -86,4 +86,31 @@ void main() {
 
     expect(_extractIconColor(tester), AppColors.darkPrimary);
   });
+  testWidgets('bo goc dung token, o 56 thi ra dung 18 nhu spec chot',
+      (tester) async {
+    await tester.pumpWidget(_wrap(
+        const IconTile(icon: Icons.gps_fixed, toneIndex: 0),
+        Brightness.light));
+    final d = tester
+        .widget<Container>(find.byKey(const Key('icon-tile-container')))
+        .decoration as BoxDecoration;
+    // Spec: "O 56x56 bo 18". Khang dinh dung so 18, khong phai
+    // AppSpacing.radiusTile — neu ai doi token thi test phai do, chu khong
+    // im lang chay theo.
+    expect((d.borderRadius as BorderRadius).topLeft.x, 18.0);
+    expect((d.borderRadius as BorderRadius).topRight.x, 18.0);
+    expect((d.borderRadius as BorderRadius).bottomLeft.x, 18.0);
+    expect((d.borderRadius as BorderRadius).bottomRight.x, 18.0);
+  });
+
+  testWidgets('o to gap doi thi bo goc gian theo ti le', (tester) async {
+    await tester.pumpWidget(_wrap(
+        const IconTile(icon: Icons.gps_fixed, toneIndex: 0, size: 112),
+        Brightness.light));
+    final d = tester
+        .widget<Container>(find.byKey(const Key('icon-tile-container')))
+        .decoration as BoxDecoration;
+    expect((d.borderRadius as BorderRadius).topLeft.x, 36.0);
+  });
+
 }

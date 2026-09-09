@@ -43,6 +43,15 @@ class AppSpacing {
   /// Large radius - large cards, sheets
   static const double radiusLg = 28.0;
 
+  /// Icon tile radius — spec ghi "O 56x56 bo 18". Khong trung radiusSm(12)
+  /// hay radiusMd(20) nen phai la token rieng, khong duoc lam tron ve mot
+  /// trong hai cai do: 18 la gia tri thiet ke da chot.
+  static const double radiusTile = 18.0;
+
+  /// Canh o icon chuan theo spec. radiusTile ung voi kich thuoc nay; o to
+  /// hon thi bo goc gian theo ti le.
+  static const double iconTileSize = 56.0;
+
   /// Full radius - pills, avatars
   static const double radiusFull = 9999.0;
 

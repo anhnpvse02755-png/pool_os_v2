@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/colors.dart';
+import '../../core/theme/spacing.dart';
 
 /// Ô bo tròn nền pastel chứa một Material icon.
 ///
@@ -32,7 +33,8 @@ class IconTile extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: AppColors.pastelFor(toneIndex, brightness),
-        borderRadius: BorderRadius.circular(size * 0.32),
+        borderRadius: BorderRadius.circular(
+            size / AppSpacing.iconTileSize * AppSpacing.radiusTile),
       ),
       child: Icon(
         icon,
