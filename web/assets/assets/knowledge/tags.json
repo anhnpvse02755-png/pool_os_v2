@@ -1,0 +1,22 @@
+[
+  { "id": "tag_basic", "name": "Basic", "nameVi": "Cơ bản", "color": "#4CAF50" },
+  { "id": "tag_intermediate", "name": "Intermediate", "nameVi": "Trung bình", "color": "#2196F3" },
+  { "id": "tag_advanced", "name": "Advanced", "nameVi": "Nâng cao", "color": "#FF9800" },
+  { "id": "tag_expert", "name": "Expert", "nameVi": "Chuyên gia", "color": "#F44336" },
+  { "id": "tag_shotmaking", "name": "Shot Making", "nameVi": "Kỹ thuật đánh", "color": "#9C27B0" },
+  { "id": "tag_positioning", "name": "Positioning", "nameVi": "Vị trí", "color": "#00BCD4" },
+  { "id": "tag_aiming", "name": "Aiming", "nameVi": "Ngắm bắn", "color": "#E91E63" },
+  { "id": "tag_strategy", "name": "Strategy", "nameVi": "Chiến lược", "color": "#673AB7" },
+  { "id": "tag_speed", "name": "Speed Control", "nameVi": "Kiểm soát lực", "color": "#795548" },
+  { "id": "tag_cueball", "name": "Cue Ball", "nameVi": "Bi trắng", "color": "#607D8B" },
+  { "id": "tag_bank", "name": "Bank Shot", "nameVi": "Cú băng", "color": "#009688" },
+  { "id": "tag_bridge", "name": "Bridge", "nameVi": "Tay gác", "color": "#3F51B5" },
+  { "id": "tag_stance", "name": "Stance", "nameVi": "Tư thế", "color": "#CDDC39" },
+  { "id": "tag_technique", "name": "Technique", "nameVi": "Kỹ thuật", "color": "#FFC107" },
+  { "id": "tag_posture", "name": "Posture", "nameVi": "Th posture", "color": "#FFEB3B" },
+  { "id": "tag_accuracy", "name": "Accuracy", "nameVi": "Độ chính xác", "color": "#8BC34A" },
+  { "id": "tag_defense", "name": "Defense", "nameVi": "Phòng thủ", "color": "#FF5722" },
+  { "id": "tag_rail", "name": "Rail", "nameVi": "Đệm", "color": "#9E9E9E" },
+  { "id": "tag_backspin", "name": "Backspin", "nameVi": "Quay lùi", "color": "#00BCD4" },
+  { "id": "tag_topspin", "name": "Topspin", "nameVi": "Quay tới", "color": "#03A9F4" }
+]
