@@ -1,6 +1,6 @@
 ---
 name: backend-directus
-description: PoolOS backend on EasyPanel - Directus stack, live URLs, and the row-level security debt that must be paid before real users
+description: PoolOS backend on EasyPanel - Directus stack, live URLs, OIG license activation, and the traps that silently break row-level security
 metadata:
   type: project
 ---
