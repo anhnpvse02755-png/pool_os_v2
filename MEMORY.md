@@ -12,6 +12,7 @@
 
 ## Known Issues
 
+- [backend-directus](.claude/memory/backend-directus.md) — Backend Directus trên EasyPanel: URL đang sống, 6 bẫy đã vấp, và nợ kỹ thuật row-level security
 - [e2e-playwright-accessibility](.claude/memory/e2e-playwright-accessibility.md) — 🔴 **ĐANG MỞ**: E2E fail vì Flutter Web giấu semantics sau nút "Enable accessibility"
 - [sprint-17-training-flow-bug](memory/sprint-17-training-flow-bug.md) — ✅ Đã fix: DrillDetail CTA nhảy nhầm sang Training History
 
