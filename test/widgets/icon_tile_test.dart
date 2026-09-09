@@ -8,18 +8,35 @@ Widget _wrap(Widget child, Brightness brightness) => MaterialApp(
       home: Scaffold(body: child),
     );
 
+Color _extractIconColor(WidgetTester tester) {
+  final icon = tester.widget<Icon>(find.byKey(const Key('icon-tile-icon')));
+  return icon.color!;
+}
+
 void main() {
+  // ========================================================================
+  // Material icon guardrail — emoji substitution must be caught.
+  // ========================================================================
+
   testWidgets('dùng Material icon, KHÔNG dùng emoji', (tester) async {
     await tester.pumpWidget(_wrap(
         const IconTile(icon: Icons.sports_bar, toneIndex: 0),
         Brightness.light));
 
     expect(find.byIcon(Icons.sports_bar), findsOneWidget);
-    // Nếu có ai thay bằng emoji thì đây là chỗ chặn lại.
     expect(find.byType(Text), findsNothing);
   });
 
-  testWidgets('nền lấy đúng tông pastel theo toneIndex', (tester) async {
+  // ========================================================================
+  // Pastel background — tested in BOTH modes with exact color values.
+  //
+  // AppColors.pastelFor(index, brightness) resolves to:
+  //   light: [mint, blue, peach, lilac, butter]
+  //   dark:  [darkMint, darkBlue, darkPeach, darkLilac, darkButter]
+  // ========================================================================
+
+  testWidgets('nền: toneIndex=2 sáng dùng pastelLight[2]=peach',
+      (tester) async {
     await tester.pumpWidget(_wrap(
         const IconTile(icon: Icons.star, toneIndex: 2), Brightness.light));
 
@@ -30,7 +47,7 @@ void main() {
         AppColors.pastelFor(2, Brightness.light));
   });
 
-  testWidgets('cùng toneIndex cho màu khác nhau giữa sáng và tối',
+  testWidgets('nền: toneIndex=1 tối dùng pastelDark[1]=darkBlue',
       (tester) async {
     await tester.pumpWidget(_wrap(
         const IconTile(icon: Icons.star, toneIndex: 1), Brightness.dark));
@@ -42,10 +59,31 @@ void main() {
         AppColors.pastelFor(1, Brightness.dark));
   });
 
-  testWidgets('toneIndex vượt 5 thì lặp vòng, không lỗi', (tester) async {
+  testWidgets('nền: toneIndex vượt 5 thì lặp vòng, không lỗi', (tester) async {
     await tester.pumpWidget(_wrap(
         const IconTile(icon: Icons.star, toneIndex: 7), Brightness.light));
 
     expect(tester.takeException(), isNull);
+  });
+
+  // ========================================================================
+  // Icon color — AppColors.primary(brightness):
+  //   light: AppColors.lightPrimary
+  //   dark:  AppColors.darkPrimary
+  // Must be asserted in BOTH modes; mutation proven in review.
+  // ========================================================================
+
+  testWidgets('icon: chế độ sáng dùng AppColors.lightPrimary', (tester) async {
+    await tester.pumpWidget(_wrap(
+        const IconTile(icon: Icons.star, toneIndex: 0), Brightness.light));
+
+    expect(_extractIconColor(tester), AppColors.lightPrimary);
+  });
+
+  testWidgets('icon: chế độ tối dùng AppColors.darkPrimary', (tester) async {
+    await tester.pumpWidget(_wrap(
+        const IconTile(icon: Icons.star, toneIndex: 0), Brightness.dark));
+
+    expect(_extractIconColor(tester), AppColors.darkPrimary);
   });
 }

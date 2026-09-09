@@ -36,6 +36,7 @@ class IconTile extends StatelessWidget {
       ),
       child: Icon(
         icon,
+        key: const Key('icon-tile-icon'),
         size: size * 0.46,
         color: AppColors.primary(brightness),
       ),

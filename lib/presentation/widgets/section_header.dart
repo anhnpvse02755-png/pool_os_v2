@@ -28,6 +28,7 @@ class SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
+          key: const Key('section-header-title'),
           style: AppTypography.displayLg
               .copyWith(color: AppColors.textPrimary(brightness)),
         ),
