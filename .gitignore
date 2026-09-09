@@ -85,3 +85,9 @@ node_modules/
 .worktrees/
 deploy/backups/
 deploy/directus/.env.generated
+
+# File tạm của phiên làm việc — KHÔNG BAO GIỜ commit.
+# Đã từng lọt token admin Directus vào repo public vì `git add -A`.
+*.tmp
+*.tmp.js
+*.tmp.json
