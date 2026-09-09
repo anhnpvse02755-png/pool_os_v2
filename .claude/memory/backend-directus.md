@@ -13,7 +13,7 @@ panel `vps.nexthome.com.vn`), project **`test-va`**.
 | | |
 |---|---|
 | App (Flutter web) | https://poolos.kjdybl.easypanel.host |
-| API (Directus 12.3.1) | https://poolos-api.kjdybl.easypanel.host |
+| API (Directus **11.9.3**) | https://poolos-api.kjdybl.easypanel.host |
 | Hộp thư test (Mailpit) | https://poolos-mail.kjdybl.easypanel.host |
 
 Service: `directus` + `db` (postgis 17-3.5, database `poolos`) + `redis:7` +
