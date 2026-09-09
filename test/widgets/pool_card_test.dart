@@ -23,6 +23,9 @@ void main() {
 
     final radius = _decorationOf(tester).borderRadius as BorderRadius;
     expect(radius.topLeft.x, AppSpacing.radiusMd);
+    expect(radius.topRight.x, AppSpacing.radiusMd);
+    expect(radius.bottomLeft.x, AppSpacing.radiusMd);
+    expect(radius.bottomRight.x, AppSpacing.radiusMd);
   });
 
   testWidgets('chưa chọn dùng bề mặt chìm', (tester) async {
@@ -39,11 +42,33 @@ void main() {
     expect(_decorationOf(tester).color, AppColors.lightSurface);
   });
 
-  testWidgets('chế độ tối có viền vì shadow gần như vô hình', (tester) async {
+  testWidgets('chế độ tối có viền AppColors.darkBorder', (tester) async {
     await tester.pumpWidget(
         _wrap(const PoolCard(child: Text('x')), Brightness.dark));
 
-    expect(_decorationOf(tester).border, isNotNull);
+    final border = _decorationOf(tester).border as Border;
+    expect(border.top.color, AppColors.darkBorder);
+  });
+
+  testWidgets('chế độ sáng không có viền', (tester) async {
+    await tester.pumpWidget(
+        _wrap(const PoolCard(child: Text('x')), Brightness.light));
+
+    expect(_decorationOf(tester).border, isNull);
+  });
+
+  testWidgets('dark + selected dùng AppColors.darkSurface', (tester) async {
+    await tester.pumpWidget(_wrap(
+        const PoolCard(selected: true, child: Text('x')), Brightness.dark));
+
+    expect(_decorationOf(tester).color, AppColors.darkSurface);
+  });
+
+  testWidgets('dark + unselected dùng AppColors.darkSurfaceRecessed', (tester) async {
+    await tester.pumpWidget(_wrap(
+        const PoolCard(selected: false, child: Text('x')), Brightness.dark));
+
+    expect(_decorationOf(tester).color, AppColors.darkSurfaceRecessed);
   });
 
   testWidgets('bấm được khi có onTap', (tester) async {
