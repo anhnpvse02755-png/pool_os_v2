@@ -1,15 +1,12 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/theme/colors.dart';
 import 'package:pool_os_v2/core/theme/shadows.dart';
 import 'package:pool_os_v2/core/theme/spacing.dart';
-import 'package:pool_os_v2/core/theme/typography.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
   group('Bảng màu sáng', () {
     test('nền là kem ấm, không phải trắng xám', () {
       expect(AppColors.lightBackground, const Color(0xFFF7F4EC));
@@ -132,10 +129,9 @@ void main() {
     final source = File('lib/core/theme/typography.dart').readAsStringSync();
 
     String styleBody(String name) {
-      final m = RegExp('static TextStyle get ' + name + r' =>(.*?);',
-              dotAll: true)
+      final m = RegExp('static TextStyle get $name =>(.*?);', dotAll: true)
           .firstMatch(source);
-      expect(m, isNotNull, reason: 'khong tim thay style ' + name);
+      expect(m, isNotNull, reason: 'khong tim thay style $name');
       return m!.group(1)!;
     }
 
@@ -143,7 +139,13 @@ void main() {
         int.parse(RegExp(r'fontSize: (\d+)').firstMatch(body)!.group(1)!);
 
     test('van dung Plus Jakarta Sans', () {
-      expect(source, contains('plusJakartaSans'));
+      // Khang dinh dung tren than cua _fontFamily, khong phai "co chuoi
+      // plusJakartaSans o dau do trong file": doi ten bien roi gan font khac
+      // van de test xanh neu chi tim chuoi tu do.
+      final family = RegExp(r'get _fontFamily =>(.*?);', dotAll: true)
+          .firstMatch(source);
+      expect(family, isNotNull, reason: 'khong tim thay _fontFamily');
+      expect(family!.group(1), contains('plusJakartaSans'));
     });
 
     test('tieu de trang to va rat dam', () {
