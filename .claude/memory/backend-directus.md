@@ -21,23 +21,39 @@ Service: `directus` + `db` (postgis 17-3.5, database `poolos`) + `redis:7` +
 
 Secrets ở `deploy/directus/.env.generated` (**không commit**).
 
-## 🔴 NỢ KỸ THUẬT — phải trả TRƯỚC khi có người dùng thật
+## ✅ Row-level security — ĐÃ GỠ (09/09), chạy trên Directus **11.9.3**
 
-**Directus bản này khoá bộ lọc quyền theo chủ sở hữu.** Đã cô lập bằng thực
-nghiệm:
+**Nguyên nhân gốc:** Directus 12 đổi license BSL 1.1 -> MSCL 1.0 và bật cưỡng
+chế. Core tier giới hạn 25 collection · 3 seat · 5 Flows · KHÔNG có custom
+permission rules. Cả hai chặn từng gặp đều từ đây (`cms` 49 collection ->
+LIMIT_EXCEEDED; bộ lọc quyền -> restricted resource).
 
-```
-read KHÔNG bộ lọc                          -> tạo được
-read CÓ  bộ lọc user_created=$CURRENT_USER -> "custom_permission_rules_enabled
-                                               is a restricted resource"
-```
+**Cách gỡ đã dùng:** hạ `poolos-api` về **11.9.3**. v11 dùng BSL 1.1, chưa có
+cưỡng chế — `/server/info` không còn khối `license`. Hợp lệ: BSL cho tự host
+miễn phí dưới 5 triệu USD doanh thu.
 
-Hệ quả: **24 quyền hiện tại đều KHÔNG có bộ lọc**, nên mọi người chơi đăng
-nhập đều đọc/sửa được dữ liệu của nhau. Chấp nhận tạm vì đang giai đoạn phát
-triển, chưa có người dùng thật.
+**Đã kiểm chứng runtime với 2 user thật:** A chỉ thấy dữ liệu A, B chỉ thấy
+dữ liệu B, B sửa bản ghi của A bị chặn.
 
-Hướng xử lý (chưa chọn): trả phí Directus để mở custom permission rules · ép
-quyền sở hữu bằng Flows/extension · hoặc đổi tầng dữ liệu sang thứ có RLS thật.
+### ⚠️ Bẫy: quyền Directus là CỘNG DỒN, không ghi đè
+
+Thêm permission có bộ lọc mà **vẫn rò rỉ**, vì permission không lọc cũ vẫn
+còn hiệu lực, hai cái cộng lại thành "đọc tất". **Phải xoá cái không lọc.**
+"Tạo được permission" KHÁC "cách ly hoạt động" — chỉ test runtime 2 user mới
+phát hiện.
+
+### Đánh đổi
+
+Ở lại v11 = không nhận vá bảo mật dòng v12+. Muốn lên v12 thì cần license key
+Open Innovation Grant (miễn phí, dưới 5 triệu USD doanh thu và dưới 50 nhân
+sự, đăng ký tại directus.com/oig).
+
+## 🔴 RỦI RO PRODUCTION: `cms` vẫn ở v12 và vượt hạn mức
+
+`cms.nexthome.com.vn` chạy 12.3.1 với **49 collection** (hạn mức Core 25).
+Hết ân hạn 30 ngày: endpoint /items bị chặn, GraphQL/WebSocket/MCP tắt, login
+của người không phải admin bị từ chối. **Không xoá dữ liệu**, cắm key vào là
+phục hồi. Cần license key OIG cho instance này.
 
 ## Bẫy đã gặp, đừng vấp lại
 

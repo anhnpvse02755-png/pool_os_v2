@@ -38,7 +38,7 @@ khuếch đại rủi ro rò rỉ dữ liệu.
 
 | # | Sprint | Trạng thái đầu vào |
 |---|---|---|
-| 1 | **Chốt Row-Level Security / ownership trên Directus** — spike xong 09/09: nguyên nhân là license enforcement của Directus 12, gỡ được **miễn phí** bằng Open Innovation Grant. **Đang chờ người đăng ký lấy license key.** | 🔴 BLOCKED |
+| 1 | ~~**Chốt Row-Level Security / ownership trên Directus**~~ — **XONG 09/09.** Hạ `poolos-api` về Directus 11.9.3 (không có cưỡng chế license). Đã chứng minh bằng runtime hai user thật. | ✅ VERIFIED |
 | 2 | **Nối Authentication app → Directus**, rồi gỡ `supabase_flutter` | 🟡 BACKEND READY |
 | 3 | **Nối Drill Progress** — vertical slice đầu tiên chứng minh app đã online | 🟡 BACKEND READY |
 | 4 | **Nối các repository còn lại** theo luồng người dùng: auth → profile → training → progress → match → analytics. **Không sửa 10 repository một lúc** | ⬜ TODO |
@@ -47,13 +47,53 @@ khuếch đại rủi ro rò rỉ dữ liệu.
 
 ---
 
-## 🔴 BLOCKED — chặn sprint 5, phải xử lý ở sprint 1
+## ✅ Row-Level Security — ĐÃ GỠ (09/09)
 
 | Việc | Bằng chứng |
 |---|---|
-| **Row-Level Security / ownership** | runtime |
+| **Ownership isolation hoạt động** | runtime |
 
-Directus bản này khoá bộ lọc quyền theo chủ sở hữu. Đã cô lập bằng thực nghiệm:
+**Cách gỡ: hạ `poolos-api` từ Directus 12.3.1 về 11.9.3.** v11 dùng BSL 1.1,
+chưa có cưỡng chế license — `/server/info` **không còn khối `license`** nào.
+Không giới hạn collection, có custom permission rules. Đây không phải lách
+luật: BSL 1.1 cho tự host miễn phí dưới 5 triệu USD doanh thu, cùng ngưỡng với
+OIG.
+
+**Bằng chứng runtime với hai user thật:**
+
+```
+A tạo "BÍ MẬT CỦA A" · B tạo "BÍ MẬT CỦA B"
+A đọc thấy: ['BÍ MẬT CỦA A']          <- không thấy của B
+B đọc thấy: ['BÍ MẬT CỦA B']          <- không thấy của A
+B sửa bản ghi của A: bị chặn
+```
+
+24 quyền hiện tại: `create` không lọc (bản ghi chưa tồn tại; `user_created` do
+Directus tự điền qua special field), `read`/`update`/`delete` lọc theo
+`user_created = $CURRENT_USER`.
+
+### ⚠️ Bẫy đã vấp: quyền Directus là CỘNG DỒN, không ghi đè
+
+Lần đầu tôi thêm permission có bộ lọc mà **vẫn rò rỉ dữ liệu**, vì permission
+không lọc cũ vẫn còn hiệu lực và hai cái cộng lại thành "đọc tất". **Phải xoá
+permission không lọc đi**, không chỉ thêm cái có lọc.
+
+Bài học rộng hơn: *"tạo được permission"* ≠ *"cách ly hoạt động"*. Chỉ test
+runtime với hai user thật mới phát hiện được.
+
+### Đánh đổi khi ở lại v11
+
+- Không nhận cập nhật/vá bảo mật từ dòng v12+
+- Nếu muốn lên v12 sau này thì cần license key OIG (miễn phí, xem mục dưới)
+
+---
+
+## 📌 Ghi lại: vì sao v12 chặn (để không quên)
+
+Directus 12 đổi license BSL 1.1 → **MSCL 1.0** và bật cưỡng chế. Core tier:
+**25 collection · 3 seat · 5 Flows · không có custom permission rules**.
+
+Đã cô lập bằng thực nghiệm trên v12.3.1:
 
 ```
 POST /permissions  read KHÔNG bộ lọc                          -> tạo được
@@ -64,10 +104,7 @@ POST /permissions  read CÓ  bộ lọc user_created=$CURRENT_USER -> "custom_pe
 Gate này còn chặn **mọi quyền tuỳ chỉnh trên collection hệ thống** (`directus_*`),
 kể cả khi không có bộ lọc — nên `/users/me` trả toàn `null`.
 
-**Hệ quả hiện tại:** 24 quyền đều không lọc → **mọi người chơi đọc/sửa được dữ
-liệu của nhau.** Chấp nhận tạm vì chưa có người dùng thật.
-
-**Đã vòng được một phần:** `DirectusSession.userId`/`roleId` giải mã từ payload
+**Đã vòng được một phần (vẫn giữ nguyên, vẫn đúng):** `DirectusSession.userId`/`roleId` giải mã từ payload
 JWT thay vì gọi `/users/me`.
 
 ### ✅ Spike 09/09 đã tìm ra nguyên nhân — và cách gỡ miễn phí
@@ -100,18 +137,8 @@ USD doanh thu **và** dưới 50 nhân sự, **gỡ bỏ toàn bộ hạn mức*
 đăng ký + giữ telemetry cơ bản bật. Một key dùng được 5 activation, gắn theo
 `PUBLIC_URL`.
 
-- [ ] **CHỜ NGƯỜI:** đăng ký tại https://directus.io/pricing/self-hosted và lấy
-      license key. Đây là khai báo pháp lý về doanh thu/quy mô công ty — agent
-      không làm thay được.
-- [ ] Áp key **qua Studio** (validate ngay, sửa được sau). KHÔNG dùng biến môi
-      trường `LICENSE_KEY`: Studio sẽ khoá editor, muốn đổi phải sửa env +
-      restart.
-- [ ] Kiểm chứng lại bằng đúng thí nghiệm đã cô lập ra vấn đề: tạo permission
-      `read` có bộ lọc `user_created = $CURRENT_USER`
-- [ ] Thay 24 quyền không lọc bằng quyền có lọc theo chủ sở hữu
-
-**Nếu KHÔNG đủ điều kiện** thì mới quay lại 3 phương án tốn kém: license
-thương mại · BFF proxy ép ownership · đổi tầng dữ liệu sang thứ có RLS thật.
+**`poolos-api` không cần key nữa** (đã ở v11). Key OIG vẫn cần cho **`cms`** —
+xem mục RỦI RO PRODUCTION bên dưới.
 
 Sources: [v12 license change](https://directus.com/resources/directus-v12-license-change) ·
 [Licensing overview](https://directus.com/docs/licensing/overview) ·
@@ -143,12 +170,12 @@ nhắc nhở khi admin đăng nhập, **sau đó kích hoạt luồng xử lý b
 
 | Hạng mục | Bằng chứng | Ghi chú |
 |---|---|---|
-| Directus 12.3.1 chạy | runtime | https://poolos-api.kjdybl.easypanel.host |
+| Directus **11.9.3** chạy | runtime | https://poolos-api.kjdybl.easypanel.host — hạ từ 12.3.1 để gỡ cưỡng chế license |
 | Đăng nhập / đăng ký | runtime | curl vào API thật, trả token |
 | Quên mật khẩu đầu-cuối | runtime | HTTP 204 → mail vào Mailpit → link `/reset-password?token=…` đúng domain app |
 | `DirectusClient` (Flutter) | test + runtime | 11 unit test + đối chiếu API thật: login, CRUD item, reset, logout, sai mật khẩu → `INVALID_CREDENTIALS/401` |
 | 6 collection `poolos_*` | runtime | players, drill_sessions, drill_progress, matches, personal_bests, equipment |
-| 24 quyền + role + policy | runtime | **không có bộ lọc** — xem mục BLOCKED |
+| 24 quyền + role + policy | runtime | `read`/`update`/`delete` **lọc theo `user_created = $CURRENT_USER`**, đã kiểm chứng cách ly bằng 2 user thật |
 | Mailpit | runtime | https://poolos-mail.kjdybl.easypanel.host |
 
 **Chưa nối:** `AuthService` và `auth_provider` vẫn trỏ Supabase. **10/10
