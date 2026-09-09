@@ -38,7 +38,7 @@ khuếch đại rủi ro rò rỉ dữ liệu.
 
 | # | Sprint | Trạng thái đầu vào |
 |---|---|---|
-| 1 | **Chốt Row-Level Security / ownership trên Directus** | 🔴 BLOCKED |
+| 1 | **Chốt Row-Level Security / ownership trên Directus** — spike xong 09/09: nguyên nhân là license enforcement của Directus 12, gỡ được **miễn phí** bằng Open Innovation Grant. **Đang chờ người đăng ký lấy license key.** | 🔴 BLOCKED |
 | 2 | **Nối Authentication app → Directus**, rồi gỡ `supabase_flutter` | 🟡 BACKEND READY |
 | 3 | **Nối Drill Progress** — vertical slice đầu tiên chứng minh app đã online | 🟡 BACKEND READY |
 | 4 | **Nối các repository còn lại** theo luồng người dùng: auth → profile → training → progress → match → analytics. **Không sửa 10 repository một lúc** | ⬜ TODO |
@@ -67,11 +67,75 @@ kể cả khi không có bộ lọc — nên `/users/me` trả toàn `null`.
 **Hệ quả hiện tại:** 24 quyền đều không lọc → **mọi người chơi đọc/sửa được dữ
 liệu của nhau.** Chấp nhận tạm vì chưa có người dùng thật.
 
-**Hướng chưa chọn:** trả phí Directus mở custom permission rules · ép quyền sở
-hữu bằng Flows/extension · đổi tầng dữ liệu sang thứ có RLS thật.
-
 **Đã vòng được một phần:** `DirectusSession.userId`/`roleId` giải mã từ payload
 JWT thay vì gọi `/users/me`.
+
+### ✅ Spike 09/09 đã tìm ra nguyên nhân — và cách gỡ miễn phí
+
+**Không phải lỗi cấu hình.** Directus 12 đổi license từ BSL 1.1 sang **MSCL
+1.0** và bật cưỡng chế hạn mức. Instance tự host mặc định chạy **Core tier**:
+
+| Core tier | Hạn mức |
+|---|---|
+| Collection | **25** |
+| Seat | 3 |
+| Flows | 5 |
+| Custom permission rules | ❌ không có |
+
+Bằng chứng trên chính hệ thống — `GET /server/info` của **cả hai** instance:
+
+```json
+"license": { "source": null, "entitlements": {
+    "production_enabled": true,
+    "ai_translations_enabled": false,
+    "display_powered_by": "DIRECTUS" } }
+```
+
+`source: null` = chưa cài license → Core tier. Điều này giải thích trọn vẹn
+**cả hai** chặn đã gặp: `cms` 49 collection vượt hạn mức 25 → `LIMIT_EXCEEDED`;
+và bộ lọc quyền không nằm trong entitlement Core.
+
+**Cách gỡ: Open Innovation Grant — miễn phí.** Dành cho tổ chức dưới 5 triệu
+USD doanh thu **và** dưới 50 nhân sự, **gỡ bỏ toàn bộ hạn mức**. Điều kiện:
+đăng ký + giữ telemetry cơ bản bật. Một key dùng được 5 activation, gắn theo
+`PUBLIC_URL`.
+
+- [ ] **CHỜ NGƯỜI:** đăng ký tại https://directus.io/pricing/self-hosted và lấy
+      license key. Đây là khai báo pháp lý về doanh thu/quy mô công ty — agent
+      không làm thay được.
+- [ ] Áp key **qua Studio** (validate ngay, sửa được sau). KHÔNG dùng biến môi
+      trường `LICENSE_KEY`: Studio sẽ khoá editor, muốn đổi phải sửa env +
+      restart.
+- [ ] Kiểm chứng lại bằng đúng thí nghiệm đã cô lập ra vấn đề: tạo permission
+      `read` có bộ lọc `user_created = $CURRENT_USER`
+- [ ] Thay 24 quyền không lọc bằng quyền có lọc theo chủ sở hữu
+
+**Nếu KHÔNG đủ điều kiện** thì mới quay lại 3 phương án tốn kém: license
+thương mại · BFF proxy ép ownership · đổi tầng dữ liệu sang thứ có RLS thật.
+
+Sources: [v12 license change](https://directus.com/resources/directus-v12-license-change) ·
+[Licensing overview](https://directus.com/docs/licensing/overview) ·
+[Self-hosted pricing](https://directus.io/pricing/self-hosted)
+
+---
+
+## 🔴 RỦI RO PRODUCTION — `cms` đang vượt hạn mức Core
+
+| Việc | Bằng chứng |
+|---|---|
+| **`cms` có 49 collection, hạn mức Core là 25** | runtime |
+
+`cms.nexthome.com.vn` cũng chạy Core tier (`license.source: null`) và đang vượt
+**gần gấp đôi** hạn mức.
+
+Cơ chế cưỡng chế của v12: instance vượt hạn mức được **ân hạn 30 ngày** kèm
+nhắc nhở khi admin đăng nhập, **sau đó kích hoạt luồng xử lý bắt buộc ở lần
+đăng nhập admin kế tiếp**. Không rõ đồng hồ đã chạy bao lâu.
+
+- [ ] Áp cùng license key đó cho `cms` — gỡ luôn rủi ro này
+
+Đây là phát hiện phụ của spike RLS, không nằm trong kế hoạch ban đầu, nhưng
+ảnh hưởng tới hệ thống đang chạy thật nên đặt cùng mức ưu tiên.
 
 ---
 
