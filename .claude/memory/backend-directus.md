@@ -13,7 +13,7 @@ panel `vps.nexthome.com.vn`), project **`test-va`**.
 | | |
 |---|---|
 | App (Flutter web) | https://poolos.kjdybl.easypanel.host |
-| API (Directus **11.9.3**) | https://poolos-api.kjdybl.easypanel.host |
+| API (Directus **12.3.1** + license OIG) | https://poolos-api.kjdybl.easypanel.host |
 | Hộp thư test (Mailpit) | https://poolos-mail.kjdybl.easypanel.host |
 
 Service: `directus` + `db` (postgis 17-3.5, database `poolos`) + `redis:7` +
@@ -21,16 +21,20 @@ Service: `directus` + `db` (postgis 17-3.5, database `poolos`) + `redis:7` +
 
 Secrets ở `deploy/directus/.env.generated` (**không commit**).
 
-## ✅ Row-level security — ĐÃ GỠ (09/09), chạy trên Directus **11.9.3**
+## ✅ Row-level security — ĐÃ GỠ (09/09), Directus **12.3.1** + license OIG
 
 **Nguyên nhân gốc:** Directus 12 đổi license BSL 1.1 -> MSCL 1.0 và bật cưỡng
 chế. Core tier giới hạn 25 collection · 3 seat · 5 Flows · KHÔNG có custom
 permission rules. Cả hai chặn từng gặp đều từ đây (`cms` 49 collection ->
 LIMIT_EXCEEDED; bộ lọc quyền -> restricted resource).
 
-**Cách gỡ đã dùng:** hạ `poolos-api` về **11.9.3**. v11 dùng BSL 1.1, chưa có
-cưỡng chế — `/server/info` không còn khối `license`. Hợp lệ: BSL cho tự host
-miễn phí dưới 5 triệu USD doanh thu.
+**Cách gỡ đã dùng:** kích hoạt **license Open Innovation Grant (miễn phí)**
+qua `POST /license {"license_key": "..."}`. Sau đó mọi hạn mức về `-1` và
+`custom_permission_rules_enabled: true`. Đã áp cho CẢ HAI instance (2/5
+activation).
+
+*(Đã thử hạ về v11.9.3 trước đó và chạy được — v11 chưa có cưỡng chế. Giữ lại
+làm phương án dự phòng nếu key có vấn đề.)*
 
 **Đã kiểm chứng runtime với 2 user thật:** A chỉ thấy dữ liệu A, B chỉ thấy
 dữ liệu B, B sửa bản ghi của A bị chặn.
@@ -42,18 +46,28 @@ còn hiệu lực, hai cái cộng lại thành "đọc tất". **Phải xoá c�
 "Tạo được permission" KHÁC "cách ly hoạt động" — chỉ test runtime 2 user mới
 phát hiện.
 
-### Đánh đổi
+### ⚠️ Bẫy 2: nâng v11 -> v12 XOÁ ÂM THẦM bộ lọc quyền
 
-Ở lại v11 = không nhận vá bảo mật dòng v12+. Muốn lên v12 thì cần license key
-Open Innovation Grant (miễn phí, dưới 5 triệu USD doanh thu và dưới 50 nhân
-sự, đăng ký tại directus.com/oig).
+Nâng poolos-api 11.9.3 -> 12.3.1: dữ liệu và collection còn nguyên nhưng
+**toàn bộ bộ lọc quyền biến mất** (v12 chưa có license thì không được phép có
+custom permission rules, nó lặng lẽ gỡ). Bảo mật thụt về hở toang, KHÔNG có
+cảnh báo nào.
 
-## 🔴 RỦI RO PRODUCTION: `cms` vẫn ở v12 và vượt hạn mức
+**Quy tắc: mỗi lần đổi phiên bản Directus hoặc đổi trạng thái license, PHẢI
+chạy lại test cách ly hai user.**
 
-`cms.nexthome.com.vn` chạy 12.3.1 với **49 collection** (hạn mức Core 25).
-Hết ân hạn 30 ngày: endpoint /items bị chặn, GraphQL/WebSocket/MCP tắt, login
-của người không phải admin bị từ chối. **Không xoá dữ liệu**, cắm key vào là
-phục hồi. Cần license key OIG cho instance này.
+## ✅ `cms` production — đã gỡ, suýt muộn
+
+Trước khi xử lý: `name: Core · status: grace · expires_at: 09/09/2026 09:36`,
+usage 40 collection / 2 seat / 5 flow. **Ân hạn đã hết trước đó ~2,4 giờ** —
+đứng ngay trước luồng khoá (chặn /items, tắt GraphQL/WebSocket/MCP, từ chối
+login người không phải admin; `website` lấy nội dung từ đây cũng hỏng theo).
+Kích hoạt OIG xong: `active`, mọi hạn mức `-1`.
+
+**License key nằm ở đâu:** đã nhập vào Settings của cả hai instance
+(`source: settings`). KHÔNG đặt qua env `LICENSE_KEY` — làm vậy Studio khoá
+editor. Kích hoạt bằng `POST /license`, không PATCH được `/settings`
+trực tiếp ("You can't change the license_key value manually").
 
 ## Bẫy đã gặp, đừng vấp lại
 

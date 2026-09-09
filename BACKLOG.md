@@ -38,7 +38,7 @@ khuếch đại rủi ro rò rỉ dữ liệu.
 
 | # | Sprint | Trạng thái đầu vào |
 |---|---|---|
-| 1 | ~~**Chốt Row-Level Security / ownership trên Directus**~~ — **XONG 09/09.** Hạ `poolos-api` về Directus 11.9.3 (không có cưỡng chế license). Đã chứng minh bằng runtime hai user thật. | ✅ VERIFIED |
+| 1 | ~~**Chốt Row-Level Security / ownership trên Directus**~~ — **XONG 09/09.** Kích hoạt license Open Innovation Grant (miễn phí) trên Directus 12.3.1. Đã chứng minh cách ly bằng runtime hai user thật. | ✅ VERIFIED |
 | 2 | **Nối Authentication app → Directus**, rồi gỡ `supabase_flutter` | 🟡 BACKEND READY |
 | 3 | **Nối Drill Progress** — vertical slice đầu tiên chứng minh app đã online | 🟡 BACKEND READY |
 | 4 | **Nối các repository còn lại** theo luồng người dùng: auth → profile → training → progress → match → analytics. **Không sửa 10 repository một lúc** | ⬜ TODO |
@@ -53,11 +53,17 @@ khuếch đại rủi ro rò rỉ dữ liệu.
 |---|---|
 | **Ownership isolation hoạt động** | runtime |
 
-**Cách gỡ: hạ `poolos-api` từ Directus 12.3.1 về 11.9.3.** v11 dùng BSL 1.1,
-chưa có cưỡng chế license — `/server/info` **không còn khối `license`** nào.
-Không giới hạn collection, có custom permission rules. Đây không phải lách
-luật: BSL 1.1 cho tự host miễn phí dưới 5 triệu USD doanh thu, cùng ngưỡng với
-OIG.
+**Cách gỡ cuối cùng: license Open Innovation Grant (miễn phí) trên Directus
+12.3.1.** Cả hai instance đã kích hoạt:
+
+```
+license: Open Innovation Grant / active / source: settings / expires_at: -1
+collections -1 · seats -1 · flows -1 · custom_permission_rules_enabled: true
+```
+
+*(Trước đó đã thử hạ về v11.9.3 và nó chạy được — v11 chưa có cưỡng chế
+license. Nhưng khi có key OIG thì không cần: v12 vừa đủ tính năng vừa nhận vá
+bảo mật. Đường v11 giữ lại đây làm phương án dự phòng nếu key có vấn đề.)*
 
 **Bằng chứng runtime với hai user thật:**
 
@@ -81,10 +87,21 @@ permission không lọc đi**, không chỉ thêm cái có lọc.
 Bài học rộng hơn: *"tạo được permission"* ≠ *"cách ly hoạt động"*. Chỉ test
 runtime với hai user thật mới phát hiện được.
 
-### Đánh đổi khi ở lại v11
+### ⚠️ Bẫy thứ hai: nâng v11 → v12 XOÁ ÂM THẦM bộ lọc quyền
 
-- Không nhận cập nhật/vá bảo mật từ dòng v12+
-- Nếu muốn lên v12 sau này thì cần license key OIG (miễn phí, xem mục dưới)
+Sau khi nâng `poolos-api` từ 11.9.3 lên 12.3.1, dữ liệu và collection còn
+nguyên nhưng **toàn bộ bộ lọc quyền biến mất** — v12 chưa kích hoạt license
+thì không được phép có custom permission rules, nên nó lặng lẽ gỡ bỏ.
+
+```
+permission poolos_*: 6  (có bộ lọc: 0)   <- sau khi nâng cấp
+```
+
+Bảo mật thụt lùi về hở toang mà **không có cảnh báo nào**. Nếu chỉ nhìn "nâng
+cấp thành công, đăng nhập được" thì đã báo cáo sai.
+
+**Quy tắc rút ra: mỗi lần đổi phiên bản Directus hoặc đổi trạng thái license,
+PHẢI chạy lại test cách ly hai user.**
 
 ---
 
@@ -137,8 +154,7 @@ USD doanh thu **và** dưới 50 nhân sự, **gỡ bỏ toàn bộ hạn mức*
 đăng ký + giữ telemetry cơ bản bật. Một key dùng được 5 activation, gắn theo
 `PUBLIC_URL`.
 
-**`poolos-api` không cần key nữa** (đã ở v11). Key OIG vẫn cần cho **`cms`** —
-xem mục RỦI RO PRODUCTION bên dưới.
+**Đã kích hoạt key OIG cho cả hai instance** (2/5 activation). Xem mục dưới.
 
 Sources: [v12 license change](https://directus.com/resources/directus-v12-license-change) ·
 [Licensing overview](https://directus.com/docs/licensing/overview) ·
@@ -146,23 +162,27 @@ Sources: [v12 license change](https://directus.com/resources/directus-v12-licens
 
 ---
 
-## 🔴 RỦI RO PRODUCTION — `cms` đang vượt hạn mức Core
+## ✅ RỦI RO PRODUCTION `cms` — ĐÃ GỠ (09/09), suýt muộn
 
 | Việc | Bằng chứng |
 |---|---|
-| **`cms` có 49 collection, hạn mức Core là 25** | runtime |
+| **`cms` đã kích hoạt OIG** | runtime |
 
-`cms.nexthome.com.vn` cũng chạy Core tier (`license.source: null`) và đang vượt
-**gần gấp đôi** hạn mức.
+`GET /license` trên `cms` trước khi xử lý cho thấy:
 
-Cơ chế cưỡng chế của v12: instance vượt hạn mức được **ân hạn 30 ngày** kèm
-nhắc nhở khi admin đăng nhập, **sau đó kích hoạt luồng xử lý bắt buộc ở lần
-đăng nhập admin kế tiếp**. Không rõ đồng hồ đã chạy bao lâu.
+```
+name: "Core" · status: "grace" · expires_at: 09/09/2026 09:36
+usage: 40 collection / 2 seat / 5 flow   (hạn mức Core: 25 / 3 / 5)
+```
 
-- [ ] Áp cùng license key đó cho `cms` — gỡ luôn rủi ro này
+**Ân hạn đã hết trước đó khoảng 2,4 giờ.** Instance đang đứng ngay trước luồng
+khoá: chặn `/items`, tắt GraphQL/WebSocket/MCP, từ chối login của người không
+phải admin — nghĩa là `website` lấy nội dung từ đây cũng hỏng theo.
 
-Đây là phát hiện phụ của spike RLS, không nằm trong kế hoạch ban đầu, nhưng
-ảnh hưởng tới hệ thống đang chạy thật nên đặt cùng mức ưu tiên.
+Sau khi kích hoạt: `Open Innovation Grant / active`, mọi hạn mức về `-1`.
+
+Đây là phát hiện phụ của spike RLS, không nằm trong kế hoạch, nhưng là việc
+khẩn nhất trong cả phiên.
 
 ---
 
@@ -170,7 +190,7 @@ nhắc nhở khi admin đăng nhập, **sau đó kích hoạt luồng xử lý b
 
 | Hạng mục | Bằng chứng | Ghi chú |
 |---|---|---|
-| Directus **11.9.3** chạy | runtime | https://poolos-api.kjdybl.easypanel.host — hạ từ 12.3.1 để gỡ cưỡng chế license |
+| Directus **12.3.1** + license OIG | runtime | https://poolos-api.kjdybl.easypanel.host — mọi hạn mức `-1`, custom permission rules bật |
 | Đăng nhập / đăng ký | runtime | curl vào API thật, trả token |
 | Quên mật khẩu đầu-cuối | runtime | HTTP 204 → mail vào Mailpit → link `/reset-password?token=…` đúng domain app |
 | `DirectusClient` (Flutter) | test + runtime | 11 unit test + đối chiếu API thật: login, CRUD item, reset, logout, sai mật khẩu → `INVALID_CREDENTIALS/401` |
