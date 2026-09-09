@@ -10,36 +10,38 @@ class AppColors {
   // ========================================================================
 
   // Background & Surface
-  static const Color lightBackground = Color(0xFFFAFAFA);
+  static const Color lightBackground = Color(0xFFF7F4EC);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceElevated = Color(0xFFF9FAFB);
+  static const Color lightSurfaceElevated = Color(0xFFFFFFFF);
+  static const Color lightSurfaceRecessed = Color(0xFFF1EFEA);
 
   // Text
-  static const Color lightTextPrimary = Color(0xFF0A0A0A);
-  static const Color lightTextSecondary = Color(0xFF6B7280);
-  static const Color lightTextTertiary = Color(0xFF9CA3AF);
+  static const Color lightTextPrimary = Color(0xFF12352B);
+  static const Color lightTextSecondary = Color(0xFF5E6661);
+  static const Color lightTextTertiary = Color(0xFF9AA39D);
 
   // Borders & Dividers
-  static const Color lightBorder = Color(0xFFE5E7EB);
-  static const Color lightBorderSubtle = Color(0xFFF3F4F6);
+  static const Color lightBorder = Color(0xFFE7E3DA);
+  static const Color lightBorderSubtle = Color(0xFFF0EDE5);
 
   // ========================================================================
   // DARK MODE COLORS
   // ========================================================================
 
   // Background & Surface
-  static const Color darkBackground = Color(0xFF0F0F0F);
-  static const Color darkSurface = Color(0xFF18181B);
-  static const Color darkSurfaceElevated = Color(0xFF27272A);
+  static const Color darkBackground = Color(0xFF121715);
+  static const Color darkSurface = Color(0xFF1B221F);
+  static const Color darkSurfaceElevated = Color(0xFF232B27);
+  static const Color darkSurfaceRecessed = Color(0xFF171D1A);
 
   // Text
-  static const Color darkTextPrimary = Color(0xFFFAFAFA);
-  static const Color darkTextSecondary = Color(0xFFA1A1AA);
-  static const Color darkTextTertiary = Color(0xFF71717A);
+  static const Color darkTextPrimary = Color(0xFFECF1EE);
+  static const Color darkTextSecondary = Color(0xFF9AA6A0);
+  static const Color darkTextTertiary = Color(0xFF6F7B75);
 
   // Borders & Dividers
-  static const Color darkBorder = Color(0xFF27272A);
-  static const Color darkBorderSubtle = Color(0xFF3F3F46);
+  static const Color darkBorder = Color(0xFF2C3531);
+  static const Color darkBorderSubtle = Color(0xFF242C29);
 
   // ========================================================================
   // ACCENT COLORS (Both Modes)
@@ -51,6 +53,53 @@ class AppColors {
   static const Color accentDark = Color(0xFF1D4ED8);
   static const Color accentSubtleLight = Color(0xFFEFF6FF);
   static const Color accentSubtleDark = Color(0xFF1E3A5F);
+
+  // ========================================================================
+  // XANH RÊU — MÀU CHÍNH
+  // ========================================================================
+
+  static const Color lightPrimary = Color(0xFF0F4032);
+  static const Color lightPrimaryDeep = Color(0xFF08291F);
+  static const Color lightPrimaryContainer = Color(0xFF0F4032);
+  static const Color lightAccentLabel = Color(0xFF0F7A55);
+
+  static const Color darkPrimary = Color(0xFF34A97C);
+  static const Color darkPrimaryDeep = Color(0xFF2A8A65);
+  static const Color darkPrimaryContainer = Color(0xFF16382C);
+  static const Color darkAccentLabel = Color(0xFF4FC79A);
+
+  // ========================================================================
+  // BLOB NỀN — đặt sau lớp nền, opacity thấp
+  // ========================================================================
+
+  static const Color lightBlobPeach = Color(0xFFFBE9DC);
+  static const Color lightBlobMint = Color(0xFFDFEFE4);
+  static const Color lightBlobButter = Color(0xFFFDF6E3);
+
+  static const Color darkBlobPeach = Color(0xFF2A1E18);
+  static const Color darkBlobMint = Color(0xFF16241E);
+  static const Color darkBlobButter = Color(0xFF262214);
+
+  // ========================================================================
+  // Ô PASTEL — gán theo danh mục ỔN ĐỊNH, không ngẫu nhiên.
+  // Người dùng học được màu, nên cùng một danh mục phải luôn cùng tông.
+  // ========================================================================
+
+  static const List<Color> pastelLight = [
+    Color(0xFFDCEFE5), // mint
+    Color(0xFFDCE7F7), // blue
+    Color(0xFFFBE7DA), // peach
+    Color(0xFFEAE3F7), // lilac
+    Color(0xFFFBF0D5), // butter
+  ];
+
+  static const List<Color> pastelDark = [
+    Color(0xFF1C3830),
+    Color(0xFF1B2A3C),
+    Color(0xFF38281F),
+    Color(0xFF2A2438),
+    Color(0xFF33301F),
+  ];
 
   // ========================================================================
   // SEMANTIC COLORS (Both Modes)
@@ -130,4 +179,29 @@ class AppColors {
 
   static Color accentSubtle(Brightness brightness) =>
       brightness == Brightness.light ? accentSubtleLight : accentSubtleDark;
+
+  static Color primary(Brightness brightness) =>
+      brightness == Brightness.light ? lightPrimary : darkPrimary;
+
+  static Color primaryDeep(Brightness brightness) =>
+      brightness == Brightness.light ? lightPrimaryDeep : darkPrimaryDeep;
+
+  static Color primaryContainer(Brightness brightness) =>
+      brightness == Brightness.light
+          ? lightPrimaryContainer
+          : darkPrimaryContainer;
+
+  static Color accentLabel(Brightness brightness) =>
+      brightness == Brightness.light ? lightAccentLabel : darkAccentLabel;
+
+  static Color surfaceRecessed(Brightness brightness) =>
+      brightness == Brightness.light
+          ? lightSurfaceRecessed
+          : darkSurfaceRecessed;
+
+  /// Tông pastel thứ [index], lặn vòng khi vượt quá 5.
+  static Color pastelFor(int index, Brightness brightness) {
+    final palette = brightness == Brightness.light ? pastelLight : pastelDark;
+    return palette[index % palette.length];
+  }
 }
