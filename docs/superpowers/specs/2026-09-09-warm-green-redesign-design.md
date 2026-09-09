@@ -68,7 +68,7 @@ redesign. Gộp làm một lượt thay vì hai.
 | **`primary`** | `#0F4032` | xanh rêu đậm — thanh điểm, nút chính |
 | `primaryDeep` | `#08291F` | nhấn mạnh hơn |
 | `textPrimary` | `#12352B` | gần đen, ám xanh |
-| `textSecondary` | `#6E7671` | xám ấm |
+| `textSecondary` | `#5E6661` | xám ấm — sẫm hơn để đạt 4.5:1 trên nền kem |
 | `accentLabel` | `#0F7A55` | nhãn hành động ("Chọn làm người bắn") |
 | `border` | `#E7E3DA` | |
 
