@@ -35,13 +35,13 @@ class AppSpacing {
   // ========================================================================
 
   /// Small radius - buttons, inputs
-  static const double radiusSm = 6.0;
+  static const double radiusSm = 12.0;
 
   /// Medium radius - cards, modals
-  static const double radiusMd = 8.0;
+  static const double radiusMd = 20.0;
 
   /// Large radius - large cards, sheets
-  static const double radiusLg = 12.0;
+  static const double radiusLg = 28.0;
 
   /// Full radius - pills, avatars
   static const double radiusFull = 9999.0;

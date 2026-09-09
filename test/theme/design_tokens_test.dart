@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/theme/colors.dart';
+import 'package:pool_os_v2/core/theme/spacing.dart';
+import 'package:pool_os_v2/core/theme/shadows.dart';
 
 void main() {
   group('Bảng màu sáng', () {
@@ -82,6 +84,34 @@ void main() {
         contrast(AppColors.darkTextSecondary, AppColors.darkBackground),
         greaterThanOrEqualTo(4.5),
       );
+    });
+  });
+
+  group('Thang bo góc', () {
+    test('mềm hơn hẳn thang cũ 6/8/12', () {
+      expect(AppSpacing.radiusSm, 12.0);
+      expect(AppSpacing.radiusMd, 20.0);
+      expect(AppSpacing.radiusLg, 28.0);
+    });
+
+    test('tăng dần', () {
+      expect(AppSpacing.radiusSm, lessThan(AppSpacing.radiusMd));
+      expect(AppSpacing.radiusMd, lessThan(AppSpacing.radiusLg));
+    });
+  });
+
+  group('Shadow', () {
+    test('mềm và loang — blur lớn, opacity thấp', () {
+      final s = AppShadows.soft(Brightness.light);
+      expect(s, isNotEmpty);
+      expect(s.first.blurRadius, greaterThanOrEqualTo(16));
+      expect(s.first.color.a, lessThan(0.12));
+    });
+
+    test('bản tối có shadow riêng, đậm hơn', () {
+      final light = AppShadows.soft(Brightness.light);
+      final dark = AppShadows.soft(Brightness.dark);
+      expect(dark.first.color.a, greaterThan(light.first.color.a));
     });
   });
 }

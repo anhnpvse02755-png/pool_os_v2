@@ -102,4 +102,45 @@ class AppShadows {
 
   static List<BoxShadow> lg(Brightness brightness) =>
       brightness == Brightness.light ? lightLg : darkLg;
+
+  // ========================================================================
+  // SHADOW MỀM — ngôn ngữ "Kem ấm & Xanh rêu"
+  //
+  // Loang rộng, opacity thấp. Bản tối đậm hơn vì shadow gần như vô hình
+  // trên nền tối; màn dùng bản tối nên kèm viền 1px `AppColors.border`.
+  // ========================================================================
+
+  static List<BoxShadow> soft(Brightness brightness) =>
+      brightness == Brightness.light
+          ? const [
+              BoxShadow(
+                color: Color(0x0F11221C),
+                blurRadius: 24,
+                offset: Offset(0, 8),
+              ),
+            ]
+          : const [
+              BoxShadow(
+                color: Color(0x59000000),
+                blurRadius: 24,
+                offset: Offset(0, 8),
+              ),
+            ];
+
+  static List<BoxShadow> softLg(Brightness brightness) =>
+      brightness == Brightness.light
+          ? const [
+              BoxShadow(
+                color: Color(0x1411221C),
+                blurRadius: 40,
+                offset: Offset(0, 16),
+              ),
+            ]
+          : const [
+              BoxShadow(
+                color: Color(0x66000000),
+                blurRadius: 40,
+                offset: Offset(0, 16),
+              ),
+            ];
 }
