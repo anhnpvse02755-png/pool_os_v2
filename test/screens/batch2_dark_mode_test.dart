@@ -7,6 +7,7 @@ import 'token_hygiene.dart';
 void main() {
   expectTokenHygiene('lô 2', const [
     'lib/presentation/screens/shell/main_shell.dart',
+    'lib/presentation/screens/home/notification_screen.dart',
   ]);
 
   test('lô 2 giữ nguyên 4 nhãn thanh điều hướng', () {

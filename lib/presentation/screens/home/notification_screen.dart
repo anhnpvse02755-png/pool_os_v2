@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
-import '../../../core/theme/shadows.dart';
+import '../../widgets/icon_tile.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 import '../../../core/providers/notification_provider.dart';
 import '../../../core/services/notification_service.dart';
 
@@ -39,14 +41,17 @@ class NotificationScreen extends ConsumerWidget {
               },
               child: Text(
                 'Đánh dấu đã đọc',
-                style: TextStyle(color: AppColors.accentColor(brightness)),
+                style: TextStyle(color: AppColors.primary(brightness)),
               ),
             ),
         ],
       ),
-      body: notificationState.notifications.isEmpty
-          ? _buildEmptyState(brightness)
-          : _buildNotificationList(context, ref, notificationState, brightness),
+      body: SoftBackground(
+        child: notificationState.notifications.isEmpty
+            ? _buildEmptyState(brightness)
+            : _buildNotificationList(
+                context, ref, notificationState, brightness),
+      ),
     );
   }
 
@@ -133,20 +138,36 @@ class _NotificationCard extends StatelessWidget {
     required this.brightness,
   });
 
+  /// Tông pastel của từng loại thông báo. Gán CỐ ĐỊNH theo loại — người dùng
+  /// học được màu, nên `level_up` phải luôn là cùng một tông.
+  int _getToneIndex() {
+    switch (notification.type) {
+      case 'streak_warning':
+        return 2; // đào
+      case 'level_up':
+        return 0; // bạc hà
+      case 'test_available':
+        return 1; // xanh
+      case 'match_analysis':
+        return 3; // tử đinh hương
+      case 'streak_milestone':
+        return 4; // bơ
+      default:
+        return 0;
+    }
+  }
+
+  /// Màu icon và chấm chưa đọc. Nằm TRÊN ô pastel nên phải là màu đậm.
   Color _getTypeColor() {
     switch (notification.type) {
       case 'streak_warning':
         return AppColors.warning;
       case 'level_up':
         return AppColors.success;
-      case 'test_available':
-        return AppColors.accentColor(brightness);
-      case 'match_analysis':
-        return Colors.purple;
       case 'streak_milestone':
-        return AppColors.gold;
+        return AppColors.streak;
       default:
-        return AppColors.textSecondary(brightness);
+        return AppColors.primary(brightness);
     }
   }
 
@@ -183,104 +204,82 @@ class _NotificationCard extends StatelessWidget {
           color: AppColors.error,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
-        child: Icon(Icons.delete, color: Colors.white),
+        child: Icon(Icons.delete, color: AppColors.onPrimary(Brightness.light)),
       ),
-      child: InkWell(
+      child: PoolCard(
+        selected: isUnread,
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          decoration: BoxDecoration(
-            color: isUnread
-                ? color.withValues(alpha: 0.05)
-                : AppColors.surface(brightness),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(
-              color: isUnread
-                  ? color.withValues(alpha: 0.2)
-                  : AppColors.lightBorder,
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconTile(
+              icon: _getTypeIcon(),
+              toneIndex: _getToneIndex(),
+              size: 44,
             ),
-            boxShadow: AppShadows.sm(brightness),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                child: Icon(
-                  _getTypeIcon(),
-                  color: color,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            notification.title,
-                            style: TextStyle(
-                              fontWeight: isUnread ? FontWeight.bold : FontWeight.w500,
-                              fontSize: 15,
-                              color: AppColors.textPrimary(brightness),
-                            ),
-                          ),
-                        ),
-                        if (isUnread)
-                          Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: color,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      notification.body,
-                      style: TextStyle(
-                        color: AppColors.textSecondary(brightness),
-                        fontSize: 13,
-                        height: 1.4,
-                      ),
-                    ),
-                    if (notification.actionLabel != null) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
                         child: Text(
-                          notification.actionLabel!,
+                          notification.title,
                           style: TextStyle(
-                            color: color,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: isUnread ? FontWeight.bold : FontWeight.w500,
+                            fontSize: 15,
+                            color: AppColors.textPrimary(brightness),
                           ),
                         ),
                       ),
+                      if (isUnread)
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
                     ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    notification.body,
+                    style: TextStyle(
+                      color: AppColors.textSecondary(brightness),
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                  if (notification.actionLabel != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.pastelFor(_getToneIndex(), brightness),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        notification.actionLabel!,
+                        style: TextStyle(
+                          color: AppColors.textPrimary(brightness),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
