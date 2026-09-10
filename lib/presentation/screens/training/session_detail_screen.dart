@@ -158,20 +158,28 @@ class _SessionDetailView extends StatelessWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Stats
+            //
+            // CHỈ ba ô mang NGHĨA mới được tô: thành công / trượt / level.
+            // Ba ô còn lại là dữ kiện trung tính (thời lượng, tỉ lệ, ngày) nên
+            // dùng token chữ. Tô đủ sáu ô là cách bộ này từng hỏng: sau khi
+            // `accent` -> `primary`, ba trong sáu ô rơi vào dải hue 157-160 —
+            // cách nhau 3°, mắt không phân biệt được. Bớt màu rẻ hơn nhiều so
+            // với đi săn thêm hai hue, và đúng với ngôn ngữ "nền tĩnh, ít nhấn".
             Row(
               children: [
                 Expanded(child: _StatCard(
                   icon: Icons.timer,
                   label: 'Thời gian',
                   value: '${session.duration}m',
-                  color: AppColors.warning,
+                  color: AppColors.textSecondary(brightness),
                 )),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(child: _StatCard(
                   icon: Icons.gps_fixed,
                   label: 'Tỷ lệ',
+                  // Số tiêu đề — cỡ chữ và độ đậm đã đủ làm nó nổi.
                   value: '$accuracy%',
-                  color: AppColors.primary(brightness),
+                  color: AppColors.textPrimary(brightness),
                 )),
               ],
             ),
@@ -212,10 +220,12 @@ class _SessionDetailView extends StatelessWidget {
                 Expanded(child: _StatCard(
                   icon: Icons.calendar_today,
                   label: 'Ngày',
-                  // #14B8A6 (teal) không có token tương ứng; `accentLabel` là
-                  // tông moss sáng nhất, gần nó nhất và có sẵn bản tối.
+                  // Trước là teal #14B8A6. Không có token teal, và mượn
+                  // `accentLabel` thì lại rơi vào đúng dải xanh của
+                  // `success`/`primary`. Một cái ngày không phải kết quả —
+                  // token chữ là đúng chỗ của nó.
                   value: _formatDate(session.completedAt),
-                  color: AppColors.accentLabel(brightness),
+                  color: AppColors.textSecondary(brightness),
                 )),
               ],
             ),

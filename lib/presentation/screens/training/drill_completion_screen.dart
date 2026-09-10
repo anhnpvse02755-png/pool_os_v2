@@ -132,6 +132,11 @@ class DrillCompletionScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.xxl),
 
                 // Stat cards.
+                //
+                // Thời lượng và số lần đánh là dữ kiện trung tính nên đi token
+                // chữ; chỉ 'Chính xác' (success) và 'Trượt' (error) được tô.
+                // Tô cả bốn thì sau khi `accent` -> `primary`, ba ô đầu nằm
+                // trong dải hue 157-160 và nhìn như nhau.
                 Row(
                   children: [
                     Expanded(
@@ -140,7 +145,7 @@ class DrillCompletionScreen extends ConsumerWidget {
                         value: '${duration.inMinutes}',
                         unit: 'phút',
                         icon: Icons.timer_outlined,
-                        color: AppColors.primary(brightness),
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -150,7 +155,7 @@ class DrillCompletionScreen extends ConsumerWidget {
                         value: '${session.attempts.length}',
                         unit: 'lan',
                         icon: Icons.sports_esports_outlined,
-                        color: AppColors.primary(brightness),
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                   ],

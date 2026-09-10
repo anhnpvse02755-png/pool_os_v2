@@ -33,6 +33,14 @@ class DrillResultScreen extends StatelessWidget {
   ///
   /// Nhận [brightness] vì nhánh "Tốt lắm!" nay dùng `primary(brightness)` —
   /// getter không tham số không với tới được chế độ hiện hành.
+  ///
+  /// CHÚ Ý cho lô sau: `success` (hue 160) và `primary` bản tối (hue 157) chỉ
+  /// cách nhau 3°, nên hai bậc cao nhất của thang này gần như trùng màu ở chế
+  /// độ tối — trước khi đổi token thì nhánh ">= 70" là `accent` hue 217, tách
+  /// bạch hẳn. Bảng màu hiện không có hue thứ tư vừa đủ xa vừa đổi theo chế độ
+  /// (`gold` trùng hệt `warning`, `streak` cách `warning` 13°), nên chuyện này
+  /// cần một quyết định thiết kế: gộp hai bậc "đã qua" về cùng `success` và để
+  /// chữ phân biệt, hay thêm hẳn một token bậc-bốn.
   Color ratingColor(Brightness brightness) {
     if (successRate >= 90) return AppColors.success;
     if (successRate >= 70) return AppColors.primary(brightness);
@@ -99,6 +107,11 @@ class DrillResultScreen extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xxl),
 
                 // Stats cards
+                //
+                // 'Tổng lần' là một phép đếm, không phải kết quả — tô nó bằng
+                // `primary` đặt một ô xanh hue 157 ngay cạnh ô `success` hue
+                // 160, cách nhau 3°. Token chữ giữ 'Thành công' là ô DUY NHẤT
+                // có màu trong cặp này.
                 Row(
                   children: [
                     Expanded(
@@ -106,7 +119,7 @@ class DrillResultScreen extends StatelessWidget {
                         label: 'Tổng lần',
                         value: '$totalReps',
                         icon: Icons.repeat,
-                        color: AppColors.primary(brightness),
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
