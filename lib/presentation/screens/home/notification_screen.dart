@@ -207,7 +207,6 @@ class _NotificationCard extends StatelessWidget {
         child: Icon(Icons.delete, color: AppColors.onPrimary(Brightness.light)),
       ),
       child: PoolCard(
-        selected: isUnread,
         onTap: onTap,
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Row(

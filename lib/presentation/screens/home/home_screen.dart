@@ -221,7 +221,7 @@ class HomeScreen extends ConsumerWidget {
           Text(
             _getCoachGreeting(),
             style: TextStyle(
-              color: AppColors.onPrimary(brightness).withValues(alpha: 0.9),
+              color: AppColors.onPrimary(brightness),
               fontSize: 15,
               height: 1.5,
             ),
@@ -240,7 +240,7 @@ class HomeScreen extends ConsumerWidget {
                   Text(
                     "Today's recommended:",
                     style: TextStyle(
-                      color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
+                      color: AppColors.onPrimary(brightness),
                       fontSize: 13,
                     ),
                   ),
@@ -251,8 +251,7 @@ class HomeScreen extends ConsumerWidget {
                           children: [
                             Icon(
                               Icons.arrow_right,
-                              color: AppColors.onPrimary(brightness)
-                                  .withValues(alpha: 0.7),
+                              color: AppColors.onPrimary(brightness),
                               size: 18,
                             ),
                             const SizedBox(width: 8),
@@ -496,8 +495,10 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.local_fire_department,
-                        color: AppColors.streak, size: 20),
+                    IconTile(
+                        icon: Icons.local_fire_department,
+                        toneIndex: 2,
+                        size: 36),
                     const SizedBox(width: 8),
                     Text(
                       'Keep your streak!',
@@ -539,7 +540,7 @@ class HomeScreen extends ConsumerWidget {
     return Text(
       'Start your training journey today!',
       style: TextStyle(
-        color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
+        color: AppColors.onPrimary(brightness),
         fontSize: 14,
       ),
     );
@@ -685,7 +686,6 @@ class HomeScreen extends ConsumerWidget {
                 value: '8',
                 label: 'Day Streak',
                 brightness: brightness,
-                valueColor: AppColors.accentLabel(brightness),
               ),
             ],
           ),
@@ -842,7 +842,7 @@ class _GoalRow extends StatelessWidget {
                 child: Text(
                   'Suggested',
                   style: TextStyle(
-                    color: AppColors.warning,
+                    color: AppColors.textPrimary(brightness),
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
@@ -864,13 +864,11 @@ class _StatItem extends StatelessWidget {
   final String value;
   final String label;
   final Brightness brightness;
-  final Color? valueColor;
 
   const _StatItem({
     required this.value,
     required this.label,
     required this.brightness,
-    this.valueColor,
   });
 
   @override
@@ -885,7 +883,7 @@ class _StatItem extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: valueColor ?? textPrimary,
+            color: textPrimary,
           ),
         ),
         const SizedBox(height: 4),

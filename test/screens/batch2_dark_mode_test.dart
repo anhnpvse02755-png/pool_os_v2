@@ -23,23 +23,17 @@ void main() {
     }
   });
 
-  test('main_shell không còn hằng màu thô', () {
-    // Shadow của thanh dưới từng viết thẳng Color(0x0D000000)/Color(0x26000000).
-    // Màu thô không đổi theo Brightness, và không ai tìm ra nó khi sửa token.
-    final source =
-        File('lib/presentation/screens/shell/main_shell.dart')
-            .readAsStringSync();
-
-    expect(RegExp(r'Color\(0x[0-9A-Fa-f]{8}\)').allMatches(source), isEmpty,
-        reason: 'Dùng AppShadows.soft(brightness) thay cho hằng màu thô.');
-  });
-
   test('home giữ nguyên các nhãn E2E bám vào', () {
     final source = File('lib/presentation/screens/home/home_screen.dart')
         .readAsStringSync();
 
+    // Ràng buộc toàn cục đòi cả BA chỗ gọi 'Start Training' còn sống. Dùng
+    // `contains` thì xoá hai chỗ vẫn xanh — nên phải đếm. Đếm literal có cả
+    // dấu nháy đóng: 'Start Training Session' là literal khác, không khớp.
+    expect(RegExp(r"'Start Training'").allMatches(source), hasLength(3),
+        reason: 'Phải giữ đủ 3 chỗ gọi nhãn E2E "Start Training".');
+
     for (final label in const [
-      'Start Training',
       'Start Training Session',
       'View Training History',
       'Read knowledge article',

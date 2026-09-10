@@ -2,22 +2,31 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Sáu luật vệ sinh token mà MỌI lô quét đều phải đạt.
+/// Tám luật vệ sinh token mà MỌI lô quét đều phải đạt.
 ///
 /// Đọc mã nguồn chứ không render: mục tiêu là chặn token khoá-sáng quay lại,
 /// và việc đó rẻ hơn nhiều so với dựng đủ provider để pump từng màn.
 ///
 /// [batchName] chỉ dùng để đặt tên test cho dễ đọc khi đỏ.
 void expectTokenHygiene(String batchName, List<String> paths) {
+  String readSource(String path) {
+    final file = File(path);
+    if (!file.existsSync()) {
+      fail('Lô "$batchName" khai báo đường dẫn không tồn tại: $path\n'
+          '(kiểm tra lại danh sách paths — đường dẫn tính từ gốc package)');
+    }
+    return file.readAsStringSync();
+  }
+
   String offendersFor(RegExp pattern) {
     final offenders = <String>[];
     for (final path in paths) {
       final matches = pattern
-          .allMatches(File(path).readAsStringSync())
+          .allMatches(readSource(path))
           .map((m) => m.group(0)!)
           .toSet();
       if (matches.isNotEmpty) {
-        offenders.add(path + ': ' + matches.join(', '));
+        offenders.add('$path: ${matches.join(', ')}');
       }
     }
     return offenders.join('\n');
@@ -61,10 +70,29 @@ void expectTokenHygiene(String batchName, List<String> paths) {
         reason: 'Dùng AppColors.foo(brightness):\n$offenders');
   });
 
+  test('$batchName không dùng token accent xanh điện', () {
+    // Cả đợt redesign tồn tại để rời khỏi accentColor/accentSubtle. Không có
+    // luật này thì một lô sau có thể giữ nguyên toàn bộ chúng mà vẫn xanh.
+    // `accentLabel` là token hợp lệ và KHÔNG bị bắt: `\b` không khớp được
+    // giữa `t` và `L` nên nhánh rỗng của nhóm không kết thúc ở đó.
+    final offenders =
+        offendersFor(RegExp(r'AppColors\.accent(Color|Subtle|Light|Dark)?\b'));
+    expect(offenders, isEmpty,
+        reason: 'Dùng token moss (primary/primaryDeep/accentLabel):\n'
+            '$offenders');
+  });
+
+  test('$batchName không còn hằng màu thô', () {
+    // Màu thô không đổi theo Brightness, và không ai tìm ra nó khi sửa token.
+    final offenders = offendersFor(RegExp(r'Color\(0x[0-9A-Fa-f]{8}\)'));
+    expect(offenders, isEmpty,
+        reason: 'Dùng AppColors/AppShadows theo brightness:\n$offenders');
+  });
+
   test('$batchName mọi màn đọc Brightness', () {
     final offenders = <String>[];
     for (final path in paths) {
-      final source = File(path).readAsStringSync();
+      final source = readSource(path);
       // Widget con nhận Brightness qua tham số cũng hợp lệ — cái sai là file
       // không hề biết tới Brightness ở bất kỳ dạng nào.
       if (!source.contains('Theme.of(context).brightness') &&
