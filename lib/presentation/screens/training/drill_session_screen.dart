@@ -49,10 +49,8 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
 
   @override
   void initState() {
-    print('[SPRINT17_STORAGE] SESSION_SCREEN_INIT_START');
     super.initState();
     _recovery = DrillSessionRecoveryService(ref.read(drillSessionRepositoryProvider));
-    print('[SPRINT17_STORAGE] SESSION_SCREEN_INIT: recovery service created');
     _loadDrill();
   }
 
@@ -87,9 +85,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   void _loadDrill() {
-    print('[SPRINT17_FLOW] LOAD_DRILL_START: drillCode=${widget.drillCode}');
     final drill = DrillLibrary.getDrill(widget.drillCode);
-    print('[SPRINT17_FLOW] LOAD_DRILL: drill=${drill != null ? "found" : "null"}');
 
     if (drill == null) {
       setState(() {
@@ -101,7 +97,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
         _drill = drill;
         if (!_isInitialized) {
           targetReps = drill.levels.first.attempts;
-          print('[SPRINT17_FLOW] LOAD_DRILL: set targetReps=$targetReps');
           _isInitialized = true;
         }
         _error = null;
@@ -110,17 +105,14 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _tryAutoStart();
       });
-      print('[SPRINT17_FLOW] LOAD_DRILL_COMPLETE');
     }
   }
 
   Future<void> _startSession() async {
-    print('[SPRINT17_FLOW] START_SESSION: creating DrillSession');
     final drill = _drill;
     if (drill == null) return;
 
     final player = await ref.read(currentPlayerProvider.future);
-    print('[SPRINT17_FLOW] START_SESSION: player=${player?.id ?? "null"}');
     if (player == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -136,9 +128,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       startedAt: DateTime.now(),
     );
 
-    print('[SPRINT17_STORAGE] START_SESSION: recovery.pause ENTER');
     await _recovery.pause(session);
-    print('[SPRINT17_STORAGE] START_SESSION: recovery.pause COMPLETE');
     if (!mounted) return;
 
     setState(() {
@@ -148,7 +138,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
       successCount = 0;
       lastShotResult = null;
     });
-    print('[SPRINT17_FLOW] START_SESSION: COMPLETE - isSessionActive=$isSessionActive');
   }
 
   Future<void> _recordShot(ShotResult result) async {
@@ -346,8 +335,6 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
   }
 
   Widget _buildActiveSession(Brightness brightness) {
-    final accentColor = AppColors.accentColor(brightness);
-
     return Column(
       children: [
         // Progress stats
@@ -536,7 +523,7 @@ class _LastResultFeedback extends StatelessWidget {
   Widget build(BuildContext context) {
     final isSuccess = result == ShotResult.success;
     final color = isSuccess ? AppColors.success : AppColors.error;
-    final bgColor = isSuccess ? AppColors.successSubtleLight : AppColors.errorSubtleLight;
+    final bgColor = isSuccess ? AppColors.successSubtle(brightness) : AppColors.errorSubtle(brightness);
 
     return Container(
       width: 120,
@@ -572,15 +559,7 @@ class _RecordingBar extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).brightness == Brightness.light
-                ? const Color(0x0D000000)
-                : const Color(0x26000000),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        boxShadow: AppShadows.sm(brightness),
       ),
       child: SafeArea(
         top: false,
@@ -664,14 +643,17 @@ class _ActionButtonState extends State<_ActionButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, color: Colors.white, size: 24),
+              // Nền là widget.color do nơi gọi truyền vào — không suy ra được
+              // chế độ từ đây, và mọi nơi gọi hiện truyền màu đậm bão hoà.
+              // Chữ sáng là lựa chọn an toàn cho cả hai chế độ.
+              Icon(widget.icon, color: AppColors.onPrimary(Brightness.light), size: 24),
               const SizedBox(width: AppSpacing.space2),
               Text(
                 widget.label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColors.onPrimary(Brightness.light),
                 ),
               ),
             ],

@@ -9,6 +9,7 @@ void main() {
   expectTokenHygiene('lô 3a', const [
     'lib/presentation/screens/training/drill_list_screen.dart',
     'lib/presentation/screens/training/drill_detail_screen.dart',
+    'lib/presentation/screens/training/drill_session_screen.dart',
   ]);
 
   test('lô 3a giữ nhãn E2E của thẻ nhóm bài', () {
