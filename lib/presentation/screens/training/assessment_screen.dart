@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 class AssessmentScreen extends StatefulWidget {
   const AssessmentScreen({super.key});
@@ -101,16 +103,18 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_assessmentComplete) {
       return _buildResultScreen();
     }
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('Đánh giá kỹ năng'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
         actions: [
           Center(
@@ -124,78 +128,98 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Progress Bar
-          LinearProgressIndicator(
-            value: (_currentQuestion + 1) / _questions.length,
-            backgroundColor: AppColors.lightBorder,
-            valueColor: AlwaysStoppedAnimation(AppColors.accent),
-          ),
+      body: SoftBackground(
+        child: Column(
+          children: [
+            // Progress Bar
+            LinearProgressIndicator(
+              value: (_currentQuestion + 1) / _questions.length,
+              backgroundColor: AppColors.border(brightness),
+              valueColor:
+                  AlwaysStoppedAnimation(AppColors.primary(brightness)),
+            ),
 
-          // Question
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Category Tag
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
-                    decoration: BoxDecoration(
-                      color: _getCategoryColor(_questions[_currentQuestion]['category']).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                    ),
-                    child: Text(
-                      _getCategoryName(_questions[_currentQuestion]['category']),
-                      style: TextStyle(
-                        color: _getCategoryColor(_questions[_currentQuestion]['category']),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+            // Question
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Category Tag
+                    //
+                    // Sáu danh mục nhưng hệ chỉ có BỐN hue tách bạch (`error`
+                    // 0°, `warning` 38°, họ xanh rêu 157-163°,
+                    // `difficultyExpert` 262°) — bảng cũ vì thế vừa quá tải vừa
+                    // đụng nhau: `accent` -> `primary` rơi vào 157/163 ngay
+                    // cạnh `success` 160, và teal thô #14B8A6 ở 173 cũng nằm
+                    // trong họ xanh đó. Bảng màu duy nhất có đủ sắc phân biệt
+                    // để mã hoá danh mục là năm ô pastel, nên nhãn đổi sang
+                    // nền pastel + chữ `primary` — đúng ngôn ngữ của `IconTile`.
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: AppColors.pastelFor(
+                            _toneFor(_questions[_currentQuestion]['category']),
+                            brightness),
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                       ),
-                    ),
-                  ).animate().fadeIn(),
+                      // Chữ dùng `textPrimary` chứ KHÔNG dùng `primary` như
+                      // `IconTile`: đây là chữ 12px nên sàn là 4.5:1, còn thứ
+                      // IconTile vẽ là icon nên sàn là 3:1. `primary` bản tối
+                      // trên ô pastel tối chỉ được 4.29:1 — đủ cho icon, thiếu
+                      // cho chữ.
+                      child: Text(
+                        _getCategoryName(_questions[_currentQuestion]['category']),
+                        style: TextStyle(
+                          color: AppColors.textPrimary(brightness),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ).animate().fadeIn(),
 
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Question Text
-                  Text(
-                    _questions[_currentQuestion]['question'],
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      height: 1.4,
-                      color: AppColors.lightTextPrimary,
-                    ),
-                  ).animate().fadeIn(delay: 100.ms),
+                    // Question Text
+                    Text(
+                      _questions[_currentQuestion]['question'],
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: AppColors.textPrimary(brightness),
+                      ),
+                    ).animate().fadeIn(delay: 100.ms),
 
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Options
-                  ...(_questions[_currentQuestion]['options'] as List).asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final option = entry.value as Map<String, dynamic>;
+                    // Options
+                    ...(_questions[_currentQuestion]['options'] as List).asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final option = entry.value as Map<String, dynamic>;
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                      child: _OptionCard(
-                        text: option['text'] as String,
-                        index: index,
-                        onTap: () => _selectAnswer(index, option['score'] as int),
-                      ).animate().fadeIn(delay: (150 + index * 50).ms),
-                    );
-                  }),
-                ],
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                        child: _OptionCard(
+                          text: option['text'] as String,
+                          index: index,
+                          onTap: () => _selectAnswer(index, option['score'] as int),
+                        ).animate().fadeIn(delay: (150 + index * 50).ms),
+                      );
+                    }),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildResultScreen() {
+    final brightness = Theme.of(context).brightness;
     final maxScore = _questions.length * 2;
     final percentage = (_totalScore / maxScore * 100).round();
     final level = _getLevel(percentage);
@@ -203,157 +227,178 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     final weaknesses = _getWeaknesses();
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('Kết quả đánh giá'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          children: [
-            // Score Circle
-            Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    _getLevelColor(level),
-                    _getLevelColor(level).withValues(alpha: 0.6),
-                  ],
+      body: SoftBackground(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          child: Column(
+            children: [
+              // Score Circle
+              //
+              // LOANG, không phải tô đặc — cùng cái bẫy và cùng cách sửa như
+              // header của `drill_detail_screen` và thẻ tỉ lệ của
+              // `drill_result_screen`. Tô đặc thì chữ trắng KHÔNG đọc được ở
+              // hai trong bốn bậc, ngay tại chế độ sáng là chế độ duy nhất đang
+              // phát hành: `warning` 2.15:1 và `error` 3.76:1 (chữ 14px của
+              // dòng điểm cần 4.5:1). Đổi hue không cứu được vì lỗi nằm ở ĐỘ
+              // ĐẬM của nền. Loang 0.18 -> 0.10 đưa cả bốn bậc lên trên 8.7:1
+              // với `textPrimary`, ở cả hai chế độ.
+              //
+              // `withValues` trên nền Container là hợp lệ: luật cấm alpha chỉ
+              // áp cho MÀU CHỮ.
+              Container(
+                width: 180,
+                height: 180,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      _getLevelColor(level, brightness)
+                          .withValues(alpha: 0.18),
+                      _getLevelColor(level, brightness)
+                          .withValues(alpha: 0.10),
+                    ],
+                  ),
                 ),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$percentage%',
+                        style: TextStyle(
+                          fontSize: 48,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary(brightness),
+                        ),
+                      ),
+                      // KHÔNG hạ dòng điểm xuống `textSecondary`: bậc "Nâng
+                      // cao" dùng `primary(light)` #0F4032 rất thẫm nên ngay ở
+                      // alpha 0.18 nền đã đủ tối để `textSecondary` tụt dưới
+                      // 4.5:1. Thứ bậc đã do cỡ chữ 48 vs 14 lo.
+                      Text(
+                        'Điểm: $_totalScore/$maxScore',
+                        style: TextStyle(
+                          color: AppColors.textPrimary(brightness),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ).animate().scale(duration: 500.ms, curve: Curves.elasticOut),
+
+              const SizedBox(height: AppSpacing.xxl),
+
+              // Level Badge
+              //
+              // Nền + viền vẫn mang tông của bậc, nhưng chữ và icon thì không:
+              // trên nền loang cùng hue, `tone` đặc chỉ còn ~1.9:1.
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl, vertical: AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: _getLevelColor(level, brightness)
+                      .withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+                  border:
+                      Border.all(color: _getLevelColor(level, brightness)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Icon(_getLevelIcon(level),
+                        color: AppColors.textPrimary(brightness)),
+                    const SizedBox(width: AppSpacing.sm),
                     Text(
-                      '$percentage%',
-                      style: const TextStyle(
-                        fontSize: 48,
+                      level,
+                      style: TextStyle(
+                        color: AppColors.textPrimary(brightness),
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      'Điểm: $_totalScore/$maxScore',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
+                        fontSize: 18,
                       ),
                     ),
                   ],
                 ),
-              ),
-            ).animate().scale(duration: 500.ms, curve: Curves.elasticOut),
+              ).animate().fadeIn(delay: 300.ms),
 
-            const SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: AppSpacing.xxl),
 
-            // Level Badge
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl, vertical: AppSpacing.md),
-              decoration: BoxDecoration(
-                color: _getLevelColor(level).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                border: Border.all(color: _getLevelColor(level)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+              // Strengths / Weaknesses là một BỘ ANH EM hai phần tử:
+              // `success` 160° và `warning` 38°, cách nhau xa.
+              if (strengths.isNotEmpty) ...[
+                _buildSection(
+                  'Điểm mạnh',
+                  Icons.thumb_up,
+                  AppColors.success,
+                  strengths,
+                ).animate().fadeIn(delay: 400.ms),
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+
+              // Weaknesses
+              if (weaknesses.isNotEmpty) ...[
+                _buildSection(
+                  'Cần cải thiện',
+                  Icons.trending_up,
+                  AppColors.warning,
+                  weaknesses,
+                ).animate().fadeIn(delay: 500.ms),
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+
+              // Recommended Actions
+              _buildRecommendedActions(level).animate().fadeIn(delay: 600.ms),
+
+              const SizedBox(height: AppSpacing.xxl),
+
+              // Action Buttons
+              Row(
                 children: [
-                  Icon(_getLevelIcon(level), color: _getLevelColor(level)),
-                  const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    level,
-                    style: TextStyle(
-                      color: _getLevelColor(level),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _restartAssessment,
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        side: BorderSide(color: AppColors.primary(brightness)),
+                        foregroundColor: AppColors.primary(brightness),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        ),
+                      ),
+                      child: const Text('Làm lại'),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: _PrimaryButton(
+                      onPressed: () => Navigator.pop(context),
+                      label: 'Bắt đầu tập',
                     ),
                   ),
                 ],
-              ),
-            ).animate().fadeIn(delay: 300.ms),
-
-            const SizedBox(height: AppSpacing.xxl),
-
-            // Strengths
-            if (strengths.isNotEmpty) ...[
-              _buildSection(
-                'Điểm mạnh',
-                Icons.thumb_up,
-                AppColors.success,
-                strengths,
-              ).animate().fadeIn(delay: 400.ms),
-              const SizedBox(height: AppSpacing.xxl),
+              ).animate().fadeIn(delay: 700.ms),
             ],
-
-            // Weaknesses
-            if (weaknesses.isNotEmpty) ...[
-              _buildSection(
-                'Cần cải thiện',
-                Icons.trending_up,
-                AppColors.warning,
-                weaknesses,
-              ).animate().fadeIn(delay: 500.ms),
-              const SizedBox(height: AppSpacing.xxl),
-            ],
-
-            // Recommended Actions
-            _buildRecommendedActions(level).animate().fadeIn(delay: 600.ms),
-
-            const SizedBox(height: AppSpacing.xxl),
-
-            // Action Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: _restartAssessment,
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                      side: BorderSide(color: AppColors.accent),
-                      foregroundColor: AppColors.accent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      ),
-                    ),
-                    child: const Text('Làm lại'),
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: _PrimaryButton(
-                    onPressed: () => Navigator.pop(context),
-                    label: 'Bắt đầu tập',
-                  ),
-                ),
-              ],
-            ).animate().fadeIn(delay: 700.ms),
-          ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildSection(String title, IconData icon, Color color, List<String> items) {
-    return Container(
+    final brightness = Theme.of(context).brightness;
+
+    // Tiêu đề dùng token chữ chứ không dùng `color`: `success` #10B981 đặt trên
+    // `surface` trắng chỉ đạt 2.48:1. Tông của mục vẫn còn ở icon.
+    return PoolCard(
+      radius: AppSpacing.radiusLg,
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 10,
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -365,7 +410,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                 title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: color,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
             ],
@@ -377,7 +422,13 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
                   children: [
                     Icon(Icons.check_circle, color: color, size: 16),
                     const SizedBox(width: AppSpacing.sm),
-                    Expanded(child: Text(item)),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: TextStyle(
+                            color: AppColors.textPrimary(brightness)),
+                      ),
+                    ),
                   ],
                 ),
               )),
@@ -387,25 +438,31 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
   }
 
   Widget _buildRecommendedActions(String level) {
+    final brightness = Theme.of(context).brightness;
+
+    // `primary` là token DUY NHẤT ở đây nên không có bộ anh em nào để đụng, và
+    // vì primary bản sáng rất thẫm (#0F4032) nên nó vẫn đọc tốt làm chữ trên
+    // chính nền loang 0.1 của mình.
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.1),
+        color: AppColors.primary(brightness).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
+        border: Border.all(
+            color: AppColors.primary(brightness).withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.lightbulb, color: AppColors.accent),
+              Icon(Icons.lightbulb, color: AppColors.primary(brightness)),
               const SizedBox(width: AppSpacing.sm),
-              const Text(
+              Text(
                 'Đề xuất từ AI Coach',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                 ),
               ),
             ],
@@ -414,7 +471,7 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
           Text(
             _getRecommendation(level),
             style: TextStyle(
-              color: AppColors.lightTextSecondary,
+              color: AppColors.textSecondary(brightness),
               height: 1.5,
             ),
           ),
@@ -449,12 +506,19 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     return 'Sơ cấp';
   }
 
-  Color _getLevelColor(String level) {
+  /// Tông của bốn bậc trình độ.
+  ///
+  /// BỘ ANH EM bốn phần tử và nó dùng ĐÚNG cả bốn hue tách bạch mà hệ có:
+  /// `difficultyExpert` 262° / họ xanh rêu 157-163° / `warning` 38° /
+  /// `error` 0°. Không cặp nào dưới 20°. `Chuyên gia` KHÔNG được gộp vào
+  /// `primary`: chế độ tối `primary` #34A97C lệch 3° so với `success`, và ở
+  /// đây nó sẽ trùng luôn với bậc `Nâng cao` ngay bên cạnh.
+  Color _getLevelColor(String level, Brightness brightness) {
     switch (level) {
       case 'Chuyên gia':
-        return const Color(0xFF8B5CF6);
+        return AppColors.difficultyExpert(brightness);
       case 'Nâng cao':
-        return AppColors.accent;
+        return AppColors.primary(brightness);
       case 'Trung bình':
         return AppColors.warning;
       default:
@@ -475,22 +539,28 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     }
   }
 
-  Color _getCategoryColor(String category) {
+  /// Tông pastel của một danh mục câu hỏi, gán theo ID.
+  ///
+  /// Sáu danh mục vượt quá bốn hue tách bạch của hệ, nên chúng chuyển sang
+  /// bảng năm ô pastel — bảng duy nhất trong hệ đủ sắc để mã hoá danh mục, và
+  /// là cùng bảng mà `IconTile` với `drill_list_screen` đang dùng. `rules` lặp
+  /// lại tông 0 giống cách `_toneFor` bên `drill_list_screen` lặn vòng.
+  int _toneFor(String category) {
     switch (category) {
       case 'shotmaking':
-        return AppColors.warning;
+        return 0;
       case 'aiming':
-        return AppColors.accent;
+        return 1;
       case 'positioning':
-        return const Color(0xFF14B8A6);
+        return 2;
       case 'strategy':
-        return const Color(0xFF8B5CF6);
+        return 3;
       case 'fundamentals':
-        return AppColors.success;
+        return 4;
       case 'rules':
-        return AppColors.error;
+        return 0;
       default:
-        return AppColors.lightTextSecondary;
+        return 0;
     }
   }
 
@@ -556,44 +626,43 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final letters = ['A', 'B', 'C', 'D'];
 
-    return InkWell(
+    return PoolCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.lightSurface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(color: AppColors.lightBorder),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: AppColors.lightBackground,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  letters[index],
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+      radius: AppSpacing.radiusLg,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: AppColors.surfaceRecessed(brightness),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                letters[index],
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(fontSize: 15, color: AppColors.lightTextPrimary),
-              ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                  fontSize: 15, color: AppColors.textPrimary(brightness)),
             ),
-            Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
-          ],
-        ),
+          ),
+          Icon(Icons.chevron_right,
+              color: AppColors.textTertiary(brightness)),
+        ],
       ),
     );
   }
@@ -610,6 +679,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   double _scale = 1.0;
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -619,11 +690,20 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            // Cả hai nhánh nền đều đổi theo chế độ, nên chữ dùng
+            // `onPrimary(brightness)`.
+            color: widget.onPressed != null
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
           ),
-          child: Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
+          child: Text(widget.label,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.onPrimary(brightness)),
+              textAlign: TextAlign.center),
         ),
       ),
     );

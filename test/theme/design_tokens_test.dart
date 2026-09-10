@@ -557,4 +557,210 @@ void main() {
           reason: 'nhan phu tren the ti le khong duoc ha xuong textSecondary');
     });
   });
+
+  group('Nen loang cua lo 3c (recommended / assessment)', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    // Cung cai bay lan thu ba, va lan nay o HAI man cung luc. Header cua
+    // `recommended_screen` va vong tron diem cua `assessment_screen` deu to
+    // DAC mot tong semantic roi dat chu trang len. O che do sang — che do duy
+    // nhat dang phat hanh — `warning` cho 2.15:1 va `error` cho 3.76:1, tuc
+    // dong chu 14px duoi so lon khong doc noi. Doi hue khong cuu duoc vi loi
+    // nam o DO DAM cua nen.
+    //
+    // Khac hai lo truoc mot diem: hai khoi nay nam trong `SoftBackground` chu
+    // khong nam tren mot the, nen nen loang phu len `background(brightness)`
+    // chu khong phai `surface(brightness)`. Blend o day phai dung dung nen do,
+    // neu khong con so kiem duoc se khong phai con so man hinh that su hien.
+    const washStops = [0.18, 0.10];
+
+    // Bon tong cua `_toneFor` trong recommended_screen.dart, viet lai o day CO
+    // CHU Y: neu ai doi mot nhanh trong man hinh ma quen sua o day thi hai ben
+    // lech nhau, con neu ho sua ca hai thi rang buoc van duoc kiem tren tong
+    // moi.
+    List<MapEntry<String, Color>> recommendationTones(Brightness b) => [
+          MapEntry('personalized', AppColors.warning),
+          MapEntry('weakness', AppColors.error),
+          MapEntry('challenge', AppColors.difficultyExpert(b)),
+          MapEntry('maintenance', AppColors.primary(b)),
+        ];
+
+    // Bon bac cua `_getLevelColor` trong assessment_screen.dart.
+    List<MapEntry<String, Color>> levelTones(Brightness b) => [
+          MapEntry('Chuyen gia', AppColors.difficultyExpert(b)),
+          MapEntry('Nang cao', AppColors.primary(b)),
+          MapEntry('Trung binh', AppColors.warning),
+          MapEntry('So cap', AppColors.error),
+        ];
+
+    test('chu doc duoc tren nen loang cua ca hai bo tong, o ca hai che do', () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        final sets = {
+          'recommended': recommendationTones(b),
+          'assessment': levelTones(b),
+        };
+        for (final set in sets.entries) {
+          for (final tone in set.value) {
+            for (final stop in washStops) {
+              final washed = Color.alphaBlend(
+                tone.value.withValues(alpha: stop),
+                AppColors.background(b),
+              );
+              expect(
+                contrast(AppColors.textPrimary(b), washed),
+                greaterThanOrEqualTo(4.5),
+                reason: 'chu tren nen loang "${tone.key}" (${set.key}) @$stop o '
+                    'che do $b khong doc duoc — ha alpha xuong, dung to dac lai.',
+              );
+            }
+          }
+        }
+      }
+    });
+
+    test('nen loang phai NHAT hon han ban to dac — do la ca noi dung ban sua',
+        () {
+      // Khoa chinh cai delta, khong chi ket qua: neu ai do quay lai to dac thi
+      // test tren co the van xanh o mot tong may man nao do.
+      for (final b in [Brightness.light, Brightness.dark]) {
+        for (final tone in [...recommendationTones(b), ...levelTones(b)]) {
+          final washed = Color.alphaBlend(
+            tone.value.withValues(alpha: washStops.first),
+            AppColors.background(b),
+          );
+          expect(
+            contrast(AppColors.textPrimary(b), washed),
+            greaterThan(contrast(AppColors.textPrimary(b), tone.value)),
+            reason: 'tong "${tone.key}" o che do $b: nen loang khong nhat hon '
+                'ban to dac.',
+          );
+        }
+      }
+    });
+
+    test('`tone` dac chim vao nen loang cua chinh no o cac bac BAO HOA', () {
+      // Day la ly do icon va tieu de trong hai man do dung token CHU chu khong
+      // dung `tone`.
+      //
+      // CHINH XAC ve pham vi: KHONG phai tong nao cung chim. `primary(light)`
+      // #0F4032 rat tham nen dat len nen loang cua chinh no van duoc 7.6:1, va
+      // ban dau test nay khoa ca bon tong nen do ngay o do. Cai khien lua chon
+      // "dung `tone`" thanh sai khong phai la MOI tong deu hong, ma la widget
+      // KHONG CHON duoc tong — no den tu du lieu luc chay. Chi can mot bac hong
+      // la ca nhanh do hong, nen phai co mot token dung duoc cho ca bon.
+      //
+      // Va CHINH XAC ve che do: chi CHE DO SANG hong. Nen loang o che do toi
+      // phu len `background(dark)` gan-den nen no van tham, con `warning` /
+      // `error` thi sang — cap do dat 6.1:1, thoai mai. Ban thu hai cua test
+      // nay khoa ca hai che do va do ngay o do.
+      //
+      // Che do sang lai dung la che do DUY NHAT dang phat hanh, nen no quyet
+      // dinh. Va vi `textPrimary(brightness)` dat ca hai che do, dung no dong
+      // deu re hon la re nhanh theo che do trong tung widget.
+      for (final tone in [AppColors.warning, AppColors.error]) {
+        final washed = Color.alphaBlend(
+          tone.withValues(alpha: washStops.first),
+          AppColors.background(Brightness.light),
+        );
+        expect(contrast(tone, washed), lessThan(3.0),
+            reason: 'neu `tone` dac da du tuong phan tren nen loang cua chinh '
+                'no thi chu thich trong recommended_screen.dart / '
+                'assessment_screen.dart da lac hau — doc lai roi sua.');
+      }
+    });
+
+    test('bon tong cua moi bo doi mot khac nhau', () {
+      // Lo truoc hong vi `accent` -> `primary` lam hai o anh em roi vao cung
+      // dai hue 157-163. Kiem tra re nhat cho dieu do la: khong tong nao trung
+      // tong nao trong cung mot bo.
+      for (final b in [Brightness.light, Brightness.dark]) {
+        for (final set in [recommendationTones(b), levelTones(b)]) {
+          final values = set.map((e) => e.value).toSet();
+          expect(values.length, set.length,
+              reason: 'hai phan tu trong cung mot bo anh em dung chung mot tong '
+                  'o che do $b — nguoi dung khong phan biet duoc chung nua.');
+        }
+      }
+      // Va cu the la cai cap da tung hong: `success` voi `primary`.
+      for (final b in [Brightness.light, Brightness.dark]) {
+        expect(recommendationTones(b).map((e) => e.value),
+            isNot(contains(AppColors.success)),
+            reason: 'bo nay da co `primary` trong ho xanh reu — them `success` '
+                'vao la dat hai o cach nhau 3 do hue canh nhau.');
+      }
+    });
+
+    test('nhan danh muc pastel doc duoc o ca hai che do', () {
+      // Sau danh muc vuot qua bon hue tach bach cua he, nen nhan cau hoi trong
+      // assessment_screen doi sang nen pastel. Nen pastel la nen DAC (khong
+      // alpha) nen kiem thang, va phai kiem CA NAM o vi danh muc nao roi vao o
+      // nao la do bang `_toneFor` quyet dinh.
+      //
+      // Chu dung `textPrimary` chu KHONG dung `primary` nhu `IconTile`, va do
+      // la mot khac biet co ly do chu khong phai mot cho quen dong bo: nhan la
+      // CHU 12px nen san la 4.5:1, con thu `IconTile` dat trong o la ICON nen
+      // san la 3:1. `primary(dark)` #34A97C tren `pastelDark[0]` #1C3830 chi
+      // duoc 4.29:1 — du cho icon, thieu cho chu. Test duoi khoa ca hai san.
+      for (final b in [Brightness.light, Brightness.dark]) {
+        for (var i = 0; i < 5; i++) {
+          expect(
+            contrast(AppColors.textPrimary(b), AppColors.pastelFor(i, b)),
+            greaterThanOrEqualTo(4.5),
+            reason: 'chu nhan danh muc tren o pastel $i o che do $b khong doc '
+                'duoc',
+          );
+          expect(
+            contrast(AppColors.primary(b), AppColors.pastelFor(i, b)),
+            greaterThanOrEqualTo(3.0),
+            reason: 'icon `primary` trong o pastel $i o che do $b khong tach '
+                'khoi nen — day la thu `IconTile` ve',
+          );
+        }
+      }
+    });
+
+    test('hai man that su dung nen loang chu khong to dac', () {
+      // Nam test tren chi kiem SO. Neu man hinh quay lai `colors: [tone, ...]`
+      // thi chung van xanh het. Doc nguon de chac rang cach sua con nam do.
+      final recommended =
+          File('lib/presentation/screens/training/recommended_screen.dart')
+              .readAsStringSync();
+      expect(recommended, contains('tone.withValues(alpha: 0.18)'),
+          reason: 'header de xuat phai dung nen loang 0.18 -> 0.10');
+      expect(recommended, contains('tone.withValues(alpha: 0.10)'),
+          reason: 'header de xuat phai dung nen loang 0.18 -> 0.10');
+      // Nen loang khong con bao hoa thi chu tren no khong duoc la `onPrimary`.
+      // Token nay VAN hop le o cho khac trong file — nut bam dac va chip da
+      // chon deu to bang `primary(brightness)`.
+      final header = recommended.substring(
+        recommended.indexOf('// Header'),
+        recommended.indexOf('// Reason'),
+      );
+      expect(header, isNot(contains('AppColors.onPrimary')),
+          reason: 'header het nen bao hoa thi khong duoc dung onPrimary — chu '
+              'phai la textPrimary theo brightness');
+
+      final assessment =
+          File('lib/presentation/screens/training/assessment_screen.dart')
+              .readAsStringSync();
+      expect(assessment, contains('.withValues(alpha: 0.18)'),
+          reason: 'vong tron diem phai dung nen loang 0.18 -> 0.10');
+      expect(assessment, contains('.withValues(alpha: 0.10)'),
+          reason: 'vong tron diem phai dung nen loang 0.18 -> 0.10');
+      final circle = assessment.substring(
+        assessment.indexOf('// Score Circle'),
+        assessment.indexOf('// Level Badge'),
+      );
+      expect(circle, isNot(contains('AppColors.onPrimary')),
+          reason: 'vong tron diem het nen bao hoa thi khong duoc dung onPrimary');
+      expect(circle, contains('AppColors.textPrimary(brightness)'),
+          reason: 'so 48px trong vong tron diem phai dung textPrimary');
+      expect(circle, isNot(contains('AppColors.textSecondary')),
+          reason: 'dong diem 14px khong duoc ha xuong textSecondary');
+    });
+  });
 }

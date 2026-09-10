@@ -8,20 +8,23 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_types.dart';
 import '../../../knowledge/knowledge_provider.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 class LearningPathScreen extends ConsumerWidget {
   const LearningPathScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
     final learningPathAsync = ref.watch(learningPathProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('Lộ trình của bạn'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
         actions: [
           IconButton(
@@ -31,22 +34,24 @@ class LearningPathScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: learningPathAsync.when(
-        data: (path) => _buildContent(context, ref, path),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: AppColors.error),
-              const SizedBox(height: AppSpacing.lg),
-              Text('Lỗi: $error'),
-              const SizedBox(height: AppSpacing.lg),
-              _PrimaryButton(
-                onPressed: () => ref.invalidate(learningPathProvider),
-                label: 'Thử lại',
-              ),
-            ],
+      body: SoftBackground(
+        child: learningPathAsync.when(
+          data: (path) => _buildContent(context, ref, path),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                const SizedBox(height: AppSpacing.lg),
+                Text('Lỗi: $error'),
+                const SizedBox(height: AppSpacing.lg),
+                _PrimaryButton(
+                  onPressed: () => ref.invalidate(learningPathProvider),
+                  label: 'Thử lại',
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -54,6 +59,8 @@ class LearningPathScreen extends ConsumerWidget {
   }
 
   Widget _buildContent(BuildContext context, WidgetRef ref, List<LearningPathItem> path) {
+    final brightness = Theme.of(context).brightness;
+
     if (path.isEmpty) {
       return _buildEmptyState(context);
     }
@@ -64,13 +71,17 @@ class LearningPathScreen extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
+          //
+          // Nền là dải `primary(brightness)` — ĐỔI theo chế độ — nên chữ dùng
+          // `onPrimary(brightness)` chứ không phải trắng cứng: chế độ tối
+          // primary là #34A97C, trắng trên đó chỉ còn ~2.5:1.
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.accent,
-                  AppColors.accent.withValues(alpha: 0.8),
+                  AppColors.primary(brightness),
+                  AppColors.primary(brightness).withValues(alpha: 0.8),
                 ],
               ),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -80,12 +91,13 @@ class LearningPathScreen extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.auto_awesome, color: Colors.white),
+                    Icon(Icons.auto_awesome,
+                        color: AppColors.onPrimary(brightness)),
                     const SizedBox(width: AppSpacing.sm),
-                    const Text(
+                    Text(
                       'Tuần này',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.onPrimary(brightness),
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
@@ -95,8 +107,11 @@ class LearningPathScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'AI de xuat ${path.length} bai tap cho ban',
+                  // KHÔNG hạ alpha xuống 0.9 như bản cũ: luật của bộ này là
+                  // không đặt alpha lên MÀU CHỮ, và ở chế độ tối chữ sẫm mờ đi
+                  // là mất luôn phần tương phản ít ỏi còn lại.
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: AppColors.onPrimary(brightness),
                     fontSize: 14,
                   ),
                 ),
@@ -130,8 +145,8 @@ class LearningPathScreen extends ConsumerWidget {
                   label: const Text('Tự chọn'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    side: BorderSide(color: AppColors.accent),
-                    foregroundColor: AppColors.accent,
+                    side: BorderSide(color: AppColors.primary(brightness)),
+                    foregroundColor: AppColors.primary(brightness),
                   ),
                 ),
               ),
@@ -174,19 +189,20 @@ class LearningPathScreen extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.lightBackground,
+              color: AppColors.background(brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.lightBorder),
+              border: Border.all(color: AppColors.border(brightness)),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: AppColors.lightTextSecondary, size: 20),
+                Icon(Icons.info_outline,
+                    color: AppColors.textSecondary(brightness), size: 20),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     'Ban co the bo qua bat ky bai tap nao. Tat ca bai tap deu mo cho ban.',
                     style: TextStyle(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 12,
                     ),
                   ),
@@ -200,6 +216,8 @@ class LearningPathScreen extends ConsumerWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -209,19 +227,19 @@ class LearningPathScreen extends ConsumerWidget {
             Icon(
               Icons.school_outlined,
               size: 80,
-              color: AppColors.lightTextTertiary,
+              color: AppColors.textTertiary(brightness),
             ),
             const SizedBox(height: AppSpacing.xxl),
             Text(
               'Chưa có lộ trình',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Tập ít nhất 1 bài tập để nhận đề xuất từ Coach',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xxl),
@@ -249,14 +267,18 @@ class _LearningPathCard extends ConsumerWidget {
     required this.onSkip,
   });
 
-  Color _getPriorityColor() {
+  /// Tông của mức ưu tiên.
+  ///
+  /// BỘ ANH EM ba phần tử: warning 38° / green 157-163° / chữ trung tính.
+  /// Ba sắc này cách nhau xa, không có cặp nào dưới 20°.
+  Color _getPriorityColor(Brightness brightness) {
     switch (item.priority) {
       case 1:
         return AppColors.warning;
       case 2:
-        return AppColors.accent;
+        return AppColors.primary(brightness);
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
@@ -273,19 +295,11 @@ class _LearningPathCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    final brightness = Theme.of(context).brightness;
+
+    return PoolCard(
+      radius: AppSpacing.radiusLg,
+      padding: EdgeInsets.zero,
       child: Column(
         children: [
           Padding(
@@ -296,14 +310,15 @@ class _LearningPathCard extends ConsumerWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: _getPriorityColor().withValues(alpha: 0.1),
+                    color: _getPriorityColor(brightness)
+                        .withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
                       '$order',
                       style: TextStyle(
-                        color: _getPriorityColor(),
+                        color: _getPriorityColor(brightness),
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -320,10 +335,10 @@ class _LearningPathCard extends ConsumerWidget {
                           Expanded(
                             child: Text(
                               item.drillNameVi,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16,
-                                color: AppColors.lightTextPrimary,
+                                color: AppColors.textPrimary(brightness),
                               ),
                             ),
                           ),
@@ -333,13 +348,14 @@ class _LearningPathCard extends ConsumerWidget {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: _getPriorityColor().withValues(alpha: 0.1),
+                              color: _getPriorityColor(brightness)
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               _getPriorityLabel(),
                               style: TextStyle(
-                                color: _getPriorityColor(),
+                                color: _getPriorityColor(brightness),
                                 fontSize: 10,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -351,11 +367,15 @@ class _LearningPathCard extends ConsumerWidget {
                       Text(
                         item.reason,
                         style: TextStyle(
-                          color: AppColors.lightTextSecondary,
+                          color: AppColors.textSecondary(brightness),
                           fontSize: 13,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
+                      // Ô thời lượng CỐ Ý không có màu: một con số phút là dữ
+                      // kiện trung tính, không mã hoá kết quả nào. Ô độ khó
+                      // ngay cạnh nó mới là ô mang nghĩa, và giữ nó là ô DUY
+                      // NHẤT có màu trong hàng thì mắt bắt được ngay.
                       Row(
                         children: [
                           Container(
@@ -364,13 +384,13 @@ class _LearningPathCard extends ConsumerWidget {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.lightBackground,
+                              color: AppColors.background(brightness),
                               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               '${item.estimatedMinutes} phut',
                               style: TextStyle(
-                                color: AppColors.lightTextSecondary,
+                                color: AppColors.textSecondary(brightness),
                                 fontSize: 11,
                               ),
                             ),
@@ -382,13 +402,14 @@ class _LearningPathCard extends ConsumerWidget {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: _getDifficultyColor().withValues(alpha: 0.1),
+                              color: _getDifficultyColor(brightness)
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               _getDifficultyLabel(),
                               style: TextStyle(
-                                color: _getDifficultyColor(),
+                                color: _getDifficultyColor(brightness),
                                 fontSize: 11,
                               ),
                             ),
@@ -402,7 +423,7 @@ class _LearningPathCard extends ConsumerWidget {
             ),
           ),
 
-          const Divider(height: 1, color: AppColors.lightBorder),
+          Divider(height: 1, color: AppColors.border(brightness)),
 
           _buildKnowledgeChips(context, ref),
 
@@ -415,7 +436,7 @@ class _LearningPathCard extends ConsumerWidget {
                   icon: const Icon(Icons.skip_next, size: 18),
                   label: const Text('Bỏ qua'),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.lightTextSecondary,
+                    foregroundColor: AppColors.textSecondary(brightness),
                   ),
                 ),
                 const Spacer(),
@@ -432,7 +453,12 @@ class _LearningPathCard extends ConsumerWidget {
     );
   }
 
-  Color _getDifficultyColor() {
+  /// Tông của mức độ khó — bốn bậc, giống hệt `drill_detail_screen`.
+  ///
+  /// `expert` KHÔNG được gộp vào `primary`: chế độ tối primary #34A97C lệch 3°
+  /// hue so với `success` nên bài dễ nhất và bài khó nhất sẽ trông y hệt nhau.
+  /// Token `difficultyExpert` sinh ra đúng vì lý do đó.
+  Color _getDifficultyColor(Brightness brightness) {
     switch (item.difficulty) {
       case 'easy':
         return AppColors.success;
@@ -441,13 +467,14 @@ class _LearningPathCard extends ConsumerWidget {
       case 'hard':
         return AppColors.error;
       case 'expert':
-        return const Color(0xFF8B5CF6);
+        return AppColors.difficultyExpert(brightness);
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
   Widget _buildKnowledgeChips(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
     final related = ref.watch(learningKnowledgeProvider(item));
     if (related.isEmpty) return const SizedBox.shrink();
 
@@ -458,13 +485,14 @@ class _LearningPathCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.menu_book, size: 14, color: AppColors.accent),
+              Icon(Icons.menu_book,
+                  size: 14, color: AppColors.accentLabel(brightness)),
               const SizedBox(width: AppSpacing.xs),
               Text(
                 'Đọc trước khi tập',
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.accent,
+                  color: AppColors.accentLabel(brightness),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -523,6 +551,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   double _scale = 1.0;
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -532,19 +562,28 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            // Cả hai nhánh nền đều đổi theo chế độ, nên chữ dùng
+            // `onPrimary(brightness)`.
+            color: widget.onPressed != null
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.icon != null) ...[
-                Icon(widget.icon, color: Colors.white, size: 18),
+                Icon(widget.icon,
+                    color: AppColors.onPrimary(brightness), size: 18),
                 const SizedBox(width: AppSpacing.xs),
               ],
-              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+              Text(widget.label,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.onPrimary(brightness))),
             ],
           ),
         ),

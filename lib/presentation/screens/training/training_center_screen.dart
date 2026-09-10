@@ -8,6 +8,9 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../knowledge/knowledge_provider.dart';
+import '../../widgets/icon_tile.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 /// PoolOS Training Center Screen - Redesigned with Minimalist Luxury
 class TrainingCenterScreen extends ConsumerWidget {
@@ -21,57 +24,59 @@ class TrainingCenterScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background(brightness),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // App Bar
-            SliverAppBar(
-              floating: true,
-              backgroundColor: AppColors.background(brightness),
-              elevation: 0,
-              title: Text(
-                'Train',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary(brightness),
+      body: SoftBackground(
+        child: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              // App Bar
+              SliverAppBar(
+                floating: true,
+                backgroundColor: AppColors.background(brightness),
+                elevation: 0,
+                title: Text(
+                  'Train',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(brightness),
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.history,
+                      color: AppColors.textSecondary(brightness),
+                    ),
+                    onPressed: () => context.push('/training/history'),
+                  ),
+                ],
+              ),
+
+              // Content
+              SliverPadding(
+                padding: const EdgeInsets.all(AppSpacing.space4),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Search bar
+                    _SearchBar(brightness: brightness),
+                    const SizedBox(height: AppSpacing.space6),
+
+                    // Quick Actions
+                    _QuickActionsSection(
+                      drillsCount: DrillLibrary.getAllDrills().length,
+                      knowledgeCount: knowledgeCount,
+                      brightness: brightness,
+                    ),
+                    const SizedBox(height: AppSpacing.space6),
+
+                    // Categories
+                    _CategoriesSection(brightness: brightness),
+                    const SizedBox(height: 100), // Bottom nav spacing
+                  ]),
                 ),
               ),
-              actions: [
-                IconButton(
-                  icon: Icon(
-                    Icons.history,
-                    color: AppColors.textSecondary(brightness),
-                  ),
-                  onPressed: () => context.push('/training/history'),
-                ),
-              ],
-            ),
-
-            // Content
-            SliverPadding(
-              padding: const EdgeInsets.all(AppSpacing.space4),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Search bar
-                  _SearchBar(brightness: brightness),
-                  const SizedBox(height: AppSpacing.space6),
-
-                  // Quick Actions
-                  _QuickActionsSection(
-                    drillsCount: DrillLibrary.getAllDrills().length,
-                    knowledgeCount: knowledgeCount,
-                    brightness: brightness,
-                  ),
-                  const SizedBox(height: AppSpacing.space6),
-
-                  // Categories
-                  _CategoriesSection(brightness: brightness),
-                  const SizedBox(height: 100), // Bottom nav spacing
-                ]),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -88,7 +93,7 @@ class _SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         boxShadow: AppShadows.sm(brightness),
       ),
@@ -126,8 +131,6 @@ class _QuickActionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(brightness);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -142,6 +145,11 @@ class _QuickActionsSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.space3),
 
+        // Hai thẻ này là một BỘ ANH EM: màu của chúng dùng để phân biệt nhau.
+        // Cặp cũ (`accent`, `gold`) tô thẳng vào icon trên nền thẻ trắng —
+        // `gold` #F59E0B chỉ đạt 2.15:1 ở đó, dưới sàn 3:1 cho một đối tượng
+        // đồ hoạ. Chuyển sang ô pastel giữ nguyên khoảng cách giữa hai thẻ
+        // (mint vs butter) mà icon lại nằm trên nền nhạt nên đọc rõ.
         Row(
           children: [
             Expanded(
@@ -149,7 +157,7 @@ class _QuickActionsSection extends StatelessWidget {
                 icon: Icons.fitness_center,
                 title: 'All Drills',
                 subtitle: '$drillsCount exercises',
-                color: accentColor,
+                toneIndex: 0,
                 brightness: brightness,
                 onTap: () => context.push('/training/drills'),
               ),
@@ -160,7 +168,7 @@ class _QuickActionsSection extends StatelessWidget {
                 icon: Icons.menu_book,
                 title: 'Knowledge',
                 subtitle: '$knowledgeCount articles',
-                color: AppColors.gold,
+                toneIndex: 4,
                 brightness: brightness,
                 onTap: () => context.push('/training/knowledge'),
               ),
@@ -177,7 +185,7 @@ class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
+  final int toneIndex;
   final Brightness brightness;
   final VoidCallback onTap;
 
@@ -185,51 +193,36 @@ class _QuickActionCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
+    required this.toneIndex,
     required this.brightness,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return PoolCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.space4),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          boxShadow: AppShadows.sm(brightness),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-              ),
-              child: Icon(icon, color: color, size: 20),
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IconTile(icon: icon, toneIndex: toneIndex, size: 36),
+          const SizedBox(height: AppSpacing.space3),
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary(brightness),
             ),
-            const SizedBox(height: AppSpacing.space3),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary(brightness),
-              ),
+          ),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary(brightness),
             ),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary(brightness),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -262,14 +255,13 @@ class _CategoriesSection extends StatelessWidget {
         ...categories.asMap().entries.map((entry) {
           final index = entry.key;
           final category = entry.value;
-          final color = _getCategoryColor(index, brightness);
 
           return Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.space2),
             child: _CategoryTile(
               title: category.nameVi,
               subtitle: '${category.drills.length} drills',
-              color: color,
+              toneIndex: _toneFor(category.id),
               brightness: brightness,
               onTap: () => context.push('/training/drills/${category.id}'),
             ),
@@ -279,15 +271,48 @@ class _CategoriesSection extends StatelessWidget {
     );
   }
 
-  Color _getCategoryColor(int index, Brightness brightness) {
-    final colors = [
-      AppColors.accentColor(brightness),
-      AppColors.warning,
-      Colors.purple,
-      AppColors.success,
-      Colors.pink,
-    ];
-    return colors[index % colors.length];
+  /// Tông pastel của một nhóm bài, gán theo ID.
+  ///
+  /// Bảng cũ là năm màu ĐẶC lấy theo vị trí trong danh sách và nó hỏng hai
+  /// lần cùng lúc. Thứ nhất, sau khi `accent` -> `primary` thì phần tử 0
+  /// (hue 157/163) và phần tử 3 (`success`, hue 160) cách nhau 3° — hai nhóm
+  /// bài cạnh nhau trông y hệt; hai phần tử còn lại là tím và hồng lấy thẳng
+  /// từ bảng Material, vừa phạm luật vừa không đổi theo chế độ.
+  /// Bảng màu duy nhất trong hệ có ĐỦ năm sắc phân biệt là năm ô pastel.
+  /// Thứ hai, gán theo index nghĩa là thêm/bớt một nhóm sẽ đổi màu mọi nhóm
+  /// sau nó.
+  ///
+  /// Bảng này CỐ Ý trùng khớp `_toneFor` của `drill_list_screen.dart`: cùng
+  /// một nhóm bài phải cùng tông ở cả hai màn, nếu không người dùng không học
+  /// được màu. Không gộp được thành một hàm chung vì đợt này chỉ được sửa bốn
+  /// file màn hình.
+  int _toneFor(String categoryId) {
+    switch (categoryId) {
+      case 'aiming':
+        return 0;
+      case 'cueball':
+        return 1;
+      case 'position':
+        return 2;
+      case 'safety':
+        return 3;
+      case 'special':
+        return 4;
+      case 'break':
+        return 2;
+      case 'spin':
+        return 1;
+      case 'pattern':
+        return 3;
+      case 'fundamentals':
+        return 0;
+      case 'mental':
+        return 4;
+      case 'situations':
+        return 1;
+      default:
+        return 0;
+    }
   }
 }
 
@@ -295,73 +320,53 @@ class _CategoriesSection extends StatelessWidget {
 class _CategoryTile extends StatelessWidget {
   final String title;
   final String subtitle;
-  final Color color;
+  final int toneIndex;
   final Brightness brightness;
   final VoidCallback onTap;
 
   const _CategoryTile({
     required this.title,
     required this.subtitle,
-    required this.color,
+    required this.toneIndex,
     required this.brightness,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return PoolCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.space4),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          boxShadow: AppShadows.sm(brightness),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-              ),
-              child: Icon(
-                Icons.category,
-                color: color,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.space3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary(brightness),
-                    ),
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      child: Row(
+        children: [
+          IconTile(icon: Icons.category, toneIndex: toneIndex, size: 40),
+          const SizedBox(width: AppSpacing.space3),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(brightness),
                   ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary(brightness),
-                    ),
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary(brightness),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Icon(
-              Icons.chevron_right,
-              color: AppColors.textTertiary(brightness),
-            ),
-          ],
-        ),
+          ),
+          Icon(
+            Icons.chevron_right,
+            color: AppColors.textTertiary(brightness),
+          ),
+        ],
       ),
     );
   }

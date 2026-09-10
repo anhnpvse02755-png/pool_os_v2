@@ -3,7 +3,35 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
+
+/// Tông của một loại đề xuất.
+///
+/// BỘ ANH EM bốn phần tử — bốn thẻ này chỉ phân biệt nhau bằng màu, nên bảng
+/// gốc (`warning`, `accent`, tím thô #8B5CF6, `success`) phải được kiểm lại
+/// từng cặp sau khi `accent` -> `primary`: `primary` rơi vào hue 157 (sáng) /
+/// 163 (tối) còn `success` ở 160, cách nhau 3-6° — hai thẻ "Điểm yếu" và
+/// "Ôn tập" sẽ cùng một sắc xanh. Hệ chỉ có ĐÚNG bốn hue tách bạch:
+/// `error` 0°, `warning` 38°, họ xanh rêu 157-163°, `difficultyExpert` 262°.
+/// Nên "Điểm yếu" nhận `error` — vốn đọc đúng nghĩa một thiếu sót — và họ
+/// xanh còn lại đúng một chỗ.
+Color _toneFor(String type, Brightness brightness) {
+  switch (type) {
+    case 'personalized':
+      return AppColors.warning;
+    case 'weakness':
+      return AppColors.error;
+    case 'challenge':
+      return AppColors.difficultyExpert(brightness);
+    case 'maintenance':
+      return AppColors.primary(brightness);
+    default:
+      return AppColors.textSecondary(brightness);
+  }
+}
 
 class RecommendedScreen extends StatefulWidget {
   const RecommendedScreen({super.key});
@@ -28,7 +56,6 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
       ],
       'progress': 0.4,
       'icon': Icons.trending_up,
-      'color': AppColors.warning,
     },
     {
       'type': 'weakness',
@@ -41,7 +68,6 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
       ],
       'progress': 0.25,
       'icon': Icons.gps_fixed,
-      'color': AppColors.accent,
     },
     {
       'type': 'challenge',
@@ -54,7 +80,6 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
       ],
       'progress': 0.0,
       'icon': Icons.shield,
-      'color': const Color(0xFF8B5CF6),
     },
     {
       'type': 'maintenance',
@@ -67,18 +92,19 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
       ],
       'progress': 0.75,
       'icon': Icons.refresh,
-      'color': AppColors.success,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('AI đề xuất'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
         actions: [
           IconButton(
@@ -88,34 +114,36 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Goal Filter
-          _buildGoalFilter(),
+      body: SoftBackground(
+        child: Column(
+          children: [
+            // Goal Filter
+            _buildGoalFilter(),
 
-          // PageView
-          Expanded(
-            child: PageView.builder(
-              itemCount: _getFilteredRecommendations().length,
-              onPageChanged: (index) => setState(() => _currentIndex = index),
-              itemBuilder: (context, index) {
-                final rec = _getFilteredRecommendations()[index];
-                return _RecommendationCard(
-                  recommendation: rec,
-                  onStartDrill: (drill) {
-                    context.push('/training/session/new?drill=$drill');
-                  },
-                ).animate().fadeIn();
-              },
+            // PageView
+            Expanded(
+              child: PageView.builder(
+                itemCount: _getFilteredRecommendations().length,
+                onPageChanged: (index) => setState(() => _currentIndex = index),
+                itemBuilder: (context, index) {
+                  final rec = _getFilteredRecommendations()[index];
+                  return _RecommendationCard(
+                    recommendation: rec,
+                    onStartDrill: (drill) {
+                      context.push('/training/session/new?drill=$drill');
+                    },
+                  ).animate().fadeIn();
+                },
+              ),
             ),
-          ),
 
-          // Page Indicator
-          _buildPageIndicator(),
+            // Page Indicator
+            _buildPageIndicator(),
 
-          // Quick Actions
-          _buildQuickActions(),
-        ],
+            // Quick Actions
+            _buildQuickActions(),
+          ],
+        ),
       ),
     );
   }
@@ -172,6 +200,7 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
   }
 
   Widget _buildPageIndicator() {
+    final brightness = Theme.of(context).brightness;
     final filtered = _getFilteredRecommendations();
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
@@ -186,8 +215,8 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: index == _currentIndex
-                  ? AppColors.accent
-                  : AppColors.lightBorder,
+                  ? AppColors.primary(brightness)
+                  : AppColors.border(brightness),
             ),
           ),
         ),
@@ -196,17 +225,21 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
   }
 
   Widget _buildQuickActions() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        color: AppColors.surface(brightness),
+        // Thanh đáy hắt bóng LÊN TRÊN, nên phải lật dấu offset của shadow mềm.
+        boxShadow: AppShadows.soft(brightness)
+            .map((s) => BoxShadow(
+                  color: s.color,
+                  blurRadius: s.blurRadius,
+                  offset: Offset(0, -s.offset.dy / 2),
+                ))
+            .toList(),
+        border: Border(top: BorderSide(color: AppColors.border(brightness))),
       ),
       child: SafeArea(
         child: Row(
@@ -217,8 +250,8 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
                 icon: const Icon(Icons.psychology),
                 label: const Text('Đánh giá lại'),
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppColors.accent),
-                  foregroundColor: AppColors.accent,
+                  side: BorderSide(color: AppColors.primary(brightness)),
+                  foregroundColor: AppColors.primary(brightness),
                 ),
               ),
             ),
@@ -279,12 +312,22 @@ class _GoalChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
+    // Chip ĐƯỢC CHỌN nằm trên `selectedColor` = `primary(brightness)` — nền
+    // đổi theo chế độ nên chữ/icon/dấu tick dùng `onPrimary(brightness)`.
+    // Chip chưa chọn nằm trên nền mặc định của FilterChip (bề mặt theme) nên
+    // dùng token chữ thường.
     return FilterChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 16, color: isSelected ? Colors.white : AppColors.lightTextSecondary),
+            Icon(icon,
+                size: 16,
+                color: isSelected
+                    ? AppColors.onPrimary(brightness)
+                    : AppColors.textSecondary(brightness)),
             const SizedBox(width: AppSpacing.xs),
           ],
           Text(label),
@@ -292,10 +335,12 @@ class _GoalChip extends StatelessWidget {
       ),
       selected: isSelected,
       onSelected: (_) => onTap(),
-      selectedColor: AppColors.accent,
-      checkmarkColor: Colors.white,
+      selectedColor: AppColors.primary(brightness),
+      checkmarkColor: AppColors.onPrimary(brightness),
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : AppColors.lightTextSecondary,
+        color: isSelected
+            ? AppColors.onPrimary(brightness)
+            : AppColors.textSecondary(brightness),
       ),
     );
   }
@@ -312,8 +357,9 @@ class _RecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final drills = recommendation['drills'] as List;
-    final color = recommendation['color'] as Color;
+    final tone = _toneFor(recommendation['type'] as String, brightness);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -321,11 +367,26 @@ class _RecommendationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
+          //
+          // LOANG, không phải tô đặc — cùng cái bẫy và cùng cách sửa như header
+          // của `drill_detail_screen` và thẻ tỉ lệ của `drill_result_screen`.
+          //
+          // Tô đặc thì chữ trắng KHÔNG đọc được ở chế độ sáng, tức chế độ duy
+          // nhất đang phát hành: `warning` 2.15:1, `error` 3.76:1. Đổi hue
+          // không cứu được vì lỗi nằm ở ĐỘ ĐẬM của nền. Loang 0.18 -> 0.10 đưa
+          // cả bốn tông lên trên 8.7:1 với `textPrimary`, và vì nền loang lên
+          // `background(brightness)` nên nó hết bất biến — dark mode cũng lành.
+          //
+          // `withValues` trên nền Container là hợp lệ: luật cấm alpha chỉ áp
+          // cho MÀU CHỮ.
           Container(
             padding: const EdgeInsets.all(AppSpacing.xxl),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [color, color.withValues(alpha: 0.7)],
+                colors: [
+                  tone.withValues(alpha: 0.18),
+                  tone.withValues(alpha: 0.10),
+                ],
               ),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             ),
@@ -334,12 +395,15 @@ class _RecommendationCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: AppColors.surface(brightness),
                     shape: BoxShape.circle,
                   ),
+                  // Nền loang cùng hue thì `tone` đặc đặt lên chính nó chỉ còn
+                  // ~1.9:1 — dưới sàn 3:1 cho một đối tượng đồ hoạ. Ô tròn
+                  // dùng `surface` và icon dùng token chữ.
                   child: Icon(
                     recommendation['icon'] as IconData,
-                    color: Colors.white,
+                    color: AppColors.textPrimary(brightness),
                     size: 32,
                   ),
                 ),
@@ -350,17 +414,21 @@ class _RecommendationCard extends StatelessWidget {
                     children: [
                       Text(
                         recommendation['title'] as String,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: AppColors.textPrimary(brightness),
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
+                      // KHÔNG hạ nhãn phụ xuống `textSecondary`: tông
+                      // `maintenance` là `primary(light)` #0F4032 rất thẫm nên
+                      // ngay ở alpha 0.18 nền đã đủ tối để `textSecondary` tụt
+                      // dưới 4.5:1. Thứ bậc đã do cỡ chữ 20 vs 14 lo.
                       Text(
                         recommendation['subtitle'] as String,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: AppColors.textPrimary(brightness),
                           fontSize: 14,
                         ),
                       ),
@@ -374,17 +442,22 @@ class _RecommendationCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.xxl),
 
           // Reason
+          //
+          // Nền loang nhạt cùng tông với header, nên `tone` đặc KHÔNG dùng làm
+          // chữ/icon ở đây được (cùng hue, ~1.9:1). Tông vẫn nhận ra qua nền và
+          // viền; chữ và icon dùng token chữ.
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.05),
+              color: tone.withValues(alpha: 0.10),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              border: Border.all(color: color.withValues(alpha: 0.2)),
+              border: Border.all(color: tone.withValues(alpha: 0.3)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.lightbulb, color: color, size: 20),
+                Icon(Icons.lightbulb,
+                    color: AppColors.textPrimary(brightness), size: 20),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
@@ -394,14 +467,14 @@ class _RecommendationCard extends StatelessWidget {
                         'Phân tích AI',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: color,
+                          color: AppColors.textPrimary(brightness),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         recommendation['reason'] as String,
                         style: TextStyle(
-                          color: AppColors.lightTextSecondary,
+                          color: AppColors.textSecondary(brightness),
                           height: 1.4,
                         ),
                       ),
@@ -420,10 +493,14 @@ class _RecommendationCard extends StatelessWidget {
               'Tiến độ',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
             ),
             const SizedBox(height: AppSpacing.sm),
+            // Phần trăm tiến độ là một PHÉP ĐO, không phải một hạng mục — nó
+            // không cần mang tông của thẻ. Tô nó bằng `tone` còn hỏng thêm:
+            // `warning` trên rãnh `border` chỉ 1.67:1, dưới hẳn sàn 3:1 cho
+            // phần đã chạy vốn mã hoá tỉ lệ. `primary` trên rãnh cho 9.2:1.
             Row(
               children: [
                 Expanded(
@@ -432,8 +509,9 @@ class _RecommendationCard extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: recommendation['progress'] as double,
                       minHeight: 8,
-                      backgroundColor: AppColors.lightBorder,
-                      valueColor: AlwaysStoppedAnimation(color),
+                      backgroundColor: AppColors.border(brightness),
+                      valueColor: AlwaysStoppedAnimation(
+                          AppColors.primary(brightness)),
                     ),
                   ),
                 ),
@@ -442,7 +520,7 @@ class _RecommendationCard extends StatelessWidget {
                   '${((recommendation['progress'] as double) * 100).round()}%',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: color,
+                    color: AppColors.textPrimary(brightness),
                   ),
                 ),
               ],
@@ -455,7 +533,7 @@ class _RecommendationCard extends StatelessWidget {
             'Bài tập đề xuất',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -468,7 +546,7 @@ class _RecommendationCard extends StatelessWidget {
                 name: drill['name'] as String,
                 duration: drill['duration'] as String,
                 difficulty: drill['difficulty'] as String,
-                color: color,
+                tone: tone,
                 onStart: () => onStartDrill(drill['name'] as String),
               ).animate().fadeIn(delay: (150 + index * 50).ms),
             );
@@ -483,42 +561,35 @@ class _DrillCard extends StatelessWidget {
   final String name;
   final String duration;
   final String difficulty;
-  final Color color;
+  final Color tone;
   final VoidCallback onStart;
 
   const _DrillCard({
     required this.name,
     required this.duration,
     required this.difficulty,
-    required this.color,
+    required this.tone,
     required this.onStart,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final brightness = Theme.of(context).brightness;
+
+    return PoolCard(
+      radius: AppSpacing.radiusLg,
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 10,
-          ),
-        ],
-      ),
       child: Row(
         children: [
           Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
+              color: tone.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: Icon(Icons.fitness_center, color: color),
+            child: Icon(Icons.fitness_center,
+                color: AppColors.primary(brightness)),
           ),
           const SizedBox(width: AppSpacing.lg),
           Expanded(
@@ -527,28 +598,32 @@ class _DrillCard extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: AppColors.lightTextPrimary),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: AppColors.textPrimary(brightness)),
                 ),
                 const SizedBox(height: AppSpacing.xs),
+                // Thời lượng là dữ kiện trung tính nên KHÔNG tô; ô độ khó là ô
+                // duy nhất mang màu trong hàng này.
                 Row(
                   children: [
-                    Icon(Icons.timer, size: 14, color: AppColors.lightTextSecondary),
+                    Icon(Icons.timer,
+                        size: 14, color: AppColors.textSecondary(brightness)),
                     const SizedBox(width: AppSpacing.xs),
                     Text(
                       duration,
-                      style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 13),
+                      style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 13),
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                       decoration: BoxDecoration(
-                        color: _getDifficultyColor(difficulty).withValues(alpha: 0.1),
+                        color: _getDifficultyColor(difficulty, brightness)
+                            .withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Text(
                         difficulty,
                         style: TextStyle(
-                          color: _getDifficultyColor(difficulty),
+                          color: _getDifficultyColor(difficulty, brightness),
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
@@ -560,7 +635,8 @@ class _DrillCard extends StatelessWidget {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.play_circle, color: color, size: 32),
+            icon: Icon(Icons.play_circle,
+                color: AppColors.primary(brightness), size: 32),
             onPressed: onStart,
           ),
         ],
@@ -568,7 +644,7 @@ class _DrillCard extends StatelessWidget {
     );
   }
 
-  Color _getDifficultyColor(String difficulty) {
+  Color _getDifficultyColor(String difficulty, Brightness brightness) {
     switch (difficulty) {
       case 'Easy':
         return AppColors.success;
@@ -577,7 +653,7 @@ class _DrillCard extends StatelessWidget {
       case 'Hard':
         return AppColors.error;
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 }
@@ -594,6 +670,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   double _scale = 1.0;
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -603,18 +681,27 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            // Cả hai nhánh nền đều đổi theo chế độ, nên chữ dùng
+            // `onPrimary(brightness)`.
+            color: widget.onPressed != null
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 2))] : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.icon != null) ...[
-                Icon(widget.icon, color: Colors.white, size: 18),
+                Icon(widget.icon,
+                    color: AppColors.onPrimary(brightness), size: 18),
                 const SizedBox(width: AppSpacing.sm),
               ],
-              Text(widget.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white)),
+              Text(widget.label,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.onPrimary(brightness))),
             ],
           ),
         ),
