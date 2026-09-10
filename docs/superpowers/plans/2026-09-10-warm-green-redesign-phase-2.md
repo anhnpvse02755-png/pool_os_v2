@@ -68,7 +68,7 @@ Cách xử lý:
 | `_buildAICoachSection` (160-327) | 9 | → `AppColors.onPrimary(brightness)` (vẫn nằm trên gradient) |
 | `_buildAfterMatchCard` (328-392) | 4 | → token chữ thường (khối hết gradient) |
 | `_buildStreakWarningCard` (493-559) | 4 | → token chữ thường (khối hết gradient) |
-| `_buildEmptyRecommendations` (560-568) | 1 | → `AppColors.onPrimary(brightness).withValues(alpha: 0.8)` — xem đính chính dưới |
+| `_buildEmptyRecommendations` (560-568) | 1 | → `AppColors.onPrimary(brightness)` nguyên độ mờ — xem hai mục đính chính dưới |
 | `_ActionRow` (931+) | 1 | → `AppColors.onPrimary(brightness)` (badge trên nền primary) |
 
 **ĐÍNH CHÍNH (ghi sau khi thực thi) — khẳng định gốc ở đây SAI.**
@@ -122,7 +122,7 @@ Lô 1 viết 6 luật thẳng trong file test của nó. Còn 7 lô nữa sẽ c
 - Consumes: không
 - Produces: `void expectTokenHygiene(String batchName, List<String> paths)` — đăng ký 6 `test()` cho danh sách file truyền vào. Gọi trong `main()` của file test mỗi lô.
 
-- [ ] **Step 1: Viết helper**
+- [x] **Step 1: Viết helper**
 
 Tạo `test/screens/token_hygiene.dart`:
 
@@ -208,7 +208,7 @@ void expectTokenHygiene(String batchName, List<String> paths) {
 }
 ```
 
-- [ ] **Step 2: Trỏ test lô 1 sang helper**
+- [x] **Step 2: Trỏ test lô 1 sang helper**
 
 Thay TOÀN BỘ nội dung `test/screens/batch1_dark_mode_test.dart` bằng:
 
@@ -257,13 +257,13 @@ void main() {
 }
 ```
 
-- [ ] **Step 3: Chạy test lô 1, xác nhận vẫn XANH**
+- [x] **Step 3: Chạy test lô 1, xác nhận vẫn XANH**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch1_dark_mode_test.dart`
 
 Expected: 7 PASS. Đây là refactor thuần — số test và kết quả phải y hệt trước khi rút helper. Nếu đỏ thì helper viết sai, không phải màn lô 1 hỏng.
 
-- [ ] **Step 4: Chứng minh helper thật sự bắt lỗi**
+- [x] **Step 4: Chứng minh helper thật sự bắt lỗi**
 
 Bước này chống trường hợp "helper rỗng nên test nào cũng xanh". Sửa tạm `lib/presentation/screens/auth/login_screen.dart`, đổi đúng một dòng trong `_StyledTextField`:
 
@@ -289,13 +289,13 @@ git checkout -- lib/presentation/screens/auth/login_screen.dart
 
 Run lại: `flutter test test/screens/batch1_dark_mode_test.dart` → 7 PASS.
 
-- [ ] **Step 5: Chạy toàn bộ suite**
+- [x] **Step 5: Chạy toàn bộ suite**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test`
 
 Expected: 568 PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add test/screens/token_hygiene.dart test/screens/batch1_dark_mode_test.dart
@@ -316,7 +316,7 @@ Màn nhỏ nhất nhưng hiện trên mọi màn khác. Làm đầu để sai l�
 - Consumes: `expectTokenHygiene` (Task 1), `AppColors.primary/textSecondary/surface/border/onPrimary(Brightness)`, `AppShadows.soft(Brightness)`
 - Produces: không có API mới — đây là task sửa giao diện.
 
-- [ ] **Step 1: Viết test lô 2, mới liệt kê 1 màn**
+- [x] **Step 1: Viết test lô 2, mới liệt kê 1 màn**
 
 Tạo `test/screens/batch2_dark_mode_test.dart`:
 
@@ -357,13 +357,13 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch2_dark_mode_test.dart`
 
 Expected: FAIL 4 luật — `AppColors.light*` (`lightTextSecondary`), `AppColors.dark*` (`darkTextSecondary`), `Colors.*` (`Colors.white`), và luật hằng màu thô. Hai luật nhãn và emoji PASS ngay từ đầu.
 
-- [ ] **Step 3: Thêm import và đọc brightness ở `MainShell`**
+- [x] **Step 3: Thêm import và đọc brightness ở `MainShell`**
 
 Trong `lib/presentation/screens/shell/main_shell.dart`, thêm import sau `colors.dart`:
 
@@ -377,7 +377,7 @@ Trong `build()` của `MainShell`, thêm dòng ngay sau `final currentLocation =
     final brightness = Theme.of(context).brightness;
 ```
 
-- [ ] **Step 4: Đổi nền và shadow của thanh dưới**
+- [x] **Step 4: Đổi nền và shadow của thanh dưới**
 
 Thay khối `decoration` của `bottomNavigationBar`:
 
@@ -398,7 +398,7 @@ Thay khối `decoration` của `bottomNavigationBar`:
         ),
 ```
 
-- [ ] **Step 5: Đổi màu `_NavItem` sang xanh rêu**
+- [x] **Step 5: Đổi màu `_NavItem` sang xanh rêu**
 
 Thay ba dòng đầu trong `build()` của `_NavItem`:
 
@@ -412,7 +412,7 @@ Thay ba dòng đầu trong `build()` của `_NavItem`:
 
 Ba dòng cũ bị thay là `AppColors.accentColor(...)` cộng ternary `lightTextSecondary`/`darkTextSecondary` viết tay. Accessor `textSecondary(brightness)` làm đúng việc ternary đó — viết lại bằng tay chỉ tạo thêm chỗ để sai.
 
-- [ ] **Step 6: Đổi chữ trên badge đếm thông báo**
+- [x] **Step 6: Đổi chữ trên badge đếm thông báo**
 
 Trong `_NavItem`, badge nằm trên nền `AppColors.error`. Thay:
 
@@ -438,13 +438,13 @@ bằng:
                         ),
 ```
 
-- [ ] **Step 7: Chạy test lô 2, xác nhận PASS**
+- [x] **Step 7: Chạy test lô 2, xác nhận PASS**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch2_dark_mode_test.dart`
 
 Expected: 8 PASS.
 
-- [ ] **Step 8: Chạy analyzer và toàn bộ suite**
+- [x] **Step 8: Chạy analyzer và toàn bộ suite**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter analyze lib/presentation/screens/shell/main_shell.dart`
 
@@ -454,7 +454,7 @@ Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test`
 
 Expected: 576 PASS (568 + 8 mới).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/presentation/screens/shell/main_shell.dart test/screens/batch2_dark_mode_test.dart
@@ -473,7 +473,7 @@ git commit -m "feat(ui): Thanh dieu huong duoi theo xanh reu"
 - Consumes: `expectTokenHygiene` (Task 1), `AppColors.pastelFor(int, Brightness)`, `AppColors.primary/border/surface/onPrimary(Brightness)`, `SoftBackground`, `PoolCard`, `IconTile`
 - Produces: không có API mới.
 
-- [ ] **Step 1: Thêm màn này vào danh sách lô 2**
+- [x] **Step 1: Thêm màn này vào danh sách lô 2**
 
 Trong `test/screens/batch2_dark_mode_test.dart`, sửa lời gọi `expectTokenHygiene` thành:
 
@@ -484,13 +484,13 @@ Trong `test/screens/batch2_dark_mode_test.dart`, sửa lời gọi `expectTokenH
   ]);
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch2_dark_mode_test.dart`
 
 Expected: FAIL 2 luật — `AppColors.light*` (`lightBorder`) và `Colors.*` (`Colors.white`, `Colors.purple`).
 
-- [ ] **Step 3: Đổi bảng màu theo loại thông báo sang chỉ số pastel**
+- [x] **Step 3: Đổi bảng màu theo loại thông báo sang chỉ số pastel**
 
 Màn này gán mỗi loại thông báo một màu. Bản cũ trộn 3 nguồn: hằng ngữ nghĩa (`warning`, `success`), token thương hiệu (`accentColor`), và một màu Material thô (`Colors.purple`). Đổi sang chỉ số pastel để cùng một loại luôn cùng tông, và để `Colors.purple` biến mất.
 
@@ -531,7 +531,7 @@ Trong `_NotificationCard`, thay toàn bộ `_getTypeColor()`:
   }
 ```
 
-- [ ] **Step 4: Đổi thẻ thông báo sang `PoolCard` + `IconTile`**
+- [x] **Step 4: Đổi thẻ thông báo sang `PoolCard` + `IconTile`**
 
 Thêm import ở đầu file:
 
@@ -608,7 +608,7 @@ Xoá hai dấu `)` thừa ở cuối `build()` do bỏ một lớp `InkWell` + `
 
 **Lưu ý:** `IconTile` luôn tô icon bằng `AppColors.primary(brightness)`, nên màu ngữ nghĩa từ `_getTypeColor()` giờ chỉ còn dùng cho chấm "chưa đọc" và nhãn hành động. Đó là chủ ý: ô pastel mang thông tin loại, icon giữ một màu để lưới thẻ không loang lổ.
 
-- [ ] **Step 5: Đổi nhãn hành động và nền nút xoá**
+- [x] **Step 5: Đổi nhãn hành động và nền nút xoá**
 
 Thay nền của nhãn hành động (`notification.actionLabel`):
 
@@ -637,7 +637,7 @@ Thay icon trên nền xoá đỏ:
 
 Cùng lý do như badge ở Task 2: nền `AppColors.error` là hằng đỏ chung cho hai chế độ.
 
-- [ ] **Step 6: Bọc body bằng `SoftBackground` và đổi màu nút AppBar**
+- [x] **Step 6: Bọc body bằng `SoftBackground` và đổi màu nút AppBar**
 
 Trong `build()` của `NotificationScreen`, thay:
 
@@ -670,13 +670,13 @@ bằng:
       ),
 ```
 
-- [ ] **Step 7: Chạy analyzer**
+- [x] **Step 7: Chạy analyzer**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter analyze lib/presentation/screens/home/notification_screen.dart`
 
 Expected: `No issues found!` Nếu báo `AppShadows` không dùng nữa thì xoá import `shadows.dart`.
 
-- [ ] **Step 8: Chạy test lô 2 và toàn bộ suite**
+- [x] **Step 8: Chạy test lô 2 và toàn bộ suite**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch2_dark_mode_test.dart`
 
@@ -686,7 +686,7 @@ Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test`
 
 Expected: 576 PASS.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/presentation/screens/home/notification_screen.dart test/screens/batch2_dark_mode_test.dart
@@ -707,7 +707,7 @@ Màn lớn nhất của lô (992 dòng) và là nơi có quyết định thiết
 - Consumes: `expectTokenHygiene` (Task 1), `AppColors.primary/primaryDeep/onPrimary/successSubtle/warningSubtle/accentLabel/streak(Brightness)`, `AppColors.pastelFor(int, Brightness)`, `SoftBackground`, `PoolCard`, `IconTile`
 - Produces: không có API mới.
 
-- [ ] **Step 1: Thêm màn này vào danh sách lô 2 và khoá nhãn E2E**
+- [x] **Step 1: Thêm màn này vào danh sách lô 2 và khoá nhãn E2E**
 
 Trong `test/screens/batch2_dark_mode_test.dart`, sửa lời gọi thành:
 
@@ -747,13 +747,13 @@ Và thêm test mới trước dấu `}` đóng `main()`:
   });
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch2_dark_mode_test.dart`
 
 Expected: FAIL 3 luật — `*SubtleLight` (`successSubtleLight`, `warningSubtleLight`), `Colors.*` (`Colors.white`, `Colors.blue`), và luật "chỉ còn một gradient" (hiện có 3). Hai luật nhãn PASS ngay.
 
-- [ ] **Step 3: Bọc body bằng `SoftBackground`**
+- [x] **Step 3: Bọc body bằng `SoftBackground`**
 
 Thêm import:
 
@@ -780,7 +780,7 @@ bằng:
 
 và thêm một `)` tương ứng ở cuối `body`.
 
-- [ ] **Step 4: Đổi 9 chỗ `accentColor` sang xanh rêu**
+- [x] **Step 4: Đổi 9 chỗ `accentColor` sang xanh rêu**
 
 Đây là thay đổi cơ học, cùng một dạng ở 9 chỗ. Thay mọi:
 
@@ -800,7 +800,7 @@ Cùng lúc, thay 2 chỗ `AppColors.accentSubtle(brightness)` (avatar hồ sơ �
 
 **Giữ nguyên tên biến `accentColor`** trong thân hàm — đổi tên biến ở 9 hàm là nhiễu không cần thiết cho một task đã lớn, và nó không phải thứ test kiểm.
 
-- [ ] **Step 5: Banner chính — giữ gradient, đổi sang xanh rêu**
+- [x] **Step 5: Banner chính — giữ gradient, đổi sang xanh rêu**
 
 Đây là banner duy nhất còn gradient. Thay khối gradient trong `_buildAICoachSection` (dòng 172):
 
@@ -844,7 +844,7 @@ thành:
 
 và chữ trên nút đó phải là `AppColors.primary(brightness)` để đọc được.
 
-- [ ] **Step 6: Banner trận đấu — bỏ gradient xanh Material**
+- [x] **Step 6: Banner trận đấu — bỏ gradient xanh Material**
 
 Thay toàn bộ `Container` + `BoxDecoration` gradient trong `_buildAfterMatchCard` (dòng 338-352):
 
@@ -905,7 +905,7 @@ thành:
 
 Đóng khối bằng `);` thay vì `),` cuối `Container` — analyzer ở Step 9 sẽ chỉ ra nếu đếm sai dấu.
 
-- [ ] **Step 7: Banner streak — bỏ gradient hổ phách**
+- [x] **Step 7: Banner streak — bỏ gradient hổ phách**
 
 Thay khối gradient trong `_buildStreakWarningCard` (dòng 500-515):
 
@@ -961,7 +961,7 @@ thành:
 
 kèm chữ `AppColors.onPrimary(brightness)`.
 
-- [ ] **Step 8: Đổi 2 nền dịu và 1 chỗ `gold`**
+- [x] **Step 8: Đổi 2 nền dịu và 1 chỗ `gold`**
 
 Trong `_GoalRow` (quanh dòng 840):
 
@@ -1021,7 +1021,7 @@ thành:
                     color: AppColors.onPrimary(brightness),
 ```
 
-- [ ] **Step 9: Chạy analyzer**
+- [x] **Step 9: Chạy analyzer**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter analyze lib/presentation/screens/home/home_screen.dart`
 
@@ -1029,7 +1029,7 @@ Expected: `No issues found!`
 
 Lỗi hay gặp ở bước này là `const_eval_method_invocation` — một `const TextStyle`/`const Icon` giờ chứa lời gọi hàm. Cách sửa là bỏ chữ `const` ở đúng widget đó, không phải bỏ token.
 
-- [ ] **Step 10: Chạy test lô 2 và toàn bộ suite**
+- [x] **Step 10: Chạy test lô 2 và toàn bộ suite**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch2_dark_mode_test.dart`
 
@@ -1039,7 +1039,7 @@ Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test`
 
 Expected: 578 PASS (568 + 10 mới).
 
-- [ ] **Step 11: Chạy E2E**
+- [x] **Step 11: Chạy E2E**
 
 Build trước, rồi chạy Playwright:
 
@@ -1054,7 +1054,7 @@ Nếu có test đỏ vì không tìm thấy nhãn thì một chuỗi đã bị �
 
 **Lưu ý build:** dùng PowerShell cho lệnh có `--base-href /`; Git Bash biến `/` thành đường dẫn Windows.
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add lib/presentation/screens/home/home_screen.dart test/screens/batch2_dark_mode_test.dart
