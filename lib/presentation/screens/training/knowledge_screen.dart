@@ -9,6 +9,34 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../knowledge/knowledge_provider.dart';
 import '../../../knowledge/knowledge_models.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
+
+/// Tông của một mức độ khó trong thư viện kiến thức.
+///
+/// BỘ ANH EM ĐƯỢC MÃ HOÁ BẰNG MÀU, và nó là cái bẫy mà dự án này đã sập hai
+/// lần. Bản cũ là success(160°) / accent(217°) / warning(38°) / error(0°).
+/// Ánh xạ máy móc `accent` -> `primary` đặt bậc "Trung bình" vào 157–163°, tức
+/// cách bậc "Cơ bản" (`success`, 160°) đúng 3° — hai bậc cạnh nhau trở thành
+/// cùng một màu xanh trong mắt người dùng.
+///
+/// Lời giải là dùng lại ĐÚNG thang bốn bậc mà `drill_detail_screen` đã dùng,
+/// vì đây cũng chính là chiều "độ khó": easy/medium/hard/expert ->
+/// success / warning / error / difficultyExpert. Bốn hue 160° / 38° / 0° /
+/// 262°, cách nhau tối thiểu 38° ở CẢ HAI chế độ, và một mức độ khó nay không
+/// đổi màu khi người dùng đi từ màn bài tập sang màn kiến thức.
+Color _difficultyTone(DifficultyLevel level, Brightness brightness) {
+  switch (level) {
+    case DifficultyLevel.beginner:
+      return AppColors.success;
+    case DifficultyLevel.intermediate:
+      return AppColors.warning;
+    case DifficultyLevel.advanced:
+      return AppColors.error;
+    case DifficultyLevel.expert:
+      return AppColors.difficultyExpert(brightness);
+  }
+}
 
 class KnowledgeScreen extends ConsumerStatefulWidget {
   const KnowledgeScreen({super.key});
@@ -23,14 +51,15 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final knowledgeState = ref.watch(knowledgeProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('Kiến thức'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
         actions: [
           IconButton(
@@ -39,19 +68,21 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Categories
-          _buildCategoryTabs(knowledgeState.categories),
+      body: SoftBackground(
+        child: Column(
+          children: [
+            // Categories
+            _buildCategoryTabs(knowledgeState.categories),
 
-          // Difficulty filter
-          _buildDifficultyFilter(),
+            // Difficulty filter
+            _buildDifficultyFilter(),
 
-          // Content
-          Expanded(
-            child: _buildContent(knowledgeState),
-          ),
-        ],
+            // Content
+            Expanded(
+              child: _buildContent(knowledgeState, brightness),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -112,7 +143,7 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
     );
   }
 
-  Widget _buildContent(KnowledgeState state) {
+  Widget _buildContent(KnowledgeState state, Brightness brightness) {
     var knowledge = state.allKnowledge;
 
     if (_selectedCategoryId != null) {
@@ -132,11 +163,12 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.article_outlined, size: 64, color: AppColors.lightTextTertiary),
+            Icon(Icons.article_outlined,
+                size: 64, color: AppColors.textTertiary(brightness)),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'Không có bài viết',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
           ],
         ),
@@ -180,16 +212,21 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.only(right: AppSpacing.sm),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
         onSelected: (_) => onTap(),
-        selectedColor: AppColors.accent.withValues(alpha: 0.2),
-        checkmarkColor: AppColors.accent,
+        selectedColor:
+            AppColors.primary(brightness).withValues(alpha: 0.2),
+        checkmarkColor: AppColors.primary(brightness),
         labelStyle: TextStyle(
-          color: isSelected ? AppColors.accent : AppColors.lightTextSecondary,
+          color: isSelected
+              ? AppColors.primary(brightness)
+              : AppColors.textSecondary(brightness),
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
@@ -208,72 +245,63 @@ class _KnowledgeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    final brightness = Theme.of(context).brightness;
+
+    return PoolCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.lightSurface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(color: AppColors.lightBorder),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowLight,
-              blurRadius: 10,
+      radius: AppSpacing.radiusLg,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title
+          Text(
+            knowledge.titleVi ?? knowledge.title,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: AppColors.textPrimary(brightness),
             ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title
-            Text(
-              knowledge.titleVi ?? knowledge.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: AppColors.lightTextPrimary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
+          ),
+          const SizedBox(height: AppSpacing.sm),
 
-            // Preview
-            Text(
-              _getPreview(knowledge.content),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: AppColors.lightTextSecondary,
-                fontSize: 13,
-                height: 1.4,
-              ),
+          // Preview
+          Text(
+            _getPreview(knowledge.content),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: AppColors.textSecondary(brightness),
+              fontSize: 13,
+              height: 1.4,
             ),
-            const SizedBox(height: AppSpacing.md),
+          ),
+          const SizedBox(height: AppSpacing.md),
 
-            // Tags
-            Row(
-              children: [
-                _DifficultyBadge(difficulty: knowledge.difficulty),
-                const Spacer(),
-                if (knowledge.relatedDrillCodes.isNotEmpty)
-                  Row(
-                    children: [
-                      Icon(Icons.fitness_center, size: 14, color: AppColors.lightTextTertiary),
-                      const SizedBox(width: AppSpacing.xs),
-                      Text(
-                        '${knowledge.relatedDrillCodes.length} drills',
-                        style: TextStyle(
-                          color: AppColors.lightTextSecondary,
-                          fontSize: 12,
-                        ),
+          // Tags
+          Row(
+            children: [
+              _DifficultyBadge(difficulty: knowledge.difficulty),
+              const Spacer(),
+              if (knowledge.relatedDrillCodes.isNotEmpty)
+                Row(
+                  children: [
+                    Icon(Icons.fitness_center,
+                        size: 14,
+                        color: AppColors.textTertiary(brightness)),
+                    const SizedBox(width: AppSpacing.xs),
+                    Text(
+                      '${knowledge.relatedDrillCodes.length} drills',
+                      style: TextStyle(
+                        color: AppColors.textSecondary(brightness),
+                        fontSize: 12,
                       ),
-                    ],
-                  ),
-              ],
-            ),
-          ],
-        ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -294,21 +322,8 @@ class _DifficultyBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color;
-    switch (difficulty) {
-      case DifficultyLevel.beginner:
-        color = AppColors.success;
-        break;
-      case DifficultyLevel.intermediate:
-        color = AppColors.accent;
-        break;
-      case DifficultyLevel.advanced:
-        color = AppColors.warning;
-        break;
-      case DifficultyLevel.expert:
-        color = AppColors.error;
-        break;
-    }
+    final brightness = Theme.of(context).brightness;
+    final color = _difficultyTone(difficulty, brightness);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
@@ -362,7 +377,7 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
 
   @override
   Widget buildResults(BuildContext context) {
-    return _buildSearchResults();
+    return _buildSearchResults(Theme.of(context).brightness);
   }
 
   @override
@@ -374,15 +389,17 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
         (context as Element).markNeedsBuild();
       }
     });
-    return _buildSearchResults();
+    return _buildSearchResults(Theme.of(context).brightness);
   }
 
-  Widget _buildSearchResults() {
+  // Không có `BuildContext` ở đây, nên `Brightness` đi vào bằng tham số do hai
+  // hàm gọi ở trên truyền xuống.
+  Widget _buildSearchResults(Brightness brightness) {
     if (query.isEmpty) {
       return Center(
         child: Text(
           'Nhập từ khóa để tìm kiếm',
-          style: TextStyle(color: AppColors.lightTextSecondary),
+          style: TextStyle(color: AppColors.textSecondary(brightness)),
         ),
       );
     }
@@ -404,11 +421,12 @@ class _KnowledgeSearchDelegate extends SearchDelegate<KnowledgeItem?> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off, size: 64, color: AppColors.lightTextTertiary),
+            Icon(Icons.search_off,
+                size: 64, color: AppColors.textTertiary(brightness)),
             const SizedBox(height: AppSpacing.lg),
             Text(
               'Không tìm thấy kết quả',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
           ],
         ),
