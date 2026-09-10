@@ -51,9 +51,15 @@ Cách xử lý:
 |---|---|---|---|
 | `_buildAICoachSection` | 160-327 | gradient `accent` → `accent@80%` | gradient `primary` → `primaryDeep`, chữ `onPrimary` — **giữ là điểm nhấn duy nhất** |
 | `_buildAfterMatchCard` | 328-392 | gradient `Colors.blue.shade600/400` | `PoolCard` + `IconTile(toneIndex: 1)` (pastel xanh), chữ theo token thường |
-| `_buildStreakWarningCard` | 493-559 | gradient `warning` → `warningLight` | `PoolCard` + `IconTile(toneIndex: 2)` (pastel đào), icon lửa giữ `AppColors.streak` |
+| `_buildStreakWarningCard` | 493-559 | gradient `warning` → `warningLight` | `PoolCard` + `IconTile(toneIndex: 2)` (pastel đào) |
 
-`AppColors.streak` (`#F97316`) được giữ nguyên vì nó là màu ngữ nghĩa của chuỗi ngày, không phải màu thương hiệu — và nó nằm trên ô pastel chứ không phải trên nền kem, nên đủ tương phản.
+**ĐÍNH CHÍNH LẦN 3 (sau rà soát cuối lô 2).** Bảng trên, bản đầu, ghi thẻ streak giữ icon lửa màu `AppColors.streak` "vì nó nằm trên ô pastel nên đủ tương phản" — nhưng phần step-by-step lại viết là `Icon` trần, mâu thuẫn với chính bảng này. Implementer làm theo step, nên cam `#F97316` rơi thẳng lên mặt thẻ trắng: **2,80:1**, dưới ngưỡng 3:1 cho hình đồ hoạ mang nghĩa, và lý do biện minh ở trên trở thành sai.
+
+Đã sửa: thẻ streak dùng `IconTile(icon: Icons.local_fire_department, toneIndex: 2, size: 36)` như bảng nói ngay từ đầu. Hệ quả là **icon lửa không còn màu cam** — `IconTile` luôn tô icon bằng `AppColors.primary(brightness)`, và trên pastel đào con số đó là 8,9:1 ở chế độ sáng. Ngữ nghĩa "chuỗi ngày" giờ do ô pastel đào mang, không do màu icon.
+
+`AppColors.streak` vẫn là token đúng cho tín hiệu chuỗi ngày ở chỗ khác (`notification_screen.dart`), nhưng **không dùng được làm màu chữ hay icon trên nền trắng** — 2,80:1.
+
+**Bài học:** khi bảng quyết định và phần step mâu thuẫn nhau, người thực thi làm theo step. Bảng là thứ mang lý do, step là thứ mang lệnh — viết plan phải để hai thứ khớp nhau, và khi sửa một cái phải sửa cái kia.
 
 **Phân bố 19 chỗ `Colors.white` (đã đếm chính xác):**
 
