@@ -7,6 +7,7 @@
 - [pool-os-project](.claude/memory/pool-os-project.md) — PoolOS_v2 là app huấn luyện **bi-a** bằng AI (không phải bể bơi), tech stack, quy mô
 - [sprint-status](.claude/memory/sprint-status.md) — Sprint 3A→19 đã đóng; Sprint-19 Minimalist Luxury redesign xong 28/8
 - [design-system-tokens](.claude/memory/design-system-tokens.md) — 3 cạm bẫy API của AppShadows/AppColors/AppSpacing gây lỗi compile lặp lại
+- [shell-encoding-traps](.claude/memory/shell-encoding-traps.md) — `flutter` không có trên PATH; PowerShell 5.1 làm hỏng UTF-8 tiếng Việt khi patch file
 - [phase-conventions](.claude/memory/phase-conventions.md) — Phase A/B/C/D conventions, Phase 3 Constitution
 - [coach-design](.claude/memory/coach-design.md) — Coach UX Blueprint v2.1 & Voice Guidelines
 
