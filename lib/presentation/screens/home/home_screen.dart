@@ -539,7 +539,7 @@ class HomeScreen extends ConsumerWidget {
     return Text(
       'Start your training journey today!',
       style: TextStyle(
-        color: AppColors.textSecondary(brightness),
+        color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
         fontSize: 14,
       ),
     );
