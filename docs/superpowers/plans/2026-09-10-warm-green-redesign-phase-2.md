@@ -62,10 +62,20 @@ Cách xử lý:
 | `_buildAICoachSection` (160-327) | 9 | → `AppColors.onPrimary(brightness)` (vẫn nằm trên gradient) |
 | `_buildAfterMatchCard` (328-392) | 4 | → token chữ thường (khối hết gradient) |
 | `_buildStreakWarningCard` (493-559) | 4 | → token chữ thường (khối hết gradient) |
-| `_buildEmptyRecommendations` (560-568) | 1 | → `AppColors.textSecondary(brightness)` — **bug có sẵn**, xem dưới |
+| `_buildEmptyRecommendations` (560-568) | 1 | → `AppColors.onPrimary(brightness).withValues(alpha: 0.8)` — xem đính chính dưới |
 | `_ActionRow` (931+) | 1 | → `AppColors.onPrimary(brightness)` (badge trên nền primary) |
 
-**Bug có sẵn phát hiện khi khảo sát:** `_buildEmptyRecommendations` (dòng 560) render chuỗi `'Start your training journey today!'` bằng `Colors.white.withValues(alpha: 0.8)` nhưng KHÔNG nằm trong khối gradient nào — nó là `Text` trần trên nền kem `#F7F4EC`. Chữ trắng 80% trên nền kem gần như vô hình. Đây là lỗi hiển thị đang sống trong bản production, không phải hệ quả của redesign. Task 4 Step 8 sửa nó.
+**ĐÍNH CHÍNH (ghi sau khi thực thi) — khẳng định gốc ở đây SAI.**
+
+Bản đầu của plan này viết: `_buildEmptyRecommendations` (dòng 560) render `'Start your training journey today!'` bằng `Colors.white.withValues(alpha: 0.8)` nhưng "KHÔNG nằm trong khối gradient nào — nó là `Text` trần trên nền kem", và gọi đó là bug có sẵn cần sửa thành `textSecondary`.
+
+Sai. Hàm này có đúng hai call site, **cả hai nằm TRONG** Container gradient của `_buildAICoachSection`: dòng 235 (nhánh `data:` khi `path.isEmpty`) và dòng 278 (nhánh `error:`). Bằng chứng: widget anh em ngay cạnh ở dòng 275 là `CircularProgressIndicator(color: AppColors.onPrimary(brightness))`.
+
+Nghĩa là chữ trắng 80% vốn **đúng** cho nền đó, và bản "sửa lỗi" kê trong plan mới là lỗi thật: `#5E6661` trên `#0F4032` ≈ 2.0:1, đúng ở màn empty-state mà mọi người dùng mới gặp đầu tiên, cộng thêm màn lỗi provider.
+
+Giá trị đúng là `AppColors.onPrimary(brightness).withValues(alpha: 0.8)` — giữ ràng buộc không dùng `Colors.*`, và đạt 4.5:1 ở chế độ sáng, 4.8:1 ở chế độ tối.
+
+**Nguyên nhân sai:** kết luận "không nằm trong gradient" rút ra từ việc đọc thân hàm mà không truy nơi gọi. Với helper chỉ nhận `Brightness` chứ không nhận màu nền, **nơi gọi mới quyết định nền**. Các lô sau: trước khi đổi màu chữ trong một helper, luôn `grep` tên hàm để xem nó được gọi ở đâu.
 
 ---
 
@@ -965,7 +975,7 @@ thành:
 
 Và `valueColor: AppColors.gold` (dòng 712) thành `valueColor: AppColors.accentLabel(brightness)`. Chỗ này `brightness` là tham số của `_buildProgressSection` nên đã có sẵn trong scope.
 
-Sửa nốt bug chữ trắng vô hình trong `_buildEmptyRecommendations` (dòng 564):
+Bỏ `Colors.white` trong `_buildEmptyRecommendations` (dòng 564):
 
 ```dart
         color: Colors.white.withValues(alpha: 0.8),
@@ -974,10 +984,10 @@ Sửa nốt bug chữ trắng vô hình trong `_buildEmptyRecommendations` (dòn
 thành:
 
 ```dart
-        color: AppColors.textSecondary(brightness),
+        color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
 ```
 
-Đây là `Text` trần trên nền kem, không nằm trong gradient nào — chữ trắng 80% ở đó gần như vô hình. Lỗi có sẵn, không phải do redesign sinh ra.
+**Đây KHÔNG phải sửa bug hiển thị — chỉ là bỏ `Colors.*` mà giữ nguyên hiệu quả thị giác.** Hàm này được gọi từ hai nhánh nằm TRONG gradient của `_buildAICoachSection` (dòng 235 và 278), nên nền của nó là xanh rêu đậm chứ không phải nền kem. Chữ sáng ở đây vốn đúng. Xem mục ĐÍNH CHÍNH ở phần đầu plan.
 
 Badge trong `_ActionRow` (quanh dòng 979) nằm trên nền `accentColor`:
 
