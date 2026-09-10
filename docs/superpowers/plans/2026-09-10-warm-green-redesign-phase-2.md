@@ -73,7 +73,19 @@ Sai. Hàm này có đúng hai call site, **cả hai nằm TRONG** Container grad
 
 Nghĩa là chữ trắng 80% vốn **đúng** cho nền đó, và bản "sửa lỗi" kê trong plan mới là lỗi thật: `#5E6661` trên `#0F4032` ≈ 2.0:1, đúng ở màn empty-state mà mọi người dùng mới gặp đầu tiên, cộng thêm màn lỗi provider.
 
-Giá trị đúng là `AppColors.onPrimary(brightness).withValues(alpha: 0.8)` — giữ ràng buộc không dùng `Colors.*`, và đạt 4.5:1 ở chế độ sáng, 4.8:1 ở chế độ tối.
+Giá trị đúng là `AppColors.onPrimary(brightness)` — giữ ràng buộc không dùng `Colors.*`, và **để nguyên độ mờ 100%**.
+
+**ĐÍNH CHÍNH LẦN 2 (sau rà soát cuối lô 2) — con số "4,8:1 ở chế độ tối" ở trên SAI.** Bản trước của mục này khuyên dùng `.withValues(alpha: 0.8)` và ghi 4,8:1 cho chế độ tối. Đo lại trên đúng hai điểm dừng của gradient (`primary → primaryDeep`, nên chữ có thể rơi vào bất kỳ điểm nào):
+
+| | trên `primary` tối `#34A97C` | trên `primaryDeep` tối `#2A8A65` |
+|---|---|---|
+| alpha 1.0 | 5,77:1 ✓ | 4,00:1 |
+| alpha 0.9 | 4,97:1 ✓ | 3,56:1 ✗ |
+| alpha 0.8 | 4,21:1 ✗ | 3,15:1 ✗ |
+
+Chế độ sáng đạt ở mọi mức (8,08–15,59:1). Chỉ chế độ tối gãy, và gãy ở cả 0.8 lẫn 0.9.
+
+**Idiom cho các lô sau chép lại: chữ trên gradient dùng `AppColors.onPrimary(brightness)` nguyên độ mờ, không `withValues`.** Phân cấp thị giác đã có sẵn qua `fontSize`/`fontWeight` — không cần hạ alpha để tạo cấp bậc. `withValues` vẫn hợp lệ cho nền wash của `Container` và màu `boxShadow`, chỉ cấm trên màu chữ và màu icon.
 
 **Nguyên nhân sai:** kết luận "không nằm trong gradient" rút ra từ việc đọc thân hàm mà không truy nơi gọi. Với helper chỉ nhận `Brightness` chứ không nhận màu nền, **nơi gọi mới quyết định nền**. Các lô sau: trước khi đổi màu chữ trong một helper, luôn `grep` tên hàm để xem nó được gọi ở đâu.
 
