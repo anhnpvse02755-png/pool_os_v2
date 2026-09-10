@@ -3,10 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/auth_provider.dart';
+import '../../widgets/icon_tile.dart';
+import '../../widgets/soft_background.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -58,9 +59,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: SafeArea(
+      backgroundColor: AppColors.background(brightness),
+      body: SoftBackground(
+        child: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
@@ -69,17 +73,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: AppSpacing.xl),
 
               // Logo
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.pool,
-                  size: 40,
-                  color: AppColors.accent,
+              const Center(
+                child: IconTile(
+                  icon: Icons.pool,
+                  toneIndex: 0,
+                  size: 80,
                 ),
               ).animate().fadeIn(),
               const SizedBox(height: AppSpacing.md),
@@ -87,7 +85,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 'PoolOS',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.accent,
+                      color: AppColors.primary(brightness),
                       letterSpacing: 2,
                     ),
                 textAlign: TextAlign.center,
@@ -96,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Text(
                 'AI Pool Training Platform',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                     ),
                 textAlign: TextAlign.center,
               ).animate().fadeIn(delay: 200.ms),
@@ -109,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   padding: const EdgeInsets.all(AppSpacing.md),
                   margin: const EdgeInsets.only(bottom: AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: AppColors.errorSubtleLight,
+                    color: AppColors.errorSubtle(brightness),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                     border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
                   ),
@@ -165,7 +163,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           _obscurePassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
-                          color: AppColors.lightTextSecondary,
+                          color: AppColors.textSecondary(brightness),
                         ),
                         onPressed: () {
                           setState(() {
@@ -204,7 +202,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         },
                         child: Text(
                           'Quên mật khẩu?',
-                          style: TextStyle(color: AppColors.accent),
+                          style:
+                              TextStyle(color: AppColors.primary(brightness)),
                         ),
                       ),
                     ),
@@ -226,15 +225,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               // Divider
               Row(
                 children: [
-                  const Expanded(child: Divider(color: AppColors.lightBorder)),
+                  Expanded(
+                      child: Divider(color: AppColors.border(brightness))),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                     child: Text(
                       'hoặc',
-                      style: TextStyle(color: AppColors.lightTextSecondary),
+                      style:
+                          TextStyle(color: AppColors.textSecondary(brightness)),
                     ),
                   ),
-                  const Expanded(child: Divider(color: AppColors.lightBorder)),
+                  Expanded(
+                      child: Divider(color: AppColors.border(brightness))),
                 ],
               ).animate().fadeIn(delay: 600.ms),
 
@@ -249,14 +251,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   Text(
                     'Chưa có tài khoản? ',
-                    style: TextStyle(color: AppColors.lightTextSecondary),
+                    style:
+                        TextStyle(color: AppColors.textSecondary(brightness)),
                   ),
                   TextButton(
                     onPressed: () => context.push('/auth/register'),
                     child: Text(
                       'Đăng ký',
                       style: TextStyle(
-                        color: AppColors.accent,
+                        color: AppColors.primary(brightness),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -267,6 +270,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(height: AppSpacing.lg),
             ],
           ),
+        ),
         ),
       ),
     );
@@ -298,35 +302,39 @@ class _StyledTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       onFieldSubmitted: onFieldSubmitted,
-      style: const TextStyle(color: AppColors.lightTextPrimary),
+      style: TextStyle(color: AppColors.textPrimary(brightness)),
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: TextStyle(color: AppColors.lightTextSecondary),
-        prefixIcon: Icon(prefixIcon, color: AppColors.lightTextSecondary, size: 20),
+        labelStyle: TextStyle(color: AppColors.textSecondary(brightness)),
+        prefixIcon: Icon(prefixIcon,
+            color: AppColors.textSecondary(brightness), size: 20),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: AppColors.lightSurface,
+        fillColor: AppColors.surface(brightness),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.md,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.lightBorder),
+          borderSide: BorderSide(color: AppColors.border(brightness)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.lightBorder),
+          borderSide: BorderSide(color: AppColors.border(brightness)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          borderSide: const BorderSide(color: AppColors.accent, width: 2),
+          borderSide:
+              BorderSide(color: AppColors.primary(brightness), width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -362,6 +370,9 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final enabled = widget.onPressed != null;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -374,12 +385,15 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: enabled
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null
+            boxShadow: enabled
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness)
+                          .withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -387,22 +401,22 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
                 : null,
           ),
           child: widget.isLoading
-              ? const Center(
+              ? Center(
                   child: SizedBox(
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColors.onPrimary(brightness),
                     ),
                   ),
                 )
               : Text(
                   widget.label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: AppColors.onPrimary(brightness),
                   ),
                   textAlign: TextAlign.center,
                 ),

@@ -3,10 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../widgets/icon_tile.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
@@ -24,111 +26,105 @@ class WelcomeScreen extends ConsumerWidget {
       }
     });
 
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            children: [
-              const Spacer(),
+      backgroundColor: AppColors.background(brightness),
+      body: SoftBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              children: [
+                const Spacer(),
 
-              // Logo/Icon
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.pool,
-                  size: 56,
-                  color: AppColors.accent,
-                ),
-              )
-                  .animate()
-                  .scale(duration: 600.ms, curve: Curves.elasticOut)
-                  .fadeIn(duration: 400.ms),
+                // Logo/Icon
+                const IconTile(
+                  icon: Icons.pool,
+                  toneIndex: 0,
+                  size: 120,
+                )
+                    .animate()
+                    .scale(duration: 600.ms, curve: Curves.elasticOut)
+                    .fadeIn(duration: 400.ms),
 
-              const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
 
-              // App Name
-              Text(
-                'PoolOS',
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.accent,
-                      letterSpacing: 2,
-                    ),
-              ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
+                // App Name
+                Text(
+                  'PoolOS',
+                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary(brightness),
+                        letterSpacing: 2,
+                      ),
+                ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
 
-              const SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
 
-              Text(
-                'AI Pool Training Platform',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.lightTextSecondary,
-                    ),
-              ).animate().fadeIn(delay: 300.ms, duration: 400.ms),
+                Text(
+                  'AI Pool Training Platform',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textSecondary(brightness),
+                      ),
+                ).animate().fadeIn(delay: 300.ms, duration: 400.ms),
 
-              const SizedBox(height: AppSpacing.xxl),
+                const SizedBox(height: AppSpacing.xxl),
 
-              // Tagline
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: AppColors.lightSurface,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                  border: Border.all(color: AppColors.lightBorder),
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.auto_awesome,
-                      color: AppColors.accent,
-                      size: 32,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      'Trở thành cơ thủ chuyên nghiệp\ncùng AI Coach của riêng bạn',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            height: 1.5,
-                            fontWeight: FontWeight.w500,
-                          ),
-                    ),
-                  ],
-                ),
-              ).animate().fadeIn(delay: 400.ms, duration: 400.ms),
+                // Tagline
+                PoolCard(
+                  radius: AppSpacing.radiusLg,
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.auto_awesome,
+                        color: AppColors.primary(brightness),
+                        size: 32,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        'Trở thành cơ thủ chuyên nghiệp\ncùng AI Coach của riêng bạn',
+                        textAlign: TextAlign.center,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  height: 1.5,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textPrimary(brightness),
+                                ),
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn(delay: 400.ms, duration: 400.ms),
 
-              const Spacer(),
+                const Spacer(),
 
-              // CTA Button
-              _PrimaryButton(
-                onPressed: () => context.push('/onboarding'),
-                label: 'Bắt đầu ngay',
-              ).animate().fadeIn(delay: 500.ms, duration: 400.ms),
+                // CTA Button
+                _PrimaryButton(
+                  onPressed: () => context.push('/onboarding'),
+                  label: 'Bắt đầu ngay',
+                ).animate().fadeIn(delay: 500.ms, duration: 400.ms),
 
-              const SizedBox(height: AppSpacing.md),
+                const SizedBox(height: AppSpacing.md),
 
-              TextButton(
-                onPressed: () async {
-                  final completed = await playerRepo.isOnboardingCompleted();
-                  if (completed) {
-                    context.go('/home');
-                  } else {
-                    context.push('/onboarding');
-                  }
-                },
-                child: Text(
-                  'Tôi đã có tài khoản',
-                  style: TextStyle(color: AppColors.lightTextSecondary),
-                ),
-              ).animate().fadeIn(delay: 600.ms, duration: 400.ms),
+                TextButton(
+                  onPressed: () async {
+                    final completed = await playerRepo.isOnboardingCompleted();
+                    if (completed) {
+                      context.go('/home');
+                    } else {
+                      context.push('/onboarding');
+                    }
+                  },
+                  child: Text(
+                    'Tôi đã có tài khoản',
+                    style:
+                        TextStyle(color: AppColors.textSecondary(brightness)),
+                  ),
+                ).animate().fadeIn(delay: 600.ms, duration: 400.ms),
 
-              const SizedBox(height: AppSpacing.lg),
-            ],
+                const SizedBox(height: AppSpacing.lg),
+              ],
+            ),
           ),
         ),
       ),
@@ -154,6 +150,9 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final enabled = widget.onPressed != null;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -166,12 +165,15 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: enabled
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null
+            boxShadow: enabled
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness)
+                          .withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -180,10 +182,10 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           ),
           child: Text(
             widget.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
             ),
             textAlign: TextAlign.center,
           ),

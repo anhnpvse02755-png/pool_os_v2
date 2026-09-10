@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
+import '../../widgets/icon_tile.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 class InterestSelectionScreen extends StatefulWidget {
   final VoidCallback? onComplete;
@@ -18,76 +20,79 @@ class InterestSelectionScreen extends StatefulWidget {
 class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
   final Set<String> _selectedInterests = {};
 
-  final List<_InterestOption> _interests = [
+  /// `toneIndex` gán CỐ ĐỊNH theo danh mục, không theo vị trí trong lưới —
+  /// người dùng học được màu nên một danh mục phải luôn cùng tông, kể cả khi
+  /// sau này thêm/bớt mục khác hoặc sắp xếp lại.
+  final List<_InterestOption> _interests = const [
     _InterestOption(
       id: 'draw',
       name: 'Draw Shot',
       nameVi: 'Draw Shot',
       icon: Icons.arrow_back,
-      color: Colors.orange,
+      toneIndex: 2,
     ),
     _InterestOption(
       id: 'position',
       name: 'Position Control',
       nameVi: 'Kiểm soát vị trí',
       icon: Icons.gps_fixed,
-      color: Colors.blue,
+      toneIndex: 1,
     ),
     _InterestOption(
       id: 'bank',
       name: 'Bank Shot',
       nameVi: 'Bank',
       icon: Icons.change_history,
-      color: Colors.purple,
+      toneIndex: 3,
     ),
     _InterestOption(
       id: 'kick',
       name: 'Kick Shot',
       nameVi: 'Kick',
       icon: Icons.turn_right,
-      color: Colors.teal,
+      toneIndex: 0,
     ),
     _InterestOption(
       id: 'jump',
       name: 'Jump Shot',
       nameVi: 'Jump',
       icon: Icons.arrow_upward,
-      color: Colors.red,
+      toneIndex: 2,
     ),
     _InterestOption(
       id: 'masse',
       name: 'Masse',
       nameVi: 'Masse',
       icon: Icons.rotate_right,
-      color: Colors.pink,
+      toneIndex: 3,
     ),
     _InterestOption(
       id: 'safety',
       name: 'Safety Play',
       nameVi: 'An toàn',
       icon: Icons.shield,
-      color: Colors.green,
+      toneIndex: 0,
     ),
     _InterestOption(
       id: '3cushion',
       name: '3 Cushion',
       nameVi: '3 Băng',
       icon: Icons.view_in_ar,
-      color: Colors.indigo,
+      toneIndex: 1,
     ),
     _InterestOption(
       id: 'trickshot',
       name: 'Trickshot',
       nameVi: 'Trickshot',
       icon: Icons.auto_awesome,
-      color: Colors.amber,
+      toneIndex: 4,
     ),
     _InterestOption(
       id: 'break',
       name: 'Break Shot',
       nameVi: 'Khai cuộc',
       icon: Icons.flash_on,
-      color: Colors.deepOrange,
+      toneIndex: 4,
     ),
   ];
 
@@ -111,9 +116,12 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: SafeArea(
+      backgroundColor: AppColors.background(brightness),
+      body: SoftBackground(
+        child: SafeArea(
         child: Column(
           children: [
             // Header
@@ -126,32 +134,36 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
                     'Bạn thích học gì?',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary(brightness),
                         ),
                   ).animate().fadeIn(),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Chọn những gì bạn muốn cải thiện. Điều này giúp AI đề xuất bài tập phù hợp với bạn.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.lightTextSecondary,
+                          color: AppColors.textSecondary(brightness),
                         ),
                   ).animate().fadeIn(delay: 100.ms),
                   const SizedBox(height: AppSpacing.md),
+                  // Hộp gợi ý: nền pastel butter thay cho gold@10% — gold trên
+                  // nền kem chỉ đạt ~2:1, chữ 13px đọc không ra.
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: AppColors.gold.withValues(alpha: 0.1),
+                      color: AppColors.pastelFor(4, brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, size: 18, color: AppColors.gold),
+                        Icon(Icons.info_outline,
+                            size: 18,
+                            color: AppColors.accentLabel(brightness)),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
                             'Bạn có thể chọn nhiều hoặc bỏ trống. Tất cả bài tập đều mở cho bạn.',
                             style: TextStyle(
-                              color: AppColors.gold,
+                              color: AppColors.textPrimary(brightness),
                               fontSize: 13,
                             ),
                           ),
@@ -191,9 +203,9 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: AppColors.lightSurface,
+                color: AppColors.surface(brightness),
                 border: Border(
-                  top: BorderSide(color: AppColors.lightBorder),
+                  top: BorderSide(color: AppColors.border(brightness)),
                 ),
               ),
               child: SafeArea(
@@ -203,7 +215,7 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
                     Text(
                       '${_selectedInterests.length} sở thích đã chọn',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontSize: 14,
                       ),
                     ),
@@ -218,6 +230,7 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
             ),
           ],
         ),
+        ),
       ),
     );
   }
@@ -228,14 +241,16 @@ class _InterestOption {
   final String name;
   final String nameVi;
   final IconData icon;
-  final Color color;
+
+  /// Tông pastel của danh mục — xem `AppColors.pastelFor`.
+  final int toneIndex;
 
   const _InterestOption({
     required this.id,
     required this.name,
     required this.nameVi,
     required this.icon,
-    required this.color,
+    required this.toneIndex,
   });
 }
 
@@ -252,69 +267,41 @@ class _InterestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    final brightness = Theme.of(context).brightness;
+
+    // Trạng thái chọn thể hiện bằng bề mặt nổi / chìm — đúng ngôn ngữ của
+    // thiết kế tham chiếu, thay cho viền màu đậm của bản cũ.
+    return PoolCard(
+      selected: isSelected,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? interest.color.withValues(alpha: 0.1)
-              : AppColors.lightSurface,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(
-            color: isSelected ? interest.color : AppColors.lightBorder,
-            width: isSelected ? 2 : 1,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconTile(icon: interest.icon, toneIndex: interest.toneIndex, size: 48),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            interest.nameVi,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: isSelected
+                  ? AppColors.textPrimary(brightness)
+                  : AppColors.textSecondary(brightness),
+              fontSize: 13,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: interest.color.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? interest.color.withValues(alpha: 0.2)
-                    : AppColors.lightBackground,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                interest.icon,
-                color: isSelected ? interest.color : AppColors.lightTextTertiary,
-                size: 24,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              interest.nameVi,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: isSelected ? interest.color : AppColors.lightTextPrimary,
-                fontSize: 13,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Icon(
-              isSelected ? Icons.check_circle : Icons.circle_outlined,
-              color: isSelected ? interest.color : AppColors.lightTextTertiary,
-              size: 20,
-            ),
-          ],
-        ),
+          const SizedBox(height: AppSpacing.xs),
+          Icon(
+            isSelected ? Icons.check_circle : Icons.circle_outlined,
+            color: isSelected
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
+            size: 20,
+          ),
+        ],
       ),
     );
   }
@@ -338,6 +325,9 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final enabled = widget.onPressed != null;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -350,12 +340,15 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: enabled
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null
+            boxShadow: enabled
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness)
+                          .withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -364,10 +357,10 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           ),
           child: Text(
             widget.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
             ),
             textAlign: TextAlign.center,
           ),

@@ -3,12 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/pool_rating_calculator.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../widgets/soft_background.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
@@ -121,9 +121,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: SafeArea(
+      backgroundColor: AppColors.background(brightness),
+      body: SoftBackground(
+        child: SafeArea(
         child: Column(
           children: [
             // Progress indicator
@@ -137,8 +140,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 2),
                       decoration: BoxDecoration(
                         color: index <= _currentPage
-                            ? AppColors.accent
-                            : AppColors.lightBorder,
+                            ? AppColors.primary(brightness)
+                            : AppColors.border(brightness),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -207,12 +210,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           curve: Curves.easeInOut,
                         ),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.lightTextPrimary,
+                          foregroundColor: AppColors.textPrimary(brightness),
                           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                           ),
-                          side: BorderSide(color: AppColors.lightBorder),
+                          side: BorderSide(color: AppColors.border(brightness)),
                         ),
                         child: const Text('Quay lại'),
                       ),
@@ -230,6 +233,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
           ],
         ),
+        ),
       ),
     );
   }
@@ -240,6 +244,8 @@ class _WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -249,10 +255,10 @@ class _WelcomePage extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.accentSubtleLight,
+              color: AppColors.pastelFor(0, brightness),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.waving_hand, size: 40, color: AppColors.gold),
+            child: Icon(Icons.waving_hand, size: 40, color: AppColors.accentLabel(brightness)),
           ).animate().scale(duration: 400.ms),
           const SizedBox(height: AppSpacing.xl),
           Text(
@@ -266,7 +272,7 @@ class _WelcomePage extends StatelessWidget {
           Text(
             'Trước khi bắt đầu, hãy để PoolOS hiểu về kỹ năng của bạn.',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 300.ms),
@@ -277,18 +283,18 @@ class _WelcomePage extends StatelessWidget {
               vertical: AppSpacing.sm,
             ),
             decoration: BoxDecoration(
-              color: AppColors.accentSubtleLight,
+              color: AppColors.pastelFor(0, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.timer, color: AppColors.accent, size: 20),
+                Icon(Icons.timer, color: AppColors.primary(brightness), size: 20),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Mất khoảng 2-3 phút',
                   style: TextStyle(
-                    color: AppColors.accent,
+                    color: AppColors.primary(brightness),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -306,6 +312,8 @@ class _LevelSystemIntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -323,21 +331,20 @@ class _LevelSystemIntroPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.1),
+              color: AppColors.pastelFor(4, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, size: 20, color: AppColors.gold),
+                    Icon(Icons.info_outline, size: 20, color: AppColors.accentLabel(brightness)),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Về hệ thống xếp hạng',
                       style: TextStyle(
-                        color: AppColors.gold,
+                        color: AppColors.accentLabel(brightness),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -382,17 +389,17 @@ class _LevelSystemIntroPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.accentSubtleLight,
+              color: AppColors.pastelFor(0, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Row(
               children: [
-                Icon(Icons.auto_awesome, color: AppColors.accent, size: 20),
+                Icon(Icons.auto_awesome, color: AppColors.primary(brightness), size: 20),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
                     'PoolOS sẽ tự động đề xuất hạng dựa trên bài đánh giá.',
-                    style: TextStyle(color: AppColors.accent),
+                    style: TextStyle(color: AppColors.primary(brightness)),
                   ),
                 ),
               ],
@@ -415,6 +422,8 @@ class _LevelCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -422,13 +431,13 @@ class _LevelCategory extends StatelessWidget {
           title,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.accent,
+            color: AppColors.primary(brightness),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.lightBorder),
+            border: Border.all(color: AppColors.border(brightness)),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
           child: Column(
@@ -440,7 +449,7 @@ class _LevelCategory extends StatelessWidget {
                   vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: index.isEven ? AppColors.lightSurface : AppColors.lightBackground,
+                  color: index.isEven ? AppColors.surface(brightness) : AppColors.background(brightness),
                   borderRadius: index == levels.length - 1
                       ? BorderRadius.only(
                           bottomLeft: Radius.circular(AppSpacing.radiusMd),
@@ -454,14 +463,14 @@ class _LevelCategory extends StatelessWidget {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.accentSubtleLight,
+                        color: AppColors.pastelFor(0, brightness),
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Center(
                         child: Text(
                           level.code == 'pro' ? 'PRO' : level.code,
                           style: TextStyle(
-                            color: AppColors.accent,
+                            color: AppColors.primary(brightness),
                             fontWeight: FontWeight.bold,
                             fontSize: level.code == 'pro' ? 10 : 14,
                           ),
@@ -473,7 +482,7 @@ class _LevelCategory extends StatelessWidget {
                       child: Text(
                         level.description,
                         style: TextStyle(
-                          color: AppColors.lightTextPrimary,
+                          color: AppColors.textPrimary(brightness),
                           fontSize: 13,
                         ),
                       ),
@@ -494,6 +503,8 @@ class _AssessmentIntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -502,10 +513,10 @@ class _AssessmentIntroPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: AppColors.accentSubtleLight,
+              color: AppColors.pastelFor(0, brightness),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.psychology, size: 56, color: AppColors.accent),
+            child: Icon(Icons.psychology, size: 56, color: AppColors.primary(brightness)),
           ).animate().scale(duration: 400.ms),
           const SizedBox(height: AppSpacing.xl),
           Text(
@@ -518,7 +529,7 @@ class _AssessmentIntroPage extends StatelessWidget {
           Text(
             '8 câu hỏi để hiểu về trình độ của bạn',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 300.ms),
@@ -526,21 +537,20 @@ class _AssessmentIntroPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.1),
+              color: AppColors.pastelFor(4, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.lightbulb_outline, color: AppColors.gold, size: 20),
+                    Icon(Icons.lightbulb_outline, color: AppColors.accentLabel(brightness), size: 20),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Triết lý của PoolOS',
                       style: TextStyle(
-                        color: AppColors.gold,
+                        color: AppColors.accentLabel(brightness),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -558,7 +568,7 @@ class _AssessmentIntroPage extends StatelessWidget {
           Text(
             'Hãy trả lời dựa trên khả năng thực tế của bạn nhé!',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.w500,
                 ),
           ).animate().fadeIn(delay: 500.ms),
@@ -586,6 +596,8 @@ class _AssessmentQuestionPageState extends State<_AssessmentQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -600,13 +612,13 @@ class _AssessmentQuestionPageState extends State<_AssessmentQuestionPage> {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                 ),
                 child: Text(
                   'Câu ${widget.question.id}',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.onPrimary(brightness),
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -620,18 +632,18 @@ class _AssessmentQuestionPageState extends State<_AssessmentQuestionPage> {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.gold,
+                    color: AppColors.primary(brightness),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.star, size: 12, color: Colors.white),
+                      Icon(Icons.star, size: 12, color: AppColors.onPrimary(brightness)),
                       const SizedBox(width: 2),
                       Text(
                         'Quan trọng',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.onPrimary(brightness),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -657,7 +669,7 @@ class _AssessmentQuestionPageState extends State<_AssessmentQuestionPage> {
           Text(
             widget.question.subtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                   fontStyle: FontStyle.italic,
                 ),
           ).animate().fadeIn(delay: 150.ms),
@@ -699,6 +711,8 @@ class _OptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -707,11 +721,11 @@ class _OptionCard extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? AppColors.accent : AppColors.lightBorder,
+            color: isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          color: isSelected ? AppColors.accentSubtleLight : AppColors.lightSurface,
+          color: isSelected ? AppColors.pastelFor(0, brightness) : AppColors.surface(brightness),
         ),
         child: Row(
           children: [
@@ -722,13 +736,14 @@ class _OptionCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? AppColors.accent : AppColors.lightTextTertiary,
+                  color: isSelected ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
                   width: 2,
                 ),
-                color: isSelected ? AppColors.accent : Colors.transparent,
+                color: isSelected ? AppColors.primary(brightness) : Colors.transparent,
               ),
               child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: Colors.white)
+                  ? Icon(Icons.check,
+                      size: 16, color: AppColors.onPrimary(brightness))
                   : null,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -738,7 +753,7 @@ class _OptionCard extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
-                  color: isSelected ? AppColors.accent : AppColors.lightTextPrimary,
+                  color: isSelected ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                 ),
               ),
             ),
@@ -756,6 +771,7 @@ class _ResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final rating = PoolRatingCalculator.calculateFromAssessment(answers);
     final level = PoolRatingCalculator.getLevelFromRating(rating);
     final levelInfo = PoolRatingCalculator.getLevelInfo(level);
@@ -769,10 +785,11 @@ class _ResultPage extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.accent,
+              color: AppColors.primary(brightness),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.check_circle, size: 48, color: Colors.white),
+            child: Icon(Icons.check_circle,
+                size: 48, color: AppColors.onPrimary(brightness)),
           ).animate().scale(duration: 400.ms, curve: Curves.elasticOut).fadeIn(),
           const SizedBox(height: AppSpacing.lg),
           Text(
@@ -785,7 +802,7 @@ class _ResultPage extends StatelessWidget {
           Text(
             'Dựa trên câu trả lời của bạn, PoolOS xác định hạng khởi tạo của bạn đang ở cấp độ:',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
             textAlign: TextAlign.center,
           ).animate().fadeIn(delay: 300.ms),
@@ -798,9 +815,9 @@ class _ResultPage extends StatelessWidget {
               vertical: AppSpacing.lg,
             ),
             decoration: BoxDecoration(
-              color: AppColors.accentSubtleLight,
+              color: AppColors.pastelFor(0, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              border: Border.all(color: AppColors.accent, width: 2),
+              border: Border.all(color: AppColors.primary(brightness), width: 2),
             ),
             child: Column(
               children: [
@@ -809,7 +826,7 @@ class _ResultPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 64,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.accent,
+                    color: AppColors.primary(brightness),
                   ),
                 ),
                 if (levelInfo != null) ...[
@@ -817,7 +834,7 @@ class _ResultPage extends StatelessWidget {
                   Text(
                     levelInfo.description,
                     style: TextStyle(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 14,
                     ),
                     textAlign: TextAlign.center,
@@ -830,13 +847,13 @@ class _ResultPage extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: 0.2),
+                    color: AppColors.pastelFor(4, brightness),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Text(
                     'Pool Rating: $rating',
                     style: TextStyle(
-                      color: AppColors.gold,
+                      color: AppColors.accentLabel(brightness),
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -852,21 +869,20 @@ class _ResultPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.1),
+              color: AppColors.pastelFor(4, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.gold.withValues(alpha: 0.2)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Icon(Icons.info_outline, size: 20, color: AppColors.gold),
+                    Icon(Icons.info_outline, size: 20, color: AppColors.accentLabel(brightness)),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       'Hạng khởi tạo là gì?',
                       style: TextStyle(
-                        color: AppColors.gold,
+                        color: AppColors.accentLabel(brightness),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -875,24 +891,24 @@ class _ResultPage extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Hạng khởi tạo là hạng đánh giá sơ bộ dựa trên câu trả lời của bạn. Sau khi PoolOS ghi nhận đủ dữ liệu, hệ thống sẽ tự động đánh giá chính xác lại hạng của bạn.',
-                  style: TextStyle(color: AppColors.lightTextPrimary, height: 1.5),
+                  style: TextStyle(color: AppColors.textPrimary(brightness), height: 1.5),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppColors.lightSurface,
+                    color: AppColors.surface(brightness),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.auto_awesome, size: 18, color: AppColors.accent),
+                      Icon(Icons.auto_awesome, size: 18, color: AppColors.primary(brightness)),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           'PoolOS sẽ tạo lộ trình học riêng phù hợp với bạn.',
                           style: TextStyle(
-                            color: AppColors.lightTextPrimary,
+                            color: AppColors.textPrimary(brightness),
                             fontWeight: FontWeight.w500,
                             fontSize: 13,
                           ),
@@ -928,6 +944,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -939,12 +957,12 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -953,10 +971,10 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           ),
           child: Text(
             widget.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
             ),
             textAlign: TextAlign.center,
           ),

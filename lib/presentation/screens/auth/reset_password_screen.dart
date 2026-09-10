@@ -17,6 +17,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
+import '../../widgets/soft_background.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key, this.token});
@@ -74,24 +75,28 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: AppColors.lightTextPrimary,
+        foregroundColor: AppColors.textPrimary(brightness),
         title: const Text('Đặt lại mật khẩu'),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: _done ? _buildDone() : _buildForm(),
+      body: SoftBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: _done ? _buildDone(brightness) : _buildForm(brightness),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildDone() {
+  Widget _buildDone(Brightness brightness) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -99,20 +104,20 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         const Icon(Icons.check_circle_outline,
             size: 64, color: AppColors.success),
         const SizedBox(height: AppSpacing.lg),
-        const Text(
+        Text(
           'Đã đổi mật khẩu',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w700,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        const Text(
+        Text(
           'Bạn có thể đăng nhập bằng mật khẩu mới.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: AppColors.lightTextSecondary),
+          style: TextStyle(color: AppColors.textSecondary(brightness)),
         ),
         const SizedBox(height: AppSpacing.xl),
         FilledButton(
@@ -123,7 +128,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildForm() {
+  Widget _buildForm(Brightness brightness) {
     final missingToken = widget.token == null || widget.token!.isEmpty;
 
     return Form(
@@ -132,9 +137,9 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: AppSpacing.md),
-          const Text(
+          Text(
             'Nhập mật khẩu mới cho tài khoản của bạn.',
-            style: TextStyle(color: AppColors.lightTextSecondary),
+            style: TextStyle(color: AppColors.textSecondary(brightness)),
           ),
           const SizedBox(height: AppSpacing.lg),
 
@@ -143,13 +148,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               padding: const EdgeInsets.all(AppSpacing.md),
               margin: const EdgeInsets.only(bottom: AppSpacing.lg),
               decoration: BoxDecoration(
-                color: AppColors.warningSubtleLight,
+                color: AppColors.warningSubtle(brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               ),
-              child: const Text(
+              child: Text(
                 'Không tìm thấy mã đặt lại trong liên kết. Hãy mở lại email, '
                 'hoặc yêu cầu gửi lại từ màn đăng nhập.',
-                style: TextStyle(color: AppColors.lightTextPrimary),
+                style: TextStyle(color: AppColors.textPrimary(brightness)),
               ),
             ),
 
@@ -183,7 +188,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.errorSubtleLight,
+                color: AppColors.errorSubtle(brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 border:
                     Border.all(color: AppColors.error.withValues(alpha: 0.2)),
