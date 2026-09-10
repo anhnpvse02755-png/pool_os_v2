@@ -164,4 +164,78 @@ void main() {
       expect(styleBody('actionLabel'), contains('FontWeight.w600'));
     });
   });
+
+  group('Chu tren nen primary', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    // Bay that: che do toi primary la #34A97C (xanh sang). Chu trang len do
+    // chi ~2.5:1 — khong doc duoc. Nen onPrimary PHAI dao chieu theo che do,
+    // khong duoc la Colors.white cung.
+    test('du tuong phan 4.5:1 tren nen primary o ca hai che do', () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        expect(
+          contrast(AppColors.onPrimary(b), AppColors.primary(b)),
+          greaterThanOrEqualTo(4.5),
+          reason: 'onPrimary khong doc duoc tren primary o che do $b',
+        );
+      }
+    });
+
+    test('che do sang dung chu sang, che do toi dung chu sam', () {
+      expect(
+        AppColors.onPrimary(Brightness.dark).computeLuminance(),
+        lessThan(AppColors.onPrimary(Brightness.light).computeLuminance()),
+      );
+    });
+  });
+
+  group('Nen semantic diu theo Brightness', () {
+    // Man hinh dung nen diu cho hop loi / canh bao / thanh cong. Truoc day
+    // chi co hang *SubtleLight va *SubtleDark, khong co accessor, nen moi man
+    // deu hardcode ban sang -> dark mode hong.
+    test('errorSubtle doi theo che do', () {
+      expect(AppColors.errorSubtle(Brightness.light),
+          AppColors.errorSubtleLight);
+      expect(
+          AppColors.errorSubtle(Brightness.dark), AppColors.errorSubtleDark);
+    });
+
+    test('warningSubtle doi theo che do', () {
+      expect(AppColors.warningSubtle(Brightness.light),
+          AppColors.warningSubtleLight);
+      expect(AppColors.warningSubtle(Brightness.dark),
+          AppColors.warningSubtleDark);
+    });
+
+    test('successSubtle doi theo che do', () {
+      expect(AppColors.successSubtle(Brightness.light),
+          AppColors.successSubtleLight);
+      expect(AppColors.successSubtle(Brightness.dark),
+          AppColors.successSubtleDark);
+    });
+
+    test('ban toi sam hon ban sang o ca ba', () {
+      for (final pair in [
+        [
+          AppColors.errorSubtle(Brightness.dark),
+          AppColors.errorSubtle(Brightness.light)
+        ],
+        [
+          AppColors.warningSubtle(Brightness.dark),
+          AppColors.warningSubtle(Brightness.light)
+        ],
+        [
+          AppColors.successSubtle(Brightness.dark),
+          AppColors.successSubtle(Brightness.light)
+        ],
+      ]) {
+        expect(pair[0].computeLuminance(),
+            lessThan(pair[1].computeLuminance()));
+      }
+    });
+  });
 }

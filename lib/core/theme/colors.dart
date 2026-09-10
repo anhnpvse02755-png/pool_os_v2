@@ -180,6 +180,28 @@ class AppColors {
   static Color accentSubtle(Brightness brightness) =>
       brightness == Brightness.light ? accentSubtleLight : accentSubtleDark;
 
+  /// Màu chữ/icon đặt TRÊN nền [primary].
+  ///
+  /// Đảo chiều theo chế độ, không phải lúc nào cũng trắng: chế độ tối primary
+  /// là #34A97C (xanh sáng) nên chữ trắng chỉ đạt ~2.5:1 — không đọc được.
+  static Color onPrimary(Brightness brightness) =>
+      brightness == Brightness.light
+          ? const Color(0xFFFFFFFF)
+          : const Color(0xFF08201A);
+
+  /// Nền dịu cho hộp lỗi / cảnh báo / thành công.
+  ///
+  /// Có accessor riêng vì màn hình nào cũng cần, và trước đây mỗi màn tự
+  /// hardcode bản sáng — dark mode ra nền trắng chói trên nền than.
+  static Color errorSubtle(Brightness brightness) =>
+      brightness == Brightness.light ? errorSubtleLight : errorSubtleDark;
+
+  static Color warningSubtle(Brightness brightness) =>
+      brightness == Brightness.light ? warningSubtleLight : warningSubtleDark;
+
+  static Color successSubtle(Brightness brightness) =>
+      brightness == Brightness.light ? successSubtleLight : successSubtleDark;
+
   static Color primary(Brightness brightness) =>
       brightness == Brightness.light ? lightPrimary : darkPrimary;
 
