@@ -46,9 +46,11 @@ class DrillResultScreen extends StatelessWidget {
   ///    không đọc nổi ở chế độ sáng — `success` 2.54:1, `warning` 2.15:1,
   ///    `error` 3.76:1. Lỗi này có từ trước đợt đổi token.
   ///
-  /// Lời giải là LÀM NHẠT NỀN (loang alpha 0.18 -> 0.10 trên `surface`) chứ
-  /// không phải đổi màu trả về ở đây: chữ chuyển sang `textPrimary(brightness)`
-  /// và cả bốn bậc lên trên 10:1 ở chế độ sáng. Nền nhạt rồi thì 3° hue cũng
+  /// Lời giải là LÀM NHẠT NỀN (loang alpha 0.18 -> 0.10 trên `background` —
+  /// thẻ không có `color:` và không nằm trong thẻ nào, nó nằm thẳng trong
+  /// `SoftBackground`) chứ không phải đổi màu trả về ở đây: chữ chuyển sang
+  /// `textPrimary(brightness)` và cả bốn bậc lên trên 8.8:1 ở chế độ sáng
+  /// (bản đo cũ ghi 10:1 vì đo nhầm trên `surface`). Nền nhạt rồi thì 3° hue cũng
   /// hết quan trọng — bốn sắc đều mờ như nhau và CHỮ ('Xuất sắc!' / 'Tốt lắm!')
   /// mới là thứ phân biệt bậc. Gộp hai bậc về cùng `success` từng được cân nhắc
   /// và đã bỏ: nó làm chế độ sáng TỆ ĐI chứ không tốt lên.
@@ -164,7 +166,10 @@ class DrillResultScreen extends StatelessWidget {
                     // Không hue nào cứu được vì vấn đề nằm ở ĐỘ ĐẬM của nền
                     // chứ không ở hex.
                     //
-                    // Loang lên `surface` đưa cả bốn bậc lên trên 10:1 với
+                    // Nền THẬT ở dưới là `background(brightness)`: hộp này chỉ
+                    // đặt `gradient:` và `boxShadow:`, không có `color:`, và
+                    // không có thẻ nào bọc — nó nằm thẳng trong `SoftBackground`.
+                    // Loang lên đó đưa cả bốn bậc lên trên 8.8:1 với
                     // `textPrimary`. Nó cũng xoá luôn hai vấn đề khác: nền hết
                     // bão hoà nên không còn ai phải ngồi cân `onPrimary`, và
                     // khoảng cách 3° hue giữa `success` với `primary` bản tối
@@ -199,7 +204,8 @@ class DrillResultScreen extends StatelessWidget {
                         'Tỷ lệ thành công',
                         // `textSecondary` đã thử và ĐÃ BỎ: bậc ">= 70" dùng
                         // `primary(light)` #0F4032 rất thẫm, nên ngay ở alpha
-                        // 0.18 nền đã đủ tối để nhãn phụ chỉ còn 4.27:1. Thứ
+                        // 0.18 nền đã đủ tối để nhãn phụ chỉ còn 3.91:1 (bản đo
+                        // cũ ghi 4.27:1 vì đo nhầm trên `surface`). Thứ
                         // bậc do cỡ chữ 48 vs 14 lo, không cần nhạt màu thêm.
                         style: TextStyle(
                           color: AppColors.textPrimary(brightness),
@@ -216,16 +222,25 @@ class DrillResultScreen extends StatelessWidget {
                       // - phần đã chạy MÃ HOÁ tỉ lệ nên là đối tượng đồ hoạ
                       //   mang nghĩa, sàn 3:1.
                       //
-                      // Phần đã chạy CỐ Ý không lấy `tone`, và cũng không lấy
-                      // `primary`. Cả hai đều là màu SẮC đặt lên nền loang
-                      // cùng họ: `tone` đặc ở bậc `warning` chế độ sáng chỉ
-                      // còn 1.87:1 với nền và 1.51:1 với rãnh; `primary` thì
-                      // hụt ở bậc `success` chế độ tối, 2.89:1 với rãnh.
+                      // Phần đã chạy CỐ Ý không lấy `tone`: `tone` đặc ở bậc
+                      // `warning` chế độ sáng chỉ còn 1.73:1 với nền và 1.40:1
+                      // với rãnh — dưới hẳn sàn.
+                      //
+                      // `primary` thì KHÔNG bị loại vì tương phản, và câu đó ở
+                      // bản trước là SAI: nó viện 2.89:1 với rãnh ở bậc
+                      // `success` chế độ tối, nhưng con số ấy đo nền loang phủ
+                      // lên `surface`. Nền thật là `background`, và trên nền
+                      // thật chỗ đó là 3.25:1 — ĐẠT sàn 3:1; chỗ tệ nhất của
+                      // `primary` qua cả bốn bậc x hai stop x hai chế độ là
+                      // 3.15:1, vẫn đạt. Lý do thật để giữ `textPrimary` là
+                      // BIÊN: `primary` chỉ hơn sàn 5% ở chỗ tệ nhất và là màu
+                      // SẮC có thể trùng họ xanh rêu với chính nền loang (bậc
+                      // ">= 70" tô bằng nó).
                       //
                       // Rãnh và phần đã chạy nay là CÙNG một mực, khác nhau ở
                       // độ đặc (0.12 vs 1.0). Mực thì luôn nghịch với nền theo
-                      // đúng định nghĩa `textPrimary`, nên cách này đạt ≥8:1 ở
-                      // mọi bậc và cả hai chế độ mà không phải dò từng hex.
+                      // đúng định nghĩa `textPrimary`, nên cách này đạt ≥7.2:1
+                      // ở mọi bậc và cả hai chế độ mà không phải dò từng hex.
                       // Bậc nào là bậc nào đã có sắc nền và dòng chữ nói rồi.
                       ClipRRect(
                         borderRadius:
