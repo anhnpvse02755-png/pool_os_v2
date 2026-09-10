@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/spacing.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/providers/notification_provider.dart';
 
 /// PoolOS Main Shell with Bottom Navigation
@@ -17,6 +17,7 @@ class MainShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final unreadCount = ref.watch(unreadNotificationCountProvider);
     final currentLocation = GoRouterState.of(context).uri.path;
+    final brightness = Theme.of(context).brightness;
 
     // Determine current tab index based on route
     int currentIndex = 0;
@@ -37,16 +38,17 @@ class MainShell extends ConsumerWidget {
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).brightness == Brightness.light
-                  ? const Color(0x0D000000)
-                  : const Color(0x26000000),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
+          color: AppColors.surface(brightness),
+          // Thanh dưới đổ bóng LÊN TRÊN nên phải lật offset của token, và
+          // chia đôi vì token soft dành cho thẻ nổi giữa màn, không phải mép.
+          boxShadow: AppShadows.soft(brightness)
+              .map((s) => BoxShadow(
+                    color: s.color,
+                    blurRadius: s.blurRadius,
+                    offset: Offset(0, -s.offset.dy / 2),
+                  ))
+              .toList(),
+          border: Border(top: BorderSide(color: AppColors.border(brightness))),
         ),
         child: SafeArea(
           top: false,
@@ -112,10 +114,9 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(Theme.of(context).brightness);
-    final mutedColor = Theme.of(context).brightness == Brightness.light
-        ? AppColors.lightTextSecondary
-        : AppColors.darkTextSecondary;
+    final brightness = Theme.of(context).brightness;
+    final accentColor = AppColors.primary(brightness);
+    final mutedColor = AppColors.textSecondary(brightness);
 
     return GestureDetector(
       onTap: onTap,
@@ -156,8 +157,12 @@ class _NavItem extends StatelessWidget {
                       ),
                       child: Text(
                         badge! > 9 ? '9+' : '$badge',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          // CỐ Ý truyền Brightness.light: nền badge là
+                          // AppColors.error — hằng đỏ giống nhau ở cả hai chế
+                          // độ — nên chữ trên nó phải sáng ở cả hai, không
+                          // được lật theo Brightness của màn.
+                          color: AppColors.onPrimary(Brightness.light),
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
