@@ -883,7 +883,15 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
         color: AppColors.surface(brightness),
-        boxShadow: AppShadows.soft(brightness),
+        // Thanh dưới đổ bóng LÊN TRÊN nên phải lật offset của token, và
+        // chia đôi vì token soft dành cho thẻ nổi giữa màn, không phải mép.
+        boxShadow: AppShadows.soft(brightness)
+            .map((s) => BoxShadow(
+                  color: s.color,
+                  blurRadius: s.blurRadius,
+                  offset: Offset(0, -s.offset.dy / 2),
+                ))
+            .toList(),
       ),
       child: SafeArea(
         child: _PrimaryButton(
