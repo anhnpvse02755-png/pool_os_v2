@@ -559,7 +559,19 @@ class _RecordingBar extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        boxShadow: AppShadows.sm(brightness),
+        // Thanh dưới đổ bóng LÊN TRÊN nên phải lật offset của token, và
+        // chia đôi vì token soft dành cho thẻ nổi giữa màn, không phải mép.
+        // `AppShadows.sm` có offset (0, +1) — đổ XUỐNG, tức ra ngoài màn hình
+        // với thanh ghim đáy. Đây là thanh đáy thứ ba: theo đúng khuôn của
+        // `main_shell.dart`, kể cả viền trên.
+        boxShadow: AppShadows.soft(brightness)
+            .map((s) => BoxShadow(
+                  color: s.color,
+                  blurRadius: s.blurRadius,
+                  offset: Offset(0, -s.offset.dy / 2),
+                ))
+            .toList(),
+        border: Border(top: BorderSide(color: AppColors.border(brightness))),
       ),
       child: SafeArea(
         top: false,

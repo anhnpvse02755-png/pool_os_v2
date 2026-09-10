@@ -124,7 +124,16 @@ class AppColors {
   static const Color errorLight = Color(0xFFF87171);
   static const Color errorDark = Color(0xFFDC2626);
   static const Color errorSubtleLight = Color(0xFFFEF2F2);
-  static const Color errorSubtleDark = Color(0xFF7F1D1D);
+
+  /// Nền lỗi bản tối.
+  ///
+  /// Trước là #7F1D1D: `error` #EF4444 đặt lên chỉ đạt 2.66:1 — dưới sàn 3:1
+  /// cho một đối tượng đồ hoạ mang nghĩa, trong khi hai ô anh em đã đạt
+  /// (success 3.83:1, warning 4.22:1). Nhìn theo HSL thì lỗi lộ ngay: ô lỗi là
+  /// ô SÁNG NHẤT trong ba (L=30.6% so với success 16% và warning 26%). Hạ dọc
+  /// đúng tia HSL của chính nó (hue 0°, sat 63%) xuống L=20% đưa nó vào giữa
+  /// dải anh em và nâng tỉ lệ lên 3.80:1.
+  static const Color errorSubtleDark = Color(0xFF531313);
 
   // ========================================================================
   // ĐỘ KHÓ — tông riêng cho mức "expert"

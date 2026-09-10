@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Tám luật vệ sinh token mà MỌI lô quét đều phải đạt.
+/// Chín luật vệ sinh token mà MỌI lô quét đều phải đạt.
 ///
 /// Đọc mã nguồn chứ không render: mục tiêu là chặn token khoá-sáng quay lại,
 /// và việc đó rẻ hơn nhiều so với dựng đủ provider để pump từng màn.
@@ -89,14 +89,33 @@ void expectTokenHygiene(String batchName, List<String> paths) {
         reason: 'Dùng AppColors/AppShadows theo brightness:\n$offenders');
   });
 
-  test('$batchName không dùng hằng shadow khoá chế độ', () {
-    // `shadowLight` là Color(0x0D000000) — 5% đen. Trên nền than #121715 nó
-    // không đóng góp gì, nên thẻ mất hẳn tín hiệu độ cao ở chế độ tối.
-    // Luật `light[A-Z]` không bắt được vì ở đây "Light" là HẬU TỐ — đúng kẽ
-    // hở mà luật `*Subtle(Light|Dark)` đã phải viết riêng cho họ token kia.
-    final offenders = offendersFor(RegExp(r'AppColors\.shadow(Light|Dark)\b'));
+  test('$batchName không dùng token hậu tố Light/Dark', () {
+    // HỌ token hậu tố, không phải một token lẻ. Luật 1 đòi `light` làm TIỀN
+    // TỐ, luật 3 đòi có đoạn `Subtle`, luật 7 chỉ phủ thân `accent` — nên
+    // `shadowLight`, `successLight`, `warningDark`, `errorLight`, `goldLight`,
+    // `streakLight`, `pastelLight/Dark` đều lọt lưới. Đây là lần vá thứ ba cho
+    // cùng một hình dạng tên; vá nốt cả họ để năm lô sau không phải vá tiếp.
+    //
+    // Lookahead loại tiền tố `light`/`dark` (đã có luật 1 và 2 lo).
+    //
+    // CỐ Ý KHÔNG MIỄN TRỪ token thang độ (`successLight` = xanh nhạt hơn, chứ
+    // không phải xanh chế-độ-sáng). Luật bắt chúng theo hình dạng tên, nhưng
+    // bắt vậy vẫn ĐÚNG về bản chất: chúng là hằng hex cứng, không phản ứng với
+    // Brightness, nên màn dùng chúng sẽ hiện y hệt nhau ở cả hai chế độ — đúng
+    // cái lỗi mà cả bộ luật này sinh ra để chặn. Chúng cũng không có accessor
+    // theo brightness, nên với tới chúng là với QUA lớp semantic. Lô nào thật
+    // sự cần một sắc nhạt hơn thì việc đúng là thêm accessor, và luật này ép
+    // đúng điều đó. Miễn trừ thì lại đẻ ra danh sách ngoại lệ từng-token mà
+    // luật này vừa dọn.
+    //
+    // Token KHÔNG hậu tố (`AppColors.success/warning/error/gold/streak`) vẫn
+    // hợp lệ: chúng bất biến theo chế độ một cách có chủ đích.
+    final offenders = offendersFor(
+        RegExp(r'AppColors\.(?!light|dark)[a-z]\w*(Light|Dark)\b'));
     expect(offenders, isEmpty,
-        reason: 'Dùng AppShadows.soft(brightness):\n$offenders');
+        reason: 'Dùng accessor theo brightness (AppColors.foo(brightness), '
+            'AppShadows.soft(brightness), AppColors.pastelFor(i, brightness)):\n'
+            '$offenders');
   });
 
   test('$batchName mọi màn đọc Brightness', () {

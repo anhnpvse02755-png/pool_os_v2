@@ -118,30 +118,50 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 ),
                 background: Container(
                   decoration: BoxDecoration(
+                    // LOANG, không phải tô đặc. `foregroundColor` ở trên vẽ nút
+                    // back / nút share / tiêu đề bằng `textPrimary(brightness)`
+                    // ngay TRÊN nền này; tô đặc thì mức expert (#6D4AA6, độ
+                    // sáng 0.109) chỉ còn 2.03:1 — dưới sàn 3:1 cho chrome.
+                    // Không có hue nào vừa đạt 4.5:1 làm chữ badge trên nền
+                    // trắng vừa đạt 3:1 dưới chrome gần-đen, nên lời giải nằm ở
+                    // ĐỘ ĐẬM của nền chứ không phải ở hex. Loang lên `surface`
+                    // đưa cả bốn mức về 10.2–11.7:1, và vì `surface` đổi theo
+                    // chế độ nên nền này hết còn bất biến — dark mode cũng lành.
+                    //
+                    // `withValues` trên nền Container là hợp lệ: luật cấm alpha
+                    // chỉ áp cho MÀU CHỮ.
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        _getDifficultyColor(drill.difficulty, brightness),
                         _getDifficultyColor(drill.difficulty, brightness)
-                            .withValues(alpha: 0.7),
+                            .withValues(alpha: 0.18),
+                        _getDifficultyColor(drill.difficulty, brightness)
+                            .withValues(alpha: 0.10),
                       ],
                     ),
                   ),
                   child: Center(
-                    // Nền là gradient độ khó — ba trong bốn tông đó là hằng BẤT
-                    // BIẾN theo chế độ, nên glyph phải bất biến theo: literal
-                    // `Brightness.light`, đúng tiền lệ badge-trên-`error` ở
-                    // `main_shell.dart`.
+                    // Nền ĐÃ HẾT bất biến: loang mờ nghĩa là `surface(brightness)`
+                    // ăn phần lớn màu, nên chế độ sáng ra nền nhạt còn chế độ tối
+                    // ra nền thẫm. Lập luận "nền bất biến nên literal
+                    // `Brightness.light`" ở bản trước không còn đúng và đã bỏ.
                     //
-                    // GIỮ `alpha: 0.3`: đây là hoa văn trang trí cỡ 80 nằm sau
-                    // nội dung, không phải chữ để đọc — luật "không alpha trên
-                    // màu chữ" không áp dụng cho nó.
+                    // Trắng là lựa chọn SAI trên nền nhạt: onPrimary sáng ở mọi
+                    // alpha tới 0.4 chỉ ra 1.03–1.09:1, coi như tàng hình. Glyph
+                    // phải sẫm ở chế độ sáng và sáng ở chế độ tối — đúng định
+                    // nghĩa `textPrimary(brightness)`.
+                    //
+                    // GIỮ alpha: đây là hoa văn trang trí cỡ 80 nằm sau nội
+                    // dung, không phải chữ để đọc — luật "không alpha trên màu
+                    // chữ" không áp dụng cho nó. 0.25 cho 1.59–1.61:1 (sáng) và
+                    // 2.08–2.12:1 (tối), đều hơn hẳn 1.25–1.95:1 thất thường của
+                    // bản trắng-30% cũ mà vẫn còn là hoa văn.
                     child: Icon(
                       Icons.fitness_center,
                       size: 80,
-                      color: AppColors.onPrimary(Brightness.light)
-                          .withValues(alpha: 0.3),
+                      color: AppColors.textPrimary(brightness)
+                          .withValues(alpha: 0.25),
                     ),
                   ),
                 ),
@@ -892,6 +912,9 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   offset: Offset(0, -s.offset.dy / 2),
                 ))
             .toList(),
+        // Bản `soft` chế độ tối gần như vô hình trên nền than — `shadows.dart`
+        // dặn phải kèm viền 1px. Bản trước chép nửa bóng mà bỏ nửa viền.
+        border: Border(top: BorderSide(color: AppColors.border(brightness))),
       ),
       child: SafeArea(
         child: _PrimaryButton(
