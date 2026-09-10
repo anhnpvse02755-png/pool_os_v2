@@ -395,32 +395,59 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     final brightness = Theme.of(context).brightness;
 
     // Tiêu đề dùng token chữ chứ không dùng `color`: `success` #10B981 đặt trên
-    // `surface` trắng chỉ đạt 2.48:1. Tông của mục vẫn còn ở icon.
+    // `surface` trắng chỉ đạt 2.48:1.
+    //
+    // Nhưng dồn tông xuống RIÊNG icon thì icon thành thứ DUY NHẤT mang tông,
+    // tức nó hết trang trí — mà `color` đặc trên `surface` bản sáng chỉ có
+    // `success` 2.54:1 và `warning` 2.15:1, dưới sàn 3:1 của đồ hoạ có nghĩa.
+    // (Bản tối vốn lành: 6.39:1 và 7.55:1.)
+    //
+    // Cách sửa là LOANG 0.18 + mực `textPrimary` — đúng khuôn vòng tròn điểm
+    // và pill bậc ở ngay trên trong file này. Tông chuyển từ nét icon 20px
+    // sang cả dải nền tiêu đề, còn icon và chữ lên 11.25:1 / 11.69:1 (sáng) và
+    // 10.49:1 / 10.14:1 (tối). Phân biệt hai mục KHÔNG còn treo vào màu: nhãn
+    // 'Điểm mạnh' / 'Cần cải thiện' và hình icon (thumb_up / trending_up) đều
+    // đọc được ở trên 10:1; dải loang chỉ là lớp nhấn thêm.
     return PoolCard(
       radius: AppSpacing.radiusLg,
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 20),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary(brightness),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.18),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            ),
+            child: Row(
+              children: [
+                Icon(icon,
+                    color: AppColors.textPrimary(brightness), size: 20),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary(brightness),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           ...items.map((item) => Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                 child: Row(
                   children: [
-                    Icon(Icons.check_circle, color: color, size: 16),
+                    // Dấu đầu dòng nay CHỈ còn là dấu đầu dòng — tông đã dời
+                    // lên dải loang của tiêu đề — nên nó lấy token chữ phụ:
+                    // 5.92:1 (sáng) và 6.44:1 (tối), thay cho `color` đặc
+                    // 2.54:1 / 2.15:1 ở bản sáng.
+                    Icon(Icons.check_circle,
+                        color: AppColors.textSecondary(brightness), size: 16),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(
                       child: Text(

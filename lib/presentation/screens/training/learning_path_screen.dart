@@ -81,7 +81,14 @@ class LearningPathScreen extends ConsumerWidget {
               gradient: LinearGradient(
                 colors: [
                   AppColors.primary(brightness),
-                  AppColors.primary(brightness).withValues(alpha: 0.8),
+                  // Đuôi dải KHÔNG được nhạt quá: nó pha xuống nền màn hình và
+                  // kéo tương phản của chữ đặt lên. Ở 0,8 đuôi bản tối là
+                  // #2D8C67, chữ `onPrimary(dark)` trên đó chỉ 4,11:1 — mà
+                  // 'Tuần này' là 18px đậm, vẫn dưới ngưỡng 18,66px của "chữ
+                  // lớn", nên sàn là 4,5:1 chứ không phải 3:1. 0,86 là mức
+                  // thấp nhất còn qua sàn: đuôi #2F956E, chữ 4,58:1. Bản sáng
+                  // không bị ảnh hưởng (6,65:1).
+                  AppColors.primary(brightness).withValues(alpha: 0.86),
                 ],
               ),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
