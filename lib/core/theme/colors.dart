@@ -127,6 +127,18 @@ class AppColors {
   static const Color errorSubtleDark = Color(0xFF7F1D1D);
 
   // ========================================================================
+  // ĐỘ KHÓ — tông riêng cho mức "expert"
+  //
+  // easy/medium/hard đã có success/warning/error. Mức expert trước đây là
+  // hằng tím thô #8B5CF6; nó phải đi, nhưng KHÔNG được gộp vào `primary`:
+  // chế độ tối primary là #34A97C, lệch đúng 3° hue so với success #10B981
+  // nên bài dễ nhất và bài khó nhất trông y hệt nhau.
+  // ========================================================================
+
+  static const Color lightDifficultyExpert = Color(0xFF6D4AA6);
+  static const Color darkDifficultyExpert = Color(0xFFB49BE0);
+
+  // ========================================================================
   // SPECIAL COLORS
   // ========================================================================
 
@@ -220,6 +232,16 @@ class AppColors {
       brightness == Brightness.light
           ? lightSurfaceRecessed
           : darkSurfaceRecessed;
+
+  /// Tông của mức độ khó "expert".
+  ///
+  /// Tách khỏi `primary` có chủ đích: dùng chung sẽ làm expert trùng màu với
+  /// easy (`success`) ở chế độ tối. Tím giữ khoảng cách hue ≥ 97° với cả ba
+  /// tông độ khó còn lại.
+  static Color difficultyExpert(Brightness brightness) =>
+      brightness == Brightness.light
+          ? lightDifficultyExpert
+          : darkDifficultyExpert;
 
   /// Tông pastel thứ [index], lặn vòng khi vượt quá 5.
   static Color pastelFor(int index, Brightness brightness) {

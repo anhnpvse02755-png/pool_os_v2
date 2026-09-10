@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../widgets/icon_tile.dart';
@@ -22,6 +23,16 @@ class _DrillListScreenState extends State<DrillListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String? _selectedDifficulty;
+
+  /// Ô tìm kiếm hiện CHƯA lọc gì — nó vô hiệu từ trước lô này và vẫn vô hiệu.
+  ///
+  /// Trước đây giá trị này chỉ được đọc bởi getter `_filteredDrills` mà
+  /// `build()` không bao giờ gọi. Nối thẳng nó vào đường render là SAI:
+  /// `DrillLibrary.searchDrills` chạy trên `getAllDrills()` nên nó THAY danh
+  /// sách chứ không lọc, vứt luôn phạm vi danh mục, tab đang chọn và bộ lọc
+  /// độ khó. Tìm kiếm có phạm vi là một tính năng riêng, cần task và test
+  /// riêng — không phải việc của một lô đổi token màu.
+  // ignore: unused_field
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
 
@@ -270,10 +281,6 @@ class _DrillListScreenState extends State<DrillListScreen>
           .where((d) => d.difficulty == _selectedDifficulty)
           .toList();
     }
-    if (_searchQuery.isNotEmpty) {
-      filteredDrills = DrillLibrary.searchDrills(_searchQuery);
-    }
-
     return ListView.separated(
       padding: const EdgeInsets.all(AppSpacing.lg),
       itemCount: filteredDrills.length,
@@ -310,7 +317,7 @@ class _DrillCard extends StatelessWidget {
       case 'hard':
         return AppColors.error;
       case 'expert':
-        return AppColors.primary(brightness);
+        return AppColors.difficultyExpert(brightness);
       default:
         return AppColors.textSecondary(brightness);
     }
@@ -350,13 +357,7 @@ class _DrillCard extends StatelessWidget {
           color: AppColors.surface(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           border: Border.all(color: AppColors.border(brightness).withValues(alpha: 0.5)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowLight,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow: AppShadows.soft(brightness),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

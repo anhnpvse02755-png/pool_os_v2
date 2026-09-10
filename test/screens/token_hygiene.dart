@@ -89,6 +89,16 @@ void expectTokenHygiene(String batchName, List<String> paths) {
         reason: 'Dùng AppColors/AppShadows theo brightness:\n$offenders');
   });
 
+  test('$batchName không dùng hằng shadow khoá chế độ', () {
+    // `shadowLight` là Color(0x0D000000) — 5% đen. Trên nền than #121715 nó
+    // không đóng góp gì, nên thẻ mất hẳn tín hiệu độ cao ở chế độ tối.
+    // Luật `light[A-Z]` không bắt được vì ở đây "Light" là HẬU TỐ — đúng kẽ
+    // hở mà luật `*Subtle(Light|Dark)` đã phải viết riêng cho họ token kia.
+    final offenders = offendersFor(RegExp(r'AppColors\.shadow(Light|Dark)\b'));
+    expect(offenders, isEmpty,
+        reason: 'Dùng AppShadows.soft(brightness):\n$offenders');
+  });
+
   test('$batchName mọi màn đọc Brightness', () {
     final offenders = <String>[];
     for (final path in paths) {

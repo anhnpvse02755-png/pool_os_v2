@@ -193,6 +193,75 @@ void main() {
     });
   });
 
+  group('Tong do kho expert', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    // Bay that: gop expert vao `primary` thi che do toi expert = #34A97C,
+    // lech dung 3 do hue so voi success #10B981 — bai de nhat va bai kho nhat
+    // trong y het nhau. Tong rieng phai giu khoang cach hue.
+    double hueOf(Color c) =>
+        HSLColor.fromColor(c).hue;
+
+    test('doi theo che do', () {
+      expect(AppColors.difficultyExpert(Brightness.light),
+          AppColors.lightDifficultyExpert);
+      expect(AppColors.difficultyExpert(Brightness.dark),
+          AppColors.darkDifficultyExpert);
+    });
+
+    test('dat toi thieu 3:1 tren nen cua chinh che do do', () {
+      expect(
+        contrast(AppColors.difficultyExpert(Brightness.light),
+            AppColors.background(Brightness.light)),
+        greaterThanOrEqualTo(3.0),
+      );
+      expect(
+        contrast(AppColors.difficultyExpert(Brightness.dark),
+            AppColors.background(Brightness.dark)),
+        greaterThanOrEqualTo(3.0),
+      );
+    });
+
+    test('dat toi thieu 3:1 tren surface — no la chu tren mat the', () {
+      expect(
+        contrast(AppColors.difficultyExpert(Brightness.light),
+            AppColors.surface(Brightness.light)),
+        greaterThanOrEqualTo(3.0),
+      );
+      expect(
+        contrast(AppColors.difficultyExpert(Brightness.dark),
+            AppColors.surface(Brightness.dark)),
+        greaterThanOrEqualTo(3.0),
+      );
+    });
+
+    test('khac hue ro rang voi ba tong do kho con lai', () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        final expert = hueOf(AppColors.difficultyExpert(b));
+        for (final other in [
+          AppColors.success,
+          AppColors.warning,
+          AppColors.error,
+        ]) {
+          var delta = (expert - hueOf(other)).abs();
+          if (delta > 180) delta = 360 - delta;
+          expect(delta, greaterThanOrEqualTo(60.0),
+              reason: 'expert o che do $b qua gan hue cua $other');
+        }
+      }
+    });
+
+    test('KHONG duoc trung voi primary — do la loi da sua', () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        expect(AppColors.difficultyExpert(b), isNot(AppColors.primary(b)));
+      }
+    });
+  });
+
   group('Nen semantic diu theo Brightness', () {
     // Man hinh dung nen diu cho hop loi / canh bao / thanh cong. Truoc day
     // chi co hang *SubtleLight va *SubtleDark, khong co accessor, nen moi man
