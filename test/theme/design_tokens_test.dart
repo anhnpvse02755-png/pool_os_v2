@@ -390,4 +390,171 @@ void main() {
     // do la no ton tu truoc va ngoai pham vi dot sua nay — khoa lai o day se
     // do ngay ma khong ai duoc giao sua. Da bao cao rieng.
   });
+
+  group('Nen loang cua the ti le (drill_result)', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    // Cung mot cai bay, cung mot cach sua nhu nen header cua drill_detail.
+    //
+    // `ratingColor` tra ve bon bac. Khi the ti le con TO DAC, chu tren no la
+    // `onPrimary` — trang o che do sang — va ba trong bon bac khong doc noi
+    // ngay o che do DUY NHAT dang phat hanh: success 2.54:1, warning 2.15:1,
+    // error 3.76:1. Doi hue khong cuu duoc vi loi nam o DO DAM cua nen.
+    //
+    // Gop hai bac cao nhat ve `success` cung khong cuu duoc: no lam che do
+    // sang TE DI. Cach sua la lam nhat nen, y het drill_detail.
+    const washStops = [0.18, 0.10];
+
+    // Bon bac cua `ratingColor(b)`, viet lai o day CO CHU Y: neu ai doi mot
+    // nhanh trong man hinh ma quen sua o day thi hai ben lech nhau, con neu
+    // ho sua ca hai thi rang buoc tuong phan van duoc kiem tra tren tong moi.
+    List<MapEntry<String, Color>> bands(Brightness b) => [
+          MapEntry('>=90 Xuat sac', AppColors.success),
+          MapEntry('>=70 Tot lam', AppColors.primary(b)),
+          MapEntry('>=50 Can co gang', AppColors.warning),
+          MapEntry('<50 Can luyen tap', AppColors.error),
+        ];
+
+    test('chu doc duoc tren nen loang cua ca bon bac, o ca hai che do', () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        for (final band in bands(b)) {
+          for (final stop in washStops) {
+            final washed = Color.alphaBlend(
+              band.value.withValues(alpha: stop),
+              AppColors.surface(b),
+            );
+            expect(
+              contrast(AppColors.textPrimary(b), washed),
+              greaterThanOrEqualTo(4.5),
+              reason: 'chu chinh tren nen loang bac "${band.key}" @$stop o che '
+                  'do $b khong doc duoc — ha alpha xuong, dung to dac lai.',
+            );
+          }
+        }
+      }
+    });
+
+    test('nhan phu KHONG duoc ha xuong textSecondary — da thu va da bo', () {
+      // Cai bay tinh te: nhan phu 14px thi ai cung muon lam nhat di cho co thu
+      // bac. Nhung bac ">= 70" dung `primary(light)` #0F4032 rat tham, nen
+      // ngay o alpha 0.18 nen da du toi de `textSecondary` chi con 4.27:1.
+      // Thu bac da do co chu 48 vs 14 lo. Khoa lai de lo sau khong "don dep".
+      final washed = Color.alphaBlend(
+        AppColors.primary(Brightness.light).withValues(alpha: washStops.first),
+        AppColors.surface(Brightness.light),
+      );
+      expect(
+        contrast(AppColors.textSecondary(Brightness.light), washed),
+        lessThan(4.5),
+        reason: 'neu textSecondary da du tuong phan thi chu thich trong '
+            'drill_result_screen.dart da lac hau — doc lai roi sua.',
+      );
+    });
+
+    test('phan da chay cua thanh tien do noi tren ca nen loang lan ranh', () {
+      // Phan da chay MA HOA ti le nen no la doi tuong do hoa mang nghia:
+      // san 3:1. Phai kiem CA HAI mep no cham vao — nen loang va ranh.
+      for (final b in [Brightness.light, Brightness.dark]) {
+        final fill = AppColors.textPrimary(b);
+        for (final band in bands(b)) {
+          for (final stop in washStops) {
+            final washed = Color.alphaBlend(
+              band.value.withValues(alpha: stop),
+              AppColors.surface(b),
+            );
+            final groove = Color.alphaBlend(
+              AppColors.textPrimary(b).withValues(alpha: 0.12),
+              washed,
+            );
+            expect(contrast(fill, washed), greaterThanOrEqualTo(3.0),
+                reason: 'phan da chay o bac "${band.key}" @$stop che do $b '
+                    'chim vao nen loang.');
+            expect(contrast(fill, groove), greaterThanOrEqualTo(3.0),
+                reason: 'phan da chay o bac "${band.key}" @$stop che do $b '
+                    'khong tach duoc khoi ranh.');
+          }
+        }
+      }
+    });
+
+    test('phan da chay KHONG duoc lay `tone` hay `primary` — deu da thu', () {
+      // Hai cach "hien nhien" deu hong, va hong o hai bac khac nhau nen thu
+      // mot cai roi ket luan la sai. Khoa ca hai.
+      //
+      // `tone` dac tren nen loang cung hue: bac `warning` che do sang, 1.87:1.
+      final washedWarn = Color.alphaBlend(
+        AppColors.warning.withValues(alpha: washStops.first),
+        AppColors.surface(Brightness.light),
+      );
+      expect(contrast(AppColors.warning, washedWarn), lessThan(3.0),
+          reason: 'neu `tone` dac da du tuong phan thi chu thich trong '
+              'drill_result_screen.dart da lac hau — doc lai roi sua.');
+
+      // `primary` bang mau: bac `success` che do TOI, 2.89:1 voi ranh.
+      final washedOk = Color.alphaBlend(
+        AppColors.success.withValues(alpha: washStops.first),
+        AppColors.surface(Brightness.dark),
+      );
+      final groove = Color.alphaBlend(
+        AppColors.textPrimary(Brightness.dark).withValues(alpha: 0.12),
+        washedOk,
+      );
+      expect(contrast(AppColors.primary(Brightness.dark), groove),
+          lessThan(3.0),
+          reason: 'neu `primary` da du tuong phan thi chu thich trong '
+              'drill_result_screen.dart da lac hau — doc lai roi sua.');
+    });
+
+    test('nen loang phai nhat hon han ban to dac — do la ca noi dung ban sua',
+        () {
+      // Khoa chinh cai delta, khong chi ket qua: neu ai do quay lai to dac thi
+      // test dau tien co the van xanh o mot bac may man nao do.
+      for (final b in [Brightness.light, Brightness.dark]) {
+        for (final band in bands(b)) {
+          final washed = Color.alphaBlend(
+            band.value.withValues(alpha: washStops.first),
+            AppColors.surface(b),
+          );
+          expect(
+            contrast(AppColors.textPrimary(b), washed),
+            greaterThan(contrast(AppColors.textPrimary(b), band.value)),
+            reason: 'bac "${band.key}" o che do $b: nen loang khong nhat hon '
+                'ban to dac.',
+          );
+        }
+      }
+    });
+
+    test('man hinh that su dung nen loang chu khong to dac', () {
+      // Bon test tren chi kiem SO. Neu man hinh quay lai `colors: [tone, ...]`
+      // thi chung van xanh het. Doc nguon de chac rang cach sua con nam do.
+      final source =
+          File('lib/presentation/screens/training/drill_result_screen.dart')
+              .readAsStringSync();
+
+      expect(source, contains('tone.withValues(alpha: 0.18)'),
+          reason: 'the ti le phai dung nen loang 0.18 -> 0.10');
+      expect(source, contains('tone.withValues(alpha: 0.10)'),
+          reason: 'the ti le phai dung nen loang 0.18 -> 0.10');
+
+      // Nen loang khong con bao hoa, nen chu tren THE TI LE khong duoc la
+      // `onPrimary`. Token nay VAN hop le o cho khac trong file — nut bam dac
+      // to bang `primary(brightness)` — nen chi cam trong pham vi the.
+      final card = source.substring(
+        source.indexOf('// Success rate'),
+        source.indexOf("fadeIn(delay: 500.ms)"),
+      );
+      expect(card, isNot(contains('AppColors.onPrimary')),
+          reason: 'the ti le het nen bao hoa thi khong duoc dung onPrimary — '
+              'chu phai la textPrimary/textSecondary theo brightness');
+      expect(card, contains('AppColors.textPrimary(brightness)'),
+          reason: 'so 48px tren the ti le phai dung textPrimary');
+      expect(card, isNot(contains('AppColors.textSecondary')),
+          reason: 'nhan phu tren the ti le khong duoc ha xuong textSecondary');
+    });
+  });
 }

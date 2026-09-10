@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../widgets/pool_card.dart';
@@ -34,13 +35,25 @@ class DrillResultScreen extends StatelessWidget {
   /// Nhận [brightness] vì nhánh "Tốt lắm!" nay dùng `primary(brightness)` —
   /// getter không tham số không với tới được chế độ hiện hành.
   ///
-  /// CHÚ Ý cho lô sau: `success` (hue 160) và `primary` bản tối (hue 157) chỉ
-  /// cách nhau 3°, nên hai bậc cao nhất của thang này gần như trùng màu ở chế
-  /// độ tối — trước khi đổi token thì nhánh ">= 70" là `accent` hue 217, tách
-  /// bạch hẳn. Bảng màu hiện không có hue thứ tư vừa đủ xa vừa đổi theo chế độ
-  /// (`gold` trùng hệt `warning`, `streak` cách `warning` 13°), nên chuyện này
-  /// cần một quyết định thiết kế: gộp hai bậc "đã qua" về cùng `success` và để
-  /// chữ phân biệt, hay thêm hẳn một token bậc-bốn.
+  /// GIỮ ĐỦ BỐN NHÁNH, và không cần đi tìm hue thứ tư. Có hai khiếm khuyết đã
+  /// được cân ở đây, và cả hai tan cùng một lúc ở NƠI DÙNG chứ không phải ở
+  /// bảng màu:
+  ///
+  /// 1. `success` (hue 160) và `primary` bản tối (hue 157) cách nhau 3° nên hai
+  ///    bậc cao nhất gần như trùng sắc — trước khi đổi token, nhánh ">= 70" là
+  ///    `accent` hue 217, tách bạch hẳn.
+  /// 2. Nặng hơn nhiều: hồi nền còn tô ĐẶC, chữ trắng đặt lên ba trong bốn bậc
+  ///    không đọc nổi ở chế độ sáng — `success` 2.54:1, `warning` 2.15:1,
+  ///    `error` 3.76:1. Lỗi này có từ trước đợt đổi token.
+  ///
+  /// Lời giải là LÀM NHẠT NỀN (loang alpha 0.18 -> 0.10 trên `surface`) chứ
+  /// không phải đổi màu trả về ở đây: chữ chuyển sang `textPrimary(brightness)`
+  /// và cả bốn bậc lên trên 10:1 ở chế độ sáng. Nền nhạt rồi thì 3° hue cũng
+  /// hết quan trọng — bốn sắc đều mờ như nhau và CHỮ ('Xuất sắc!' / 'Tốt lắm!')
+  /// mới là thứ phân biệt bậc. Gộp hai bậc về cùng `success` từng được cân nhắc
+  /// và đã bỏ: nó làm chế độ sáng TỆ ĐI chứ không tốt lên.
+  ///
+  /// `test/theme/design_tokens_test.dart` khoá nền đã loang của cả bốn bậc.
   Color ratingColor(Brightness brightness) {
     if (successRate >= 90) return AppColors.success;
     if (successRate >= 70) return AppColors.primary(brightness);
@@ -141,23 +154,36 @@ class DrillResultScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(AppSpacing.xxl),
                   decoration: BoxDecoration(
+                    // LOANG, không phải tô đặc — cùng lỗi và cùng cách sửa như
+                    // nền header của `drill_detail_screen`.
+                    //
+                    // Tô đặc thì chữ trắng trên ba trong bốn bậc KHÔNG đọc
+                    // được ở chế độ sáng, tức chế độ duy nhất đang phát hành:
+                    // `success` 2.54:1, `warning` 2.15:1, `error` 3.76:1. Đây
+                    // là lỗi có từ trước, không phải do đổi token sinh ra.
+                    // Không hue nào cứu được vì vấn đề nằm ở ĐỘ ĐẬM của nền
+                    // chứ không ở hex.
+                    //
+                    // Loang lên `surface` đưa cả bốn bậc lên trên 10:1 với
+                    // `textPrimary`. Nó cũng xoá luôn hai vấn đề khác: nền hết
+                    // bão hoà nên không còn ai phải ngồi cân `onPrimary`, và
+                    // khoảng cách 3° hue giữa `success` với `primary` bản tối
+                    // hết quan trọng vì ở alpha 0.18 cả bốn sắc đều nhạt —
+                    // chữ 'Xuất sắc!' / 'Tốt lắm!' mới là thứ phân biệt bậc.
+                    //
+                    // `withValues` trên nền Container là hợp lệ: luật cấm alpha
+                    // chỉ áp cho MÀU CHỮ.
                     gradient: LinearGradient(
                       colors: [
-                        tone,
-                        tone.withValues(alpha: 0.7),
+                        tone.withValues(alpha: 0.18),
+                        tone.withValues(alpha: 0.10),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                    boxShadow: [
-                      BoxShadow(
-                        color: tone.withValues(alpha: 0.3),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
+                    // Bóng đổ theo tông cũ đậm hơn cả cái thẻ nó đỡ. Nền nay
+                    // là một mảng nhạt như thẻ thường, nên dùng bóng mềm chung.
+                    boxShadow: AppShadows.soft(brightness),
                   ),
-                  // Nền là `ratingColor(brightness)` — một hàm CỦA chế độ, nên
-                  // chữ trên nó đi theo `onPrimary(brightness)`.
                   child: Column(
                     children: [
                       Text(
@@ -165,29 +191,52 @@ class DrillResultScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.onPrimary(brightness),
+                          color: AppColors.textPrimary(brightness),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         'Tỷ lệ thành công',
+                        // `textSecondary` đã thử và ĐÃ BỎ: bậc ">= 70" dùng
+                        // `primary(light)` #0F4032 rất thẫm, nên ngay ở alpha
+                        // 0.18 nền đã đủ tối để nhãn phụ chỉ còn 4.27:1. Thứ
+                        // bậc do cỡ chữ 48 vs 14 lo, không cần nhạt màu thêm.
                         style: TextStyle(
-                          color: AppColors.onPrimary(brightness),
+                          color: AppColors.textPrimary(brightness),
                           fontSize: 14,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       // Progress bar
+                      //
+                      // TRANG TRÍ vs MANG NGHĨA, xử lí khác nhau:
+                      // - rãnh chỉ là cái máng, giữ alpha nhưng đổi sang
+                      //   `textPrimary` để nó đọc được trên nền NHẠT (trắng ở
+                      //   alpha bất kì gần như tàng hình ở đây);
+                      // - phần đã chạy MÃ HOÁ tỉ lệ nên là đối tượng đồ hoạ
+                      //   mang nghĩa, sàn 3:1.
+                      //
+                      // Phần đã chạy CỐ Ý không lấy `tone`, và cũng không lấy
+                      // `primary`. Cả hai đều là màu SẮC đặt lên nền loang
+                      // cùng họ: `tone` đặc ở bậc `warning` chế độ sáng chỉ
+                      // còn 1.87:1 với nền và 1.51:1 với rãnh; `primary` thì
+                      // hụt ở bậc `success` chế độ tối, 2.89:1 với rãnh.
+                      //
+                      // Rãnh và phần đã chạy nay là CÙNG một mực, khác nhau ở
+                      // độ đặc (0.12 vs 1.0). Mực thì luôn nghịch với nền theo
+                      // đúng định nghĩa `textPrimary`, nên cách này đạt ≥8:1 ở
+                      // mọi bậc và cả hai chế độ mà không phải dò từng hex.
+                      // Bậc nào là bậc nào đã có sắc nền và dòng chữ nói rồi.
                       ClipRRect(
                         borderRadius:
                             BorderRadius.circular(AppSpacing.radiusSm),
                         child: LinearProgressIndicator(
                           value: successRate / 100,
                           minHeight: 12,
-                          backgroundColor: AppColors.onPrimary(brightness)
-                              .withValues(alpha: 0.3),
+                          backgroundColor: AppColors.textPrimary(brightness)
+                              .withValues(alpha: 0.12),
                           valueColor: AlwaysStoppedAnimation(
-                              AppColors.onPrimary(brightness)),
+                              AppColors.textPrimary(brightness)),
                         ),
                       ),
                     ],
