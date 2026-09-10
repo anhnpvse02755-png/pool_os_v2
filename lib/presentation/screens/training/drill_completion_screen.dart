@@ -13,6 +13,8 @@ import '../../../data/repositories/drill_session_repository.dart';
 import '../../../data/repositories/personal_best_repository.dart';
 import '../../widgets/reflection_card.dart';
 import '../../widgets/next_action_panel.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 class DrillCompletionScreen extends ConsumerWidget {
   final DrillSession session;
@@ -86,15 +88,16 @@ class DrillCompletionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
     final theme = Theme.of(context);
     final duration = Duration(minutes: session.totalMinutes);
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('Buổi tập hoàn thành'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
@@ -108,157 +111,161 @@ class DrillCompletionScreen extends ConsumerWidget {
           },
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpacing.md),
+      body: SoftBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: AppSpacing.md),
 
-              // Hero pass / fail indicator.
-              _CompletionHero(
-                passed: _passed,
-                drillTitle: _drill?.nameVi ?? session.title,
-              )
-                  .animate()
-                  .fadeIn(duration: 300.ms)
-                  .scale(begin: const Offset(0.9, 0.9)),
+                // Hero pass / fail indicator.
+                _CompletionHero(
+                  passed: _passed,
+                  drillTitle: _drill?.nameVi ?? session.title,
+                )
+                    .animate()
+                    .fadeIn(duration: 300.ms)
+                    .scale(begin: const Offset(0.9, 0.9)),
 
-              const SizedBox(height: AppSpacing.xxl),
+                const SizedBox(height: AppSpacing.xxl),
 
-              // Stat cards.
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Thời gian',
-                      value: '${duration.inMinutes}',
-                      unit: 'phút',
-                      icon: Icons.timer_outlined,
-                      color: AppColors.accent,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Lần đánh',
-                      value: '${session.attempts.length}',
-                      unit: 'lan',
-                      icon: Icons.sports_esports_outlined,
-                      color: AppColors.accent,
-                    ),
-                  ),
-                ],
-              ).animate().fadeIn(delay: 100.ms),
-
-              const SizedBox(height: AppSpacing.md),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Chính xác',
-                      value: _accuracy.toStringAsFixed(0),
-                      unit: '%',
-                      icon: Icons.percent_outlined,
-                      color: AppColors.success,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: _StatCard(
-                      label: 'Trượt',
-                      value: '${session.totalShotsMissed}',
-                      unit: 'lan',
-                      icon: Icons.cancel_outlined,
-                      color: AppColors.error,
-                    ),
-                  ),
-                ],
-              ).animate().fadeIn(delay: 200.ms),
-
-              const SizedBox(height: AppSpacing.xxl),
-
-              // Pass-criteria line.
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                decoration: BoxDecoration(
-                  color: _passed
-                      ? AppColors.success.withValues(alpha: 0.1)
-                      : AppColors.warning.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                  border: Border.all(
-                    color: _passed
-                        ? AppColors.success.withValues(alpha: 0.3)
-                        : AppColors.warning.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Row(
+                // Stat cards.
+                Row(
                   children: [
-                    Icon(
-                      _passed ? Icons.verified_outlined : Icons.info_outline,
-                      color: _passed ? AppColors.success : AppColors.warning,
-                      size: 24,
+                    Expanded(
+                      child: _StatCard(
+                        label: 'Thời gian',
+                        value: '${duration.inMinutes}',
+                        unit: 'phút',
+                        icon: Icons.timer_outlined,
+                        color: AppColors.primary(brightness),
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
-                      child: Text(
-                        _passed
-                            ? 'Dat tieu chi ($_passThreshold lan thanh cong).'
-                            : 'Chua dat - can $_passThreshold lan thanh cong de qua muc.',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: AppColors.lightTextPrimary,
-                          height: 1.4,
-                        ),
+                      child: _StatCard(
+                        label: 'Lần đánh',
+                        value: '${session.attempts.length}',
+                        unit: 'lan',
+                        icon: Icons.sports_esports_outlined,
+                        color: AppColors.primary(brightness),
                       ),
                     ),
                   ],
+                ).animate().fadeIn(delay: 100.ms),
+
+                const SizedBox(height: AppSpacing.md),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: _StatCard(
+                        label: 'Chính xác',
+                        value: _accuracy.toStringAsFixed(0),
+                        unit: '%',
+                        icon: Icons.percent_outlined,
+                        color: AppColors.success,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    Expanded(
+                      child: _StatCard(
+                        label: 'Trượt',
+                        value: '${session.totalShotsMissed}',
+                        unit: 'lan',
+                        icon: Icons.cancel_outlined,
+                        color: AppColors.error,
+                      ),
+                    ),
+                  ],
+                ).animate().fadeIn(delay: 200.ms),
+
+                const SizedBox(height: AppSpacing.xxl),
+
+                // Pass-criteria line.
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    color: _passed
+                        ? AppColors.success.withValues(alpha: 0.1)
+                        : AppColors.warning.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    border: Border.all(
+                      color: _passed
+                          ? AppColors.success.withValues(alpha: 0.3)
+                          : AppColors.warning.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _passed ? Icons.verified_outlined : Icons.info_outline,
+                        color: _passed ? AppColors.success : AppColors.warning,
+                        size: 24,
+                      ),
+                      const SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: Text(
+                          _passed
+                              ? 'Dat tieu chi ($_passThreshold lan thanh cong).'
+                              : 'Chua dat - can $_passThreshold lan thanh cong de qua muc.',
+                          // Nền là lớp phủ 10% trên nền TRANG, nên chữ dùng
+                          // token chữ thường chứ không phải `onPrimary`.
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: AppColors.textPrimary(brightness),
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn(delay: 300.ms),
+
+                const SizedBox(height: AppSpacing.xxl),
+
+                // Reflection block
+                FutureBuilder<_ReflectionData>(
+                  future: _loadReflection(ref),
+                  builder: (context, snapshot) {
+                    final data = snapshot.data ??
+                        _ReflectionData(
+                          previousAccuracy: null,
+                          pb: null,
+                          isFirstSession: true,
+                          currentAccuracy: _accuracy,
+                        );
+                    return ReflectionCards(
+                      accuracy: _accuracy,
+                      previousAccuracy: data.previousAccuracy,
+                      pb: data.pb,
+                      isFirstSession: data.isFirstSession,
+                    ).animate().fadeIn(delay: 350.ms);
+                  },
                 ),
-              ).animate().fadeIn(delay: 300.ms),
 
-              const SizedBox(height: AppSpacing.xxl),
+                const SizedBox(height: AppSpacing.lg),
 
-              // Reflection block
-              FutureBuilder<_ReflectionData>(
-                future: _loadReflection(ref),
-                builder: (context, snapshot) {
-                  final data = snapshot.data ??
-                      _ReflectionData(
-                        previousAccuracy: null,
-                        pb: null,
-                        isFirstSession: true,
-                        currentAccuracy: _accuracy,
-                      );
-                  return ReflectionCards(
-                    accuracy: _accuracy,
-                    previousAccuracy: data.previousAccuracy,
-                    pb: data.pb,
-                    isFirstSession: data.isFirstSession,
-                  ).animate().fadeIn(delay: 350.ms);
-                },
-              ),
-
-              const SizedBox(height: AppSpacing.lg),
-
-              // Next Action
-              FutureBuilder<_ReflectionData>(
-                future: _loadReflection(ref),
-                builder: (context, snapshot) {
-                  final data = snapshot.data ??
-                      _ReflectionData(
-                        previousAccuracy: null,
-                        pb: null,
-                        isFirstSession: true,
-                        currentAccuracy: _accuracy,
-                      );
-                  return NextActionPanel(
-                    currentDrillCode: drillCode,
-                    tone: _resolveTone(data),
-                  ).animate().fadeIn(delay: 450.ms);
-                },
-              ),
-            ],
+                // Next Action
+                FutureBuilder<_ReflectionData>(
+                  future: _loadReflection(ref),
+                  builder: (context, snapshot) {
+                    final data = snapshot.data ??
+                        _ReflectionData(
+                          previousAccuracy: null,
+                          pb: null,
+                          isFirstSession: true,
+                          currentAccuracy: _accuracy,
+                        );
+                    return NextActionPanel(
+                      currentDrillCode: drillCode,
+                      tone: _resolveTone(data),
+                    ).animate().fadeIn(delay: 450.ms);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -288,6 +295,7 @@ class _CompletionHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final theme = Theme.of(context);
     final color = passed ? AppColors.success : AppColors.warning;
     return Container(
@@ -317,7 +325,7 @@ class _CompletionHero extends StatelessWidget {
             drillTitle,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
             ),
             textAlign: TextAlign.center,
           ),
@@ -352,21 +360,11 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final theme = Theme.of(context);
-    return Container(
+    return PoolCard(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      radius: AppSpacing.radiusLg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -385,7 +383,7 @@ class _StatCard extends StatelessWidget {
               Text(
                 label,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
               ),
             ],
@@ -406,7 +404,7 @@ class _StatCard extends StatelessWidget {
               Text(
                 unit,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
               ),
             ],

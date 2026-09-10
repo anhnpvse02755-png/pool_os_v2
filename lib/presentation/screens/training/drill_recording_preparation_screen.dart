@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 class DrillRecordingPreparationScreen extends StatefulWidget {
   final String drillCode;
@@ -56,56 +58,61 @@ class _DrillRecordingPreparationScreenState
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final drill = _drill;
     final level = _selectedLevel;
 
     if (drill == null) {
       return Scaffold(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         appBar: AppBar(
           title: const Text('Lỗi'),
-          backgroundColor: AppColors.lightSurface,
-          foregroundColor: AppColors.lightTextPrimary,
+          backgroundColor: AppColors.surface(brightness),
+          foregroundColor: AppColors.textPrimary(brightness),
           elevation: 0,
+          surfaceTintColor: Colors.transparent,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
           ),
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 80,
-                  color: AppColors.warning,
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                Text(
-                  'Không tìm thấy bài tập này',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
-                  style: TextStyle(
-                    color: AppColors.lightTextSecondary,
-                    fontSize: 14,
+        body: SoftBackground(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xxl),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 80,
+                    color: AppColors.warning,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                _PrimaryButton(
-                  onPressed: () => context.go('/training/drills'),
-                  label: 'Quay về thư viện bài tập',
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.xxl),
+                  Text(
+                    'Không tìm thấy bài tập này',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary(brightness),
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary(brightness),
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.xxl),
+                  _PrimaryButton(
+                    onPressed: () => context.go('/training/drills'),
+                    label: 'Quay về thư viện bài tập',
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -113,64 +120,68 @@ class _DrillRecordingPreparationScreenState
     }
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
         title: const Text('Chuẩn bị ghi'),
-        backgroundColor: AppColors.lightSurface,
-        foregroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.surface(brightness),
+        foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _DrillLevelHeader(
-                    drillName: drill.nameVi,
-                    level: level?.level ?? widget.level,
-                  ).animate().fadeIn(duration: 300.ms),
+      body: SoftBackground(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _DrillLevelHeader(
+                      drillName: drill.nameVi,
+                      level: level?.level ?? widget.level,
+                    ).animate().fadeIn(duration: 300.ms),
 
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  _ObjectiveCard(
-                    criteriaText: level?.criteriaText ?? drill.goal,
-                  ).animate().fadeIn(delay: 100.ms),
+                    _ObjectiveCard(
+                      criteriaText: level?.criteriaText ?? drill.goal,
+                    ).animate().fadeIn(delay: 100.ms),
 
-                  const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
-                  _SetupInstructions(
-                    setup: drill.setup,
-                  ).animate().fadeIn(delay: 200.ms),
+                    _SetupInstructions(
+                      setup: drill.setup,
+                    ).animate().fadeIn(delay: 200.ms),
 
-                  const SizedBox(height: AppSpacing.lg),
+                    const SizedBox(height: AppSpacing.lg),
 
-                  _StepsSummary(
-                    steps: drill.steps,
-                  ).animate().fadeIn(delay: 300.ms),
+                    _StepsSummary(
+                      steps: drill.steps,
+                    ).animate().fadeIn(delay: 300.ms),
 
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  _ReadinessCheckbox(
-                    isReady: _isReady,
-                    onChanged: (value) => setState(() => _isReady = value ?? false),
-                  ).animate().fadeIn(delay: 400.ms),
-                ],
+                    _ReadinessCheckbox(
+                      isReady: _isReady,
+                      onChanged: (value) =>
+                          setState(() => _isReady = value ?? false),
+                    ).animate().fadeIn(delay: 400.ms),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          _BottomCTA(
-            isReady: _isReady,
-            onStartRecording: _startRecording,
-          ),
-        ],
+            _BottomCTA(
+              isReady: _isReady,
+              onStartRecording: _startRecording,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -187,6 +198,11 @@ class _DrillLevelHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
+    // Cả khối này nằm trên dải chuyển sắc `primary(brightness)` — nền ĐỔI theo
+    // chế độ, nên chữ và ô mờ phải dùng `onPrimary(brightness)` chứ không phải
+    // trắng cứng: chế độ tối primary là #34A97C, trắng đặt lên chỉ còn ~2.5:1.
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
@@ -194,8 +210,8 @@ class _DrillLevelHeader extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.accent,
-            AppColors.accent.withValues(alpha: 0.8),
+            AppColors.primary(brightness),
+            AppColors.primary(brightness).withValues(alpha: 0.8),
           ],
         ),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -206,12 +222,12 @@ class _DrillLevelHeader extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.fitness_center,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
               size: 32,
             ),
           ),
@@ -223,7 +239,7 @@ class _DrillLevelHeader extends StatelessWidget {
                 Text(
                   drillName,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
+                        color: AppColors.onPrimary(brightness),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -234,13 +250,13 @@ class _DrillLevelHeader extends StatelessWidget {
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                   ),
                   child: Text(
                     'Level $level',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColors.onPrimary(brightness),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -261,6 +277,8 @@ class _ObjectiveCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -292,7 +310,9 @@ class _ObjectiveCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   criteriaText,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textPrimary(brightness),
+                      ),
                 ),
               ],
             ),
@@ -310,18 +330,16 @@ class _SetupInstructions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final brightness = Theme.of(context).brightness;
+
+    return PoolCard(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-      ),
+      radius: AppSpacing.radiusLg,
       child: Row(
         children: [
           Icon(
             Icons.settings_outlined,
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
@@ -332,14 +350,14 @@ class _SetupInstructions extends StatelessWidget {
                   'Cach setup ban / camera',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
                   setup,
                   style: TextStyle(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 13,
                   ),
                 ),
@@ -359,28 +377,27 @@ class _StepsSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-      ),
+    final brightness = Theme.of(context).brightness;
+
+    return PoolCard(
+      padding: EdgeInsets.zero,
+      radius: AppSpacing.radiusLg,
       child: ExpansionTile(
         leading: Icon(
           Icons.list_alt_outlined,
-          color: AppColors.lightTextSecondary,
+          color: AppColors.textSecondary(brightness),
         ),
         title: Text(
           'Các bước thực hiện',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
         ),
         subtitle: Text(
           '${steps.length} buoc',
           style: TextStyle(
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
             fontSize: 12,
           ),
         ),
@@ -398,14 +415,14 @@ class _StepsSummary extends StatelessWidget {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: AppColors.accent.withValues(alpha: 0.1),
+                    color: AppColors.pastelFor(0, brightness),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
                       '${entry.key + 1}',
                       style: TextStyle(
-                        color: AppColors.accent,
+                        color: AppColors.primary(brightness),
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -416,7 +433,9 @@ class _StepsSummary extends StatelessWidget {
                 Expanded(
                   child: Text(
                     entry.value,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.textSecondary(brightness),
+                        ),
                   ),
                 ),
               ],
@@ -439,6 +458,8 @@ class _ReadinessCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return InkWell(
       onTap: () => onChanged(!isReady),
       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -447,12 +468,12 @@ class _ReadinessCheckbox extends StatelessWidget {
         decoration: BoxDecoration(
           color: isReady
               ? AppColors.success.withValues(alpha: 0.1)
-              : AppColors.lightBackground,
+              : AppColors.background(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           border: Border.all(
             color: isReady
                 ? AppColors.success
-                : AppColors.lightBorder,
+                : AppColors.border(brightness),
             width: isReady ? 2 : 1,
           ),
         ),
@@ -460,7 +481,8 @@ class _ReadinessCheckbox extends StatelessWidget {
           children: [
             Icon(
               isReady ? Icons.check_circle : Icons.circle_outlined,
-              color: isReady ? AppColors.success : AppColors.lightTextTertiary,
+              color:
+                  isReady ? AppColors.success : AppColors.textTertiary(brightness),
               size: 28,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -474,14 +496,14 @@ class _ReadinessCheckbox extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: isReady
                               ? AppColors.success
-                              : AppColors.lightTextPrimary,
+                              : AppColors.textPrimary(brightness),
                         ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     'Bàn đã setup đúng, camera sẵn sàng, tôi tập trung.',
                     style: TextStyle(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 12,
                     ),
                   ),
@@ -506,17 +528,21 @@ class _BottomCTA extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        color: AppColors.surface(brightness),
+        // Thanh đáy hắt bóng LÊN TRÊN, nên phải lật dấu offset của shadow mềm.
+        boxShadow: AppShadows.soft(brightness)
+            .map((s) => BoxShadow(
+                  color: s.color,
+                  blurRadius: s.blurRadius,
+                  offset: Offset(0, -s.offset.dy / 2),
+                ))
+            .toList(),
+        border: Border(top: BorderSide(color: AppColors.border(brightness))),
       ),
       child: SafeArea(
         child: _PrimaryButton(
@@ -541,6 +567,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   double _scale = 1.0;
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -549,18 +577,28 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
       child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
         child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            // Cả hai nhánh nền đều đổi theo chế độ, nên chữ dùng
+            // `onPrimary(brightness)`.
+            color: widget.onPressed != null
+                ? AppColors.primary(brightness)
+                : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.icon != null) ...[
-                Icon(widget.icon, color: Colors.white, size: 20),
+                Icon(widget.icon,
+                    color: AppColors.onPrimary(brightness), size: 20),
                 const SizedBox(width: AppSpacing.sm),
               ],
-              Text(widget.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
+              Text(widget.label,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.onPrimary(brightness)),
+                  textAlign: TextAlign.center),
             ],
           )),
       ),
