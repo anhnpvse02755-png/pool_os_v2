@@ -1,19 +1,18 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/dashboard_provider.dart';
-import '../../../core/services/coach_service.dart';
 import '../../../core/services/coach_types.dart';
 import '../../../knowledge/drill_code_bridge.dart';
+import '../../widgets/icon_tile.dart';
+import '../../widgets/pool_card.dart';
+import '../../widgets/soft_background.dart';
 
 /// PoolOS Home Screen - Redesigned with Minimalist Luxury
 /// Trả lời: "Hôm nay tôi nên làm gì?"
@@ -28,32 +27,34 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background(brightness),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.space4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with greeting and logo
-              _buildHeader(context, brightness),
-              const SizedBox(height: AppSpacing.space6),
+      body: SoftBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.space4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header with greeting and logo
+                _buildHeader(context, brightness),
+                const SizedBox(height: AppSpacing.space6),
 
-              // Context-based content
-              _buildContextContent(context, ref, dashboardState, learningPathAsync, brightness),
-              const SizedBox(height: AppSpacing.space6),
+                // Context-based content
+                _buildContextContent(context, ref, dashboardState, learningPathAsync, brightness),
+                const SizedBox(height: AppSpacing.space6),
 
-              // Today's Goal
-              _buildTodayGoalSection(context, ref, brightness),
-              const SizedBox(height: AppSpacing.space6),
+                // Today's Goal
+                _buildTodayGoalSection(context, ref, brightness),
+                const SizedBox(height: AppSpacing.space6),
 
-              // Progress Section
-              _buildProgressSection(context, ref, brightness),
-              const SizedBox(height: AppSpacing.space6),
+                // Progress Section
+                _buildProgressSection(context, ref, brightness),
+                const SizedBox(height: AppSpacing.space6),
 
-              // Quick Actions
-              _buildQuickActionsSection(context, ref, learningPathAsync, brightness),
-              const SizedBox(height: 100), // Bottom nav spacing
-            ],
+                // Quick Actions
+                _buildQuickActionsSection(context, ref, learningPathAsync, brightness),
+                const SizedBox(height: 100), // Bottom nav spacing
+              ],
+            ),
           ),
         ),
       ),
@@ -73,7 +74,7 @@ class HomeScreen extends ConsumerWidget {
 
     final textPrimary = AppColors.textPrimary(brightness);
     final textSecondary = AppColors.textSecondary(brightness);
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Row(
       children: [
@@ -120,7 +121,7 @@ class HomeScreen extends ConsumerWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.accentSubtle(brightness),
+              color: AppColors.pastelFor(0, brightness),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -151,7 +152,6 @@ class HomeScreen extends ConsumerWidget {
       case DashboardContext.streakWarning:
         return _buildStreakWarningCard(context, ref, brightness);
       case DashboardContext.normal:
-      default:
         return _buildAICoachSection(context, ref, learningPathAsync, brightness);
     }
   }
@@ -163,7 +163,7 @@ class HomeScreen extends ConsumerWidget {
     AsyncValue<List<LearningPathItem>> learningPathAsync,
     Brightness brightness,
   ) {
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Container(
       width: double.infinity,
@@ -173,8 +173,8 @@ class HomeScreen extends ConsumerWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            accentColor,
-            accentColor.withValues(alpha: 0.8),
+            AppColors.primary(brightness),
+            AppColors.primaryDeep(brightness),
           ],
         ),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -195,20 +195,20 @@ class HomeScreen extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.auto_awesome,
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   size: 20,
                 ),
               ),
               const SizedBox(width: AppSpacing.space3),
-              const Text(
+              Text(
                 'AI Coach',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
                 ),
@@ -221,7 +221,7 @@ class HomeScreen extends ConsumerWidget {
           Text(
             _getCoachGreeting(),
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: AppColors.onPrimary(brightness).withValues(alpha: 0.9),
               fontSize: 15,
               height: 1.5,
             ),
@@ -240,7 +240,7 @@ class HomeScreen extends ConsumerWidget {
                   Text(
                     "Today's recommended:",
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
                       fontSize: 13,
                     ),
                   ),
@@ -251,15 +251,16 @@ class HomeScreen extends ConsumerWidget {
                           children: [
                             Icon(
                               Icons.arrow_right,
-                              color: Colors.white.withValues(alpha: 0.7),
+                              color: AppColors.onPrimary(brightness)
+                                  .withValues(alpha: 0.7),
                               size: 18,
                             ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 item.drillNameVi,
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: AppColors.onPrimary(brightness),
                                   fontSize: 14,
                                 ),
                               ),
@@ -270,10 +271,11 @@ class HomeScreen extends ConsumerWidget {
                 ],
               );
             },
-            loading: () => const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+            loading: () => Center(
+              child: CircularProgressIndicator(
+                  color: AppColors.onPrimary(brightness)),
             ),
-            error: (_, __) => _buildEmptyRecommendations(brightness),
+            error: (_, _) => _buildEmptyRecommendations(brightness),
           ),
 
           const SizedBox(height: AppSpacing.space5),
@@ -295,8 +297,8 @@ class HomeScreen extends ConsumerWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: accentColor,
+                backgroundColor: AppColors.onPrimary(brightness),
+                foregroundColor: AppColors.primary(brightness),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -333,33 +335,21 @@ class HomeScreen extends ConsumerWidget {
   ) {
     final missAnalysis = state.missAnalysis ?? {};
     final totalMisses = missAnalysis.values.fold(0, (a, b) => a + b);
-    final accentColor = AppColors.accentColor(brightness);
 
-    return Container(
-      width: double.infinity,
+    return PoolCard(
+      radius: AppSpacing.radiusLg,
       padding: const EdgeInsets.all(AppSpacing.space6),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.blue.shade600,
-            Colors.blue.shade400,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.sports_score, color: Colors.white, size: 20),
+              IconTile(icon: Icons.sports_score, toneIndex: 1, size: 36),
               const SizedBox(width: 8),
-              const Text(
+              Text(
                 'Match Analysis',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
@@ -370,7 +360,7 @@ class HomeScreen extends ConsumerWidget {
           Text(
             'You had $totalMisses misses. Want to improve?',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: AppColors.textSecondary(brightness),
               fontSize: 14,
             ),
           ),
@@ -378,8 +368,8 @@ class HomeScreen extends ConsumerWidget {
           ElevatedButton(
             onPressed: () => context.go('/training'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.blue.shade600,
+              backgroundColor: AppColors.primary(brightness),
+              foregroundColor: AppColors.onPrimary(brightness),
               elevation: 0,
             ),
             child: const Text('Start Training'),
@@ -459,7 +449,7 @@ class HomeScreen extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.auto_stories, color: AppColors.accentColor(brightness), size: 20),
+              Icon(Icons.auto_stories, color: AppColors.primary(brightness), size: 20),
               const SizedBox(width: 8),
               Text(
                 'Knowledge Acquired!',
@@ -495,22 +485,9 @@ class HomeScreen extends ConsumerWidget {
     WidgetRef ref,
     Brightness brightness,
   ) {
-    final accentColor = AppColors.accentColor(brightness);
-
-    return Container(
-      width: double.infinity,
+    return PoolCard(
+      radius: AppSpacing.radiusLg,
       padding: const EdgeInsets.all(AppSpacing.space6),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.warning,
-            AppColors.warningLight,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      ),
       child: Row(
         children: [
           Expanded(
@@ -519,12 +496,13 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.local_fire_department, color: Colors.white, size: 20),
+                    Icon(Icons.local_fire_department,
+                        color: AppColors.streak, size: 20),
                     const SizedBox(width: 8),
-                    const Text(
+                    Text(
                       'Keep your streak!',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary(brightness),
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
                       ),
@@ -535,7 +513,7 @@ class HomeScreen extends ConsumerWidget {
                 Text(
                   'Train today to maintain your streak.',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 14,
                   ),
                 ),
@@ -546,8 +524,8 @@ class HomeScreen extends ConsumerWidget {
           ElevatedButton(
             onPressed: () => context.go('/training'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: AppColors.warning,
+              backgroundColor: AppColors.primary(brightness),
+              foregroundColor: AppColors.onPrimary(brightness),
               elevation: 0,
             ),
             child: const Text('Train'),
@@ -561,7 +539,7 @@ class HomeScreen extends ConsumerWidget {
     return Text(
       'Start your training journey today!',
       style: TextStyle(
-        color: Colors.white.withValues(alpha: 0.8),
+        color: AppColors.textSecondary(brightness),
         fontSize: 14,
       ),
     );
@@ -572,7 +550,6 @@ class HomeScreen extends ConsumerWidget {
     final goals = ref.watch(todayGoalsProvider);
     final learningPathAsync = ref.watch(learningPathProvider);
 
-    final textPrimary = AppColors.textPrimary(brightness);
     final textSecondary = AppColors.textSecondary(brightness);
 
     void goToTraining() {
@@ -649,9 +626,8 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildProgressSection(BuildContext context, WidgetRef ref, Brightness brightness) {
     final goals = ref.watch(todayGoalsProvider);
 
-    final textPrimary = AppColors.textPrimary(brightness);
     final textSecondary = AppColors.textSecondary(brightness);
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -709,7 +685,7 @@ class HomeScreen extends ConsumerWidget {
                 value: '8',
                 label: 'Day Streak',
                 brightness: brightness,
-                valueColor: AppColors.gold,
+                valueColor: AppColors.accentLabel(brightness),
               ),
             ],
           ),
@@ -725,9 +701,7 @@ class HomeScreen extends ConsumerWidget {
     AsyncValue<List<LearningPathItem>> learningPathAsync,
     Brightness brightness,
   ) {
-    final textPrimary = AppColors.textPrimary(brightness);
     final textSecondary = AppColors.textSecondary(brightness);
-    final accentColor = AppColors.accentColor(brightness);
 
     void goToTraining() {
       final path = learningPathAsync.valueOrNull;
@@ -824,7 +798,7 @@ class _GoalRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final textPrimary = AppColors.textPrimary(brightness);
     final textSecondary = AppColors.textSecondary(brightness);
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return InkWell(
       onTap: onTap,
@@ -837,8 +811,8 @@ class _GoalRow extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: isDone
-                    ? AppColors.successSubtleLight
-                    : AppColors.accentSubtle(brightness),
+                    ? AppColors.successSubtle(brightness)
+                    : AppColors.pastelFor(0, brightness),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -862,7 +836,7 @@ class _GoalRow extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.warningSubtleLight,
+                  color: AppColors.warningSubtle(brightness),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -947,7 +921,7 @@ class _ActionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final textPrimary = AppColors.textPrimary(brightness);
     final textSecondary = AppColors.textSecondary(brightness);
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return InkWell(
       onTap: onTap,
@@ -975,8 +949,8 @@ class _ActionRow extends StatelessWidget {
                 ),
                 child: Text(
                   badge!,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.onPrimary(brightness),
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
