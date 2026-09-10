@@ -53,7 +53,7 @@
 - Consumes: không
 - Produces: `AppColors.lightBackground`, `AppColors.darkBackground`, `AppColors.primary(Brightness)`, `AppColors.pastelFor(int index, Brightness)` — các accessor `background/surface/textPrimary/...(Brightness)` đã có sẵn, giữ nguyên chữ ký.
 
-- [ ] **Step 1: Viết test khoá giá trị token**
+- [x] **Step 1: Viết test khoá giá trị token**
 
 Tạo `test/theme/design_tokens_test.dart`:
 
@@ -147,12 +147,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/theme/design_tokens_test.dart`
 Expected: FAIL — `lightSurfaceRecessed`, `pastelLight`, `pastelDark`, `pastelFor`, `primary` chưa tồn tại.
 
-- [ ] **Step 3: Sửa giá trị màu trong `colors.dart`**
+- [x] **Step 3: Sửa giá trị màu trong `colors.dart`**
 
 Đổi các hằng có sẵn (giữ nguyên tên để không vỡ call site):
 
@@ -260,19 +260,19 @@ Thêm accessor cạnh các accessor sẵn có:
   }
 ```
 
-- [ ] **Step 4: Chạy test, xác nhận PASS**
+- [x] **Step 4: Chạy test, xác nhận PASS**
 
 Run: `flutter test test/theme/design_tokens_test.dart`
 Expected: PASS toàn bộ.
 
 Tỉ lệ tương phản đã tính trước khi viết plan: chữ chính sáng 12.17:1, chữ phụ sáng 5.38:1, chữ chính tối 15.86:1, chữ phụ tối 7.19:1 — đều đạt. `#6E7671` (giá trị đọc từ ảnh mẫu) chỉ đạt 4.25:1 nên đã thay bằng `#5E6661`. Nếu vẫn FAIL: sẫm thêm chữ phụ, **không hạ ngưỡng trong test**.
 
-- [ ] **Step 5: Chạy toàn bộ suite**
+- [x] **Step 5: Chạy toàn bộ suite**
 
 Run: `flutter test`
 Expected: 488 test + test mới, tất cả PASS. Nếu có test màn hình khẳng định mã màu cũ, sửa test đó theo giá trị mới.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/core/theme/colors.dart test/theme/design_tokens_test.dart
@@ -302,7 +302,7 @@ Test khoá giá trị token và kiểm tỉ lệ tương phản 7:1 (chữ chín
 - Consumes: không
 - Produces: `AppSpacing.radiusSm/Md/Lg/Full`, `AppShadows.soft(Brightness)`, `AppShadows.softLg(Brightness)`
 
-- [ ] **Step 1: Viết test bổ sung**
+- [x] **Step 1: Viết test bổ sung**
 
 Thêm vào cuối `test/theme/design_tokens_test.dart`, TRƯỚC dấu `}` đóng `main()`:
 
@@ -343,12 +343,12 @@ import 'package:pool_os_v2/core/theme/spacing.dart';
 import 'package:pool_os_v2/core/theme/shadows.dart';
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/theme/design_tokens_test.dart`
 Expected: FAIL — `radiusSm` vẫn là 6.0, `AppShadows.soft` chưa tồn tại.
 
-- [ ] **Step 3: Sửa thang bo góc**
+- [x] **Step 3: Sửa thang bo góc**
 
 Trong `lib/core/theme/spacing.dart`, thay 4 hằng radius:
 
@@ -366,7 +366,7 @@ Trong `lib/core/theme/spacing.dart`, thay 4 hằng radius:
   static const double radiusFull = 9999.0;
 ```
 
-- [ ] **Step 4: Thêm shadow mềm**
+- [x] **Step 4: Thêm shadow mềm**
 
 Thêm vào cuối `class AppShadows` trong `lib/core/theme/shadows.dart`:
 
@@ -413,17 +413,17 @@ Thêm vào cuối `class AppShadows` trong `lib/core/theme/shadows.dart`:
             ];
 ```
 
-- [ ] **Step 5: Chạy test, xác nhận PASS**
+- [x] **Step 5: Chạy test, xác nhận PASS**
 
 Run: `flutter test test/theme/design_tokens_test.dart`
 Expected: PASS.
 
-- [ ] **Step 6: Chạy toàn bộ suite**
+- [x] **Step 6: Chạy toàn bộ suite**
 
 Run: `flutter test`
 Expected: tất cả PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/core/theme/spacing.dart lib/core/theme/shadows.dart test/theme/design_tokens_test.dart
@@ -448,7 +448,7 @@ shadow gần như vô hình trên nền tối."
 - Consumes: không
 - Produces: `AppTypography.displayLg`, `AppTypography.cardTitle` — các style sẵn có giữ nguyên tên.
 
-- [ ] **Step 1: Viết test bổ sung**
+- [x] **Step 1: Viết test bổ sung**
 
 Thêm vào `test/theme/design_tokens_test.dart` trước `}` đóng `main()`:
 
@@ -476,12 +476,12 @@ Thêm import:
 import 'package:pool_os_v2/core/theme/typography.dart';
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/theme/design_tokens_test.dart`
 Expected: FAIL — `displayLg` / `cardTitle` chưa tồn tại.
 
-- [ ] **Step 3: Thêm style**
+- [x] **Step 3: Thêm style**
 
 Thêm vào `class AppTypography` trong `lib/core/theme/typography.dart`:
 
@@ -513,12 +513,12 @@ Thêm vào `class AppTypography` trong `lib/core/theme/typography.dart`:
       );
 ```
 
-- [ ] **Step 4: Chạy test, xác nhận PASS**
+- [x] **Step 4: Chạy test, xác nhận PASS**
 
 Run: `flutter test test/theme/design_tokens_test.dart`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add lib/core/theme/typography.dart test/theme/design_tokens_test.dart
@@ -544,7 +544,7 @@ vì trong thiết kế tham chiếu tên người chơi to gần bằng tiêu đ
   - `SoftBackground({required Widget child})`
   - `PoolCard({required Widget child, VoidCallback? onTap, bool selected = false, EdgeInsets? padding, double? radius})`
 
-- [ ] **Step 1: Viết test cho `SoftBackground`**
+- [x] **Step 1: Viết test cho `SoftBackground`**
 
 Tạo `test/widgets/soft_background_test.dart`:
 
@@ -592,7 +592,7 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Viết test cho `PoolCard`**
+- [x] **Step 2: Viết test cho `PoolCard`**
 
 Tạo `test/widgets/pool_card_test.dart`:
 
@@ -665,12 +665,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 3: Chạy cả hai test, xác nhận FAIL**
+- [x] **Step 3: Chạy cả hai test, xác nhận FAIL**
 
 Run: `flutter test test/widgets/soft_background_test.dart test/widgets/pool_card_test.dart`
 Expected: FAIL — hai file widget chưa tồn tại.
 
-- [ ] **Step 4: Viết `SoftBackground`**
+- [x] **Step 4: Viết `SoftBackground`**
 
 Tạo `lib/presentation/widgets/soft_background.dart`:
 
@@ -756,7 +756,7 @@ class _Blob extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 5: Viết `PoolCard`**
+- [x] **Step 5: Viết `PoolCard`**
 
 Tạo `lib/presentation/widgets/pool_card.dart`:
 
@@ -823,12 +823,12 @@ class PoolCard extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 6: Chạy test, xác nhận PASS**
+- [x] **Step 6: Chạy test, xác nhận PASS**
 
 Run: `flutter test test/widgets/soft_background_test.dart test/widgets/pool_card_test.dart`
 Expected: PASS toàn bộ.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/presentation/widgets/soft_background.dart lib/presentation/widgets/pool_card.dart test/widgets/soft_background_test.dart test/widgets/pool_card_test.dart
@@ -858,7 +858,7 @@ thấy mép thẻ."
   - `IconTile({required IconData icon, required int toneIndex, double size = 56})`
   - `SectionHeader({required String title, String? subtitle, int? step})`
 
-- [ ] **Step 1: Viết test cho `IconTile`**
+- [x] **Step 1: Viết test cho `IconTile`**
 
 Tạo `test/widgets/icon_tile_test.dart`:
 
@@ -916,7 +916,7 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Viết test cho `SectionHeader`**
+- [x] **Step 2: Viết test cho `SectionHeader`**
 
 Tạo `test/widgets/section_header_test.dart`:
 
@@ -963,12 +963,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 3: Chạy test, xác nhận FAIL**
+- [x] **Step 3: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/widgets/icon_tile_test.dart test/widgets/section_header_test.dart`
 Expected: FAIL — hai widget chưa tồn tại.
 
-- [ ] **Step 4: Viết `IconTile`**
+- [x] **Step 4: Viết `IconTile`**
 
 Tạo `lib/presentation/widgets/icon_tile.dart`:
 
@@ -1019,7 +1019,7 @@ class IconTile extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 5: Viết `SectionHeader`**
+- [x] **Step 5: Viết `SectionHeader`**
 
 Tạo `lib/presentation/widgets/section_header.dart`:
 
@@ -1103,12 +1103,12 @@ class SectionHeader extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 6: Chạy test, xác nhận PASS**
+- [x] **Step 6: Chạy test, xác nhận PASS**
 
 Run: `flutter test test/widgets/icon_tile_test.dart test/widgets/section_header_test.dart`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/presentation/widgets/icon_tile.dart lib/presentation/widgets/section_header.dart test/widgets/icon_tile_test.dart test/widgets/section_header_test.dart
@@ -1139,7 +1139,7 @@ nhiều bước như ghi điểm trận."
   - `BarAction({required IconData icon, required String label, VoidCallback? onTap})`
   - `BottomActionBar({required List<BarAction> actions})`
 
-- [ ] **Step 1: Viết test cho `ScoreBar`**
+- [x] **Step 1: Viết test cho `ScoreBar`**
 
 Tạo `test/widgets/score_bar_test.dart`:
 
@@ -1208,7 +1208,7 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Viết test cho `BottomActionBar`**
+- [x] **Step 2: Viết test cho `BottomActionBar`**
 
 Tạo `test/widgets/bottom_action_bar_test.dart`:
 
@@ -1257,12 +1257,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 3: Chạy test, xác nhận FAIL**
+- [x] **Step 3: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/widgets/score_bar_test.dart test/widgets/bottom_action_bar_test.dart`
 Expected: FAIL — hai widget chưa tồn tại.
 
-- [ ] **Step 4: Viết `ScoreBar`**
+- [x] **Step 4: Viết `ScoreBar`**
 
 Tạo `lib/presentation/widgets/score_bar.dart`:
 
@@ -1360,7 +1360,7 @@ class _PlayerCell extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 5: Viết `BottomActionBar`**
+- [x] **Step 5: Viết `BottomActionBar`**
 
 Tạo `lib/presentation/widgets/bottom_action_bar.dart`:
 
@@ -1437,17 +1437,17 @@ class BottomActionBar extends StatelessWidget {
 }
 ```
 
-- [ ] **Step 6: Chạy test, xác nhận PASS**
+- [x] **Step 6: Chạy test, xác nhận PASS**
 
 Run: `flutter test test/widgets/score_bar_test.dart test/widgets/bottom_action_bar_test.dart`
 Expected: PASS.
 
-- [ ] **Step 7: Chạy toàn bộ suite**
+- [x] **Step 7: Chạy toàn bộ suite**
 
 Run: `flutter test`
 Expected: tất cả PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add lib/presentation/widgets/score_bar.dart lib/presentation/widgets/bottom_action_bar.dart test/widgets/score_bar_test.dart test/widgets/bottom_action_bar_test.dart
@@ -1477,7 +1477,7 @@ này có trong thiết kế tham chiếu (nút Hoàn tác lúc chưa có gì đ�
 - Consumes: `SoftBackground`, `PoolCard`, `IconTile`, `SectionHeader`, `AppColors.*(Brightness)`
 - Produces: không có API mới — đây là task sửa giao diện.
 
-- [ ] **Step 1: Viết test chặn hardcode**
+- [x] **Step 1: Viết test chặn hardcode**
 
 Tạo `test/screens/batch1_dark_mode_test.dart`:
 
@@ -1535,12 +1535,12 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/screens/batch1_dark_mode_test.dart`
 Expected: FAIL — liệt kê các màn đang hardcode `AppColors.light*`.
 
-- [ ] **Step 3: Sửa từng màn trong lô**
+- [x] **Step 3: Sửa từng màn trong lô**
 
 Với **mỗi** file trong danh sách:
 
@@ -1618,17 +1618,17 @@ trong widget); hai `Text` tiêu đề + phụ đề → `SectionHeader`; `body` 
 
 **KHÔNG đổi bất kỳ chuỗi hiển thị nào**, đặc biệt: `'Bắt đầu ngay'`, `'Tôi đã có tài khoản'`, `'Tiếp tục'`, `'Bắt đầu'`, `'Quay lại'`. E2E bám vào chúng.
 
-- [ ] **Step 4: Chạy test lô, xác nhận PASS**
+- [x] **Step 4: Chạy test lô, xác nhận PASS**
 
 Run: `flutter test test/screens/batch1_dark_mode_test.dart`
 Expected: PASS cả hai test.
 
-- [ ] **Step 5: Chạy toàn bộ suite Flutter**
+- [x] **Step 5: Chạy toàn bộ suite Flutter**
 
 Run: `flutter test`
 Expected: tất cả PASS. Test widget nào khẳng định màu cũ thì cập nhật theo token mới.
 
-- [ ] **Step 6: Chạy E2E**
+- [x] **Step 6: Chạy E2E**
 
 Run: `flutter build web --release --base-href /` rồi `npx playwright test --project=chromium`
 
@@ -1636,7 +1636,7 @@ Expected: 22 PASS, 4 skip. Nếu có test đỏ vì không tìm thấy nhãn, ng
 
 **Lưu ý build:** dùng PowerShell cho lệnh có `--base-href /`; Git Bash biến `/` thành đường dẫn Windows.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/presentation/screens/onboarding lib/presentation/screens/auth test/screens/batch1_dark_mode_test.dart
