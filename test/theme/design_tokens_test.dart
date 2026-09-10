@@ -255,6 +255,59 @@ void main() {
       }
     });
 
+    // Bay that thu hai, va la loi cua nguoi CHON hex chu khong phai nguoi
+    // dung no: #6D4AA6 duoc kiem tra nhu mot mau CHU (4.5:1 tren trang) roi
+    // dem dung lam NEN header. Do sang 0.109 — tham hon han #8B5CF6 (0.198)
+    // ma no thay — nen chrome (nut back / share / tieu de, ve bang
+    // `textPrimary(brightness)`) tut xuong 2.03:1.
+    //
+    // KHONG the assert `difficultyExpert(light)` DAC dat 3:1 tren
+    // `textPrimary(light)`: khong hue nao vua dat 4.5:1 lam chu badge tren
+    // trang vua dat 3:1 duoi chrome gan-den — hai khung mau thuan nhau. Cach
+    // sua la lam NHAT nen: header loang alpha 0.18 -> 0.10 tren `surface`.
+    // Nen thu doc duoc phai la nen DA LOANG, va do la thu duoc khoa o day.
+    const washStops = [0.18, 0.10];
+
+    test('chrome doc duoc tren nen loang header o ca hai che do', () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        final tones = <String, Color>{
+          'easy': AppColors.success,
+          'medium': AppColors.warning,
+          'hard': AppColors.error,
+          'expert': AppColors.difficultyExpert(b),
+        };
+        for (final entry in tones.entries) {
+          for (final stop in washStops) {
+            final washed = Color.alphaBlend(
+              entry.value.withValues(alpha: stop),
+              AppColors.surface(b),
+            );
+            expect(
+              contrast(AppColors.textPrimary(b), washed),
+              greaterThanOrEqualTo(4.5),
+              reason: 'chrome tren nen loang ${entry.key} @$stop o che do $b '
+                  'khong doc duoc — dung to dac lai, hay ha alpha xuong.',
+            );
+          }
+        }
+      }
+    });
+
+    test('nen loang phai NHAT hon han ban to dac — do la ca noi dung ban sua',
+        () {
+      for (final b in [Brightness.light, Brightness.dark]) {
+        final solid = AppColors.difficultyExpert(b);
+        final washed = Color.alphaBlend(
+          solid.withValues(alpha: washStops.first),
+          AppColors.surface(b),
+        );
+        expect(
+          contrast(AppColors.textPrimary(b), washed),
+          greaterThan(contrast(AppColors.textPrimary(b), solid)),
+        );
+      }
+    });
+
     test('KHONG duoc trung voi primary — do la loi da sua', () {
       for (final b in [Brightness.light, Brightness.dark]) {
         expect(AppColors.difficultyExpert(b), isNot(AppColors.primary(b)));
@@ -263,6 +316,12 @@ void main() {
   });
 
   group('Nen semantic diu theo Brightness', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
     // Man hinh dung nen diu cho hop loi / canh bao / thanh cong. Truoc day
     // chi co hang *SubtleLight va *SubtleDark, khong co accessor, nen moi man
     // deu hardcode ban sang -> dark mode hong.
@@ -306,5 +365,29 @@ void main() {
             lessThan(pair[1].computeLuminance()));
       }
     });
+
+    // Mot o hong trong lop token thi MOI lo sau doi mot *SubtleLight deu dam
+    // vao no. #7F1D1D cu cho `error` #EF4444 dung 2.66:1 — duoi san 3:1 cho
+    // mot doi tuong do hoa mang nghia — trong khi hai o anh em da dat.
+    // Khoa ca ba lai cung mot cho.
+    test('chu/icon semantic dat toi thieu 3:1 tren nen diu ban toi', () {
+      for (final pair in [
+        [AppColors.error, AppColors.errorSubtle(Brightness.dark)],
+        [AppColors.warning, AppColors.warningSubtle(Brightness.dark)],
+        [AppColors.success, AppColors.successSubtle(Brightness.dark)],
+      ]) {
+        expect(
+          contrast(pair[0], pair[1]),
+          greaterThanOrEqualTo(3.0),
+          reason: 'nen diu ban toi qua sang cho tong semantic cua chinh no — '
+              'ha do sang cua nen, dung doi tong semantic.',
+        );
+      }
+    });
+
+    // CO CHU Y chi khoa ban TOI. Ban sang cung co van de cung loai
+    // (`warning` tren #FFFBEB = 2.07:1, `success` tren #ECFDF5 = 2.41:1) nhung
+    // do la no ton tu truoc va ngoai pham vi dot sua nay — khoa lai o day se
+    // do ngay ma khong ai duoc giao sua. Da bao cao rieng.
   });
 }
