@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../data/content/drill_content_vi.dart';
+import '../../widgets/soft_background.dart';
 
 class DrillDetailScreen extends StatefulWidget {
   final String drillCode;
@@ -21,6 +23,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
     final drill = DrillLibrary.getDrill(widget.drillCode);
 
     debugPrint('DrillDetailScreen: Looking for drill code: ${widget.drillCode}');
@@ -28,11 +31,11 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
 
     if (drill == null) {
       return Scaffold(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         appBar: AppBar(
           title: const Text('Lỗi'),
-          backgroundColor: AppColors.lightSurface,
-          foregroundColor: AppColors.lightTextPrimary,
+          backgroundColor: AppColors.surface(brightness),
+          foregroundColor: AppColors.textPrimary(brightness),
           elevation: 0,
           surfaceTintColor: Colors.transparent,
           leading: IconButton(
@@ -40,52 +43,54 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
             onPressed: () => context.pop(),
           ),
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.xxl),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: AppColors.warning.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
+        body: SoftBackground(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xxl),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: AppColors.warning.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.error_outline,
+                      size: 56,
+                      color: AppColors.warning,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.error_outline,
-                    size: 56,
-                    color: AppColors.warning,
+                  const SizedBox(height: AppSpacing.xxl),
+                  Text(
+                    'Không tìm thấy bài tập này',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary(brightness),
+                        ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                Text(
-                  'Không tìm thấy bài tập này',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightTextPrimary,
+                  const SizedBox(height: AppSpacing.md),
+                  Text(
+                    'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary(brightness),
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                Text(
-                  'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
-                  style: TextStyle(
-                    color: AppColors.lightTextSecondary,
-                    fontSize: 14,
+                  const SizedBox(height: AppSpacing.xxl),
+                  SizedBox(
+                    width: double.infinity,
+                    child: _PrimaryButton(
+                      onPressed: () => context.go('/training/drills'),
+                      label: 'Quay về thư viện bài tập',
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                SizedBox(
-                  width: double.infinity,
-                  child: _PrimaryButton(
-                    onPressed: () => context.go('/training/drills'),
-                    label: 'Quay về thư viện bài tập',
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -93,181 +98,214 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: CustomScrollView(
-        slivers: [
-          // App Bar
-          SliverAppBar(
-            expandedHeight: 200,
-            pinned: true,
-            backgroundColor: AppColors.lightSurface,
-            foregroundColor: AppColors.lightTextPrimary,
-            elevation: 0,
-            surfaceTintColor: Colors.transparent,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                drill.nameVi,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      _getDifficultyColor(drill.difficulty),
-                      _getDifficultyColor(drill.difficulty).withValues(alpha: 0.7),
-                    ],
-                  ),
+      backgroundColor: AppColors.background(brightness),
+      body: SoftBackground(
+        child: CustomScrollView(
+          slivers: [
+            // App Bar
+            SliverAppBar(
+              expandedHeight: 200,
+              pinned: true,
+              backgroundColor: AppColors.surface(brightness),
+              foregroundColor: AppColors.textPrimary(brightness),
+              elevation: 0,
+              surfaceTintColor: Colors.transparent,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  drill.nameVi,
+                  style:
+                      const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.fitness_center,
-                    size: 80,
-                    color: Colors.white.withValues(alpha: 0.3),
-                  ),
-                ),
-              ),
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Chia sẻ bài tập - Tính năng đang phát triển'),
-                      backgroundColor: AppColors.warning,
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Difficulty Badge
-                  _buildDifficultyBadge(drill.difficulty),
-                  const SizedBox(height: AppSpacing.lg),
-
-                  // Description
-                  Text(
-                    drill.description,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppColors.lightTextPrimary,
-                      height: 1.6,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
-
-                  // Levels Section
-                  _buildSectionTitle(context, 'Các cấp độ'),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildLevelsList(drill),
-                  const SizedBox(height: AppSpacing.xxl),
-
-                  // Setup
-                  _buildSectionTitle(context, 'Setup'),
-                  const SizedBox(height: AppSpacing.sm),
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.lightSurface,
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.settings, color: AppColors.lightTextSecondary, size: 22),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(child: Text(drill.setup, style: TextStyle(color: AppColors.lightTextPrimary))),
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        _getDifficultyColor(drill.difficulty, brightness),
+                        _getDifficultyColor(drill.difficulty, brightness)
+                            .withValues(alpha: 0.7),
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.xxl),
+                  child: Center(
+                    // Nền là gradient độ khó — ba trong bốn tông đó là hằng BẤT
+                    // BIẾN theo chế độ, nên glyph phải bất biến theo: literal
+                    // `Brightness.light`, đúng tiền lệ badge-trên-`error` ở
+                    // `main_shell.dart`.
+                    //
+                    // GIỮ `alpha: 0.3`: đây là hoa văn trang trí cỡ 80 nằm sau
+                    // nội dung, không phải chữ để đọc — luật "không alpha trên
+                    // màu chữ" không áp dụng cho nó.
+                    child: Icon(
+                      Icons.fitness_center,
+                      size: 80,
+                      color: AppColors.onPrimary(Brightness.light)
+                          .withValues(alpha: 0.3),
+                    ),
+                  ),
+                ),
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.share),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                            'Chia sẻ bài tập - Tính năng đang phát triển'),
+                        backgroundColor: AppColors.warning,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
 
-                  // Steps
-                  _buildSectionTitle(context, 'Các bước'),
-                  const SizedBox(height: AppSpacing.md),
-                  ...drill.steps.asMap().entries.map((entry) {
-                    return _buildStep(entry.key + 1, entry.value);
-                  }),
-                  const SizedBox(height: AppSpacing.xxl),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Difficulty Badge
+                    _buildDifficultyBadge(drill.difficulty),
+                    const SizedBox(height: AppSpacing.lg),
 
-                  // Goal
-                  _buildSectionTitle(context, 'Mục tiêu'),
-                  const SizedBox(height: AppSpacing.sm),
-                  Container(
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    decoration: BoxDecoration(
-                      color: AppColors.success.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      border: Border.all(
-                        color: AppColors.success.withValues(alpha: 0.3),
+                    // Description
+                    Text(
+                      drill.description,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: AppColors.textPrimary(brightness),
+                            height: 1.6,
+                          ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // Levels Section
+                    _buildSectionTitle(context, 'Các cấp độ'),
+                    const SizedBox(height: AppSpacing.md),
+                    _buildLevelsList(drill),
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // Setup
+                    _buildSectionTitle(context, 'Setup'),
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface(brightness),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusMd),
+                        border: Border.all(
+                            color: AppColors.border(brightness)
+                                .withValues(alpha: 0.5)),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.settings,
+                              color: AppColors.textSecondary(brightness),
+                              size: 22),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                              child: Text(drill.setup,
+                                  style: TextStyle(
+                                      color:
+                                          AppColors.textPrimary(brightness)))),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.flag, color: AppColors.success, size: 22),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(child: Text(drill.goal, style: TextStyle(color: AppColors.lightTextPrimary))),
-                      ],
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // Steps
+                    _buildSectionTitle(context, 'Các bước'),
+                    const SizedBox(height: AppSpacing.md),
+                    ...drill.steps.asMap().entries.map((entry) {
+                      return _buildStep(entry.key + 1, entry.value);
+                    }),
+                    const SizedBox(height: AppSpacing.xxl),
+
+                    // Goal
+                    _buildSectionTitle(context, 'Mục tiêu'),
+                    const SizedBox(height: AppSpacing.sm),
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.success.withValues(alpha: 0.1),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusMd),
+                        border: Border.all(
+                          color: AppColors.success.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.flag, color: AppColors.success, size: 22),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                              child: Text(drill.goal,
+                                  style: TextStyle(
+                                      color:
+                                          AppColors.textPrimary(brightness)))),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Common Mistakes
-                  _buildSectionTitle(context, 'Lỗi thường gặp'),
-                  const SizedBox(height: AppSpacing.sm),
-                  _buildCommonMistakes(drill.code),
-                  const SizedBox(height: AppSpacing.xxl),
+                    // Common Mistakes
+                    _buildSectionTitle(context, 'Lỗi thường gặp'),
+                    const SizedBox(height: AppSpacing.sm),
+                    _buildCommonMistakes(drill.code),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Detailed Vietnamese content sections
-                  _buildContentSections(drill.code),
-                  const SizedBox(height: AppSpacing.xxl),
+                    // Detailed Vietnamese content sections
+                    _buildContentSections(drill.code),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Knowledge Link
-                  _buildSectionTitle(context, 'Kiến thức liên quan'),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    'Kiến thức không bị khóa. Bạn có thể học bất kỳ lúc nào.',
-                    style: TextStyle(
-                      color: AppColors.lightTextSecondary,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 13,
+                    // Knowledge Link
+                    _buildSectionTitle(context, 'Kiến thức liên quan'),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Kiến thức không bị khóa. Bạn có thể học bất kỳ lúc nào.',
+                      style: TextStyle(
+                        color: AppColors.textSecondary(brightness),
+                        fontStyle: FontStyle.italic,
+                        fontSize: 13,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildKnowledgeList(drill.knowledgeIds),
-                  const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.md),
+                    _buildKnowledgeList(drill.knowledgeIds),
+                    const SizedBox(height: AppSpacing.xxl),
 
-                  // Related Drills
-                  _buildSectionTitle(context, 'Bài tập liên quan'),
-                  const SizedBox(height: AppSpacing.md),
-                  _buildRelatedDrills(drill.code),
-                  const SizedBox(height: 100),
-                ],
+                    // Related Drills
+                    _buildSectionTitle(context, 'Bài tập liên quan'),
+                    const SizedBox(height: AppSpacing.md),
+                    _buildRelatedDrills(drill.code),
+                    const SizedBox(height: 100),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: _buildStartButton(drill),
     );
   }
 
   Widget _buildDifficultyBadge(String difficulty) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md, vertical: AppSpacing.sm),
       decoration: BoxDecoration(
-        color: _getDifficultyColor(difficulty).withValues(alpha: 0.1),
+        color:
+            _getDifficultyColor(difficulty, brightness).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
         border: Border.all(
-          color: _getDifficultyColor(difficulty).withValues(alpha: 0.3),
+          color: _getDifficultyColor(difficulty, brightness)
+              .withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -276,13 +314,13 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
           Icon(
             Icons.signal_cellular_alt,
             size: 16,
-            color: _getDifficultyColor(difficulty),
+            color: _getDifficultyColor(difficulty, brightness),
           ),
           const SizedBox(width: AppSpacing.xs),
           Text(
             _getDifficultyLabel(difficulty),
             style: TextStyle(
-              color: _getDifficultyColor(difficulty),
+              color: _getDifficultyColor(difficulty, brightness),
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
@@ -292,7 +330,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     ).animate().fadeIn();
   }
 
-  Color _getDifficultyColor(String difficulty) {
+  Color _getDifficultyColor(String difficulty, Brightness brightness) {
     switch (difficulty) {
       case 'easy':
         return AppColors.success;
@@ -301,9 +339,9 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       case 'hard':
         return AppColors.error;
       case 'expert':
-        return const Color(0xFF8B5CF6);
+        return AppColors.difficultyExpert(brightness);
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
@@ -323,16 +361,20 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildSectionTitle(BuildContext context, String title) {
+    final brightness = Theme.of(context).brightness;
+
     return Text(
       title,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
     );
   }
 
   Widget _buildLevelsList(Drill drill) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       children: drill.levels.asMap().entries.map((entry) {
         final index = entry.key;
@@ -354,19 +396,19 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? AppColors.accent.withValues(alpha: 0.1)
+                      ? AppColors.primary(brightness).withValues(alpha: 0.1)
                       : isCompleted
                           ? AppColors.success.withValues(alpha: 0.05)
-                          : AppColors.lightSurface,
+                          : AppColors.surface(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
                   border: Border.all(
                     color: isSelected
-                        ? AppColors.accent
+                        ? AppColors.primary(brightness)
                         : isCompleted
                             ? AppColors.success.withValues(alpha: 0.5)
                             : isUnlocked
-                                ? AppColors.lightBorder
-                                : AppColors.lightBorderSubtle,
+                                ? AppColors.border(brightness)
+                                : AppColors.borderSubtle(brightness),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -378,21 +420,31 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                       height: 44,
                       decoration: BoxDecoration(
                         color: !isUnlocked
-                            ? AppColors.lightTextTertiary
+                            ? AppColors.textTertiary(brightness)
                             : isCompleted
                                 ? AppColors.success
-                                : AppColors.accent,
+                                : AppColors.primary(brightness),
                         shape: BoxShape.circle,
                       ),
+                      // Glyph phải bám ĐÚNG nhánh nền của vòng tròn ở trên:
+                      // nhánh `success` và nhánh `textTertiary` là nền không
+                      // đổi vai theo chế độ nên dùng literal `Brightness.light`
+                      // (giữ nguyên hành vi cũ), chỉ nhánh `primary` mới đảo
+                      // theo `brightness`.
                       child: Center(
                         child: isCompleted
-                            ? const Icon(Icons.check, color: Colors.white, size: 22)
+                            ? Icon(Icons.check,
+                                color: AppColors.onPrimary(Brightness.light),
+                                size: 22)
                             : !isUnlocked
-                                ? const Icon(Icons.lock, color: Colors.white, size: 20)
+                                ? Icon(Icons.lock,
+                                    color:
+                                        AppColors.onPrimary(Brightness.light),
+                                    size: 20)
                                 : Text(
                                     '${level.level}',
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: AppColors.onPrimary(brightness),
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
@@ -413,8 +465,8 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                   color: !isUnlocked
-                                      ? AppColors.lightTextTertiary
-                                      : AppColors.lightTextPrimary,
+                                      ? AppColors.textTertiary(brightness)
+                                      : AppColors.textPrimary(brightness),
                                 ),
                               ),
                               if (isCompleted) ...[
@@ -428,10 +480,12 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                                     color: AppColors.success,
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     'Completed',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      // Nền `success` bất biến theo chế độ.
+                                      color:
+                                          AppColors.onPrimary(Brightness.light),
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -446,15 +500,16 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                             style: TextStyle(
                               fontSize: 13,
                               color: !isUnlocked
-                                  ? AppColors.lightTextTertiary
-                                  : AppColors.lightTextSecondary,
+                                  ? AppColors.textTertiary(brightness)
+                                  : AppColors.textSecondary(brightness),
                             ),
                           ),
                         ],
                       ),
                     ),
                     if (!isUnlocked)
-                      Icon(Icons.lock, color: AppColors.lightTextTertiary, size: 22),
+                      Icon(Icons.lock,
+                          color: AppColors.textTertiary(brightness), size: 22),
                   ],
                 ),
               ),
@@ -466,6 +521,8 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildStep(int number, String step) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
@@ -475,14 +532,14 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: AppColors.accent,
+              color: AppColors.primary(brightness),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 '$number',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                 ),
@@ -491,7 +548,9 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
-            child: Text(step, style: TextStyle(color: AppColors.lightTextPrimary, height: 1.5)),
+            child: Text(step,
+                style: TextStyle(
+                    color: AppColors.textPrimary(brightness), height: 1.5)),
           ),
         ],
       ),
@@ -501,6 +560,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   Widget _buildCommonMistakes(String drillCode) {
     final content = drillContentVi[drillCode];
     final mistakes = content?.commonMistakes ?? _genericMistakes;
+    final brightness = Theme.of(context).brightness;
 
     return Column(
       children: mistakes.map((mistake) {
@@ -511,7 +571,11 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
             children: [
               Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
               const SizedBox(width: AppSpacing.sm),
-              Expanded(child: Text(mistake, style: TextStyle(color: AppColors.lightTextPrimary, height: 1.4))),
+              Expanded(
+                  child: Text(mistake,
+                      style: TextStyle(
+                          color: AppColors.textPrimary(brightness),
+                          height: 1.4))),
             ],
           ),
         );
@@ -583,6 +647,8 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     IconData icon, {
     Color? color,
   }) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: items.map((item) {
@@ -591,9 +657,14 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 20, color: color ?? AppColors.accent),
+              Icon(icon,
+                  size: 20, color: color ?? AppColors.primary(brightness)),
               const SizedBox(width: AppSpacing.sm),
-              Expanded(child: Text(item, style: TextStyle(color: AppColors.lightTextPrimary, height: 1.4))),
+              Expanded(
+                  child: Text(item,
+                      style: TextStyle(
+                          color: AppColors.textPrimary(brightness),
+                          height: 1.4))),
             ],
           ),
         );
@@ -602,24 +673,29 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildTextCard(String text) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
+        border: Border.all(
+            color: AppColors.border(brightness).withValues(alpha: 0.5)),
       ),
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: AppColors.lightTextPrimary,
-          height: 1.5,
-        ),
+              color: AppColors.textPrimary(brightness),
+              height: 1.5,
+            ),
       ),
     );
   }
 
   Widget _buildComingSoonCard() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -648,7 +724,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   'Hướng dẫn chi tiết cho bài tập này sắp ra mắt.',
                   style: TextStyle(
                     fontSize: 13,
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
                 ),
               ],
@@ -660,15 +736,23 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildKnowledgeList(List<String> knowledgeIds) {
+    final brightness = Theme.of(context).brightness;
+
     return Wrap(
       spacing: AppSpacing.sm,
       runSpacing: AppSpacing.sm,
       children: knowledgeIds.map((id) {
         return ActionChip(
-          label: Text(_getKnowledgeName(id), style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w500)),
-          avatar: Icon(Icons.menu_book, size: 18, color: AppColors.accent),
-          backgroundColor: AppColors.accent.withValues(alpha: 0.1),
-          side: BorderSide(color: AppColors.accent.withValues(alpha: 0.3)),
+          label: Text(_getKnowledgeName(id),
+              style: TextStyle(
+                  color: AppColors.primary(brightness),
+                  fontWeight: FontWeight.w500)),
+          avatar: Icon(Icons.menu_book,
+              size: 18, color: AppColors.primary(brightness)),
+          backgroundColor:
+              AppColors.primary(brightness).withValues(alpha: 0.1),
+          side: BorderSide(
+              color: AppColors.primary(brightness).withValues(alpha: 0.3)),
           onPressed: () {
             context.push('/training/knowledge/$id');
           },
@@ -698,6 +782,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildRelatedDrills(String currentCode) {
+    final brightness = Theme.of(context).brightness;
     final currentDrill = DrillLibrary.getDrill(currentCode);
     if (currentDrill == null) return const SizedBox();
 
@@ -709,7 +794,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     if (relatedDrills.isEmpty) {
       return Text(
         'Không có bài tập liên quan',
-        style: TextStyle(color: AppColors.lightTextSecondary),
+        style: TextStyle(color: AppColors.textSecondary(brightness)),
       );
     }
 
@@ -725,16 +810,12 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
               child: Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.lightSurface,
+                  color: AppColors.surface(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-                  border: Border.all(color: AppColors.lightBorder.withValues(alpha: 0.5)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.shadowLight,
-                      blurRadius: 6,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  border: Border.all(
+                      color: AppColors.border(brightness)
+                          .withValues(alpha: 0.5)),
+                  boxShadow: AppShadows.soft(brightness),
                 ),
                 child: Row(
                   children: [
@@ -742,14 +823,17 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: _getDifficultyColor(drill.difficulty).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                        color: _getDifficultyColor(drill.difficulty, brightness)
+                            .withValues(alpha: 0.1),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusMd),
                       ),
                       child: Center(
                         child: Text(
                           drill.nameVi.substring(0, 1),
                           style: TextStyle(
-                            color: _getDifficultyColor(drill.difficulty),
+                            color: _getDifficultyColor(
+                                drill.difficulty, brightness),
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
@@ -763,13 +847,16 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                         children: [
                           Text(
                             drill.nameVi,
-                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppColors.lightTextPrimary),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color: AppColors.textPrimary(brightness)),
                           ),
                           Text(
                             drill.description,
                             style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.lightTextSecondary,
+                              color: AppColors.textSecondary(brightness),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -777,7 +864,8 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                         ],
                       ),
                     ),
-                    Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+                    Icon(Icons.chevron_right,
+                        color: AppColors.textTertiary(brightness)),
                   ],
                 ),
               ),
@@ -789,17 +877,13 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Widget _buildStartButton(Drill drill) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        color: AppColors.surface(brightness),
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: SafeArea(
         child: _PrimaryButton(
@@ -811,7 +895,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
   }
 
   Future<void> _onStartPressed(Drill drill) async {
-    print('[SPRINT17_FLOW] DRILL_DETAIL: _onStartPressed entered');
+    debugPrint('[SPRINT17_FLOW] DRILL_DETAIL: _onStartPressed entered');
     final defaultAttempts = drill.levels.first.attempts;
 
     final picked = await showDialog<int>(
@@ -840,6 +924,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
   double _scale = 1.0;
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -848,11 +934,11 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
       child: AnimatedScale(scale: _scale, duration: const Duration(milliseconds: 100),
         child: Container(width: double.infinity, padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
+            boxShadow: widget.onPressed != null ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4))] : null,
           ),
-          child: Text(widget.label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center)),
+          child: Text(widget.label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness)), textAlign: TextAlign.center)),
       ),
     );
   }
@@ -877,6 +963,8 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -889,7 +977,8 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
           children: [
             Text(
               'Mac dinh cho level nay: ${widget.defaultAttempts} lan',
-              style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 13),
+              style: TextStyle(
+                  color: AppColors.textSecondary(brightness), fontSize: 13),
             ),
             const SizedBox(height: AppSpacing.lg),
 
@@ -900,12 +989,14 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
                 final isSelected = _selected == preset && preset != widget.defaultAttempts;
                 return ChoiceChip(
                   label: Text('$preset lan', style: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.lightTextPrimary,
+                    color: isSelected
+                        ? AppColors.onPrimary(brightness)
+                        : AppColors.textPrimary(brightness),
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                   )),
                   selected: isSelected,
-                  selectedColor: AppColors.accent,
-                  backgroundColor: AppColors.lightBackground,
+                  selectedColor: AppColors.primary(brightness),
+                  backgroundColor: AppColors.background(brightness),
                   onSelected: (_) => setState(() => _selected = preset),
                 );
               }).toList(),
@@ -915,12 +1006,14 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
 
             ChoiceChip(
               label: Text('Mac dinh (${widget.defaultAttempts})', style: TextStyle(
-                color: _selected == widget.defaultAttempts ? Colors.white : AppColors.lightTextPrimary,
+                color: _selected == widget.defaultAttempts
+                    ? AppColors.onPrimary(brightness)
+                    : AppColors.textPrimary(brightness),
                 fontWeight: _selected == widget.defaultAttempts ? FontWeight.w600 : FontWeight.normal,
               )),
               selected: _selected == widget.defaultAttempts,
-              selectedColor: AppColors.accent,
-              backgroundColor: AppColors.lightBackground,
+              selectedColor: AppColors.primary(brightness),
+              backgroundColor: AppColors.background(brightness),
               onSelected: (_) => setState(() => _selected = widget.defaultAttempts),
             ),
 
@@ -953,7 +1046,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
             Text(
               'Số lần lớn giúp tăng độ chính xác',
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
               ),
@@ -964,7 +1057,8 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Hủy', style: TextStyle(color: AppColors.lightTextSecondary)),
+          child: Text('Hủy',
+              style: TextStyle(color: AppColors.textSecondary(brightness))),
         ),
         _DialogButton(
           onPressed: () {
@@ -989,6 +1083,8 @@ class _DialogButtonState extends State<_DialogButton> {
   double _scale = 1.0;
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: (_) => setState(() => _scale = 0.96),
@@ -998,10 +1094,10 @@ class _DialogButtonState extends State<_DialogButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
           decoration: BoxDecoration(
-            color: AppColors.accent,
+            color: AppColors.primary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
-          child: Text(widget.label, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+          child: Text(widget.label, style: TextStyle(color: AppColors.onPrimary(brightness), fontWeight: FontWeight.w600)),
         ),
       ),
     );
