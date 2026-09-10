@@ -201,8 +201,11 @@ class _DrillLevelHeader extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
 
     // Cả khối này nằm trên dải chuyển sắc `primary(brightness)` — nền ĐỔI theo
-    // chế độ, nên chữ và ô mờ phải dùng `onPrimary(brightness)` chứ không phải
-    // trắng cứng: chế độ tối primary là #34A97C, trắng đặt lên chỉ còn ~2.5:1.
+    // chế độ, nên CHỮ phải dùng `onPrimary(brightness)` chứ không phải trắng
+    // cứng: chế độ tối primary là #34A97C, trắng đặt lên chỉ còn ~2.5:1.
+    //
+    // Nhưng các ô mờ (scrim) thì KHÔNG theo quy tắc đó — xem chú thích tại
+    // chỗ khai báo màu của chúng bên dưới.
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
@@ -211,7 +214,14 @@ class _DrillLevelHeader extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             AppColors.primary(brightness),
-            AppColors.primary(brightness).withValues(alpha: 0.8),
+            // Đuôi dải KHÔNG được nhạt quá: nó pha xuống nền màn hình và kéo
+            // tương phản của chữ đặt lên. Ở 0,8 đuôi tối là #2D8C67, chữ
+            // `onPrimary(dark)` trên đó chỉ 4,10:1 — mà `titleLarge` bộ này là
+            // 16px (đậm vẫn dưới ngưỡng 18,66px của "chữ lớn"), nên sàn là
+            // 4,5:1 chứ không phải 3:1. 0,86 là mức thấp nhất còn qua sàn:
+            // đuôi #2F956E, chữ 4,56:1; đồng thời kéo ô mờ bản sáng từ
+            // 4,15:1 lên 4,71:1.
+            AppColors.primary(brightness).withValues(alpha: 0.86),
           ],
         ),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -222,7 +232,12 @@ class _DrillLevelHeader extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
+              // Scrim làm SÁNG nền gradient, nên phải là mực sáng ở CẢ HAI chế
+              // độ — onPrimary lật theo chế độ nên ở chế độ tối nó tối gần bằng
+              // chữ đặt lên, kéo tương phản xuống 3,10–4,20:1. Đây là cùng lý do
+              // với các nền hằng bất biến: nền không đổi theo chế độ thì mực
+              // trên nó cũng không được đổi.
+              color: AppColors.onPrimary(Brightness.light).withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Icon(
@@ -250,7 +265,10 @@ class _DrillLevelHeader extends StatelessWidget {
                     vertical: AppSpacing.xs,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
+                    // Cùng lý do với ô 60px ở trên: scrim là mực sáng cố định.
+                    // Chữ 'Level' 14px đậm — dưới ngưỡng "chữ lớn" nên cần
+                    // 4,5:1. Với scrim cũ, bản tối chỉ 3,10–4,20:1.
+                    color: AppColors.onPrimary(Brightness.light).withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                   ),
                   child: Text(

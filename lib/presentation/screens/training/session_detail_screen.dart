@@ -126,7 +126,13 @@ class _SessionDetailView extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     AppColors.primary(brightness),
-                    AppColors.primary(brightness).withValues(alpha: 0.7),
+                    // Đuôi dải KHÔNG được nhạt quá: nó pha xuống nền màn hình
+                    // (`background`) và kéo tương phản của chữ đặt lên. Ở 0,7
+                    // đuôi bản tối là #2A7D5D, `drillName` (18px thường, cần
+                    // 4,5:1) chỉ đạt 3,40:1. 0,86 là mức thấp nhất còn qua sàn:
+                    // đuôi #2F956E, chữ 4,56:1. Số 56px phía trên là chữ lớn
+                    // (sàn 3:1) nên vốn đã đạt ở cả hai mức.
+                    AppColors.primary(brightness).withValues(alpha: 0.86),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
