@@ -17,13 +17,13 @@
 - **KHÔNG dùng emoji làm icon.** Cả 3 màn lô 3a hiện đã sạch emoji — giữ nguyên như vậy.
 - **KHÔNG đổi font.** Giữ `GoogleFonts.plusJakartaSans()`.
 - **KHÔNG bật `ThemeMode.system`** cho tới khi hết lô 8. `main.dart:137` giữ `ThemeMode.light`.
-- **Mọi màn đã quét phải dùng `AppColors.foo(brightness)`** — không để lại `AppColors.lightFoo`, `AppColors.darkFoo`, `AppColors.fooSubtleLight`, `AppColors.accentColor`, `AppColors.accentSubtle`, hay hằng `Color(0xAARRGGBB)` thô. Tám luật trong `test/screens/token_hygiene.dart` gác đúng những thứ này.
+- **Mọi màn đã quét phải dùng `AppColors.foo(brightness)`** — không để lại `AppColors.lightFoo`, `AppColors.darkFoo`, `AppColors.fooSubtleLight`, `AppColors.accentColor`, `AppColors.accentSubtle`, hay hằng `Color(0xAARRGGBB)` thô. Chín luật trong `test/screens/token_hygiene.dart` gác đúng những thứ này.
 - **KHÔNG dùng `Colors.*` của Material.** `Colors.transparent` là ngoại lệ duy nhất.
 - Màu chính sáng `#0F4032`, tối `#34A97C`. Nền sáng `#F7F4EC`, tối `#121715`.
 - Thang bo góc: `radiusSm = 12`, `radiusMd = 20`, `radiusLg = 28`, `radiusTile = 18`, `radiusFull = 9999`.
 - **Chữ và icon đặt trên nền `primary` hoặc trên gradient dùng `AppColors.onPrimary(brightness)` NGUYÊN ĐỘ MỜ.** Không `withValues` trên màu chữ — lô 2 đã đo: alpha 0.8 chỉ đạt 3,15:1 ở chế độ tối. `withValues` vẫn hợp lệ cho nền wash của `Container` và màu `boxShadow`.
 - **Chữ trên nền hằng bất biến theo chế độ** (`AppColors.error`, `success`, `warning`) dùng `AppColors.onPrimary(Brightness.light)` — truyền literal, cố ý, vì nền đó giống nhau ở cả hai chế độ. Đã dùng ở `main_shell.dart` và `notification_screen.dart`.
-- Sau mỗi task: `flutter test` phải xanh toàn bộ (hiện **581 test**).
+- Sau mỗi task: `flutter test` phải xanh toàn bộ (581 khi bắt đầu → **604 khi kết thúc**).
 - **Lệnh chạy test:** `flutter` KHÔNG có trên PATH. Prefix `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH";`
 - **KHÔNG dùng vòng lặp `Get-Content`/`Set-Content` của PowerShell để patch file** — PowerShell 5.1 đọc UTF-8 bằng ANSI và phá hỏng tiếng Việt. Dùng tool Edit.
 - **E2E bám vào các nhãn sau — KHÔNG được đổi:**
@@ -38,8 +38,8 @@
 | File | Dòng | `light*`/`dark*` | `Colors.*` | `accent*` | `Color(0x…)` thô | đọc Brightness |
 |---|---|---|---|---|---|---|
 | `drill_list_screen.dart` | 613 | 32 | `white` ×6 | 10 | 4 | **0** |
-| `drill_detail_screen.dart` | 1009 | 48 | `white` ×10 | 14 | 0 | **0** |
-| `drill_session_screen.dart` | 685 | 0 | `white` ×2 | 1 | 0 | 8 |
+| `drill_detail_screen.dart` | 1009 | 48 | `white` ×10 | 14 | **1** | **0** |
+| `drill_session_screen.dart` | 685 | 0 | `white` ×2 | 1 | **2** | 8 |
 
 Không màn nào có emoji.
 
@@ -49,8 +49,8 @@ Không màn nào có emoji.
 |---|---|---|---|
 | `drill_list` | 571, 576, 588, 597, 604 | thẻ nhóm bài, nền `LinearGradient(color, color@80%)` | thẻ hết gradient — xem Task 1, chữ thành token thường |
 | `drill_list` | 86 | nền `AppColors.accent` | `onPrimary(brightness)` |
-| `drill_detail` | 127 | gradient của `SliverAppBar` | `onPrimary(brightness)` |
-| `drill_detail` | 389, 391, 395 | vòng tròn nền `AppColors.success` / `AppColors.accent` / màu khoá | `onPrimary(Brightness.light)` — nền hằng bất biến |
+| `drill_detail` | 127 | gradient của `SliverAppBar`, dựng từ **màu độ khó** (hằng bất biến) | ĐÍNH CHÍNH: `textPrimary(brightness)@0.25` sau khi gradient hạ thành wash — xem mục dưới |
+| `drill_detail` | 389, 391, 395 | **CÙNG một** vòng tròn, màu 3 nhánh | màu chữ phải theo cùng biểu thức điều kiện, không gán từng dòng |
 | `drill_detail` | 434 | nền `AppColors.success` | `onPrimary(Brightness.light)` |
 | `drill_detail` | 485, 855, 1004 | nền `AppColors.accent` | `onPrimary(brightness)` sau khi accent → primary |
 | `drill_detail` | 903, 918 | `ChoiceChip` khi được chọn, `selectedColor: AppColors.accent` | `onPrimary(brightness)` |
@@ -110,7 +110,7 @@ Cách xử lý: bỏ hẳn `_getColor`, thay bằng `_toneFor(String categoryId)
 - Consumes: `expectTokenHygiene(String, List<String>)` từ `test/screens/token_hygiene.dart`; `PoolCard`, `IconTile`, `SoftBackground`; `AppColors.primary/onPrimary/textPrimary/textSecondary/textTertiary/surface/border/background(Brightness)`, `AppColors.pastelFor(int, Brightness)`
 - Produces: không có API mới.
 
-- [ ] **Step 1: Viết test lô 3a, mới liệt kê 1 màn**
+- [x] **Step 1: Viết test lô 3a, mới liệt kê 1 màn**
 
 Tạo `test/screens/batch3a_dark_mode_test.dart`:
 
@@ -154,13 +154,13 @@ void main() {
 }
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter test test/screens/batch3a_dark_mode_test.dart`
 
 Expected: FAIL 5 luật — `AppColors.light*` (32 chỗ), `Colors.*` (`Colors.white`), `AppColors.accent*` (10 chỗ), hằng `Color(0x…)` thô (4 chỗ), và luật đọc `Brightness` (màn này không đọc lần nào) — cộng test `_toneFor` chưa tồn tại. Luật `dark*`, luật `Subtle*`, luật emoji và test nhãn E2E PASS ngay.
 
-- [ ] **Step 3: Thay `_getColor` bằng `_toneFor`**
+- [x] **Step 3: Thay `_getColor` bằng `_toneFor`**
 
 Trong `lib/presentation/screens/training/drill_list_screen.dart`, thay toàn bộ hàm ở dòng 511-521:
 
@@ -217,7 +217,7 @@ bằng:
   }
 ```
 
-- [ ] **Step 4: Đổi thẻ nhóm bài từ gradient sang `PoolCard` + `IconTile`**
+- [x] **Step 4: Đổi thẻ nhóm bài từ gradient sang `PoolCard` + `IconTile`**
 
 Thêm import ở đầu file:
 
@@ -336,7 +336,7 @@ thành:
 
 Đóng khối bằng `);` thay vì các dấu đóng của `InkWell`+`Container`; chạy analyzer sau bước này để bắt sai lệch dấu ngoặc thay vì đếm tay.
 
-- [ ] **Step 5: Thêm `brightness` và chuyển 32 token cứng**
+- [x] **Step 5: Thêm `brightness` và chuyển 32 token cứng**
 
 Màn này không đọc `Brightness` lần nào. Với **mỗi** hàm `build()` và `_build*()` trong file, thêm dòng đầu tiên:
 
@@ -362,11 +362,11 @@ Rồi thay theo bảng, **đúng thứ tự này** để tránh va chạm tiền
 
 Chỗ `Colors.white` ở dòng 86 nằm trên nền `AppColors.accent` (sau khi đổi là `primary`) → `AppColors.onPrimary(brightness)`.
 
-- [ ] **Step 6: Bọc `body` bằng `SoftBackground`**
+- [x] **Step 6: Bọc `body` bằng `SoftBackground`**
 
 Trong `build()` của màn, đổi `backgroundColor` của `Scaffold` sang `AppColors.background(brightness)` và bọc `body:` bằng `SoftBackground(child: ...)`, thêm một `)` tương ứng.
 
-- [ ] **Step 7: Chạy analyzer**
+- [x] **Step 7: Chạy analyzer**
 
 Run: `$env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter analyze lib/presentation/screens/training/drill_list_screen.dart`
 
@@ -376,13 +376,13 @@ Lỗi hay gặp: `const_eval_method_invocation` — một `const TextStyle`/`con
 
 Nếu analyzer báo warning có sẵn từ trước (import thừa, biến chết), dọn luôn — nhưng ghi rõ trong báo cáo là dọn thêm ngoài phạm vi, và nói rõ từng chỗ.
 
-- [ ] **Step 8: Chạy test lô 3a và toàn bộ suite**
+- [x] **Step 8: Chạy test lô 3a và toàn bộ suite**
 
 Run: `flutter test test/screens/batch3a_dark_mode_test.dart` → Expected: 10 PASS (8 luật + 2 test riêng).
 
 Run: `flutter test` → Expected: 591 PASS (581 + 10 mới).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/presentation/screens/training/drill_list_screen.dart test/screens/batch3a_dark_mode_test.dart
@@ -403,7 +403,7 @@ Màn lớn nhất của lô 3a (1009 dòng, 24 hàm build) và nặng token nh�
 - Consumes: như Task 1
 - Produces: không có API mới.
 
-- [ ] **Step 1: Thêm màn này vào danh sách lô 3a**
+- [x] **Step 1: Thêm màn này vào danh sách lô 3a**
 
 Trong `test/screens/batch3a_dark_mode_test.dart`, sửa lời gọi thành:
 
@@ -414,13 +414,13 @@ Trong `test/screens/batch3a_dark_mode_test.dart`, sửa lời gọi thành:
   ]);
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/screens/batch3a_dark_mode_test.dart`
 
 Expected: FAIL 4 luật — `AppColors.light*` (48 chỗ), `Colors.*` (`Colors.white` ×10), `AppColors.accent*` (14 chỗ), và luật đọc `Brightness`. Luật `dark*`, `Subtle*`, raw-color và emoji PASS.
 
-- [ ] **Step 3: Thêm `brightness` vào 24 hàm build**
+- [x] **Step 3: Thêm `brightness` vào 24 hàm build**
 
 Với mỗi hàm `build()` / `_build*()`, thêm dòng đầu:
 
@@ -430,11 +430,11 @@ Với mỗi hàm `build()` / `_build*()`, thêm dòng đầu:
 
 Hàm không có `BuildContext` thì nhận `Brightness brightness` qua tham số và truyền từ nơi gọi.
 
-- [ ] **Step 4: Chuyển token theo đúng bảng ở Task 1 Step 5**
+- [x] **Step 4: Chuyển token theo đúng bảng ở Task 1 Step 5**
 
 Cùng bảng, cùng thứ tự (`accentSubtle` trước `accent`).
 
-- [ ] **Step 5: Xử lý 10 chỗ `Colors.white` theo nền THẬT của từng chỗ**
+- [x] **Step 5: Xử lý 10 chỗ `Colors.white` theo nền THẬT của từng chỗ**
 
 Đây là chỗ dễ sai nhất và đã sai hai lần ở các lô trước. Nền của từng dòng đã được truy trực tiếp:
 
@@ -453,21 +453,21 @@ Cùng bảng, cùng thứ tự (`accentSubtle` trước `accent`).
 
 Quy tắc để nhớ: nền là **hằng bất biến theo chế độ** (`success`/`error`/`warning`) thì truyền literal `Brightness.light`; nền là **token theo chế độ** (`primary`) thì truyền `brightness`.
 
-- [ ] **Step 6: Bọc `body` bằng `SoftBackground`**
+- [x] **Step 6: Bọc `body` bằng `SoftBackground`**
 
 Đổi `backgroundColor` của `Scaffold` sang `AppColors.background(brightness)`. Màn này dùng `CustomScrollView`/`SliverAppBar` — bọc `SoftBackground` **quanh `body`**, không quanh từng sliver.
 
-- [ ] **Step 7: Chạy analyzer**
+- [x] **Step 7: Chạy analyzer**
 
 Run: `flutter analyze lib/presentation/screens/training/drill_detail_screen.dart`
 Expected: `No issues found!`
 
-- [ ] **Step 8: Chạy test và suite**
+- [x] **Step 8: Chạy test và suite**
 
 Run: `flutter test test/screens/batch3a_dark_mode_test.dart` → Expected: 10 PASS.
 Run: `flutter test` → Expected: 591 PASS (Task 2 không thêm test mới).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add lib/presentation/screens/training/drill_detail_screen.dart test/screens/batch3a_dark_mode_test.dart
@@ -488,7 +488,7 @@ Màn này đã brightness-aware (8 chỗ đọc `Brightness`) và gần như s�
 - Consumes: như Task 1
 - Produces: không có API mới.
 
-- [ ] **Step 1: Thêm màn này vào danh sách lô 3a**
+- [x] **Step 1: Thêm màn này vào danh sách lô 3a**
 
 ```dart
   expectTokenHygiene('lô 3a', const [
@@ -498,13 +498,13 @@ Màn này đã brightness-aware (8 chỗ đọc `Brightness`) và gần như s�
   ]);
 ```
 
-- [ ] **Step 2: Chạy test, xác nhận FAIL**
+- [x] **Step 2: Chạy test, xác nhận FAIL**
 
 Run: `flutter test test/screens/batch3a_dark_mode_test.dart`
 
 Expected: FAIL 3 luật — `Colors.*` (`Colors.white` ×2), `AppColors.accent*` (`accentColor` ×1), và luật `Subtle*` (1 chỗ `*SubtleLight`). Các luật khác PASS.
 
-- [ ] **Step 3: Sửa nút nền màu truyền vào**
+- [x] **Step 3: Sửa nút nền màu truyền vào**
 
 Hai chỗ `Colors.white` (dòng 667, 674) nằm trên nút có nền `widget.color` — một màu truyền từ nơi gọi, không phải token cố định, nên không thể suy ra chế độ.
 
@@ -520,18 +520,18 @@ Hai chỗ `Colors.white` (dòng 667, 674) nằm trên nút có nền `widget.col
 
 Nếu khảo sát cho thấy có nơi gọi truyền màu nhạt, dừng lại và báo — lúc đó cần đổi chữ ký để nhận cả màu chữ.
 
-- [ ] **Step 4: Đổi `accentColor` và token `*SubtleLight`**
+- [x] **Step 4: Đổi `accentColor` và token `*SubtleLight`**
 
 `AppColors.accentColor(brightness)` → `AppColors.primary(brightness)`.
 Token `*SubtleLight` → accessor tương ứng `AppColors.errorSubtle/warningSubtle/successSubtle(brightness)`.
 
-- [ ] **Step 5: Chạy analyzer, test lô, và toàn bộ suite**
+- [x] **Step 5: Chạy analyzer, test lô, và toàn bộ suite**
 
 Run: `flutter analyze lib/presentation/screens/training/drill_session_screen.dart` → `No issues found!`
 Run: `flutter test test/screens/batch3a_dark_mode_test.dart` → 10 PASS.
 Run: `flutter test` → 591 PASS.
 
-- [ ] **Step 6: Chạy E2E**
+- [x] **Step 6: Chạy E2E**
 
 ```powershell
 $env:PATH = "C:\Users\anhnpv\flutter\bin;$env:PATH"; flutter build web --release --base-href /
@@ -544,7 +544,7 @@ Nếu test `should navigate to all drills` hoặc test nhóm bài đỏ, nghĩa 
 
 **Lưu ý build:** dùng PowerShell cho lệnh có `--base-href /`; Git Bash biến `/` thành đường dẫn Windows.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add lib/presentation/screens/training/drill_session_screen.dart test/screens/batch3a_dark_mode_test.dart
@@ -570,3 +570,25 @@ Hai việc còn nợ từ lô 2, nên gộp vào một lô con sau của lô 3:
 2. **`_NotificationCard` chưa có widget test.** Luật đọc-mã-nguồn không bắt được `Dismissible.onDismissed` bị vô hiệu hay `maxLines` bị rơi.
 
 **Chỉ bật `ThemeMode.system` ở `main.dart:137` sau khi hết lô 8**, và trước đó chạy `expectTokenHygiene` trên toàn bộ 68 màn. Mọi tỉ lệ tương phản ghi trong các plan đến giờ là **tính toán, chưa phải quan sát** — dark mode chưa từng chạy thật.
+
+---
+
+## ĐÍNH CHÍNH (ghi sau khi thực thi)
+
+Bốn chỗ plan này ghi sai, phát hiện trong lúc chạy:
+
+1. **Đếm hằng màu thô sai hai lần.** Bảng hiện trạng ghi `drill_detail` có 0 và `drill_session` có 0. Thực tế lần lượt là 1 (dòng 304, chính hằng violet `expert`) và 2 (`_RecordingBar`). Nguyên nhân: khảo sát bằng một lệnh `grep` tổng hợp không có cột cho hằng màu thô, rồi tôi điền số vào bảng theo trí nhớ.
+
+2. **Nền dòng 127 ghi sai.** Plan nói dùng `onPrimary(brightness)`. Gradient ở đó dựng từ **màu độ khó** (`success`/`warning`/`error` — hằng bất biến), không phải từ `primary`.
+
+3. **Ba glyph ở vòng tròn cấp độ.** Plan gán màu theo từng dòng; thực tế cả ba nằm trên **cùng một** vòng tròn có màu ba nhánh, nên màu chữ phải đi theo cùng biểu thức điều kiện.
+
+4. **Token `difficultyExpert` chỉ được kiểm một chiều.** Vòng sửa Task 1 thêm token này với hex `#6D4AA6` và bắt kiểm tương phản — nhưng chỉ như **màu chữ** (trên background/surface). Không ai kiểm nó như **màu nền**. `drill_detail` dùng đúng màu đó làm gradient header với nút back vẽ đè lên, và nút back tụt **3,16 → 2,03:1 ở chế độ sáng** — chế độ duy nhất đang ship. Bản sửa: hạ gradient thành wash `alpha 0.18/0.10`, đưa cả bốn độ khó lên 10,2–11,7:1, và thu gọn luôn vấn đề `SliverAppBar` ở chế độ tối.
+
+**Bài học cho các lô sau: khi thêm một token màu, kiểm CẢ HAI chiều — nó làm chữ trên nền gì, và nó làm nền cho chữ gì.** Bài test chỉ khoá một chiều nên chiều kia trượt qua cả ba vòng review.
+
+## Việc còn nợ, giao cho lô sau
+
+- **Cặp nền dịu ở chế độ SÁNG chưa đạt**: `warning` trên `warningSubtleLight` 2,07:1, `success` trên `successSubtleLight` 2,41:1. Cả hai tệ hơn ô ở chế độ tối vừa sửa, và sáng là chế độ đang ship. Có sẵn từ trước, dùng xuyên lô 1-2 đã merge nên cần một task riêng.
+- **`SliverAppBar` chế độ tối**: đã thu gọn nhờ wash, nhưng `knowledge_detail_screen.dart` (lô 3d) có cùng hình dạng — áp cùng cách xử lý khi tới đó.
+- **Màn `DrillListScreen` bên trong** mới đổi token, chưa đổi sang `PoolCard`/`IconTile` — còn một đường nối thấy được cách một cú chạm.
