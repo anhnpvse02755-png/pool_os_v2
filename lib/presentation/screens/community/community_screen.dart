@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
@@ -30,9 +29,9 @@ class CommunityScreen extends StatelessWidget {
             ),
           ),
           bottom: TabBar(
-            labelColor: AppColors.accentColor(brightness),
+            labelColor: AppColors.primary(brightness),
             unselectedLabelColor: AppColors.textSecondary(brightness),
-            indicatorColor: AppColors.accentColor(brightness),
+            indicatorColor: AppColors.primary(brightness),
             tabs: const [
               Tab(text: 'Bảng xếp hạng'),
               Tab(text: 'Người chơi'),
@@ -74,7 +73,7 @@ class _LeaderboardTab extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.accentColor(brightness).withValues(alpha: 0.1),
+                AppColors.primary(brightness).withValues(alpha: 0.1),
                 AppColors.surface(brightness),
               ],
             ),
@@ -91,6 +90,7 @@ class _LeaderboardTab extends StatelessWidget {
                 avatar: leaders[1]['avatar'] as String,
                 height: 80,
                 color: AppColors.silver,
+                onTintColor: AppColors.silverOnTint(brightness),
                 brightness: brightness,
               ),
               _PodiumItem(
@@ -100,6 +100,7 @@ class _LeaderboardTab extends StatelessWidget {
                 avatar: leaders[0]['avatar'] as String,
                 height: 100,
                 color: AppColors.gold,
+                onTintColor: AppColors.goldOnTint(brightness),
                 brightness: brightness,
               ),
               _PodiumItem(
@@ -109,6 +110,7 @@ class _LeaderboardTab extends StatelessWidget {
                 avatar: leaders[2]['avatar'] as String,
                 height: 60,
                 color: AppColors.bronze,
+                onTintColor: AppColors.bronzeOnTint(brightness),
                 brightness: brightness,
               ),
             ],
@@ -150,6 +152,13 @@ class _PodiumItem extends StatelessWidget {
   final String avatar;
   final double height;
   final Color color;
+
+  /// Bản đọc được của [color] khi nó phải làm CHỮ hoặc NÉT trên nền dịu của
+  /// chính mình. Đo thật: chữ avatar cùng màu với nền 30% của nó chỉ được
+  /// 2,11-2,84:1, và viền/icon huy chương trên nền thẻ tụt còn 2,87 ở chế độ
+  /// tối. Luật vệ sinh token KHÔNG bắt được hai chỗ này vì chúng chỉ đọc mã
+  /// nguồn, không đo tương phản.
+  final Color onTintColor;
   final Brightness brightness;
 
   const _PodiumItem({
@@ -159,6 +168,7 @@ class _PodiumItem extends StatelessWidget {
     required this.avatar,
     required this.height,
     required this.color,
+    required this.onTintColor,
     required this.brightness,
   });
 
@@ -174,13 +184,13 @@ class _PodiumItem extends StatelessWidget {
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
-                border: Border.all(color: color, width: 3),
+                border: Border.all(color: onTintColor, width: 3),
               ),
               child: Center(
                 child: Text(
                   avatar,
                   style: TextStyle(
-                    color: color,
+                    color: onTintColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -193,7 +203,7 @@ class _PodiumItem extends StatelessWidget {
               right: 0,
               child: Icon(
                 rank == 1 ? Icons.emoji_events : Icons.workspace_premium,
-                color: color,
+                color: onTintColor,
                 size: 20,
               ),
             ),
@@ -287,14 +297,14 @@ class _LeaderboardItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              color: AppColors.primary(brightness).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 avatar,
                 style: TextStyle(
-                  color: AppColors.accentColor(brightness),
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -405,14 +415,14 @@ class _PlayerCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+                color: AppColors.primary(brightness).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Text(
                   avatar,
                   style: TextStyle(
-                    color: AppColors.accentColor(brightness),
+                    color: AppColors.primary(brightness),
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -437,13 +447,14 @@ class _PlayerCard extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: _getLevelColor(level).withValues(alpha: 0.1),
+                          color: _levelTint(level, brightness)
+                              .withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           level,
                           style: TextStyle(
-                            color: _getLevelColor(level),
+                            color: _levelOnTint(level, brightness),
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
                           ),
@@ -465,7 +476,7 @@ class _PlayerCard extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.person_add, color: AppColors.accentColor(brightness)),
+              icon: Icon(Icons.person_add, color: AppColors.primary(brightness)),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -481,17 +492,46 @@ class _PlayerCard extends StatelessWidget {
     );
   }
 
-  Color _getLevelColor(String level) {
-    switch (level) {
-      case 'Pro':
-        return Colors.purple;
-      case 'Expert':
-        return AppColors.warning;
-      case 'Advanced':
-        return Colors.blue;
-      default:
-        return AppColors.success;
-    }
+}
+
+/// Tông NỀN của bốn bậc trình độ, theo THỨ HẠNG.
+///
+/// Dùng đúng bộ bốn hue tách bạch mà hệ có — `difficultyExpert` 262° / họ xanh
+/// rêu 157-163° / `warning` 38° / `error` 0° — giống `assessment_screen`.
+///
+/// `Advanced` KHÔNG giữ xanh điện của Material: đó là tông mà đợt redesign
+/// này tồn tại để loại bỏ. Bậc mặc định dời từ `success` sang `error` vì nó
+/// cùng họ xanh rêu với `primary` của bậc `Expert` ngay trên nó — để nguyên
+/// thì hai bậc liền kề trùng sắc.
+Color _levelTint(String level, Brightness brightness) {
+  switch (level) {
+    case 'Pro':
+      return AppColors.difficultyExpert(brightness);
+    case 'Expert':
+      return AppColors.primary(brightness);
+    case 'Advanced':
+      return AppColors.warning;
+    default:
+      return AppColors.error;
+  }
+}
+
+/// Tông CHỮ đặt trên nền 10% của [_levelTint].
+///
+/// Không phải lúc nào cũng trùng màu nền. Đo thật: `warning` làm chữ trên nền
+/// 10% của chính nó chỉ được 1,82:1 ở chế độ sáng, `error` được 3,01 sáng /
+/// 4,39 tối — cả hai trượt sàn 4,5. Hệ đã có sẵn `warningOnTint`/`errorOnTint`
+/// đúng cho chiều này. `difficultyExpert` và `primary` tự đạt nên dùng thẳng.
+Color _levelOnTint(String level, Brightness brightness) {
+  switch (level) {
+    case 'Pro':
+      return AppColors.difficultyExpert(brightness);
+    case 'Expert':
+      return AppColors.primary(brightness);
+    case 'Advanced':
+      return AppColors.warningOnTint(brightness);
+    default:
+      return AppColors.errorOnTint(brightness);
   }
 }
 
@@ -512,14 +552,14 @@ class _PlayerProfileSheet extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              color: AppColors.primary(brightness).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 player['avatar'] as String,
                 style: TextStyle(
-                  color: AppColors.accentColor(brightness),
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.bold,
                   fontSize: 32,
                 ),
@@ -539,13 +579,14 @@ class _PlayerProfileSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.purple.withValues(alpha: 0.1),
+              color: _levelTint(player['level'] as String, brightness)
+                  .withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Text(
               player['level'] as String,
-              style: const TextStyle(
-                color: Colors.purple,
+              style: TextStyle(
+                color: _levelOnTint(player['level'] as String, brightness),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -573,10 +614,10 @@ class _PlayerProfileSheet extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: Icon(Icons.person_add, color: AppColors.accentColor(brightness)),
-                  label: Text('Kết bạn', style: TextStyle(color: AppColors.accentColor(brightness))),
+                  icon: Icon(Icons.person_add, color: AppColors.primary(brightness)),
+                  label: Text('Kết bạn', style: TextStyle(color: AppColors.primary(brightness))),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.accentColor(brightness)),
+                    side: BorderSide(color: AppColors.primary(brightness)),
                     padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                   ),
                 ),
@@ -593,10 +634,12 @@ class _PlayerProfileSheet extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: Icon(Icons.sports_cricket, color: Colors.white),
-                  label: Text('Thách đấu', style: TextStyle(color: Colors.white)),
+                  icon: Icon(Icons.sports_cricket,
+                      color: AppColors.onPrimary(brightness)),
+                  label: Text('Thách đấu',
+                      style: TextStyle(color: AppColors.onPrimary(brightness))),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accentColor(brightness),
+                    backgroundColor: AppColors.primary(brightness),
                     padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                   ),
                 ),
@@ -707,14 +750,14 @@ class _ActivityItem extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              color: AppColors.primary(brightness).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 avatar,
                 style: TextStyle(
-                  color: AppColors.accentColor(brightness),
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -733,7 +776,7 @@ class _ActivityItem extends StatelessWidget {
                   TextSpan(text: ' $action '),
                   TextSpan(
                     text: target,
-                    style: TextStyle(color: AppColors.accentColor(brightness)),
+                    style: TextStyle(color: AppColors.primary(brightness)),
                   ),
                 ],
               ),
