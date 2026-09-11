@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 
@@ -35,12 +36,14 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_loading) {
       return Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: const LinearProgressIndicator(
-          color: AppColors.accent,
-          backgroundColor: AppColors.lightBorder,
+        child: LinearProgressIndicator(
+          color: AppColors.primary(brightness),
+          backgroundColor: AppColors.border(brightness),
         ),
       );
     }
@@ -52,16 +55,10 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -72,18 +69,18 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: Icon(Icons.menu_book, color: AppColors.accent, size: 20),
+                child: Icon(Icons.menu_book, color: AppColors.primary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.sm),
-              const Text(
+              Text(
                 'Knowledge Progress',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
               const Spacer(),
@@ -93,15 +90,15 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                 ),
                 child: Text(
                   '$readCount articles',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.accent,
+                    color: AppColors.primary(brightness),
                   ),
                 ),
               ),
@@ -112,23 +109,23 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
             Container(
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: AppColors.lightBackground,
+                color: AppColors.background(brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.lightBorder),
+                border: Border.all(color: AppColors.border(brightness)),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.info_outline,
-                    color: AppColors.lightTextTertiary,
+                    color: AppColors.textTertiary(brightness),
                     size: 20,
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Bạn chưa đọc bài viết nào. Hãy khám phá Knowledge!',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontSize: 13,
                       ),
                     ),
@@ -142,16 +139,16 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
                   child: Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.lightBackground,
+                      color: AppColors.background(brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      border: Border.all(color: AppColors.lightBorder),
+                      border: Border.all(color: AppColors.border(brightness)),
                     ),
                     child: Row(
                       children: [
                         Container(
                           padding: const EdgeInsets.all(AppSpacing.xs),
                           decoration: BoxDecoration(
-                            color: AppColors.successSubtleLight,
+                            color: AppColors.successSubtle(brightness),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Icon(
@@ -167,18 +164,18 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
                             children: [
                               Text(
                                 id,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w500,
-                                  color: AppColors.lightTextPrimary,
+                                  color: AppColors.textPrimary(brightness),
                                   fontSize: 14,
                                 ),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 'Read at ${_format((_progress[id] as Map)['readAt'])}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: AppColors.lightTextSecondary,
+                                  color: AppColors.textSecondary(brightness),
                                 ),
                               ),
                             ],

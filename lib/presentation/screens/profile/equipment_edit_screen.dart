@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/equipment_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/equipment.dart';
@@ -198,23 +199,25 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final isEdit = widget.equipmentId != null;
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         elevation: 0,
         title: Text(
           isEdit ? 'Chỉnh sửa dụng cụ' : 'Thêm dụng cụ',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
         actions: [
@@ -249,8 +252,10 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildCategorySection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(brightness),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,16 +270,16 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
               return ChoiceChip(
                 label: Text(EquipmentConstants.categoryLabels[c]!),
                 selected: selected,
-                selectedColor: AppColors.accent,
-                backgroundColor: AppColors.lightBackground,
+                selectedColor: AppColors.primary(brightness),
+                backgroundColor: AppColors.background(brightness),
                 labelStyle: TextStyle(
-                  color: selected ? Colors.white : AppColors.lightTextSecondary,
+                  color: selected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   side: BorderSide(
-                    color: selected ? AppColors.accent : AppColors.lightBorder,
+                    color: selected ? AppColors.primary(brightness) : AppColors.border(brightness),
                   ),
                 ),
                 onSelected: (_) => setState(() => _category = c),
@@ -283,12 +288,12 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           ),
           if (_category == 'cue') ...[
             const SizedBox(height: AppSpacing.lg),
-            const Text(
+            Text(
               'Cue Type',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -301,15 +306,15 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
                   label: Text(EquipmentConstants.cueTypeLabels[t]!),
                   selected: selected,
                   selectedColor: AppColors.warning,
-                  backgroundColor: AppColors.lightBackground,
+                  backgroundColor: AppColors.background(brightness),
                   labelStyle: TextStyle(
-                    color: selected ? Colors.white : AppColors.lightTextSecondary,
+                    color: selected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     side: BorderSide(
-                      color: selected ? AppColors.warning : AppColors.lightBorder,
+                      color: selected ? AppColors.warning : AppColors.border(brightness),
                     ),
                   ),
                   onSelected: (_) => setState(() => _cueType = t),
@@ -327,8 +332,10 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildIdentitySection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(brightness),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,15 +344,15 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _nameCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tên dụng cụ *'),
           ),
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _brand,
             value: _brand,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Brand'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -357,7 +364,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _modelCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Model'),
           ),
         ],
@@ -370,8 +377,10 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildCueSection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(brightness),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -383,8 +392,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _shaftMaterial,
             value: _shaftMaterial,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Shaft material'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -401,8 +410,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             value: _shaftDiameterCtrl.text.isEmpty
                 ? null
                 : double.tryParse(_shaftDiameterCtrl.text),
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Shaft diameter (mm)'),
             items: EquipmentConstants.shaftDiameters
                 .map((d) => DropdownMenuItem(
@@ -419,8 +428,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _tipBrand,
             value: _tipBrand,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tip brand'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -437,8 +446,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             value: _tipDiameterCtrl.text.isEmpty
                 ? null
                 : double.tryParse(_tipDiameterCtrl.text),
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tip diameter (mm)'),
             items: EquipmentConstants.tipDiameters
                 .map((d) => DropdownMenuItem(
@@ -453,8 +462,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _tipHardness,
             value: _tipHardness,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tip hardness'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -466,26 +475,26 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
+            title: Text(
               'Last tip change',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
             subtitle: Text(
               _lastTipChange == null
                   ? 'Not set'
                   : _formatDate(_lastTipChange!),
-              style: const TextStyle(
-                color: AppColors.lightTextPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary(brightness),
                 fontWeight: FontWeight.w500,
               ),
             ),
             trailing: Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.accentSubtleLight,
+                color: AppColors.pastelFor(0, brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: const Icon(Icons.calendar_today, color: AppColors.accent, size: 18),
+              child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 18),
             ),
             onTap: () async {
               final picked = await showDatePicker(
@@ -498,13 +507,13 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             },
           ),
 
-          const Divider(color: AppColors.lightBorder),
+          Divider(color: AppColors.border(brightness)),
           const SizedBox(height: AppSpacing.md),
 
           // Butt
           TextFormField(
             controller: _weightCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Weight (oz)'),
             keyboardType: TextInputType.number,
           ),
@@ -512,8 +521,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _balance,
             value: _balance,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Balance'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -526,8 +535,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _joint,
             value: _joint,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Joint'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -540,8 +549,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _wrap,
             value: _wrap,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Wrap'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -553,53 +562,53 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _ferruleCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Ferrule'),
           ),
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _extensionCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Extension'),
           ),
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _caseCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Cue case'),
           ),
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _chalkCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Chalk brand'),
           ),
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _gloveCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Glove'),
           ),
 
-          const Divider(color: AppColors.lightBorder),
+          Divider(color: AppColors.border(brightness)),
           const SizedBox(height: AppSpacing.md),
 
           // Roles
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
+            title: Text(
               'Active playing cue',
-              style: TextStyle(color: AppColors.lightTextPrimary),
+              style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             value: _isActive,
             onChanged: (v) => setState(() => _isActive = v),
-            activeColor: AppColors.accent,
+            activeColor: AppColors.primary(brightness),
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
+            title: Text(
               'Active break cue',
-              style: TextStyle(color: AppColors.lightTextPrimary),
+              style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             value: _isBreakCue,
             onChanged: (v) => setState(() => _isBreakCue = v),
@@ -607,13 +616,13 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
+            title: Text(
               'Active jump cue',
-              style: TextStyle(color: AppColors.lightTextPrimary),
+              style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             value: _isJumpCue,
             onChanged: (v) => setState(() => _isJumpCue = v),
-            activeColor: AppColors.accent,
+            activeColor: AppColors.primary(brightness),
           ),
         ],
       ),
@@ -625,8 +634,10 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildPriceSection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(brightness),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -635,26 +646,26 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
+            title: Text(
               'Purchase date',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
             subtitle: Text(
               _purchaseDate == null
                   ? 'Not set'
                   : _formatDate(_purchaseDate!),
-              style: const TextStyle(
-                color: AppColors.lightTextPrimary,
+              style: TextStyle(
+                color: AppColors.textPrimary(brightness),
                 fontWeight: FontWeight.w500,
               ),
             ),
             trailing: Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.accentSubtleLight,
+                color: AppColors.pastelFor(0, brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: const Icon(Icons.calendar_today, color: AppColors.accent, size: 18),
+              child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 18),
             ),
             onTap: () async {
               final picked = await showDatePicker(
@@ -668,14 +679,14 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           ),
           TextFormField(
             controller: _priceCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Purchase price (USD)'),
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _valueCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Current value (USD)'),
             keyboardType: TextInputType.number,
           ),
@@ -683,8 +694,8 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           DropdownButtonFormField<String>(
             initialValue: _condition,
             value: _condition,
-            dropdownColor: AppColors.lightSurface,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            dropdownColor: AppColors.surface(brightness),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Condition'),
             items: [
               const DropdownMenuItem(value: null, child: Text('—')),
@@ -696,24 +707,24 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _usageCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Usage hours'),
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: AppSpacing.md),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
+            title: Text(
               'Archive',
-              style: TextStyle(color: AppColors.lightTextPrimary),
+              style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
-            subtitle: const Text(
+            subtitle: Text(
               'Hide from main list',
-              style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 12),
+              style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 12),
             ),
             value: _isArchived,
             onChanged: (v) => setState(() => _isArchived = v),
-            activeColor: AppColors.lightTextSecondary,
+            activeColor: AppColors.textSecondary(brightness),
           ),
         ],
       ),
@@ -725,8 +736,10 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // ===========================================================================
 
   Widget _buildNotesSection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(brightness),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -735,24 +748,24 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           TextFormField(
             controller: _notesCtrl,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: InputDecoration(
               hintText: 'Ghi chú...',
-              hintStyle: const TextStyle(color: AppColors.lightTextTertiary),
+              hintStyle: TextStyle(color: AppColors.textTertiary(brightness)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.lightBorder),
+                borderSide: BorderSide(color: AppColors.border(brightness)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.lightBorder),
+                borderSide: BorderSide(color: AppColors.border(brightness)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
               ),
               filled: true,
-              fillColor: AppColors.lightBackground,
+              fillColor: AppColors.background(brightness),
             ),
             maxLines: 4,
           ),
@@ -765,39 +778,37 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // Helpers
   // ===========================================================================
 
-  BoxDecoration _cardDecoration() {
+  BoxDecoration _cardDecoration(brightness) {
+    final brightness = Theme.of(context).brightness;
+
     return BoxDecoration(
-      color: AppColors.lightSurface,
+      color: AppColors.surface(brightness),
       borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      border: Border.all(color: AppColors.lightBorder),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withValues(alpha: 0.04),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ],
+      border: Border.all(color: AppColors.border(brightness)),
+      boxShadow: AppShadows.soft(brightness),
     );
   }
 
   InputDecoration _inputDecoration(String label) {
+    final brightness = Theme.of(context).brightness;
+
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
+      labelStyle: TextStyle(color: AppColors.textSecondary(brightness)),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        borderSide: const BorderSide(color: AppColors.lightBorder),
+        borderSide: BorderSide(color: AppColors.border(brightness)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        borderSide: const BorderSide(color: AppColors.lightBorder),
+        borderSide: BorderSide(color: AppColors.border(brightness)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        borderSide: const BorderSide(color: AppColors.accent, width: 2),
+        borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
       ),
       filled: true,
-      fillColor: AppColors.lightBackground,
+      fillColor: AppColors.background(brightness),
     );
   }
 
@@ -819,6 +830,8 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -834,24 +847,24 @@ class _SaveButtonState extends State<_SaveButton> {
             vertical: AppSpacing.sm,
           ),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             boxShadow: widget.onPressed != null
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
                   ]
                 : null,
           ),
-          child: const Text(
+          child: Text(
             'Lưu',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
             ),
           ),
         ),
@@ -866,12 +879,14 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Text(
       label,
-      style: const TextStyle(
+      style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 15,
-        color: AppColors.lightTextPrimary,
+        color: AppColors.textPrimary(brightness),
       ),
     );
   }

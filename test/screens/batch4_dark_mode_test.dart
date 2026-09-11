@@ -39,4 +39,17 @@ void main() {
     'lib/presentation/screens/coach/coach_timeline_screen.dart',
     'lib/presentation/screens/coach/training_plan_screen.dart',
   ]);
+
+  expectTokenHygiene('lo 4 - profile', const [
+    'lib/presentation/screens/profile/edit_profile_screen.dart',
+    'lib/presentation/screens/profile/equipment_comparison_screen.dart',
+    'lib/presentation/screens/profile/equipment_detail_screen.dart',
+    'lib/presentation/screens/profile/equipment_edit_screen.dart',
+    'lib/presentation/screens/profile/equipment_screen.dart',
+    'lib/presentation/screens/profile/equipment_statistics_screen.dart',
+    'lib/presentation/screens/profile/knowledge_progress_section.dart',
+    'lib/presentation/screens/profile/player_state_screen.dart',
+    'lib/presentation/screens/profile/profile_screen.dart',
+    'lib/presentation/screens/profile/settings_screen.dart',
+  ]);
 }

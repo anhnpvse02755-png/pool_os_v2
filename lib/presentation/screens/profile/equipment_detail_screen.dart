@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/equipment_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/equipment.dart';
@@ -17,37 +18,39 @@ class EquipmentDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     final equipmentAsync = ref.watch(allEquipmentProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Chi tiết dụng cụ',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.edit_outlined, color: AppColors.accent),
+            icon: Icon(Icons.edit_outlined, color: AppColors.primary(brightness)),
             tooltip: 'Chỉnh sửa',
             onPressed: () => context.push('/profile/equipment/edit/$id'),
           ),
         ],
       ),
       body: equipmentAsync.when(
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.accent),
+        loading: () => Center(
+          child: CircularProgressIndicator(color: AppColors.primary(brightness)),
         ),
         error: (e, st) => Center(
           child: Text(
@@ -97,18 +100,14 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // ===========================================================================
 
   Widget _buildIdentityCard(BuildContext context, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -120,10 +119,10 @@ class EquipmentDetailScreen extends ConsumerWidget {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
-                child: Icon(_iconFor(item), color: AppColors.accent, size: 36),
+                child: Icon(_iconFor(item), color: AppColors.primary(brightness), size: 36),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -132,18 +131,18 @@ class EquipmentDetailScreen extends ConsumerWidget {
                   children: [
                     Text(
                       item.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       '${EquipmentConstants.categoryLabels[item.category] ?? item.category}'
                       '${item.cueType != null ? " · ${EquipmentConstants.cueTypeLabels[item.cueType]}" : ""}',
-                      style: const TextStyle(
-                        color: AppColors.lightTextSecondary,
+                      style: TextStyle(
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -156,9 +155,9 @@ class EquipmentDetailScreen extends ConsumerWidget {
                         if (item.isBreakCue)
                           const _RoleBadge('Active Break', AppColors.warning),
                         if (item.isJumpCue)
-                          const _RoleBadge('Active Jump', AppColors.accent),
+                          _RoleBadge('Active Jump', AppColors.primary(brightness)),
                         if (item.isArchived)
-                          const _RoleBadge('Archived', AppColors.lightTextTertiary),
+                          _RoleBadge('Archived', AppColors.textTertiary(brightness)),
                       ],
                     ),
                   ],
@@ -184,10 +183,10 @@ class EquipmentDetailScreen extends ConsumerWidget {
                     errorBuilder: (_, __, ___) => Container(
                       width: 120,
                       height: 120,
-                      color: AppColors.lightBackground,
+                      color: AppColors.background(brightness),
                       child: Icon(
                         Icons.broken_image_outlined,
-                        color: AppColors.lightTextTertiary,
+                        color: AppColors.textTertiary(brightness),
                       ),
                     ),
                   ),
@@ -199,9 +198,9 @@ class EquipmentDetailScreen extends ConsumerWidget {
               width: double.infinity,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.lightBackground,
+                color: AppColors.background(brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.lightBorder),
+                border: Border.all(color: AppColors.border(brightness)),
               ),
               child: Center(
                 child: Column(
@@ -209,13 +208,13 @@ class EquipmentDetailScreen extends ConsumerWidget {
                   children: [
                     Icon(
                       Icons.image_outlined,
-                      color: AppColors.lightTextTertiary,
+                      color: AppColors.textTertiary(brightness),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       'Chưa có ảnh — thêm trong Edit',
                       style: TextStyle(
-                        color: AppColors.lightTextTertiary,
+                        color: AppColors.textTertiary(brightness),
                         fontSize: 12,
                       ),
                     ),
@@ -233,18 +232,14 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // ===========================================================================
 
   Widget _buildSpecsCard(BuildContext context, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -252,16 +247,16 @@ class EquipmentDetailScreen extends ConsumerWidget {
         children: [
           const _SectionTitle('Specifications'),
           const SizedBox(height: AppSpacing.md),
-          _row('Brand', item.brandLabel),
-          _row('Model', item.modelLabel),
-          _row('Shaft', item.shaftLabel),
-          _row('Tip', item.tipLabel),
-          _row('Tip Diameter', item.tipDiameter?.toStringAsFixed(2) ?? '—'),
-          _row('Weight', item.weight != null ? '${item.weight!.toStringAsFixed(1)} oz' : '—'),
-          _row('Balance', item.balance ?? '—'),
-          _row('Joint', item.joint ?? '—'),
-          _row('Wrap', item.wrap ?? '—'),
-          _row('Ferrule', item.ferrule ?? '—'),
+          _row('Brand', item.brandLabel, brightness),
+          _row('Model', item.modelLabel, brightness),
+          _row('Shaft', item.shaftLabel, brightness),
+          _row('Tip', item.tipLabel, brightness),
+          _row('Tip Diameter', item.tipDiameter?.toStringAsFixed(2) ?? '—', brightness),
+          _row('Weight', item.weight != null ? '${item.weight!.toStringAsFixed(1)} oz' : '—', brightness),
+          _row('Balance', item.balance ?? '—', brightness),
+          _row('Joint', item.joint ?? '—', brightness),
+          _row('Wrap', item.wrap ?? '—', brightness),
+          _row('Ferrule', item.ferrule ?? '—', brightness),
         ],
       ),
     );
@@ -272,18 +267,14 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // ===========================================================================
 
   Widget _buildPricingCard(BuildContext context, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -291,12 +282,12 @@ class EquipmentDetailScreen extends ConsumerWidget {
         children: [
           const _SectionTitle('Purchase & Condition'),
           const SizedBox(height: AppSpacing.md),
-          _row('Purchase Date', _formatDate(item.purchaseDate)),
-          _row('Purchase Price', item.purchasePrice != null ? '\$${item.purchasePrice!.toStringAsFixed(2)}' : '—'),
-          _row('Current Value', item.currentValue != null ? '\$${item.currentValue!.toStringAsFixed(2)}' : '—'),
-          _row('Condition', item.condition ?? '—'),
-          _row('Usage Hours', item.usageHours != null ? '${item.usageHours!.toStringAsFixed(0)} h' : '—'),
-          _row('Last Tip Change', _formatDate(item.lastTipChange)),
+          _row('Purchase Date', _formatDate(item.purchaseDate), brightness),
+          _row('Purchase Price', item.purchasePrice != null ? '\$${item.purchasePrice!.toStringAsFixed(2)}' : '—', brightness),
+          _row('Current Value', item.currentValue != null ? '\$${item.currentValue!.toStringAsFixed(2)}' : '—', brightness),
+          _row('Condition', item.condition ?? '—', brightness),
+          _row('Usage Hours', item.usageHours != null ? '${item.usageHours!.toStringAsFixed(0)} h' : '—', brightness),
+          _row('Last Tip Change', _formatDate(item.lastTipChange), brightness),
         ],
       ),
     );
@@ -307,18 +298,14 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // ===========================================================================
 
   Widget _buildMaintenanceCard(BuildContext context, WidgetRef ref, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -330,10 +317,10 @@ class EquipmentDetailScreen extends ConsumerWidget {
               const Spacer(),
               TextButton.icon(
                 onPressed: () => _showAddMaintenanceDialog(context, ref, item),
-                icon: const Icon(Icons.add, size: 16, color: AppColors.accent),
-                label: const Text(
+                icon: Icon(Icons.add, size: 16, color: AppColors.primary(brightness)),
+                label: Text(
                   'Add',
-                  style: TextStyle(color: AppColors.accent),
+                  style: TextStyle(color: AppColors.primary(brightness)),
                 ),
               ),
             ],
@@ -344,7 +331,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
               child: Text(
                 'Chưa có lịch sử bảo trì.',
-                style: TextStyle(color: AppColors.lightTextSecondary),
+                style: TextStyle(color: AppColors.textSecondary(brightness)),
               ),
             )
           else
@@ -362,16 +349,16 @@ class EquipmentDetailScreen extends ConsumerWidget {
                     ),
                     title: Text(
                       entry.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     subtitle: Text(
                       '${_formatDate(entry.date)} · ${entry.type}'
                       '${entry.cost != null ? " · \$${entry.cost!.toStringAsFixed(2)}" : ""}',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontSize: 12,
                       ),
                     ),
@@ -395,20 +382,16 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // ===========================================================================
 
   Widget _buildStatsCard(BuildContext context, WidgetRef ref, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     final statsAsync = ref.watch(equipmentStatsProvider(item.id));
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -417,25 +400,26 @@ class EquipmentDetailScreen extends ConsumerWidget {
           const _SectionTitle('Usage Statistics'),
           const SizedBox(height: AppSpacing.md),
           statsAsync.when(
-            loading: () => const Center(
+            loading: () => Center(
               child: Padding(
                 padding: EdgeInsets.all(AppSpacing.lg),
-                child: CircularProgressIndicator(color: AppColors.accent),
+                child: CircularProgressIndicator(color: AppColors.primary(brightness)),
               ),
             ),
             error: (e, _) => Text('Lỗi: $e', style: const TextStyle(color: AppColors.error)),
             data: (stats) => Row(
               children: [
-                Expanded(child: _statBox('Matches', '${stats.matchCount}')),
+                Expanded(child: _statBox('Matches', '${stats.matchCount}', brightness)),
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: _statBox(
                     'Win rate',
                     stats.matchCount == 0 ? '—' : '${(stats.winRate * 100).toStringAsFixed(0)}%',
+                    brightness,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                Expanded(child: _statBox('Racks', '${stats.racks}')),
+                Expanded(child: _statBox('Racks', '${stats.racks}', brightness)),
               ],
             ),
           ),
@@ -449,18 +433,14 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // ===========================================================================
 
   Widget _buildNotesCard(BuildContext context, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -470,7 +450,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(
             item.notes!,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
           ),
         ],
       ),
@@ -481,7 +461,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
   // Helpers
   // ===========================================================================
 
-  Widget _row(String label, String value) {
+  Widget _row(String label, String value, Brightness brightness) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
@@ -490,8 +470,8 @@ class EquipmentDetailScreen extends ConsumerWidget {
             width: 130,
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.lightTextSecondary,
+              style: TextStyle(
+                color: AppColors.textSecondary(brightness),
                 fontSize: 13,
               ),
             ),
@@ -499,9 +479,9 @@ class EquipmentDetailScreen extends ConsumerWidget {
           Expanded(
             child: Text(
               value.isEmpty ? '—' : value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
           ),
@@ -510,22 +490,22 @@ class EquipmentDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _statBox(String label, String value) {
+  Widget _statBox(String label, String value, Brightness brightness) {
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: AppSpacing.md,
         horizontal: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: AppColors.accentSubtleLight,
+        color: AppColors.pastelFor(0, brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
         children: [
           Text(
             value,
-            style: const TextStyle(
-              color: AppColors.accent,
+            style: TextStyle(
+              color: AppColors.primary(brightness),
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),
@@ -533,8 +513,8 @@ class EquipmentDetailScreen extends ConsumerWidget {
           const SizedBox(height: 2),
           Text(
             label,
-            style: const TextStyle(
-              color: AppColors.lightTextSecondary,
+            style: TextStyle(
+              color: AppColors.textSecondary(brightness),
               fontSize: 11,
             ),
           ),
@@ -571,6 +551,8 @@ class EquipmentDetailScreen extends ConsumerWidget {
   }
 
   void _showAddMaintenanceDialog(BuildContext context, WidgetRef ref, Equipment item) {
+    final brightness = Theme.of(context).brightness;
+
     final descCtrl = TextEditingController();
     final costCtrl = TextEditingController();
     String type = 'tip_change';
@@ -579,15 +561,15 @@ class EquipmentDetailScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setSt) {
         return AlertDialog(
-          backgroundColor: AppColors.lightSurface,
+          backgroundColor: AppColors.surface(brightness),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           ),
-          title: const Text(
+          title: Text(
             'Thêm bảo trì',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
             ),
           ),
           content: SingleChildScrollView(
@@ -638,9 +620,9 @@ class EquipmentDetailScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text(
+              child: Text(
                 'Hủy',
-                style: TextStyle(color: AppColors.lightTextSecondary),
+                style: TextStyle(color: AppColors.textSecondary(brightness)),
               ),
             ),
             TextButton(
@@ -657,10 +639,10 @@ class EquipmentDetailScreen extends ConsumerWidget {
                 ref.invalidate(allEquipmentProvider);
                 if (ctx.mounted) Navigator.pop(ctx);
               },
-              child: const Text(
+              child: Text(
                 'Lưu',
                 style: TextStyle(
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -706,10 +688,12 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Text(
       label,
-      style: const TextStyle(
-        color: AppColors.lightTextPrimary,
+      style: TextStyle(
+        color: AppColors.textPrimary(brightness),
         fontWeight: FontWeight.w600,
         fontSize: 15,
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 
 /// Equipment Model
@@ -32,6 +33,8 @@ class EquipmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     // Demo data
     final equipment = [
       Equipment(
@@ -58,26 +61,26 @@ class EquipmentScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Dụng cụ của tôi',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline, color: AppColors.accent),
+            icon: Icon(Icons.add_circle_outline, color: AppColors.primary(brightness)),
             onPressed: () => _showAddEquipmentDialog(context),
           ),
         ],
@@ -89,7 +92,7 @@ class EquipmentScreen extends StatelessWidget {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: AppColors.accent.withValues(alpha: 0.3),
+              color: AppColors.primary(brightness).withValues(alpha: 0.3),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -97,11 +100,11 @@ class EquipmentScreen extends StatelessWidget {
         ),
         child: FloatingActionButton.extended(
           onPressed: () => _showAddEquipmentDialog(context),
-          backgroundColor: AppColors.accent,
-          icon: const Icon(Icons.add, color: Colors.white),
-          label: const Text(
+          backgroundColor: AppColors.primary(brightness),
+          icon: Icon(Icons.add, color: AppColors.onPrimary(brightness)),
+          label: Text(
             'Thêm dụng cụ',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            style: TextStyle(color: AppColors.onPrimary(brightness), fontWeight: FontWeight.w600),
           ),
         ),
       ),
@@ -109,6 +112,8 @@ class EquipmentScreen extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.space12),
@@ -118,29 +123,29 @@ class EquipmentScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.xxl),
               decoration: BoxDecoration(
-                color: AppColors.accentSubtleLight,
+                color: AppColors.pastelFor(0, brightness),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.inventory_2_outlined,
                 size: 64,
-                color: AppColors.accent.withValues(alpha: 0.6),
+                color: AppColors.primary(brightness).withValues(alpha: 0.6),
               ),
             ),
             const SizedBox(height: AppSpacing.xxl),
-            const Text(
+            Text(
               'Chưa có dụng cụ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            const Text(
+            Text(
               'Thêm dụng cụ billiards của bạn để theo dõi',
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
               ),
               textAlign: TextAlign.center,
             ),
@@ -151,6 +156,8 @@ class EquipmentScreen extends StatelessWidget {
   }
 
   Widget _buildEquipmentList(BuildContext context, List<Equipment> equipment) {
+    final brightness = Theme.of(context).brightness;
+
     // Group by type
     final grouped = <String, List<Equipment>>{};
     for (final item in equipment) {
@@ -171,22 +178,22 @@ class EquipmentScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.sm),
                       decoration: BoxDecoration(
-                        color: _getTypeColor(entry.key).withValues(alpha: 0.1),
+                        color: _getTypeColor(entry.key, brightness).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Icon(
                         _getTypeIcon(entry.key),
                         size: 16,
-                        color: _getTypeColor(entry.key),
+                        color: _getTypeColor(entry.key, brightness),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
                       _getTypeName(entry.key),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -196,14 +203,14 @@ class EquipmentScreen extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.lightBackground,
+                        color: AppColors.background(brightness),
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                        border: Border.all(color: AppColors.lightBorder),
+                        border: Border.all(color: AppColors.border(brightness)),
                       ),
                       child: Text(
                         '${entry.value.length}',
-                        style: const TextStyle(
-                          color: AppColors.lightTextSecondary,
+                        style: TextStyle(
+                          color: AppColors.textSecondary(brightness),
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -262,26 +269,28 @@ class EquipmentScreen extends StatelessWidget {
     }
   }
 
-  Color _getTypeColor(String type) {
+  Color _getTypeColor(String type, Brightness brightness) {
     switch (type) {
       case 'cue':
-        return AppColors.accent;
+        return AppColors.primary(brightness);
       case 'shaft':
-        return AppColors.accent;
+        return AppColors.primary(brightness);
       case 'tip':
         return AppColors.warning;
       case 'accessory':
-        return Colors.purple;
+        return AppColors.difficultyExpert(brightness);
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
   void _showAddEquipmentDialog(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.lightSurface,
+      backgroundColor: AppColors.surface(brightness),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
       ),
@@ -290,10 +299,12 @@ class EquipmentScreen extends StatelessWidget {
   }
 
   void _showEquipmentDetail(BuildContext context, Equipment equipment) {
+    final brightness = Theme.of(context).brightness;
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.lightSurface,
+      backgroundColor: AppColors.surface(brightness),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
       ),
@@ -320,6 +331,8 @@ class _EquipmentCardState extends State<_EquipmentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.98),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -331,16 +344,10 @@ class _EquipmentCardState extends State<_EquipmentCard> {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            border: Border.all(color: AppColors.lightBorder),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: AppColors.border(brightness)),
+            boxShadow: AppShadows.soft(brightness),
           ),
           child: Row(
             children: [
@@ -348,12 +355,12 @@ class _EquipmentCardState extends State<_EquipmentCard> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Icon(
                   Icons.straighten,
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   size: 28,
                 ),
               ),
@@ -364,18 +371,18 @@ class _EquipmentCardState extends State<_EquipmentCard> {
                   children: [
                     Text(
                       widget.equipment.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     if (widget.equipment.brand != null) ...[
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         widget.equipment.brand!,
-                        style: const TextStyle(
-                          color: AppColors.lightTextSecondary,
+                        style: TextStyle(
+                          color: AppColors.textSecondary(brightness),
                           fontSize: 13,
                         ),
                       ),
@@ -384,8 +391,8 @@ class _EquipmentCardState extends State<_EquipmentCard> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         'Mua ${_formatDate(widget.equipment.purchaseDate!)}',
-                        style: const TextStyle(
-                          color: AppColors.lightTextTertiary,
+                        style: TextStyle(
+                          color: AppColors.textTertiary(brightness),
                           fontSize: 12,
                         ),
                       ),
@@ -393,7 +400,7 @@ class _EquipmentCardState extends State<_EquipmentCard> {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -427,6 +434,8 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: EdgeInsets.only(
         left: AppSpacing.lg,
@@ -444,7 +453,7 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.lightBorder,
+                color: AppColors.border(brightness),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -455,23 +464,23 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: const Icon(Icons.add_circle_outline, color: AppColors.accent, size: 20),
+                child: Icon(Icons.add_circle_outline, color: AppColors.primary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.sm),
-              const Text(
+              Text(
                 'Thêm dụng cụ',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
               const Spacer(),
               IconButton(
-                icon: const Icon(Icons.close, color: AppColors.lightTextSecondary),
+                icon: Icon(Icons.close, color: AppColors.textSecondary(brightness)),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -479,11 +488,11 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
           const SizedBox(height: AppSpacing.xl),
 
           // Type selector
-          const Text(
+          Text(
             'Loại dụng cụ',
             style: TextStyle(
               fontWeight: FontWeight.w500,
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -501,48 +510,48 @@ class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
 
           TextField(
             controller: _nameController,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: InputDecoration(
               labelText: 'Tên dụng cụ',
-              labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
+              labelStyle: TextStyle(color: AppColors.textSecondary(brightness)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.lightBorder),
+                borderSide: BorderSide(color: AppColors.border(brightness)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.lightBorder),
+                borderSide: BorderSide(color: AppColors.border(brightness)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
               ),
               filled: true,
-              fillColor: AppColors.lightBackground,
+              fillColor: AppColors.background(brightness),
             ),
           ),
           const SizedBox(height: AppSpacing.md),
 
           TextField(
             controller: _brandController,
-            style: const TextStyle(color: AppColors.lightTextPrimary),
+            style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: InputDecoration(
               labelText: 'Thương hiệu',
-              labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
+              labelStyle: TextStyle(color: AppColors.textSecondary(brightness)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.lightBorder),
+                borderSide: BorderSide(color: AppColors.border(brightness)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.lightBorder),
+                borderSide: BorderSide(color: AppColors.border(brightness)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
               ),
               filled: true,
-              fillColor: AppColors.lightBackground,
+              fillColor: AppColors.background(brightness),
             ),
           ),
           const SizedBox(height: AppSpacing.xxl),
@@ -584,6 +593,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -596,12 +607,12 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -610,10 +621,10 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           ),
           child: Text(
             widget.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
             ),
             textAlign: TextAlign.center,
           ),
@@ -638,6 +649,8 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -648,16 +661,16 @@ class _TypeChip extends StatelessWidget {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: selected ? AppColors.accent : AppColors.lightBackground,
+          color: selected ? AppColors.primary(brightness) : AppColors.background(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
-            color: selected ? AppColors.accent : AppColors.lightBorder,
+            color: selected ? AppColors.primary(brightness) : AppColors.border(brightness),
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: selected ? Colors.white : AppColors.lightTextSecondary,
+            color: selected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
             fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -673,6 +686,8 @@ class _EquipmentDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -685,7 +700,7 @@ class _EquipmentDetailSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.lightBorder,
+                color: AppColors.border(brightness),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -697,12 +712,12 @@ class _EquipmentDetailSheet extends StatelessWidget {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Icon(
                   Icons.straighten,
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   size: 32,
                 ),
               ),
@@ -713,17 +728,17 @@ class _EquipmentDetailSheet extends StatelessWidget {
                   children: [
                     Text(
                       equipment.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     if (equipment.brand != null) ...[
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         equipment.brand!,
-                        style: const TextStyle(color: AppColors.lightTextSecondary),
+                        style: TextStyle(color: AppColors.textSecondary(brightness)),
                       ),
                     ],
                   ],
@@ -736,7 +751,7 @@ class _EquipmentDetailSheet extends StatelessWidget {
           if (equipment.purchaseDate != null)
             _DetailRow(
               icon: Icons.calendar_today,
-              iconColor: AppColors.accent,
+              iconColor: AppColors.primary(brightness),
               label: 'Ngày mua',
               value: '${equipment.purchaseDate!.day}/${equipment.purchaseDate!.month}/${equipment.purchaseDate!.year}',
             ),
@@ -810,6 +825,8 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       children: [
         Container(
@@ -827,16 +844,16 @@ class _DetailRow extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  color: AppColors.lightTextSecondary,
+                style: TextStyle(
+                  color: AppColors.textSecondary(brightness),
                   fontSize: 12,
                 ),
               ),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
             ],

@@ -106,7 +106,9 @@ class _ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(brightness);
+    final brightness = Theme.of(context).brightness;
+
+    final accentColor = AppColors.primary(brightness);
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.space4),
@@ -122,7 +124,7 @@ class _ProfileHeader extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.accentSubtle(brightness),
+              color: AppColors.pastelFor(0, brightness),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -191,6 +193,8 @@ class _SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -277,7 +281,9 @@ class _SettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(brightness);
+    final brightness = Theme.of(context).brightness;
+
+    final accentColor = AppColors.primary(brightness);
 
     return InkWell(
       onTap: onTap,
@@ -328,7 +334,7 @@ class _SettingsToggleState extends State<_SettingsToggle> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(widget.brightness);
+    final accentColor = AppColors.primary(widget.brightness);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -367,6 +373,8 @@ class _SupportSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

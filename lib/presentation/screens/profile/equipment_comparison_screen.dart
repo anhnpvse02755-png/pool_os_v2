@@ -14,30 +14,32 @@ class EquipmentComparisonScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     final equipmentAsync = ref.watch(allEquipmentProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         elevation: 0,
         title: Text(
           'Compare (${equipmentIds.length})',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: equipmentAsync.when(
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.accent),
+        loading: () => Center(
+          child: CircularProgressIndicator(color: AppColors.primary(brightness)),
         ),
         error: (e, st) => Center(
           child: Text(
@@ -58,7 +60,7 @@ class EquipmentComparisonScreen extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columnSpacing: AppSpacing.xl,
-                headingRowColor: WidgetStateProperty.all(AppColors.accentSubtleLight),
+                headingRowColor: WidgetStateProperty.all(AppColors.pastelFor(0, brightness)),
                 columns: selected
                     .map((c) => DataColumn(
                           label: Container(
@@ -67,21 +69,21 @@ class EquipmentComparisonScreen extends ConsumerWidget {
                               vertical: AppSpacing.sm,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.accent,
+                              color: AppColors.primary(brightness),
                               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               c.name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                                color: Colors.white,
+                                color: AppColors.onPrimary(brightness),
                               ),
                             ),
                           ),
                         ))
                     .toList(),
-                rows: _rows(selected),
+                rows: _rows(selected, brightness),
               ),
             ),
           );
@@ -90,7 +92,7 @@ class EquipmentComparisonScreen extends ConsumerWidget {
     );
   }
 
-  List<DataRow> _rows(List<Equipment> cues) {
+  List<DataRow> _rows(List<Equipment> cues, Brightness brightness) {
     final rows = <String, String>{
       'Brand': '',
       'Model': '',
@@ -132,7 +134,7 @@ class EquipmentComparisonScreen extends ConsumerWidget {
       final cells = entry.value.split('|').skip(1).toList();
       return DataRow(
         color: WidgetStateProperty.all(
-          entry.key.contains('Tổng') ? AppColors.accentSubtleLight : Colors.transparent,
+          entry.key.contains('Tổng') ? AppColors.pastelFor(0, brightness) : Colors.transparent,
         ),
         cells: [
           DataCell(
@@ -143,8 +145,8 @@ class EquipmentComparisonScreen extends ConsumerWidget {
               ),
               child: Text(
                 entry.key,
-                style: const TextStyle(
-                  color: AppColors.lightTextSecondary,
+                style: TextStyle(
+                  color: AppColors.textSecondary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 13,
                 ),
@@ -159,8 +161,8 @@ class EquipmentComparisonScreen extends ConsumerWidget {
                   ),
                   child: Text(
                     v.isEmpty ? '—' : v,
-                    style: const TextStyle(
-                      color: AppColors.lightTextPrimary,
+                    style: TextStyle(
+                      color: AppColors.textPrimary(brightness),
                       fontWeight: FontWeight.w500,
                       fontSize: 13,
                     ),

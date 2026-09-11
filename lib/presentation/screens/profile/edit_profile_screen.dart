@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -45,22 +46,24 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Chỉnh sửa thông tin',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
         actions: [
@@ -148,6 +151,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildAvatarSection() {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Column(
         children: [
@@ -161,14 +166,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      AppColors.accent,
-                      AppColors.accent.withValues(alpha: 0.7),
+                      AppColors.primary(brightness),
+                      AppColors.primary(brightness).withValues(alpha: 0.7),
                     ],
                   ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -179,8 +184,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     _nameController.text.isNotEmpty
                         ? _nameController.text.substring(0, 1).toUpperCase()
                         : 'U',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColors.onPrimary(brightness),
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
                     ),
@@ -193,20 +198,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(AppSpacing.sm),
                   decoration: BoxDecoration(
-                    color: AppColors.accent,
+                    color: AppColors.primary(brightness),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: AppColors.onPrimary(brightness), width: 2),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withValues(alpha: 0.3),
+                        color: AppColors.primary(brightness).withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.camera_alt,
-                    color: Colors.white,
+                    color: AppColors.onPrimary(brightness),
                     size: 16,
                   ),
                 ),
@@ -220,17 +225,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 SnackBar(
                   content: const Text('Tính năng đang phát triển'),
                   behavior: SnackBarBehavior.floating,
-                  backgroundColor: AppColors.accent,
+                  backgroundColor: AppColors.primary(brightness),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                 ),
               );
             },
-            child: const Text(
+            child: Text(
               'Thay đổi ảnh',
               style: TextStyle(
-                color: AppColors.accent,
+                color: AppColors.primary(brightness),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -241,12 +246,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildSectionTitle(String title) {
+    final brightness = Theme.of(context).brightness;
+
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 16,
-        color: AppColors.lightTextPrimary,
+        color: AppColors.textPrimary(brightness),
       ),
     );
   }
@@ -258,34 +265,30 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
         validator: validator,
-        style: const TextStyle(
+        style: TextStyle(
           fontSize: 15,
-          color: AppColors.lightTextPrimary,
+          color: AppColors.textPrimary(brightness),
         ),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(
-            color: AppColors.lightTextSecondary,
+          labelStyle: TextStyle(
+            color: AppColors.textSecondary(brightness),
             fontSize: 14,
           ),
-          prefixIcon: Icon(icon, color: AppColors.accent),
+          prefixIcon: Icon(icon, color: AppColors.primary(brightness)),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             borderSide: BorderSide.none,
@@ -296,10 +299,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            borderSide: const BorderSide(color: AppColors.accent, width: 2),
+            borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
           ),
           filled: true,
-          fillColor: AppColors.lightSurface,
+          fillColor: AppColors.surface(brightness),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
             vertical: AppSpacing.md,
@@ -310,6 +313,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildDatePicker() {
+    final brightness = Theme.of(context).brightness;
+
     return InkWell(
       onTap: () async {
         final date = await showDatePicker(
@@ -320,10 +325,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           builder: (context, child) {
             return Theme(
               data: Theme.of(context).copyWith(
-                colorScheme: const ColorScheme.light(
-                  primary: AppColors.accent,
-                  onPrimary: Colors.white,
-                  surface: AppColors.lightSurface,
+                colorScheme: ColorScheme.light(
+                  primary: AppColors.primary(brightness),
+                  onPrimary: AppColors.onPrimary(brightness),
+                  surface: AppColors.surface(brightness),
                 ),
               ),
               child: child!,
@@ -338,52 +343,46 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: AppColors.lightSurface,
+          color: AppColors.surface(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.lightBorder),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(color: AppColors.border(brightness)),
+          boxShadow: AppShadows.soft(brightness),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.accentSubtleLight,
+                color: AppColors.pastelFor(0, brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: const Icon(Icons.calendar_today, color: AppColors.accent, size: 20),
+              child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 20),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Ngày sinh',
                     style: TextStyle(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 12,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 15,
-                      color: AppColors.lightTextPrimary,
+                      color: AppColors.textPrimary(brightness),
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+            Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
           ],
         ),
       ),
@@ -391,19 +390,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildGenderSelector() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,18 +408,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: const Icon(Icons.wc, color: AppColors.accent, size: 20),
+                child: Icon(Icons.wc, color: AppColors.primary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
-              const Text(
+              Text(
                 'Giới tính',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
             ],
@@ -472,9 +467,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Widget _buildLevelSelector() {
+    final brightness = Theme.of(context).brightness;
+
     final levels = [
       ('beginner', 'Mới chơi', AppColors.success),
-      ('intermediate', 'Trung bình', AppColors.accent),
+      ('intermediate', 'Trung bình', AppColors.primary(brightness)),
       ('advanced', 'Nâng cao', AppColors.warning),
       ('expert', 'Chuyên nghiệp', AppColors.error),
     ];
@@ -482,16 +479,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,18 +492,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: const Icon(Icons.pool, color: AppColors.accent, size: 20),
+                child: Icon(Icons.pool, color: AppColors.primary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
-              const Text(
+              Text(
                 'Trình độ',
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 15,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
             ],
@@ -537,17 +528,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? level.$3.withValues(alpha: 0.15)
-                        : AppColors.lightBackground,
+                        : AppColors.background(brightness),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     border: Border.all(
-                      color: isSelected ? level.$3 : AppColors.lightBorder,
+                      color: isSelected ? level.$3 : AppColors.border(brightness),
                       width: isSelected ? 1.5 : 1,
                     ),
                   ),
                   child: Text(
                     level.$2,
                     style: TextStyle(
-                      color: isSelected ? level.$3 : AppColors.lightTextSecondary,
+                      color: isSelected ? level.$3 : AppColors.textSecondary(brightness),
                       fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                       fontSize: 13,
                     ),
@@ -601,6 +592,8 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -616,12 +609,12 @@ class _SaveButtonState extends State<_SaveButton> {
             vertical: AppSpacing.sm,
           ),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             boxShadow: widget.onPressed != null
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -629,20 +622,20 @@ class _SaveButtonState extends State<_SaveButton> {
                 : null,
           ),
           child: widget.isLoading
-              ? const SizedBox(
+              ? SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(AppColors.onPrimary(brightness)),
                   ),
                 )
-              : const Text(
+              : Text(
                   'Lưu',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: AppColors.onPrimary(brightness),
                   ),
                 ),
         ),
@@ -666,6 +659,8 @@ class _GenderOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final isSelected = value == groupValue;
 
     return InkWell(
@@ -676,11 +671,11 @@ class _GenderOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.accent.withValues(alpha: 0.1)
-              : AppColors.lightBackground,
+              ? AppColors.primary(brightness).withValues(alpha: 0.1)
+              : AppColors.background(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           border: Border.all(
-            color: isSelected ? AppColors.accent : AppColors.lightBorder,
+            color: isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -688,7 +683,7 @@ class _GenderOption extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? AppColors.accent : AppColors.lightTextSecondary,
+              color: isSelected ? AppColors.primary(brightness) : AppColors.textSecondary(brightness),
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               fontSize: 13,
             ),

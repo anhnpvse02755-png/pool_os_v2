@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/services/test_logging_service.dart';
 import '../../../core/providers/repository_providers.dart';
@@ -14,22 +15,24 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightBackground,
+        backgroundColor: AppColors.background(brightness),
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Cài đặt',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
       ),
@@ -40,27 +43,27 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             const SizedBox(height: AppSpacing.lg),
             // Account Section
-            _buildSectionTitle('Tài khoản'),
+            _buildSectionTitle('Tài khoản', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               _SettingsItem(
                 icon: Icons.person_outline,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Chỉnh sửa thông tin',
                 onTap: () => context.push('/profile/edit'),
               ),
               _SettingsItem(
                 icon: Icons.lock_outline,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Đổi mật khẩu',
                 onTap: () => _showFeatureComingSoon(context, 'Đổi mật khẩu'),
               ),
               _SettingsItem(
                 icon: Icons.email_outlined,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Đổi email',
                 onTap: () => _showFeatureComingSoon(context, 'Đổi email'),
               ),
@@ -68,14 +71,14 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Notifications Section
-            _buildSectionTitle('Thông báo'),
+            _buildSectionTitle('Thông báo', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               const _NotificationSettingsItem(),
               const _DailyReminderSettingsItem(),
               _SwitchSettingsItem(
                 icon: Icons.emoji_events_outlined,
-                iconBgColor: const Color(0xFFFEF3C7),
+                iconBgColor: AppColors.pastelFor(4, brightness),
                 iconColor: AppColors.gold,
                 title: 'Thông báo giải đấu',
                 subtitle: 'Nhận thông báo về giải đấu mới',
@@ -86,13 +89,13 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Training Section
-            _buildSectionTitle('Luyện tập'),
+            _buildSectionTitle('Luyện tập', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               _SwitchSettingsItem(
                 icon: Icons.auto_awesome,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Đề xuất AI',
                 subtitle: 'Nhận đề xuất từ AI Coach',
                 value: true,
@@ -100,7 +103,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               _SettingsItem(
                 icon: Icons.timer_outlined,
-                iconBgColor: const Color(0xFFFEF3C7),
+                iconBgColor: AppColors.pastelFor(4, brightness),
                 iconColor: AppColors.gold,
                 title: 'Mục tiêu hàng ngày',
                 subtitle: '2 drills / ngày',
@@ -110,15 +113,15 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // App Section
-            _buildSectionTitle('Ứng dụng'),
+            _buildSectionTitle('Ứng dụng', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               _LanguageSettingsItem(ref: ref),
               _ThemeSettingsItem(ref: ref),
               _SettingsItem(
                 icon: Icons.info_outline,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Giới thiệu PoolOS',
                 onTap: () => _showAboutDialog(context),
               ),
@@ -126,19 +129,19 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Black Box Section
-            _buildSectionTitle('PoolOS Black Box'),
+            _buildSectionTitle('PoolOS Black Box', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               _SettingsItem(
                 icon: Icons.analytics_outlined,
-                iconBgColor: AppColors.successSubtleLight,
+                iconBgColor: AppColors.successSubtle(brightness),
                 iconColor: AppColors.success,
                 title: 'Export Coach Package',
                 subtitle: 'Share data for analysis',
                 trailing: Container(
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs),
                   decoration: BoxDecoration(
-                    color: AppColors.successSubtleLight,
+                    color: AppColors.successSubtle(brightness),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: const Text(
@@ -156,26 +159,26 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Support Section
-            _buildSectionTitle('Hỗ trợ'),
+            _buildSectionTitle('Hỗ trợ', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               _SettingsItem(
                 icon: Icons.help_outline,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Trung tâm trợ giúp',
                 onTap: () => _showFeatureComingSoon(context, 'Trung tâm trợ giúp'),
               ),
               _SettingsItem(
                 icon: Icons.feedback_outlined,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Gửi phản hồi',
                 onTap: () => _showFeatureComingSoon(context, 'Gửi phản hồi'),
               ),
               _SettingsItem(
                 icon: Icons.star_outline,
-                iconBgColor: const Color(0xFFFEF3C7),
+                iconBgColor: AppColors.pastelFor(4, brightness),
                 iconColor: AppColors.gold,
                 title: 'Đánh giá ứng dụng',
                 onTap: () => _showFeatureComingSoon(context, 'Đánh giá ứng dụng'),
@@ -184,28 +187,28 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Test Logs Section - For testers
-            _buildSectionTitle('Test Logs'),
+            _buildSectionTitle('Test Logs', brightness),
             const SizedBox(height: AppSpacing.md),
-            _buildSettingsCard([
+            _buildSettingsCard(brightness, [
               _SettingsItem(
                 icon: Icons.bug_report_outlined,
-                iconBgColor: const Color(0xFFFEF3C7),
-                iconColor: Colors.orange.shade700,
+                iconBgColor: AppColors.pastelFor(4, brightness),
+                iconColor: AppColors.warningOnTint(brightness),
                 title: 'Export Test Logs (JSON)',
                 subtitle: '${testLogger.logCount} actions logged',
                 onTap: () => _exportLogs(context, asJson: true),
               ),
               _SettingsItem(
                 icon: Icons.table_chart_outlined,
-                iconBgColor: AppColors.accentSubtleLight,
-                iconColor: AppColors.accent,
+                iconBgColor: AppColors.pastelFor(0, brightness),
+                iconColor: AppColors.primary(brightness),
                 title: 'Export Test Logs (CSV)',
                 subtitle: 'For spreadsheet analysis',
                 onTap: () => _exportLogs(context, asJson: false),
               ),
               _SettingsItem(
                 icon: Icons.play_arrow_outlined,
-                iconBgColor: AppColors.successSubtleLight,
+                iconBgColor: AppColors.successSubtle(brightness),
                 iconColor: AppColors.success,
                 title: 'Start Test Session',
                 subtitle: 'Clear logs & begin recording',
@@ -213,7 +216,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               _SettingsItem(
                 icon: Icons.delete_outline,
-                iconBgColor: AppColors.errorSubtleLight,
+                iconBgColor: AppColors.errorSubtle(brightness),
                 iconColor: AppColors.error,
                 title: 'Clear Test Logs',
                 subtitle: 'Remove all logged actions',
@@ -231,33 +234,27 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, Brightness brightness) {
     return Padding(
       padding: const EdgeInsets.only(left: AppSpacing.xs, bottom: AppSpacing.md),
       child: Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 14,
-          color: AppColors.lightTextSecondary,
+          color: AppColors.textSecondary(brightness),
         ),
       ),
     ).animate().fadeIn(duration: 300.ms);
   }
 
-  Widget _buildSettingsCard(List<Widget> items) {
+  Widget _buildSettingsCard(Brightness brightness, List<Widget> items) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        border: Border.all(color: AppColors.lightBorder),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         children: items.asMap().entries.map((entry) {
@@ -269,7 +266,7 @@ class SettingsScreen extends ConsumerWidget {
               if (index < items.length - 1)
                 Divider(
                   height: 1,
-                  color: AppColors.lightBorder,
+                  color: AppColors.border(brightness),
                   indent: AppSpacing.lg + 40 + AppSpacing.md,
                 ),
             ],
@@ -280,33 +277,35 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Widget _buildLogoutButton(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return _PrimaryButton(
       label: 'Đăng xuất',
       onPressed: () {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            backgroundColor: AppColors.lightSurface,
+            backgroundColor: AppColors.surface(brightness),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             ),
-            title: const Text(
+            title: Text(
               'Đăng xuất',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
-            content: const Text(
+            content: Text(
               'Bạn có chắc muốn đăng xuất không?',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text(
+                child: Text(
                   'Hủy',
-                  style: TextStyle(color: AppColors.lightTextSecondary),
+                  style: TextStyle(color: AppColors.textSecondary(brightness)),
                 ),
               ),
               TextButton(
@@ -328,10 +327,12 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showAboutDialog(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         ),
@@ -340,17 +341,17 @@ class SettingsScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(
-                color: AppColors.accentSubtleLight,
+                color: AppColors.pastelFor(0, brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: const Icon(Icons.pool, color: AppColors.accent, size: 20),
+              child: Icon(Icons.pool, color: AppColors.primary(brightness), size: 20),
             ),
             const SizedBox(width: AppSpacing.md),
-            const Text(
+            Text(
               'PoolOS',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
           ],
@@ -359,24 +360,24 @@ class SettingsScreen extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Phiên bản: 1.0.0',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
             const SizedBox(height: AppSpacing.md),
-            const Text(
+            Text(
               'PoolOS là ứng dụng luyện tập billiards thông minh, '
               'sử dụng AI để cá nhân hóa lộ trình học tập cho người chơi.',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               'Đóng',
-              style: TextStyle(color: AppColors.accent),
+              style: TextStyle(color: AppColors.primary(brightness)),
             ),
           ),
         ],
@@ -398,6 +399,8 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _exportLogs(BuildContext context, {required bool asJson}) async {
+    final brightness = Theme.of(context).brightness;
+
     try {
       if (testLogger.logCount == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -420,10 +423,10 @@ class SettingsScreen extends ConsumerWidget {
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.xl),
             decoration: BoxDecoration(
-              color: AppColors.lightSurface,
+              color: AppColors.surface(brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
             ),
-            child: const CircularProgressIndicator(color: AppColors.accent),
+            child: CircularProgressIndicator(color: AppColors.primary(brightness)),
           ),
         ),
       );
@@ -476,30 +479,32 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _clearLogs(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         ),
-        title: const Text(
+        title: Text(
           'Clear Logs',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
-        content: const Text(
+        content: Text(
           'Are you sure you want to clear all test logs?',
-          style: TextStyle(color: AppColors.lightTextSecondary),
+          style: TextStyle(color: AppColors.textSecondary(brightness)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
           ),
           TextButton(
@@ -548,9 +553,11 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final bgColor = widget.isDestructive
         ? AppColors.error
-        : (widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary);
+        : (widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness));
 
     return GestureDetector(
       onTap: widget.onPressed,
@@ -578,10 +585,10 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           ),
           child: Text(
             widget.label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
             ),
             textAlign: TextAlign.center,
           ),
@@ -612,8 +619,10 @@ class _SettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = iconBgColor ?? AppColors.accentSubtleLight;
-    final fgColor = iconColor ?? AppColors.accent;
+    final brightness = Theme.of(context).brightness;
+
+    final bgColor = iconBgColor ?? AppColors.pastelFor(0, brightness);
+    final fgColor = iconColor ?? AppColors.primary(brightness);
 
     return Material(
       color: Colors.transparent,
@@ -643,19 +652,19 @@ class _SettingsItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     if (subtitle != null) ...[
                       const SizedBox(height: 2),
                       Text(
                         subtitle!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: AppColors.lightTextSecondary,
+                          color: AppColors.textSecondary(brightness),
                         ),
                       ),
                     ],
@@ -663,7 +672,7 @@ class _SettingsItem extends StatelessWidget {
                 ),
               ),
               if (trailing != null) trailing!,
-              const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -677,6 +686,8 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     final notificationService = ref.watch(dailyNotificationServiceProvider);
     final isEnabled = notificationService.isEnabled();
     final hour = notificationService.getHour();
@@ -699,12 +710,12 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Icon(
                   isEnabled ? Icons.notifications_active : Icons.notifications_off_outlined,
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   size: 20,
                 ),
               ),
@@ -713,20 +724,20 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Nhắc lịch tập',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       isEnabled ? 'Hàng ngày lúc $timeStr' : 'Thông báo nhắc tập hàng ngày',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                   ],
@@ -735,8 +746,8 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
               Switch(
                 value: isEnabled,
                 onChanged: (value) => _toggleDailyReminder(context, ref, isEnabled),
-                activeColor: Colors.white,
-                activeTrackColor: AppColors.accent,
+                activeColor: AppColors.onPrimary(brightness),
+                activeTrackColor: AppColors.primary(brightness),
               ),
             ],
           ),
@@ -746,6 +757,8 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
   }
 
   Future<void> _toggleDailyReminder(BuildContext context, WidgetRef ref, bool currentValue) async {
+    final brightness = Theme.of(context).brightness;
+
     final notificationService = ref.read(dailyNotificationServiceProvider);
 
     if (currentValue) {
@@ -755,7 +768,7 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Đã tắt nhắc nhở hàng ngày'),
-            backgroundColor: AppColors.lightTextSecondary,
+            backgroundColor: AppColors.textSecondary(brightness),
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
@@ -791,6 +804,8 @@ class _NotificationSettingsItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -807,12 +822,12 @@ class _NotificationSettingsItem extends ConsumerWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
+                  color: AppColors.pastelFor(4, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Icon(
                   Icons.local_fire_department,
-                  color: Colors.orange.shade700,
+                  color: AppColors.warningOnTint(brightness),
                   size: 20,
                 ),
               ),
@@ -821,26 +836,26 @@ class _NotificationSettingsItem extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Thông báo streak',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
+                    Text(
                       'Nhắc nhở khi sắp mất streak',
                       style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -849,9 +864,11 @@ class _NotificationSettingsItem extends ConsumerWidget {
   }
 
   void _showStreakSettings(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.lightSurface,
+      backgroundColor: AppColors.surface(brightness),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
       ),
@@ -882,6 +899,8 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final streakService = ref.read(learningStreakServiceProvider);
     final currentStreak = streakService.currentStreak();
     final longestStreak = streakService.longestStreak();
@@ -898,7 +917,7 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.lightBorder,
+                color: AppColors.border(brightness),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -911,18 +930,18 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
+                  color: AppColors.pastelFor(4, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: Icon(Icons.local_fire_department, color: Colors.orange.shade700, size: 24),
+                child: Icon(Icons.local_fire_department, color: AppColors.warningOnTint(brightness), size: 24),
               ),
               const SizedBox(width: AppSpacing.md),
-              const Text(
+              Text(
                 'Streak Reminder',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
             ],
@@ -933,7 +952,7 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: const Color(0xFFFEF3C7),
+              color: AppColors.pastelFor(4, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
             child: Row(
@@ -943,14 +962,14 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
                   icon: Icons.local_fire_department,
                   value: '$currentStreak',
                   label: 'Current',
-                  color: Colors.orange.shade700,
+                  color: AppColors.warningOnTint(brightness),
                 ),
-                Container(width: 1, height: 40, color: AppColors.lightBorder),
+                Container(width: 1, height: 40, color: AppColors.border(brightness)),
                 _StatColumn(
                   icon: Icons.emoji_events,
                   value: '$longestStreak',
                   label: 'Longest',
-                  color: Colors.amber.shade700,
+                  color: AppColors.goldOnTint(brightness),
                 ),
               ],
             ),
@@ -958,11 +977,11 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
           const SizedBox(height: AppSpacing.xxl),
 
           // Time picker
-          const Text(
+          Text(
             'Thời gian nhắc nhở',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -975,19 +994,19 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
                 vertical: AppSpacing.md,
               ),
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.lightBorder),
+                border: Border.all(color: AppColors.border(brightness)),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.access_time, color: AppColors.accent),
+                  Icon(Icons.access_time, color: AppColors.primary(brightness)),
                   const SizedBox(width: AppSpacing.md),
                   Text(
                     _selectedTime.format(context),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.lightTextPrimary,
+                      color: AppColors.textPrimary(brightness),
                     ),
                   ),
                 ],
@@ -1000,19 +1019,19 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.accentSubtleLight,
+              color: AppColors.pastelFor(0, brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, size: 20, color: AppColors.accent),
+                Icon(Icons.info_outline, size: 20, color: AppColors.primary(brightness)),
                 const SizedBox(width: AppSpacing.sm),
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Bạn sẽ nhận thông báo nhắc nhở luyện tập vào thời gian đã chọn mỗi ngày.',
                     style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                     ),
                   ),
                 ),
@@ -1035,16 +1054,18 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
   }
 
   Future<void> _pickTime(BuildContext context) async {
+    final brightness = Theme.of(context).brightness;
+
     final picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.accent,
-              onPrimary: Colors.white,
-              surface: AppColors.lightSurface,
+            colorScheme: ColorScheme.light(
+              primary: AppColors.primary(brightness),
+              onPrimary: AppColors.onPrimary(brightness),
+              surface: AppColors.surface(brightness),
             ),
           ),
           child: child!,
@@ -1083,6 +1104,8 @@ class _StatColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
@@ -1097,9 +1120,9 @@ class _StatColumn extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
           ),
         ),
       ],
@@ -1128,8 +1151,10 @@ class _SwitchSettingsItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = iconBgColor ?? AppColors.accentSubtleLight;
-    final fgColor = iconColor ?? AppColors.accent;
+    final brightness = Theme.of(context).brightness;
+
+    final bgColor = iconBgColor ?? AppColors.pastelFor(0, brightness);
+    final fgColor = iconColor ?? AppColors.primary(brightness);
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -1154,19 +1179,19 @@ class _SwitchSettingsItem extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
                 ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     subtitle!,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                     ),
                   ),
                 ],
@@ -1176,8 +1201,8 @@ class _SwitchSettingsItem extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.white,
-            activeTrackColor: AppColors.accent,
+            activeColor: AppColors.onPrimary(brightness),
+            activeTrackColor: AppColors.primary(brightness),
           ),
         ],
       ),
@@ -1192,6 +1217,8 @@ class _LanguageSettingsItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     final locale = ref.watch(localeProvider);
     final isVi = locale.languageCode == 'vi';
 
@@ -1211,29 +1238,29 @@ class _LanguageSettingsItem extends ConsumerWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: const Icon(Icons.language, color: AppColors.accent, size: 20),
+                child: Icon(Icons.language, color: AppColors.primary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Ngôn ngữ',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     Text(
                       isVi ? 'Tiếng Việt' : 'English',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                   ],
@@ -1245,20 +1272,20 @@ class _LanguageSettingsItem extends ConsumerWidget {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSubtleLight,
+                  color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                 ),
                 child: Text(
                   isVi ? 'VI' : 'EN',
-                  style: const TextStyle(
-                    color: AppColors.accent,
+                  style: TextStyle(
+                    color: AppColors.primary(brightness),
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   ),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -1274,6 +1301,8 @@ class _ThemeSettingsItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     final themeMode = ref.watch(themeProvider);
     final isDark = themeMode == ThemeMode.dark;
 
@@ -1293,12 +1322,12 @@ class _ThemeSettingsItem extends ConsumerWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3E8FF),
+                  color: AppColors.pastelFor(3, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Icon(
                   isDark ? Icons.dark_mode : Icons.light_mode,
-                  color: Colors.purple,
+                  color: AppColors.difficultyExpert(brightness),
                   size: 20,
                 ),
               ),
@@ -1307,19 +1336,19 @@ class _ThemeSettingsItem extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Giao diện',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     Text(
                       isDark ? 'Tối' : 'Sáng',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                   ],
@@ -1331,20 +1360,20 @@ class _ThemeSettingsItem extends ConsumerWidget {
                   vertical: AppSpacing.xs,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3E8FF),
+                  color: AppColors.pastelFor(3, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                 ),
                 child: Text(
                   isDark ? 'Dark' : 'Light',
-                  style: const TextStyle(
-                    color: Colors.purple,
+                  style: TextStyle(
+                    color: AppColors.difficultyExpert(brightness),
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   ),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              const Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
