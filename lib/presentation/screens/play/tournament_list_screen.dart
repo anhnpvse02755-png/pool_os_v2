@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/models/tournament.dart';
 
@@ -11,22 +12,24 @@ class TournamentListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final tournaments = TournamentLibrary.tournaments;
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         title: Text(
           'Giải đấu',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
       ),
@@ -36,14 +39,14 @@ class TournamentListScreen extends StatelessWidget {
           children: [
             // Tabs
             Container(
-              color: AppColors.lightSurface,
+              color: AppColors.surface(brightness),
               child: TabBar(
                 tabs: [
                   Tab(
                     child: Text(
                       'Đang diễn ra',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -52,7 +55,7 @@ class TournamentListScreen extends StatelessWidget {
                     child: Text(
                       'Sắp tới',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -61,15 +64,15 @@ class TournamentListScreen extends StatelessWidget {
                     child: Text(
                       'Đã kết thúc',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ],
-                labelColor: AppColors.accent,
-                unselectedLabelColor: AppColors.lightTextSecondary,
-                indicatorColor: AppColors.accent,
+                labelColor: AppColors.primary(brightness),
+                unselectedLabelColor: AppColors.textSecondary(brightness),
+                indicatorColor: AppColors.primary(brightness),
                 indicatorWeight: 3,
               ),
             ),
@@ -107,7 +110,7 @@ class TournamentListScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           boxShadow: [
             BoxShadow(
-              color: AppColors.accent.withValues(alpha: 0.3),
+              color: AppColors.primary(brightness).withValues(alpha: 0.3),
               blurRadius: 12,
               offset: Offset(0, 4),
             ),
@@ -119,8 +122,8 @@ class TournamentListScreen extends StatelessWidget {
           },
           icon: Icon(Icons.add),
           label: Text('Tạo giải'),
-          backgroundColor: AppColors.accent,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary(brightness),
+          foregroundColor: AppColors.onPrimary(brightness),
           elevation: 0,
         ),
       ).animate().fadeIn(delay: 300.ms).scale(delay: 300.ms),
@@ -139,6 +142,8 @@ class _TournamentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (tournaments.isEmpty) {
       return Center(
         child: Column(
@@ -148,20 +153,20 @@ class _TournamentList extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.lightSurfaceElevated,
+                color: AppColors.surfaceElevated(brightness),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.emoji_events_outlined,
                 size: 40,
-                color: AppColors.lightTextTertiary,
+                color: AppColors.textTertiary(brightness),
               ),
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
               emptyMessage,
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 15,
               ),
             ),
@@ -204,15 +209,17 @@ class _TournamentCardState extends State<_TournamentCard> {
   double _scale = 1.0;
 
   Color _getStatusColor() {
+    final brightness = Theme.of(context).brightness;
+
     switch (widget.tournament.status) {
       case 'in_progress':
         return AppColors.success;
       case 'upcoming':
-        return AppColors.accent;
+        return AppColors.primary(brightness);
       case 'completed':
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
@@ -246,6 +253,8 @@ class _TournamentCardState extends State<_TournamentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.98),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -257,16 +266,10 @@ class _TournamentCardState extends State<_TournamentCard> {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: AppColors.lightBorder),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: AppColors.border(brightness)),
+            boxShadow: AppShadows.soft(brightness),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,18 +295,18 @@ class _TournamentCardState extends State<_TournamentCard> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.lightSurfaceElevated,
+                      color: AppColors.surfaceElevated(brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(_getTypeIcon(), size: 12, color: AppColors.lightTextSecondary),
+                        Icon(_getTypeIcon(), size: 12, color: AppColors.textSecondary(brightness)),
                         SizedBox(width: 4),
                         Text(
                           widget.tournament.type.toUpperCase(),
                           style: TextStyle(
-                            color: AppColors.lightTextSecondary,
+                            color: AppColors.textSecondary(brightness),
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
                           ),
@@ -312,7 +315,7 @@ class _TournamentCardState extends State<_TournamentCard> {
                     ),
                   ),
                   Spacer(),
-                  Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+                  Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
                 ],
               ),
               SizedBox(height: AppSpacing.md),
@@ -321,7 +324,7 @@ class _TournamentCardState extends State<_TournamentCard> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 17,
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                 ),
               ),
               SizedBox(height: AppSpacing.md),
@@ -372,15 +375,17 @@ class _InfoChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: AppColors.lightTextSecondary),
+        Icon(icon, size: 14, color: AppColors.textSecondary(brightness)),
         SizedBox(width: 4),
         Text(
           text,
           style: TextStyle(
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
             fontSize: 13,
           ),
         ),

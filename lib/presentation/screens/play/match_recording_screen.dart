@@ -9,6 +9,8 @@ import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/match_analysis_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/match.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 
 class MatchRecordingScreen extends ConsumerStatefulWidget {
   const MatchRecordingScreen({super.key});
@@ -41,6 +43,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     // Show setup form if no match started
     if (_currentMatch == null) {
       return _buildSetupForm();
@@ -51,6 +55,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildSetupForm() {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ghi nhận trận đấu'),
@@ -118,7 +124,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                 child: ElevatedButton(
                   onPressed: _startMatch,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
+                    backgroundColor: AppColors.primary(brightness),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   child: const Text('BẮT ĐẦU TRẬN ĐẤU'),
@@ -132,6 +138,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildMatchUI() {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Đang đấu'),
@@ -147,13 +155,13 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           // Score header
           Container(
             padding: const EdgeInsets.all(24),
-            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+            color: AppColors.primary(brightness).withValues(alpha: 0.1),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildScoreBox('Bạn', _playerScore, Colors.green),
+                _buildScoreBox('Bạn', _playerScore, AppColors.success),
                 const Text('vs', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                _buildScoreBox('Đối thủ', _opponentScore, Colors.red),
+                _buildScoreBox('Đối thủ', _opponentScore, AppColors.error),
               ],
             ),
           ),
@@ -172,7 +180,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                   child: ElevatedButton(
                     onPressed: () => _recordRackResult('lose'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
+                      backgroundColor: AppColors.error,
                       padding: const EdgeInsets.symmetric(vertical: 20),
                     ),
                     child: const Text('THUA', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -183,7 +191,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                   child: ElevatedButton(
                     onPressed: () => _recordRackResult('win'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: AppColors.success,
                       padding: const EdgeInsets.symmetric(vertical: 20),
                     ),
                     child: const Text('THẮNG', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -198,9 +206,11 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildScoreBox(String label, int score, Color color) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       children: [
-        Text(label, style: TextStyle(color: Colors.grey.shade600)),
+        Text(label, style: TextStyle(color: AppColors.textSecondary(brightness))),
         const SizedBox(height: 4),
         Container(
           width: 60,
@@ -212,8 +222,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           child: Center(
             child: Text(
               '$score',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.onPrimary(brightness),
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
               ),
@@ -263,6 +273,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   void _showRackDataSheet(String result) {
+    final brightness = Theme.of(context).brightness;
+
     // Full rack data state
     int ballsPottedOnBreak = 0;
     int totalBallsPotted = 0;
@@ -304,6 +316,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
             countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
               if (secondsRemaining > 0) {
                 setSheetState(() {
+    final brightness = Theme.of(context).brightness;
+
                   secondsRemaining--;
                 });
               } else {
@@ -392,7 +406,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: secondsRemaining <= 10 ? Colors.red.shade100 : Colors.grey.shade100,
+                            color: secondsRemaining <= 10 ? AppColors.errorSubtle(brightness) : AppColors.border(brightness),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -400,14 +414,14 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                               Icon(
                                 Icons.timer,
                                 size: 16,
-                                color: secondsRemaining <= 10 ? Colors.red : Colors.grey.shade600,
+                                color: secondsRemaining <= 10 ? AppColors.error : AppColors.textSecondary(brightness),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 '${secondsRemaining}s',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: secondsRemaining <= 10 ? Colors.red : Colors.grey.shade600,
+                                  color: secondsRemaining <= 10 ? AppColors.error : AppColors.textSecondary(brightness),
                                 ),
                               ),
                             ],
@@ -418,13 +432,13 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                     const SizedBox(height: 8),
                     Text(
                       'Ghi nhận kết quả rack trước khi xếp bi mới.',
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                      style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 13),
                     ),
                     const SizedBox(height: 16),
 
                     // Break Rack Section
                     if (isBreakRack) ...[
-                      _buildSectionTitle('🎯 Break Rack'),
+                      _buildSectionTitle('Break Rack', Icons.sports_baseball),
                       _buildToggleRow(
                         'Win on break',
                         'Thắng ngay từ break',
@@ -447,7 +461,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                     ],
 
                     // Shot Results Section
-                    _buildSectionTitle('📊 Kết quả đánh'),
+                    _buildSectionTitle('Kết quả đánh', Icons.bar_chart),
                     _buildCounterRow(
                       'Tổng bi vào',
                       totalBallsPotted,
@@ -463,7 +477,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                     const SizedBox(height: 16),
 
                     // Errors Section
-                    _buildSectionTitle('❌ Sai sót'),
+                    _buildSectionTitle('Sai sót', Icons.error_outline),
                     _buildCounterRow(
                       'Miss dễ',
                       easyMissCount,
@@ -515,7 +529,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                     const SizedBox(height: 16),
 
                     // Shot Types Section
-                    _buildSectionTitle('🎯 Loại cú đánh'),
+                    _buildSectionTitle('Loại cú đánh', Icons.my_location),
                     _buildCounterRow(
                       'Bank shots',
                       bankShotCount,
@@ -538,7 +552,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
 
                     // How Won Section
                     if (rackResult == 'win') ...[
-                      _buildSectionTitle('💡 Cách thắng'),
+                      _buildSectionTitle('Cách thắng', Icons.lightbulb_outline),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -553,7 +567,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                     ],
 
                     // Quick Notes
-                    _buildSectionTitle('📝 Ghi chú nhanh'),
+                    _buildSectionTitle('Ghi chú nhanh', Icons.edit_note),
                     TextField(
                       decoration: InputDecoration(
                         hintText: 'Lỗi lớn nhất (VD: Miss cú dễ)',
@@ -639,9 +653,9 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                               );
                             },
                             style: FilledButton.styleFrom(
-                              backgroundColor: AppTheme.primaryGreen,
+                              backgroundColor: AppColors.primary(brightness),
                             ),
-                            child: const Text('💾 Lưu'),
+                            child: const Text('Lưu'),
                           ),
                         ),
                       ],
@@ -756,6 +770,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   void _endMatch() {
+    final brightness = Theme.of(context).brightness;
+
     final winner = _playerScore >= _raceTo ? 'player' : 'opponent';
     final matchResult = _playerScore >= _raceTo ? 'win' : 'lose';
 
@@ -783,7 +799,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
             children: [
               Icon(
                 _playerScore >= _raceTo ? Icons.emoji_events : Icons.sentiment_dissatisfied,
-                color: _playerScore >= _raceTo ? Colors.amber : Colors.grey,
+                color: _playerScore >= _raceTo ? AppColors.gold : AppColors.textTertiary(brightness),
                 size: 32,
               ),
               const SizedBox(width: 8),
@@ -807,7 +823,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
               const SizedBox(height: 16),
               Text(
                 'Tổng ${_racks.length} racks',
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: AppColors.textSecondary(brightness)),
               ),
             ],
           ),
@@ -825,7 +841,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                 // Navigate to match summary
                 context.push('/play/summary/${_currentMatch!.id}');
               },
-              style: FilledButton.styleFrom(backgroundColor: AppTheme.primaryGreen),
+              style: FilledButton.styleFrom(backgroundColor: AppColors.primary(brightness)),
               child: const Text('Xem chi tiết'),
             ),
           ],
@@ -836,6 +852,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
 
   /// PHASE 8: Analyze match data and feed to Coach AI
   Future<void> _analyzeAndFeedToCoach(Match match) async {
+    final brightness = Theme.of(context).brightness;
+
     if (match.racks.isEmpty) return;
 
     try {
@@ -859,13 +877,13 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           SnackBar(
             content: Text(
               'Coach đã phân tích trận đấu!',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.onPrimary(brightness)),
             ),
-            backgroundColor: AppTheme.primaryGreen,
+            backgroundColor: AppColors.primary(brightness),
             duration: const Duration(seconds: 2),
             action: SnackBarAction(
               label: 'Xem',
-              textColor: Colors.white,
+              textColor: AppColors.onPrimary(brightness),
               onPressed: () {
                 // Navigate to Coach
                 context.push('/coach');
@@ -892,22 +910,40 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
     ref.read(coachStateProvider.notifier).clearMatchAnalysis();
   }
 
-  Widget _buildSectionTitle(String title) {
+  /// Tiêu đề mục, có icon dẫn.
+  ///
+  /// Trước đây icon là emoji nhúng thẳng vào chuỗi tiêu đề. Emoji
+  /// hiển thị khác nhau giữa các hệ điều hành và trình đọc màn hình đọc tên
+  /// emoji nghe lạc lõng giữa câu tiếng Việt — nên dùng Material icon.
+  Widget _buildSectionTitle(String title, IconData icon) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, top: 4),
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.primaryGreen),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: AppColors.primary(brightness)),
+          const SizedBox(width: 6),
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary(brightness)),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildCounterRow(String label, int value, Function(int) onChanged, IconData icon) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.grey.shade600),
+          Icon(icon, size: 20, color: AppColors.textSecondary(brightness)),
           const SizedBox(width: 12),
           Expanded(child: Text(label)),
           IconButton(
@@ -934,6 +970,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildToggleRow(String label, String subtitle, bool value, {required Function(bool?) onChanged}) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -943,14 +981,14 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
-                Text(subtitle, style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                Text(subtitle, style: TextStyle(fontSize: 12, color: AppColors.textSecondary(brightness))),
               ],
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppTheme.primaryGreen,
+            activeColor: AppColors.primary(brightness),
           ),
         ],
       ),
@@ -958,21 +996,23 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildChoiceChip(String label, bool isSelected, VoidCallback onTap) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryGreen.withValues(alpha: 0.2) : Colors.grey.shade100,
+          color: isSelected ? AppColors.primary(brightness).withValues(alpha: 0.2) : AppColors.border(brightness),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade300,
+            color: isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
           ),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? AppTheme.primaryGreen : Colors.grey.shade700,
+            color: isSelected ? AppColors.primary(brightness) : AppColors.textSecondary(brightness),
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -988,6 +1028,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   // ==========================================================================
 
   Widget _buildRackHistory() {
+    final brightness = Theme.of(context).brightness;
+
     if (_racks.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -995,25 +1037,20 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.onPrimary(brightness),
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-          ),
-        ],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: ExpansionTile(
         initiallyExpanded: false,
-        leading: const Icon(Icons.history, color: AppTheme.primaryGreen),
+        leading: Icon(Icons.history, color: AppColors.primary(brightness)),
         title: Text(
           'Lịch sử Rack (${_racks.length})',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           '$_playerScore Win - $_opponentScore Lose',
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 12),
         ),
         children: _racks.asMap().entries.map((entry) {
           final index = entry.key;
@@ -1025,14 +1062,16 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildRackHistoryItem(Rack rack, int index) {
+    final brightness = Theme.of(context).brightness;
+
     final isWin = rack.resultBool;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        color: isWin ? Colors.green.shade50 : Colors.red.shade50,
+        color: isWin ? AppColors.successSubtle(brightness) : AppColors.errorSubtle(brightness),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isWin ? Colors.green.shade200 : Colors.red.shade200,
+          color: isWin ? AppColors.successOnTint(brightness) : AppColors.errorSubtle(brightness),
         ),
       ),
       child: ListTile(
@@ -1040,14 +1079,14 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isWin ? Colors.green : Colors.red,
+            color: isWin ? AppColors.success : AppColors.error,
             shape: BoxShape.circle,
           ),
           child: Center(
             child: Text(
               '${rack.rackNumber}',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.onPrimary(brightness),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -1057,7 +1096,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           children: [
             Icon(
               isWin ? Icons.check_circle : Icons.cancel,
-              color: isWin ? Colors.green : Colors.red,
+              color: isWin ? AppColors.success : AppColors.error,
               size: 16,
             ),
             const SizedBox(width: 4),
@@ -1065,7 +1104,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
               isWin ? 'WIN' : 'LOSE',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: isWin ? Colors.green : Colors.red,
+                color: isWin ? AppColors.success : AppColors.error,
               ),
             ),
             if (rack.breakShot) ...[
@@ -1073,12 +1112,12 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade100,
+                  color: AppColors.pastelFor(1, brightness),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Text(
+                child: Text(
                   'BREAK',
-                  style: TextStyle(fontSize: 10, color: Colors.blue),
+                  style: TextStyle(fontSize: 10, color: AppColors.primary(brightness)),
                 ),
               ),
             ],
@@ -1095,6 +1134,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildRackStats(Rack rack) {
+    final brightness = Theme.of(context).brightness;
+
     final stats = <String>[];
     if (rack.totalBallsPotted > 0) stats.add('${rack.totalBallsPotted} balls');
     if (rack.longestRun > 0) stats.add('Run: ${rack.longestRun}');
@@ -1104,7 +1145,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
 
     return Text(
       stats.isEmpty ? 'Không có data' : stats.join(' • '),
-      style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+      style: TextStyle(fontSize: 11, color: AppColors.textSecondary(brightness)),
     );
   }
 
@@ -1138,6 +1179,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   void _showRackDetail(Rack rack) {
+    final brightness = Theme.of(context).brightness;
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -1148,13 +1191,13 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: rack.resultBool ? Colors.green.shade100 : Colors.red.shade100,
+                color: rack.resultBool ? AppColors.success : AppColors.errorSubtle(brightness),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
                 rack.resultBool ? 'WIN' : 'LOSE',
                 style: TextStyle(
-                  color: rack.resultBool ? Colors.green : Colors.red,
+                  color: rack.resultBool ? AppColors.success : AppColors.error,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -1202,12 +1245,14 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   }
 
   Widget _buildDetailRow(String label, String value) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: Colors.grey.shade600)),
+          Text(label, style: TextStyle(color: AppColors.textSecondary(brightness))),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
@@ -1271,6 +1316,8 @@ class _RackEditSheetState extends State<_RackEditSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: EdgeInsets.only(
         left: 24,
@@ -1291,7 +1338,7 @@ class _RackEditSheetState extends State<_RackEditSheet> {
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
+                  icon: Icon(Icons.delete, color: AppColors.error),
                   onPressed: () {
                     Navigator.pop(context);
                     widget.onDelete();
@@ -1309,14 +1356,14 @@ class _RackEditSheetState extends State<_RackEditSheet> {
                 ChoiceChip(
                   label: const Text('WIN'),
                   selected: _resultBool,
-                  selectedColor: Colors.green.shade200,
+                  selectedColor: AppColors.successOnTint(brightness),
                   onSelected: (v) => setState(() => _resultBool = v),
                 ),
                 const SizedBox(width: 8),
                 ChoiceChip(
                   label: const Text('LOSE'),
                   selected: !_resultBool,
-                  selectedColor: Colors.red.shade200,
+                  selectedColor: AppColors.errorSubtle(brightness),
                   onSelected: (v) => setState(() => _resultBool = !v),
                 ),
               ],
@@ -1370,7 +1417,7 @@ class _RackEditSheetState extends State<_RackEditSheet> {
                       Navigator.pop(context);
                       widget.onSave(updatedRack);
                     },
-                    style: FilledButton.styleFrom(backgroundColor: AppTheme.primaryGreen),
+                    style: FilledButton.styleFrom(backgroundColor: AppColors.primary(brightness)),
                     child: const Text('Lưu'),
                   ),
                 ),

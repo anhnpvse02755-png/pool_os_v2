@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 
 class QuickMatchScreen extends StatefulWidget {
@@ -32,20 +33,22 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         title: Text(
           'Đấu nhanh',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
       ),
@@ -59,7 +62,7 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
               'Loại game',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
             ).animate().fadeIn(),
             SizedBox(height: AppSpacing.md),
@@ -87,7 +90,7 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
               'Đấu đến',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
             ).animate().fadeIn(delay: 200.ms),
             SizedBox(height: AppSpacing.md),
@@ -111,7 +114,7 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
               'Bàn chơi',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
             ).animate().fadeIn(delay: 300.ms),
             SizedBox(height: AppSpacing.md),
@@ -145,22 +148,22 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
             Container(
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.lightSurface,
+                color: AppColors.surface(brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.lightBorder),
+                border: Border.all(color: AppColors.border(brightness)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.rule, color: AppColors.lightTextSecondary, size: 20),
+                      Icon(Icons.rule, color: AppColors.textSecondary(brightness), size: 20),
                       SizedBox(width: AppSpacing.sm),
                       Text(
                         'Luật thi đấu',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.lightTextPrimary,
+                          color: AppColors.textPrimary(brightness),
                           fontSize: 15,
                         ),
                       ),
@@ -182,14 +185,8 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.lightSurface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: Offset(0, -2),
-            ),
-          ],
+          color: AppColors.surface(brightness),
+          boxShadow: AppShadows.soft(brightness),
         ),
         child: SafeArea(
           child: _PrimaryButton(
@@ -203,13 +200,15 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
   }
 
   void _startMatch() {
+    final brightness = Theme.of(context).brightness;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusMd)),
         title: Row(
           children: [
-            Icon(Icons.construction, color: Colors.orange),
+            Icon(Icons.construction, color: AppColors.warning),
             SizedBox(width: AppSpacing.sm),
             const Text('Đang phát triển'),
           ],
@@ -221,7 +220,7 @@ class _QuickMatchScreenState extends State<QuickMatchScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Đóng', style: TextStyle(color: AppColors.accent)),
+            child: Text('Đóng', style: TextStyle(color: AppColors.primary(brightness))),
           ),
         ],
       ),
@@ -251,6 +250,8 @@ class _GameTypeCardState extends State<_GameTypeCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.95),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -262,16 +263,16 @@ class _GameTypeCardState extends State<_GameTypeCard> {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.isSelected ? AppColors.accent : AppColors.lightSurface,
+            color: widget.isSelected ? AppColors.primary(brightness) : AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: widget.isSelected ? AppColors.accent : AppColors.lightBorder,
+              color: widget.isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
               width: widget.isSelected ? 2 : 1,
             ),
             boxShadow: widget.isSelected
                 ? [
                     BoxShadow(
-                      color: AppColors.accent.withValues(alpha: 0.2),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: Offset(0, 2),
                     ),
@@ -282,7 +283,7 @@ class _GameTypeCardState extends State<_GameTypeCard> {
             children: [
               Icon(
                 widget.icon,
-                color: widget.isSelected ? Colors.white : AppColors.lightTextSecondary,
+                color: widget.isSelected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
                 size: 32,
               ),
               SizedBox(height: AppSpacing.sm),
@@ -290,7 +291,7 @@ class _GameTypeCardState extends State<_GameTypeCard> {
                 widget.name,
                 style: TextStyle(
                   fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.normal,
-                  color: widget.isSelected ? Colors.white : AppColors.lightTextSecondary,
+                  color: widget.isSelected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
                   fontSize: 12,
                 ),
               ),
@@ -322,6 +323,8 @@ class _RaceChipState extends State<_RaceChip> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.95),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -333,16 +336,16 @@ class _RaceChipState extends State<_RaceChip> {
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
           decoration: BoxDecoration(
-            color: widget.isSelected ? AppColors.accent : AppColors.lightSurface,
+            color: widget.isSelected ? AppColors.primary(brightness) : AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: widget.isSelected ? AppColors.accent : AppColors.lightBorder,
+              color: widget.isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
             ),
           ),
           child: Text(
             widget.label,
             style: TextStyle(
-              color: widget.isSelected ? Colors.white : AppColors.lightTextPrimary,
+              color: widget.isSelected ? AppColors.onPrimary(brightness) : AppColors.textPrimary(brightness),
               fontWeight: widget.isSelected ? FontWeight.w600 : FontWeight.normal,
               fontSize: 14,
             ),
@@ -377,6 +380,8 @@ class _TableOptionCardState extends State<_TableOptionCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.98),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -388,10 +393,10 @@ class _TableOptionCardState extends State<_TableOptionCard> {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.isSelected ? AppColors.accent.withValues(alpha: 0.08) : AppColors.lightSurface,
+            color: widget.isSelected ? AppColors.primary(brightness).withValues(alpha: 0.08) : AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: widget.isSelected ? AppColors.accent : AppColors.lightBorder,
+              color: widget.isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
               width: widget.isSelected ? 2 : 1,
             ),
           ),
@@ -402,13 +407,13 @@ class _TableOptionCardState extends State<_TableOptionCard> {
                 height: 40,
                 decoration: BoxDecoration(
                   color: widget.isSelected
-                      ? AppColors.accent.withValues(alpha: 0.15)
-                      : AppColors.lightSurfaceElevated,
+                      ? AppColors.primary(brightness).withValues(alpha: 0.15)
+                      : AppColors.surfaceElevated(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Icon(
                   widget.icon,
-                  color: widget.isSelected ? AppColors.accent : AppColors.lightTextSecondary,
+                  color: widget.isSelected ? AppColors.primary(brightness) : AppColors.textSecondary(brightness),
                   size: 20,
                 ),
               ),
@@ -421,7 +426,7 @@ class _TableOptionCardState extends State<_TableOptionCard> {
                       widget.title,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: widget.isSelected ? AppColors.accent : AppColors.lightTextPrimary,
+                        color: widget.isSelected ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                         fontSize: 14,
                       ),
                     ),
@@ -430,7 +435,7 @@ class _TableOptionCardState extends State<_TableOptionCard> {
                       widget.subtitle,
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                       ),
                     ),
                   ],
@@ -451,6 +456,8 @@ class _RuleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
@@ -460,7 +467,7 @@ class _RuleItem extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              color: AppColors.lightTextSecondary,
+              color: AppColors.textSecondary(brightness),
               fontSize: 13,
             ),
           ),
@@ -486,6 +493,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -498,22 +507,22 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
-                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
                 : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (widget.icon != null) ...[
-                Icon(widget.icon, color: Colors.white, size: 20),
+                Icon(widget.icon, color: AppColors.onPrimary(brightness), size: 20),
                 SizedBox(width: AppSpacing.sm),
               ],
               Text(
                 widget.label,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness)),
                 textAlign: TextAlign.center,
               ),
             ],

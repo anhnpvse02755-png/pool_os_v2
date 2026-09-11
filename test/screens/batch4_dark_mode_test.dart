@@ -52,4 +52,18 @@ void main() {
     'lib/presentation/screens/profile/profile_screen.dart',
     'lib/presentation/screens/profile/settings_screen.dart',
   ]);
+
+  expectTokenHygiene('lo 4 - play', const [
+    'lib/presentation/screens/play/friendly_match_screen.dart',
+    'lib/presentation/screens/play/match_history_screen.dart',
+    'lib/presentation/screens/play/match_log_screen.dart',
+    'lib/presentation/screens/play/match_recording_screen.dart',
+    'lib/presentation/screens/play/match_summary_screen.dart',
+    'lib/presentation/screens/play/play_screen.dart',
+    'lib/presentation/screens/play/quick_match_screen.dart',
+    'lib/presentation/screens/play/tournament_create_screen.dart',
+    'lib/presentation/screens/play/tournament_detail_screen.dart',
+    'lib/presentation/screens/play/tournament_list_screen.dart',
+    'lib/presentation/screens/play/vision_recording_screen.dart',
+  ]);
 }

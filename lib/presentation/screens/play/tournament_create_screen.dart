@@ -138,6 +138,8 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   }
 
   void _createTournament() {
+    final brightness = Theme.of(context).brightness;
+
     if (!_formKey.currentState!.validate()) return;
 
     // Generate tournament ID
@@ -165,7 +167,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
       SnackBar(
         content: Text('Đã tạo giải "${tournament.name}"'),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.accent,
+        backgroundColor: AppColors.primary(brightness),
       ),
     );
 
@@ -198,6 +200,8 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Tạo giải đấu'),
@@ -319,17 +323,21 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   }
 
   Widget _buildSectionTitle(String title) {
+    final brightness = Theme.of(context).brightness;
+
     return Text(
       title,
       style: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 16,
-        color: AppColors.lightTextPrimary,
+        color: AppColors.textPrimary(brightness),
       ),
     );
   }
 
   Widget _buildTournamentTypeSelector() {
+    final brightness = Theme.of(context).brightness;
+
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
@@ -345,10 +353,10 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
             duration: Duration(milliseconds: 200),
             padding: EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.accent.withValues(alpha: 0.08) : AppColors.lightSurface,
+              color: isSelected ? AppColors.primary(brightness).withValues(alpha: 0.08) : AppColors.surface(brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               border: Border.all(
-                color: isSelected ? AppColors.accent : AppColors.lightBorder,
+                color: isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
                 width: isSelected ? 2 : 1,
               ),
             ),
@@ -358,14 +366,14 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                 Icon(
                   type.icon,
                   size: 28,
-                  color: isSelected ? AppColors.accent : AppColors.lightTextSecondary,
+                  color: isSelected ? AppColors.primary(brightness) : AppColors.textSecondary(brightness),
                 ),
                 SizedBox(height: AppSpacing.sm),
                 Text(
                   type.displayName,
                   style: TextStyle(
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                    color: isSelected ? AppColors.accent : AppColors.lightTextPrimary,
+                    color: isSelected ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -374,7 +382,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                   type.description,
                   style: TextStyle(
                     fontSize: 11,
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -387,6 +395,8 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   }
 
   Widget _buildParticipantSelector() {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       children: _participantOptions.map((count) {
         final isSelected = _participantCount == count;
@@ -401,7 +411,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                 duration: Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.accent : AppColors.lightSurfaceElevated,
+                  color: isSelected ? AppColors.primary(brightness) : AppColors.surfaceElevated(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Center(
@@ -409,7 +419,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                     '$count',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.lightTextPrimary,
+                      color: isSelected ? AppColors.onPrimary(brightness) : AppColors.textPrimary(brightness),
                     ),
                   ),
                 ),
@@ -422,6 +432,8 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
   }
 
   Widget _buildRaceToSelector() {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       children: _raceToOptions.map((value) {
         final isSelected = _raceTo == value;
@@ -436,7 +448,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                 duration: Duration(milliseconds: 200),
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.accent : AppColors.lightSurfaceElevated,
+                  color: isSelected ? AppColors.primary(brightness) : AppColors.surfaceElevated(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Center(
@@ -444,7 +456,7 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
                     '$value',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: isSelected ? Colors.white : AppColors.lightTextPrimary,
+                      color: isSelected ? AppColors.onPrimary(brightness) : AppColors.textPrimary(brightness),
                     ),
                   ),
                 ),
@@ -476,21 +488,23 @@ class _DatePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.lightSurface,
+          color: AppColors.surface(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(color: AppColors.lightBorder),
+          border: Border.all(color: AppColors.border(brightness)),
         ),
         child: Row(
           children: [
             Icon(
               Icons.calendar_today,
               size: 20,
-              color: enabled ? AppColors.accent : AppColors.lightTextTertiary,
+              color: enabled ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             ),
             SizedBox(width: AppSpacing.sm),
             Expanded(
@@ -498,15 +512,15 @@ class _DatePickerField extends StatelessWidget {
                 date != null ? _formatDate(date!) : label,
                 style: TextStyle(
                   color: date != null
-                      ? AppColors.lightTextPrimary
+                      ? AppColors.textPrimary(brightness)
                       : enabled
-                          ? AppColors.lightTextSecondary
-                          : AppColors.lightTextTertiary,
+                          ? AppColors.textSecondary(brightness)
+                          : AppColors.textTertiary(brightness),
                 ),
               ),
             ),
             if (date != null && enabled)
-              Icon(Icons.edit, size: 18, color: AppColors.lightTextSecondary),
+              Icon(Icons.edit, size: 18, color: AppColors.textSecondary(brightness)),
           ],
         ),
       ),
@@ -529,6 +543,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
@@ -540,15 +556,15 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
-                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
                 : null,
           ),
           child: Text(
             widget.label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness)),
             textAlign: TextAlign.center,
           ),
         ),
@@ -572,6 +588,8 @@ class _SecondaryButtonState extends State<_SecondaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -583,13 +601,13 @@ class _SecondaryButtonState extends State<_SecondaryButton> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: AppColors.lightBorder),
+            border: Border.all(color: AppColors.border(brightness)),
           ),
           child: Text(
             widget.label,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.lightTextPrimary),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary(brightness)),
             textAlign: TextAlign.center,
           ),
         ),

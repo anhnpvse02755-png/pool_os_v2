@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../data/models/match.dart';
 import '../../../data/models/match_analysis.dart';
@@ -74,6 +75,8 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_loading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -107,28 +110,28 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
         children: [
           _buildHeader(m),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Thông tin cơ bản'),
-          _buildBasicInfo(m),
+          _sectionTitle('Thông tin cơ bản', brightness),
+          _buildBasicInfo(m, brightness),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Hiệu suất'),
-          _buildPerformance(m),
+          _sectionTitle('Hiệu suất', brightness),
+          _buildPerformance(m, brightness),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Cue Ball'),
-          _buildCueBall(),
+          _sectionTitle('Cue Ball', brightness),
+          _buildCueBall(brightness),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Mental'),
-          _buildMental(m),
+          _sectionTitle('Mental', brightness),
+          _buildMental(m, brightness),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Physical'),
-          _buildPhysical(m),
+          _sectionTitle('Physical', brightness),
+          _buildPhysical(m, brightness),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Equipment'),
-          _buildEquipment(m),
+          _sectionTitle('Equipment', brightness),
+          _buildEquipment(m, brightness),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Phân tích AI'),
+          _sectionTitle('Phân tích AI', brightness),
           _buildAIAnalysis(),
           SizedBox(height: AppSpacing.md),
-          _sectionTitle('Timeline'),
+          _sectionTitle('Timeline', brightness),
           _buildTimeline(m),
           SizedBox(height: AppSpacing.lg),
           Row(
@@ -163,12 +166,14 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
   }
 
   void _onPrint() {
+    final brightness = Theme.of(context).brightness;
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Đã gửi đến máy in.')),
     );
   }
 
-  Widget _sectionTitle(String title) => Padding(
+  Widget _sectionTitle(String title, Brightness brightness) => Padding(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: Row(
           children: [
@@ -176,7 +181,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
               width: 4,
               height: 18,
               decoration: BoxDecoration(
-                color: AppColors.accent,
+                color: AppColors.primary(brightness),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -187,24 +192,20 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
       );
 
   Widget _buildHeader(Match m) {
+    final brightness = Theme.of(context).brightness;
+
     final color = m.isWin
         ? AppColors.success
-        : (m.isLoss ? AppColors.error : Colors.orange);
+        : (m.isLoss ? AppColors.error : AppColors.warning);
     final icon = m.isWin
         ? Icons.emoji_events
         : (m.isLoss ? Icons.cancel : Icons.balance);
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         children: [
@@ -236,22 +237,22 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
           SizedBox(height: AppSpacing.sm),
           Text(
             'vs ${m.opponentName ?? m.opponent ?? 'Unknown'}',
-            style: TextStyle(fontSize: 16, color: AppColors.lightTextSecondary),
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary(brightness)),
           ),
           SizedBox(height: AppSpacing.xs),
           Text(
             MatchTypes.labels[m.gameType] ?? m.gameType,
-            style: TextStyle(fontSize: 13, color: AppColors.lightTextTertiary),
+            style: TextStyle(fontSize: 13, color: AppColors.textTertiary(brightness)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBasicInfo(Match m) {
+  Widget _buildBasicInfo(Match m, Brightness brightness) {
     final fmt = DateFormat('dd/MM/yyyy');
     final timeFmt = DateFormat('HH:mm');
-    return _infoTable([
+    return _infoTable(brightness, [
       _InfoRow('Match ID', m.id),
       _InfoRow('Ngày', m.startTime != null ? fmt.format(m.startTime!) : fmt.format(m.createdAt)),
       _InfoRow('Giờ', m.startTime != null ? timeFmt.format(m.startTime!) : '—'),
@@ -266,7 +267,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
     ]);
   }
 
-  Widget _buildPerformance(Match m) {
+  Widget _buildPerformance(Match m, Brightness brightness) {
     final racks = _stats['totalRacks'] ?? m.racks.length;
     final wins = _stats['winPercent'] ?? 0.0;
     final bans = _stats['breakAndRun'] ?? 0;
@@ -284,7 +285,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
     final combos = _stats['combos'] ?? 0;
     final caroms = _stats['caroms'] ?? 0;
 
-    return _infoTable([
+    return _infoTable(brightness, [
       _InfoRow('Total racks', racks.toString()),
       _InfoRow('Win %', '${wins.toStringAsFixed(1)}%'),
       _InfoRow('Break & Run', bans.toString()),
@@ -304,13 +305,13 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
     ]);
   }
 
-  Widget _buildCueBall() {
+  Widget _buildCueBall(Brightness brightness) {
     final stop = _stats['stopShots'] ?? 0;
     final draw = _stats['drawShots'] ?? 0;
     final follow = _stats['followShots'] ?? 0;
     final side = _stats['sideSpinUses'] ?? 0;
     final posQ = _stats['positionQuality'] as Map<String, int>? ?? {};
-    return _infoTable([
+    return _infoTable(brightness, [
       _InfoRow('Stop shots', stop.toString()),
       _InfoRow('Draw shots', draw.toString()),
       _InfoRow('Follow shots', follow.toString()),
@@ -320,10 +321,10 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
     ]);
   }
 
-  Widget _buildMental(Match m) {
+  Widget _buildMental(Match m, Brightness brightness) {
     final s = m.playerState;
     if (s == null) return _EmptySection('Chưa có dữ liệu mental state.');
-    return _infoTable([
+    return _infoTable(brightness, [
       _InfoRow('Confidence', '${s.confidence}/5'),
       _InfoRow('Focus', '${s.focus}/5'),
       _InfoRow('Pressure', '${s.pressure}/5'),
@@ -332,10 +333,10 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
     ]);
   }
 
-  Widget _buildPhysical(Match m) {
+  Widget _buildPhysical(Match m, Brightness brightness) {
     final s = m.playerState;
     if (s == null) return _EmptySection('Chưa có dữ liệu physical state.');
-    return _infoTable([
+    return _infoTable(brightness, [
       if (s.sleep != null) _InfoRow('Sleep', '${s.sleep} giờ'),
       if (s.fatigue != null) _InfoRow('Fatigue', '${s.fatigue}/5'),
       if (s.energy != null) _InfoRow('Energy', '${s.energy}/5'),
@@ -343,10 +344,10 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
     ]);
   }
 
-  Widget _buildEquipment(Match m) {
+  Widget _buildEquipment(Match m, Brightness brightness) {
     final e = m.equipmentSnapshot;
     if (e == null) return _EmptySection('Chưa có dữ liệu equipment.');
-    return _infoTable([
+    return _infoTable(brightness, [
       if (e.cueName != null) _InfoRow('Cue', e.cueName!),
       if (e.shaftMaterial != null) _InfoRow('Shaft', e.shaftMaterial!),
       if (e.tipBrand != null) _InfoRow('Tip', e.tipBrand!),
@@ -356,6 +357,8 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
   }
 
   Widget _buildAIAnalysis() {
+    final brightness = Theme.of(context).brightness;
+
     final a = _analysis;
     if (a == null) {
       return _EmptySection('Chưa có phân tích AI cho trận đấu.');
@@ -370,7 +373,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
         ],
         if (a.weaknesses.isNotEmpty) ...[
           _sub('Điểm yếu'),
-          ...a.weaknesses.map((s) => _bullet(s, Icons.warning, Colors.orange)),
+          ...a.weaknesses.map((s) => _bullet(s, Icons.warning, AppColors.warning)),
           SizedBox(height: AppSpacing.sm),
         ],
         if (a.biggestMistakes.isNotEmpty) ...[
@@ -385,12 +388,12 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
         ],
         if (a.suggestedDrills.isNotEmpty) ...[
           _sub('Drills gợi ý'),
-          ...a.suggestedDrills.map((s) => _bullet(s, Icons.sports, AppColors.accent)),
+          ...a.suggestedDrills.map((s) => _bullet(s, Icons.sports, AppColors.primary(brightness))),
           SizedBox(height: AppSpacing.sm),
         ],
         if (a.relatedKnowledgeArticles.isNotEmpty) ...[
           _sub('Bài viết liên quan'),
-          ...a.relatedKnowledgeArticles.map((s) => _bullet(s, Icons.article, Colors.blue)),
+          ...a.relatedKnowledgeArticles.map((s) => _bullet(s, Icons.article, AppColors.primary(brightness))),
           SizedBox(height: AppSpacing.sm),
         ],
         if (a.recommendedLearningPath != null) ...[
@@ -400,7 +403,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
         SizedBox(height: 4),
         Text(
           'Phân tích được tạo: ${DateFormat('dd/MM/yyyy HH:mm').format(a.generatedAt)}',
-          style: TextStyle(fontSize: 12, color: AppColors.lightTextSecondary),
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary(brightness)),
         ),
       ],
     );
@@ -420,6 +423,8 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
   }
 
   Widget _timelineIcon(String type) {
+    final brightness = Theme.of(context).brightness;
+
     switch (type) {
       case 'break':
       case 'break_and_run':
@@ -437,10 +442,10 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: Colors.blue.withValues(alpha: 0.12),
+            color: AppColors.primary(brightness).withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.shield, color: Colors.blue, size: 16),
+          child: Icon(Icons.shield, color: AppColors.primary(brightness), size: 16),
         );
       case 'miss':
         return Container(
@@ -457,20 +462,20 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: Colors.orange.withValues(alpha: 0.12),
+            color: AppColors.warning.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.bolt, color: Colors.orange, size: 16),
+          child: Icon(Icons.bolt, color: AppColors.warning, size: 16),
         );
       default:
         return Container(
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: AppColors.lightSurfaceElevated,
+            color: AppColors.surfaceElevated(brightness),
             shape: BoxShape.circle,
           ),
-          child: Icon(Icons.fiber_manual_record, size: 12, color: AppColors.lightTextSecondary),
+          child: Icon(Icons.fiber_manual_record, size: 12, color: AppColors.textSecondary(brightness)),
         );
     }
   }
@@ -492,18 +497,12 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
         ),
       );
 
-  Widget _infoTable(List<_InfoRow> rows) => Container(
+  Widget _infoTable(Brightness brightness, List<_InfoRow> rows) => Container(
         padding: EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
-          color: AppColors.lightSurface,
+          color: AppColors.surface(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
+          boxShadow: AppShadows.soft(brightness),
         ),
         child: Column(
           children: rows
@@ -512,7 +511,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(width: 140, child: Text(r.label, style: TextStyle(color: AppColors.lightTextSecondary, fontWeight: FontWeight.w500))),
+                        SizedBox(width: 140, child: Text(r.label, style: TextStyle(color: AppColors.textSecondary(brightness), fontWeight: FontWeight.w500))),
                         Expanded(child: Text(r.value)),
                       ],
                     ),
@@ -532,20 +531,25 @@ class _EmptySection extends StatelessWidget {
   const _EmptySection(this.message);
   final String message;
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
+    return Container(
+
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.lightSurfaceElevated,
+          color: AppColors.surfaceElevated(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         ),
         child: Row(
           children: [
-            Icon(Icons.info_outline, color: AppColors.lightTextTertiary, size: 20),
+            Icon(Icons.info_outline, color: AppColors.textTertiary(brightness), size: 20),
             SizedBox(width: AppSpacing.sm),
-            Expanded(child: Text(message, style: TextStyle(color: AppColors.lightTextSecondary))),
+            Expanded(child: Text(message, style: TextStyle(color: AppColors.textSecondary(brightness)))),
           ],
         ),
-      );
+    );
+  }
 }
 
 class _PrimaryButton extends StatefulWidget {
@@ -564,6 +568,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -575,11 +581,11 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.accent,
+            color: AppColors.primary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: [
               BoxShadow(
-                color: AppColors.accent.withValues(alpha: 0.3),
+                color: AppColors.primary(brightness).withValues(alpha: 0.3),
                 blurRadius: 12,
                 offset: Offset(0, 4),
               ),
@@ -588,11 +594,11 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, color: Colors.white, size: 20),
+              Icon(widget.icon, color: AppColors.onPrimary(brightness), size: 20),
               SizedBox(width: AppSpacing.sm),
               Text(
                 widget.label,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness)),
               ),
             ],
           ),
@@ -618,6 +624,8 @@ class _SecondaryButtonState extends State<_SecondaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -629,18 +637,18 @@ class _SecondaryButtonState extends State<_SecondaryButton> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: AppColors.lightBorder),
+            border: Border.all(color: AppColors.border(brightness)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, color: AppColors.lightTextSecondary, size: 20),
+              Icon(widget.icon, color: AppColors.textSecondary(brightness), size: 20),
               SizedBox(width: AppSpacing.sm),
               Text(
                 widget.label,
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.lightTextPrimary),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textPrimary(brightness)),
               ),
             ],
           ),

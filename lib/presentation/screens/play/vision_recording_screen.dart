@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 
 class VisionRecordingScreen extends ConsumerStatefulWidget {
   const VisionRecordingScreen({super.key});
@@ -17,6 +19,8 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Vision Recording'),
@@ -58,6 +62,8 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
   }
 
   Widget _buildHeroSection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -65,14 +71,14 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.deepPurple.shade600,
-            Colors.deepPurple.shade400,
+            AppColors.primaryDeep(brightness),
+            AppColors.primary(brightness),
           ],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.deepPurple.withValues(alpha: 0.3),
+            color: AppColors.primary(brightness).withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -85,7 +91,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
             width: 120,
             height: 120,
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Stack(
@@ -94,21 +100,21 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                 Icon(
                   Icons.videocam,
                   size: 60,
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
                 ),
                 Positioned(
                   bottom: 20,
                   right: 20,
                   child: Container(
                     padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
+                    decoration: BoxDecoration(
+                      color: AppColors.error,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.fiber_manual_record,
                       size: 12,
-                      color: Colors.white,
+                      color: AppColors.onPrimary(brightness),
                     ),
                   ),
                 ),
@@ -119,10 +125,10 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
 
           const SizedBox(height: 24),
 
-          const Text(
+          Text(
             'Vision Auto Recording',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
               fontWeight: FontWeight.bold,
               fontSize: 24,
             ),
@@ -132,7 +138,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
           Text(
             'Ghi lại trận đấu tự động bằng AI',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: AppColors.onPrimary(brightness).withValues(alpha: 0.9),
               fontSize: 15,
             ),
           ),
@@ -140,20 +146,20 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
           const SizedBox(height: 20),
 
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.amber,
+              color: AppColors.gold,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.schedule, color: Colors.black87, size: 18),
+                Icon(Icons.schedule, color: AppColors.textPrimary(brightness), size: 18),
                 SizedBox(width: 8),
                 Text(
                   'Sắp ra mắt',
                   style: TextStyle(
-                    color: Colors.black87,
+                    color: AppColors.textPrimary(brightness),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -166,42 +172,44 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
   }
 
   Widget _buildFeaturesSection() {
+    final brightness = Theme.of(context).brightness;
+
     final features = [
       {
         'icon': Icons.circle_outlined,
         'title': 'Ball Detection',
         'description': 'Nhận diện vị trí tất cả các bi trên bàn',
-        'color': Colors.blue,
+        'color': AppColors.primary(brightness),
       },
       {
         'icon': Icons.route,
         'title': 'Shot Tracking',
         'description': 'Theo dõi đường đi của từng bi',
-        'color': Colors.green,
+        'color': AppColors.success,
       },
       {
         'icon': Icons.analytics,
         'title': 'Auto Scoring',
         'description': 'Tính điểm tự động chính xác',
-        'color': Colors.orange,
+        'color': AppColors.warning,
       },
       {
         'icon': Icons.psychology,
         'title': 'AI Analysis',
         'description': 'Phân tích cú đánh và đưa ra gợi ý',
-        'color': Colors.purple,
+        'color': AppColors.difficultyExpert(brightness),
       },
       {
         'icon': Icons.share,
         'title': 'Share Highlights',
         'description': 'Chia sẻ khoảnh khắc đẹp lên mạng xã hội',
-        'color': Colors.red,
+        'color': AppColors.error,
       },
       {
         'icon': Icons.history,
         'title': 'Match History',
         'description': 'Lưu trữ và xem lại tất cả các trận đấu',
-        'color': Colors.teal,
+        'color': AppColors.primary(brightness),
       },
     ];
 
@@ -231,14 +239,9 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
             return Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.onPrimary(brightness),
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                  ),
-                ],
+                boxShadow: AppShadows.soft(brightness),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,7 +266,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                   Text(
                     feature['description'] as String,
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 12,
                     ),
                     maxLines: 2,
@@ -279,6 +282,8 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
   }
 
   Widget _buildHowItWorksSection() {
+    final brightness = Theme.of(context).brightness;
+
     final steps = [
       {
         'number': '1',
@@ -327,14 +332,14 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen,
+                      color: AppColors.primary(brightness),
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                       child: Text(
                         step['number'] as String,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: AppColors.onPrimary(brightness),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -344,7 +349,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                     Container(
                       width: 2,
                       height: 50,
-                      color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                     ),
                 ],
               ),
@@ -354,14 +359,9 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.onPrimary(brightness),
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 8,
-                      ),
-                    ],
+                    boxShadow: AppShadows.soft(brightness),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,7 +374,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                       Text(
                         step['description'] as String,
                         style: TextStyle(
-                          color: Colors.grey.shade600,
+                          color: AppColors.textSecondary(brightness),
                           fontSize: 13,
                         ),
                       ),
@@ -390,12 +390,14 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
   }
 
   Widget _buildBetaSignupSection() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
+        color: AppColors.primary(brightness),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.blue.shade100),
+        border: Border.all(color: AppColors.pastelFor(1, brightness)),
       ),
       child: Column(
         children: [
@@ -404,10 +406,10 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade100,
+                  color: AppColors.pastelFor(1, brightness),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.star, color: Colors.blue.shade700),
+                child: Icon(Icons.star, color: AppColors.primary(brightness)),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -424,7 +426,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                     Text(
                       'Trở thành người dùng đầu tiên trải nghiệm',
                       style: TextStyle(
-                        color: Colors.blue.shade700,
+                        color: AppColors.primary(brightness),
                         fontSize: 13,
                       ),
                     ),
@@ -440,12 +442,12 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
             decoration: InputDecoration(
               hintText: 'Nhập email của bạn',
               filled: true,
-              fillColor: Colors.white,
+              fillColor: AppColors.onPrimary(brightness),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
-              prefixIcon: Icon(Icons.email, color: Colors.grey.shade400),
+              prefixIcon: Icon(Icons.email, color: AppColors.border(brightness)),
             ),
           ),
           const SizedBox(height: 12),
@@ -460,7 +462,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
             onChanged: (value) {
               setState(() => _notificationsEnabled = value);
             },
-            activeColor: AppTheme.primaryGreen,
+            activeColor: AppColors.primary(brightness),
             contentPadding: EdgeInsets.zero,
           ),
           const SizedBox(height: 12),
@@ -470,16 +472,16 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
             child: ElevatedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
+                  SnackBar(
                     content: Text('Cảm ơn! Chúng tôi sẽ liên hệ khi có bản beta.'),
                     behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppColors.success,
                   ),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.primary(brightness),
+                foregroundColor: AppColors.onPrimary(brightness),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -497,6 +499,8 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
   }
 
   Widget _buildRequirementsSection() {
+    final brightness = Theme.of(context).brightness;
+
     final requirements = [
       {'icon': Icons.phone_android, 'text': 'Android 10+ hoặc iOS 15+'},
       {'icon': Icons.camera_alt, 'text': 'Camera có độ phân giải tối thiểu 1080p'},
@@ -518,14 +522,9 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.onPrimary(brightness),
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-              ),
-            ],
+            boxShadow: AppShadows.soft(brightness),
           ),
           child: Column(
             children: requirements.asMap().entries.map((entry) {
@@ -539,19 +538,19 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
                     children: [
                       Icon(
                         req['icon'] as IconData,
-                        color: Colors.grey.shade600,
+                        color: AppColors.textSecondary(brightness),
                         size: 24,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           req['text'] as String,
-                          style: TextStyle(color: Colors.grey.shade700),
+                          style: TextStyle(color: AppColors.textSecondary(brightness)),
                         ),
                       ),
                       Icon(
                         Icons.check_circle,
-                        color: AppTheme.primaryGreen,
+                        color: AppColors.primary(brightness),
                         size: 20,
                       ),
                     ],
@@ -567,12 +566,14 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
   }
 
   void _showInfoDialog(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.info, color: Colors.blue),
+            Icon(Icons.info, color: AppColors.primary(brightness)),
             SizedBox(width: 8),
             Text('Về Vision Recording'),
           ],

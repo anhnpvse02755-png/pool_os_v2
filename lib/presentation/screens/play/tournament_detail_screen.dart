@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/models/tournament.dart';
 
@@ -12,6 +13,8 @@ class TournamentDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final tournament = TournamentLibrary.getTournament(tournamentId);
 
     if (tournament == null) {
@@ -28,7 +31,7 @@ class TournamentDetailScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 200,
             pinned: true,
-            backgroundColor: _getStatusColor(tournament.status),
+            backgroundColor: _getStatusColor(tournament.status, brightness),
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 tournament.name,
@@ -40,8 +43,8 @@ class TournamentDetailScreen extends StatelessWidget {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      _getStatusColor(tournament.status),
-                      _getStatusColor(tournament.status).withValues(alpha: 0.7),
+                      _getStatusColor(tournament.status, brightness),
+                      _getStatusColor(tournament.status, brightness).withValues(alpha: 0.7),
                     ],
                   ),
                 ),
@@ -49,7 +52,7 @@ class TournamentDetailScreen extends StatelessWidget {
                   child: Icon(
                     Icons.emoji_events,
                     size: 80,
-                    color: Colors.white.withValues(alpha: 0.3),
+                    color: AppColors.onPrimary(brightness).withValues(alpha: 0.3),
                   ),
                 ),
               ),
@@ -79,15 +82,9 @@ class TournamentDetailScreen extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.lightSurface,
+                      color: AppColors.surface(brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+                      boxShadow: AppShadows.soft(brightness),
                     ),
                     child: Column(
                       children: [
@@ -98,19 +95,19 @@ class TournamentDetailScreen extends StatelessWidget {
                               ? '${_formatDate(tournament.startDate!)} - ${_formatDate(tournament.endDate ?? tournament.startDate!)}'
                               : 'Chưa xác định',
                         ),
-                        Divider(color: AppColors.lightBorder),
+                        Divider(color: AppColors.border(brightness)),
                         _InfoRow(
                           icon: Icons.location_on,
                           label: 'Địa điểm',
                           value: tournament.venue ?? 'Chưa xác định',
                         ),
-                        Divider(color: AppColors.lightBorder),
+                        Divider(color: AppColors.border(brightness)),
                         _InfoRow(
                           icon: Icons.people,
                           label: 'Số người tham gia',
                           value: '${tournament.maxParticipants ?? 0}',
                         ),
-                        Divider(color: AppColors.lightBorder),
+                        Divider(color: AppColors.border(brightness)),
                         _InfoRow(
                           icon: Icons.category,
                           label: 'Loại giải',
@@ -130,15 +127,9 @@ class TournamentDetailScreen extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.lightSurface,
+                      color: AppColors.surface(brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+                      boxShadow: AppShadows.soft(brightness),
                     ),
                     child: Column(
                       children: [
@@ -186,15 +177,9 @@ class TournamentDetailScreen extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.lightSurface,
+                      color: AppColors.surface(brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.04),
-                          blurRadius: 8,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
+                      boxShadow: AppShadows.soft(brightness),
                     ),
                     child: Column(
                       children: List.generate(8, (index) {
@@ -217,16 +202,16 @@ class TournamentDetailScreen extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(String status) {
+  Color _getStatusColor(String status, Brightness brightness) {
     switch (status) {
       case 'in_progress':
         return AppColors.success;
       case 'upcoming':
-        return AppColors.accent;
+        return AppColors.primary(brightness);
       case 'completed':
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
@@ -264,12 +249,14 @@ class _SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Text(
       title,
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
-        color: AppColors.lightTextPrimary,
+        color: AppColors.textPrimary(brightness),
       ),
     );
   }
@@ -288,6 +275,8 @@ class _RegisterButtonState extends State<_RegisterButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.95),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -300,13 +289,13 @@ class _RegisterButtonState extends State<_RegisterButton> {
           margin: EdgeInsets.only(right: AppSpacing.sm),
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
+            color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           ),
           child: Text(
             'ĐĂNG KÝ',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
@@ -330,16 +319,18 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: AppColors.accent),
+          Icon(icon, size: 20, color: AppColors.primary(brightness)),
           SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
               label,
-              style: TextStyle(color: AppColors.lightTextSecondary),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
           ),
           Text(
@@ -363,6 +354,8 @@ class _BracketRound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -370,7 +363,7 @@ class _BracketRound extends StatelessWidget {
           name,
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
             fontSize: 12,
           ),
         ),
@@ -421,13 +414,15 @@ class _BracketMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: isFinal ? AppColors.gold.withValues(alpha: 0.08) : AppColors.lightSurfaceElevated,
+        color: isFinal ? AppColors.gold.withValues(alpha: 0.08) : AppColors.surfaceElevated(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         border: Border.all(
-          color: isFinal ? AppColors.gold : AppColors.lightBorder,
+          color: isFinal ? AppColors.gold : AppColors.border(brightness),
         ),
       ),
       child: Column(
@@ -437,7 +432,7 @@ class _BracketMatch extends StatelessWidget {
             score: score1,
             isWinner: winner == 1,
           ),
-          Divider(height: 4, color: AppColors.lightBorder),
+          Divider(height: 4, color: AppColors.border(brightness)),
           _PlayerRow(
             name: player2,
             score: score2,
@@ -462,6 +457,8 @@ class _PlayerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       children: [
         if (isWinner)
@@ -474,7 +471,7 @@ class _PlayerRow extends StatelessWidget {
             name == '?' ? 'Chưa xác định' : name,
             style: TextStyle(
               fontWeight: isWinner ? FontWeight.w600 : FontWeight.normal,
-              color: name == '?' ? AppColors.lightTextTertiary : AppColors.lightTextPrimary,
+              color: name == '?' ? AppColors.textTertiary(brightness) : AppColors.textPrimary(brightness),
             ),
           ),
         ),
@@ -483,7 +480,7 @@ class _PlayerRow extends StatelessWidget {
             '$score',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: isWinner ? AppColors.success : AppColors.lightTextSecondary,
+              color: isWinner ? AppColors.success : AppColors.textSecondary(brightness),
             ),
           ),
       ],
@@ -504,6 +501,8 @@ class _ParticipantRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Row(
@@ -512,14 +511,14 @@ class _ParticipantRow extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: _getRankColor(rank),
+              color: _getRankColor(rank, brightness),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 '$rank',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
                 ),
@@ -531,13 +530,13 @@ class _ParticipantRow extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
             decoration: BoxDecoration(
-              color: AppColors.lightSurfaceElevated,
+              color: AppColors.surfaceElevated(brightness),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               'Seed #$seed',
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 11,
               ),
             ),
@@ -547,16 +546,16 @@ class _ParticipantRow extends StatelessWidget {
     );
   }
 
-  Color _getRankColor(int rank) {
+  Color _getRankColor(int rank, Brightness brightness) {
     switch (rank) {
       case 1:
         return AppColors.gold;
       case 2:
-        return AppColors.lightTextSecondary;
+        return AppColors.silver;
       case 3:
-        return Color(0xFFCD7F32);
+        return AppColors.bronze;
       default:
-        return AppColors.lightBorder;
+        return AppColors.border(brightness);
     }
   }
 }

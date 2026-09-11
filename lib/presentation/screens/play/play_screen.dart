@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 
 class PlayScreen extends StatelessWidget {
@@ -10,21 +11,23 @@ class PlayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         title: Text(
           'Play',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.history, color: AppColors.lightTextSecondary),
+            icon: Icon(Icons.history, color: AppColors.textSecondary(brightness)),
             onPressed: () => context.push('/play/history'),
             tooltip: 'Lịch sử đấu',
           ),
@@ -45,7 +48,7 @@ class PlayScreen extends StatelessWidget {
                     icon: Icons.flash_on,
                     title: 'Đấu nhanh',
                     subtitle: 'Bắt đầu ngay',
-                    color: Colors.orange,
+                    color: AppColors.warning,
                     onTap: () => context.push('/play/quick'),
                   ),
                 ),
@@ -55,7 +58,7 @@ class PlayScreen extends StatelessWidget {
                     icon: Icons.groups,
                     title: 'Giao lưu',
                     subtitle: 'Đấu với bạn',
-                    color: AppColors.accent,
+                    color: AppColors.primary(brightness),
                     onTap: () => context.push('/play/friendly'),
                   ),
                 ),
@@ -96,7 +99,7 @@ class PlayScreen extends StatelessWidget {
               icon: Icons.emoji_events,
               title: 'Giải đấu',
               subtitle: 'Tournament',
-              color: Colors.purple,
+              color: AppColors.difficultyExpert(brightness),
               onTap: () => context.push('/play/tournament'),
             ).animate().fadeIn(delay: 200.ms),
             SizedBox(height: AppSpacing.md),
@@ -104,7 +107,7 @@ class PlayScreen extends StatelessWidget {
               icon: Icons.groups,
               title: 'League',
               subtitle: 'Đấu league với CLB',
-              color: Colors.teal,
+              color: AppColors.primary(brightness),
               onTap: () => context.push('/play/tournament'),
             ).animate().fadeIn(delay: 250.ms),
 
@@ -118,7 +121,7 @@ class PlayScreen extends StatelessWidget {
                 onPressed: () => context.push('/play/history'),
                 child: Text(
                   'Xem tất cả',
-                  style: TextStyle(color: AppColors.accent),
+                  style: TextStyle(color: AppColors.primary(brightness)),
                 ),
               ),
             ),
@@ -131,6 +134,8 @@ class PlayScreen extends StatelessWidget {
   }
 
   Widget _buildSectionTitle(BuildContext context, String title, {Widget? action}) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -138,7 +143,7 @@ class PlayScreen extends StatelessWidget {
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
         ),
         if (action != null) action,
@@ -171,6 +176,8 @@ class _PlayCardState extends State<_PlayCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -203,16 +210,16 @@ class _PlayCardState extends State<_PlayCard> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: Icon(widget.icon, color: Colors.white, size: 28),
+                child: Icon(widget.icon, color: AppColors.onPrimary(brightness), size: 28),
               ),
               SizedBox(height: AppSpacing.md),
               Text(
                 widget.title,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
                 ),
@@ -221,7 +228,7 @@ class _PlayCardState extends State<_PlayCard> {
               Text(
                 widget.subtitle,
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
                   fontSize: 13,
                 ),
               ),
@@ -247,6 +254,8 @@ class _MatchRecordingCardState extends State<_MatchRecordingCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -258,16 +267,10 @@ class _MatchRecordingCardState extends State<_MatchRecordingCard> {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: AppColors.primary(brightness).withValues(alpha: 0.2)),
+            boxShadow: AppShadows.soft(brightness),
           ),
           child: Row(
             children: [
@@ -275,12 +278,12 @@ class _MatchRecordingCardState extends State<_MatchRecordingCard> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.1),
+                  color: AppColors.primary(brightness).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Icon(
                   Icons.videocam,
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   size: 28,
                 ),
               ),
@@ -294,14 +297,14 @@ class _MatchRecordingCardState extends State<_MatchRecordingCard> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     SizedBox(height: AppSpacing.xs),
                     Text(
                       'Ghi lại trận đấu thực tế, tính điểm tự động',
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontSize: 12,
                         height: 1.3,
                       ),
@@ -309,7 +312,7 @@ class _MatchRecordingCardState extends State<_MatchRecordingCard> {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -342,6 +345,8 @@ class _CompetitionTypeCardState extends State<_CompetitionTypeCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.98),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -353,16 +358,10 @@ class _CompetitionTypeCardState extends State<_CompetitionTypeCard> {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: AppColors.lightBorder),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.03),
-                blurRadius: 8,
-                offset: Offset(0, 2),
-              ),
-            ],
+            border: Border.all(color: AppColors.border(brightness)),
+            boxShadow: AppShadows.soft(brightness),
           ),
           child: Row(
             children: [
@@ -385,21 +384,21 @@ class _CompetitionTypeCardState extends State<_CompetitionTypeCard> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
-                        color: AppColors.lightTextPrimary,
+                        color: AppColors.textPrimary(brightness),
                       ),
                     ),
                     SizedBox(height: 2),
                     Text(
                       widget.subtitle,
                       style: TextStyle(
-                        color: AppColors.lightTextSecondary,
+                        color: AppColors.textSecondary(brightness),
                         fontSize: 13,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -411,6 +410,8 @@ class _CompetitionTypeCardState extends State<_CompetitionTypeCard> {
 class _RecentMatchesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       children: [
         _RecentMatchItem(
@@ -456,14 +457,14 @@ class _RecentMatchItem extends StatelessWidget {
     required this.result,
   });
 
-  Color get resultColor {
+  Color resultColor(Brightness brightness) {
     switch (result) {
       case 'win':
         return AppColors.success;
       case 'lose':
         return AppColors.error;
       default:
-        return AppColors.lightTextSecondary;
+        return AppColors.textSecondary(brightness);
     }
   }
 
@@ -480,12 +481,14 @@ class _RecentMatchItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.lightBorder),
+        border: Border.all(color: AppColors.border(brightness)),
       ),
       child: Row(
         children: [
@@ -493,14 +496,14 @@ class _RecentMatchItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: resultColor.withValues(alpha: 0.1),
+              color: resultColor(brightness).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 result == 'win' ? 'W' : result == 'lose' ? 'L' : 'D',
                 style: TextStyle(
-                  color: resultColor,
+                  color: resultColor(brightness),
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
                 ),
@@ -517,14 +520,14 @@ class _RecentMatchItem extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
                 ),
                 SizedBox(height: 2),
                 Text(
                   score,
                   style: TextStyle(
-                    color: resultColor,
+                    color: resultColor(brightness),
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
@@ -538,13 +541,13 @@ class _RecentMatchItem extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
                 decoration: BoxDecoration(
-                  color: resultColor.withValues(alpha: 0.1),
+                  color: resultColor(brightness).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
                   resultLabel,
                   style: TextStyle(
-                    color: resultColor,
+                    color: resultColor(brightness),
                     fontWeight: FontWeight.w600,
                     fontSize: 11,
                   ),
@@ -554,7 +557,7 @@ class _RecentMatchItem extends StatelessWidget {
               Text(
                 date,
                 style: TextStyle(
-                  color: AppColors.lightTextTertiary,
+                  color: AppColors.textTertiary(brightness),
                   fontSize: 11,
                 ),
               ),
@@ -572,22 +575,24 @@ class QuickMatchPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
-        title: Text('Đấu nhanh', style: TextStyle(color: AppColors.lightTextPrimary)),
+        title: Text('Đấu nhanh', style: TextStyle(color: AppColors.textPrimary(brightness))),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.flash_on, size: 64, color: Colors.orange),
+            Icon(Icons.flash_on, size: 64, color: AppColors.warning),
             SizedBox(height: 16),
             Text('Đấu nhanh', style: TextStyle(fontSize: 18)),
             SizedBox(height: 8),
-            Text('Tính năng đang phát triển', style: TextStyle(color: Colors.grey)),
+            Text('Tính năng đang phát triển', style: TextStyle(color: AppColors.textTertiary(brightness))),
           ],
         ),
       ),
@@ -600,22 +605,24 @@ class FriendlyMatchPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
-        title: Text('Giao lưu', style: TextStyle(color: AppColors.lightTextPrimary)),
+        title: Text('Giao lưu', style: TextStyle(color: AppColors.textPrimary(brightness))),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.groups, size: 64, color: AppColors.accent),
+            Icon(Icons.groups, size: 64, color: AppColors.primary(brightness)),
             SizedBox(height: 16),
             Text('Giao lưu với bạn', style: TextStyle(fontSize: 18)),
             SizedBox(height: 8),
-            Text('Tính năng đang phát triển', style: TextStyle(color: Colors.grey)),
+            Text('Tính năng đang phát triển', style: TextStyle(color: AppColors.textTertiary(brightness))),
           ],
         ),
       ),
@@ -628,22 +635,24 @@ class MatchRecordingPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
-        title: Text('Match Recording', style: TextStyle(color: AppColors.lightTextPrimary)),
+        title: Text('Match Recording', style: TextStyle(color: AppColors.textPrimary(brightness))),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.videocam, size: 64, color: AppColors.accent),
+            Icon(Icons.videocam, size: 64, color: AppColors.primary(brightness)),
             SizedBox(height: 16),
             Text('Match Recording', style: TextStyle(fontSize: 18)),
             SizedBox(height: 8),
-            Text('Tính năng đang phát triển', style: TextStyle(color: Colors.grey)),
+            Text('Tính năng đang phát triển', style: TextStyle(color: AppColors.textTertiary(brightness))),
           ],
         ),
       ),
@@ -656,22 +665,24 @@ class MatchHistoryPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
-        title: Text('Lịch sử đấu', style: TextStyle(color: AppColors.lightTextPrimary)),
+        title: Text('Lịch sử đấu', style: TextStyle(color: AppColors.textPrimary(brightness))),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.history, size: 64, color: Colors.grey),
+            Icon(Icons.history, size: 64, color: AppColors.textTertiary(brightness)),
             SizedBox(height: 16),
             Text('Lịch sử đấu', style: TextStyle(fontSize: 18)),
             SizedBox(height: 8),
-            Text('Tính năng đang phát triển', style: TextStyle(color: Colors.grey)),
+            Text('Tính năng đang phát triển', style: TextStyle(color: AppColors.textTertiary(brightness))),
           ],
         ),
       ),

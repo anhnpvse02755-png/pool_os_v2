@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../data/models/match.dart';
 import '../../../core/providers/repository_providers.dart';
@@ -156,6 +157,8 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final logState = ref.watch(matchLogProvider);
 
     // Navigate on success
@@ -186,7 +189,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
               decoration: InputDecoration(
                 labelText: 'Đối thủ *',
                 hintText: 'Tên đối thủ',
-                prefixIcon: Icon(Icons.person, color: AppColors.accent),
+                prefixIcon: Icon(Icons.person, color: AppColors.primary(brightness)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
@@ -204,22 +207,16 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
             Container(
               padding: EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.lightSurface,
+                color: AppColors.surface(brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ],
+                boxShadow: AppShadows.soft(brightness),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Kết quả *',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.lightTextSecondary),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textSecondary(brightness)),
                   ),
                   SizedBox(height: AppSpacing.sm),
                   Row(
@@ -258,7 +255,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
                     controller: _playerScoreController,
                     decoration: InputDecoration(
                       labelText: 'Điểm của bạn',
-                      prefixIcon: Icon(Icons.sports_score, color: AppColors.accent),
+                      prefixIcon: Icon(Icons.sports_score, color: AppColors.primary(brightness)),
                     ),
                     keyboardType: TextInputType.number,
                   ),
@@ -269,7 +266,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
                     controller: _opponentScoreController,
                     decoration: InputDecoration(
                       labelText: 'Điểm đối thủ',
-                      prefixIcon: Icon(Icons.sports_score, color: AppColors.accent),
+                      prefixIcon: Icon(Icons.sports_score, color: AppColors.primary(brightness)),
                     ),
                     keyboardType: TextInputType.number,
                   ),
@@ -284,7 +281,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
               decoration: InputDecoration(
                 labelText: 'Thời gian (phút)',
                 hintText: 'VD: 45',
-                prefixIcon: Icon(Icons.timer, color: AppColors.accent),
+                prefixIcon: Icon(Icons.timer, color: AppColors.primary(brightness)),
               ),
               keyboardType: TextInputType.number,
             ),
@@ -296,7 +293,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
               decoration: InputDecoration(
                 labelText: 'Địa điểm',
                 hintText: 'VD: CLB Billiards A',
-                prefixIcon: Icon(Icons.location_on, color: AppColors.accent),
+                prefixIcon: Icon(Icons.location_on, color: AppColors.primary(brightness)),
               ),
             ),
             SizedBox(height: AppSpacing.xl),
@@ -307,7 +304,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
             SizedBox(height: AppSpacing.sm),
@@ -330,10 +327,10 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
                     duration: Duration(milliseconds: 200),
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: selected ? AppColors.accent.withValues(alpha: 0.12) : AppColors.lightSurfaceElevated,
+                      color: selected ? AppColors.primary(brightness).withValues(alpha: 0.12) : AppColors.surfaceElevated(brightness),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       border: Border.all(
-                        color: selected ? AppColors.accent : AppColors.lightBorder,
+                        color: selected ? AppColors.primary(brightness) : AppColors.border(brightness),
                       ),
                     ),
                     child: Text(
@@ -341,7 +338,7 @@ class _MatchLogScreenState extends ConsumerState<MatchLogScreen> {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                        color: selected ? AppColors.accent : AppColors.lightTextPrimary,
+                        color: selected ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                       ),
                     ),
                   ),
@@ -416,6 +413,8 @@ class _ResultButtonState extends State<_ResultButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: (_) => setState(() => _scale = 0.96),
       onTapUp: (_) => setState(() => _scale = 1.0),
@@ -428,22 +427,22 @@ class _ResultButtonState extends State<_ResultButton> {
           duration: Duration(milliseconds: 200),
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.selected ? widget.color.withValues(alpha: 0.12) : AppColors.lightSurfaceElevated,
+            color: widget.selected ? widget.color.withValues(alpha: 0.12) : AppColors.surfaceElevated(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: widget.selected ? widget.color : AppColors.lightBorder,
+              color: widget.selected ? widget.color : AppColors.border(brightness),
               width: widget.selected ? 2 : 1,
             ),
           ),
           child: Column(
             children: [
-              Icon(widget.icon, color: widget.selected ? widget.color : AppColors.lightTextSecondary, size: 32),
+              Icon(widget.icon, color: widget.selected ? widget.color : AppColors.textSecondary(brightness), size: 32),
               SizedBox(height: 4),
               Text(
                 widget.label,
                 style: TextStyle(
                   fontWeight: widget.selected ? FontWeight.w600 : FontWeight.normal,
-                  color: widget.selected ? widget.color : AppColors.lightTextSecondary,
+                  color: widget.selected ? widget.color : AppColors.textSecondary(brightness),
                 ),
               ),
             ],
@@ -469,6 +468,8 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
       onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
@@ -480,10 +481,10 @@ class _SaveButtonState extends State<_SaveButton> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
-                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
                 : null,
           ),
           child: Center(
@@ -493,7 +494,7 @@ class _SaveButtonState extends State<_SaveButton> {
                     height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColors.onPrimary(brightness),
                     ),
                   )
                 : Text(
@@ -501,7 +502,7 @@ class _SaveButtonState extends State<_SaveButton> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: AppColors.onPrimary(brightness),
                     ),
                   ),
           ),
