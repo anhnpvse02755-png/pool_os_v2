@@ -12,6 +12,8 @@
 - [phase-conventions](.claude/memory/phase-conventions.md) — Phase A/B/C/D conventions, Phase 3 Constitution
 - [coach-design](.claude/memory/coach-design.md) — Coach UX Blueprint v2.1 & Voice Guidelines
 
+- [knowledge-drill-data](.claude/memory/knowledge-drill-data.md) — Thư viện kiến thức 36 bài & bài tập 24 bài: nguồn thật, cách sinh lại, thang cấp độ 50 cú
+
 ## Known Issues
 
 - [backend-directus](.claude/memory/backend-directus.md) — Backend Directus trên EasyPanel: URL đang sống, 6 bẫy đã vấp, và nợ kỹ thuật row-level security
