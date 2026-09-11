@@ -14,13 +14,12 @@ Nguyen tac:
     criteriaVi giu nguyen van. KHONG bia so.
 """
 import io
-import json
 import re
 
 BS = chr(92)
 NL = chr(10)
 
-SRC_BT = 'bt_parsed.json'
+SRC_MD = 'new knowledge/Danh-Sach-Bai-Tap-Billiard.md'
 OUT = 'lib/core/utils/drills_library.dart'
 
 # ma -> (tenEN, danh muc, do kho, hang tran, thang cap [(attempts, pass, ghichu)])
@@ -117,6 +116,68 @@ DIFF = {'beginner': 'easy', 'intermediate': 'medium',
         'advanced': 'hard', 'expert': 'expert'}
 
 
+def parse_source():
+    """Doc thang file .md nguon — khong qua file trung gian nao."""
+    d = io.open(SRC_MD, encoding='utf-8').read()
+    out = []
+    for m in re.finditer(r'^### (BT\d+) — (.+?)$(.*?)(?=^### |^## |\Z)',
+                         d, flags=re.M | re.S):
+        code, name, body = m.group(1), m.group(2).strip(), m.group(3)
+
+        def field(label):
+            mm = re.search(r'\*\*' + label + r':\*\*\s*(.*?)(?=\n\*\*|\n---|\Z)',
+                           body, flags=re.S)
+            return mm.group(1).strip() if mm else ''
+
+        def bullets(label):
+            """Cac dong danh so HOAC gach dau dong duoi mot nhan."""
+            items = []
+            for line in field(label).split(NL):
+                t = line.strip()
+                if re.match(r'^(\d+\.|[-*])\s+', t):
+                    items.append(re.sub(r'^(\d+\.|[-*])\s+', '', t))
+            return items
+
+        out.append(dict(
+            code=code,
+            name=name,
+            links=field('Liên kết kiến thức'),
+            goal=field('Mục tiêu'),
+            steps=bullets('Cách thực hiện'),
+            criteria=field('Tiêu chí đạt'),
+            # Nguon CHUA co muc nay. Parser da san sang: chi can them vao .md
+            #     **Lỗi thường gặp:**
+            #     - ...
+            #     - ...
+            # roi chay lai script, khong phai sua gi o day.
+            mistakes=bullets('Lỗi thường gặp'),
+        ))
+    if not out:
+        raise SystemExit('khong doc duoc bai nao tu %s' % SRC_MD)
+    return out
+
+
+def resolve_knowledge_ids(entries):
+    """Giai cot "Muc N" -> id kn_* qua bang dictionaryTopics cua test coverage."""
+    t = io.open('test/knowledge_dictionary_coverage_test.dart',
+                encoding='utf-8').read()
+    m = re.search(r'const dictionaryTopics\s*=\s*<String, String>\{(.*?)\n\};',
+                  t, flags=re.S)
+    sec2kn = dict(re.findall(r"'§([\d.]+)[^']*':\s*'([^']+)'", m.group(1)))
+    for b in entries:
+        ids, missing = [], []
+        for n in re.findall(r'Mục\s*([\d.]+)', b['links']):
+            n = n.rstrip('.')
+            if n in sec2kn:
+                ids.append(sec2kn[n])
+            else:
+                missing.append(n)
+        if missing:
+            raise SystemExit('%s: khong giai duoc Muc %s' % (b['code'], missing))
+        b['knowledgeIds'] = ids
+    return entries
+
+
 def esc(s):
     s = s.replace(BS, BS + BS)
     s = s.replace("'", BS + "'")
@@ -125,7 +186,7 @@ def esc(s):
 
 
 def main():
-    bt = {b['code']: b for b in json.load(io.open(SRC_BT, encoding='utf-8'))}
+    bt = {b['code']: b for b in resolve_knowledge_ids(parse_source())}
     missing = [c for c in D if c not in bt]
     if missing:
         raise SystemExit('thieu trong nguon: %s' % missing)
@@ -225,25 +286,12 @@ def main():
     o.append('}')
     o.append('')
 
-    # giu nguyen ba lop mo hinh o cuoi file goc
-    old = io.open(OUT, encoding='utf-8').read()
-    tail = old[old.index('class DrillCategory {'):]
-    tail = tail.replace('  final List<String> knowledgeIds;',
-                        '  final List<String> knowledgeIds;' + NL + NL +
-                        '  /// Nguyen van dong *Tieu chi dat* cua nguon.' + NL +
-                        '  final String criteriaVi;' + NL + NL +
-                        '  /// Loi thuong gap. RONG cho toi khi nguon bo sung muc nay —' + NL +
-                        '  '
-                        '/// UI phai an han muc thay vi hien danh sach chung bia ra.' + NL +
-                        '  final List<String> commonMistakes;', 1)
-    tail = tail.replace('    required this.knowledgeIds,',
-                        '    required this.knowledgeIds,' + NL +
-                        '    required this.criteriaVi,' + NL +
-                        '    this.commonMistakes = const [],', 1)
-    tail = tail.replace("""  String get criteriaText {""",
-                        """  /// Nguong dang so; rong neu nguon khong neu nguong.
-  String get criteriaText {
-    if (passCount == 0) return '';""", 1)
+    # Ba lop mo hinh doc tu TEMPLATE rieng, khong doc nguoc file output.
+    #
+    # Ban truoc lay phan duoi cua chinh `OUT` roi va them truong vao — chay lan
+    # hai se NHAN DOI `criteriaVi`/`commonMistakes`. Script sinh ma phai
+    # idempotent: chay bao nhieu lan cung ra dung mot ket qua.
+    tail = io.open('tools/drill_models.dart.tmpl', encoding='utf-8').read()
 
     io.open(OUT, 'w', encoding='utf-8', newline=NL).write(NL.join(o) + tail)
     print('sinh %d bai / %d danh muc -> %s' % (len(D), len({v[1] for v in D.values()}), OUT))

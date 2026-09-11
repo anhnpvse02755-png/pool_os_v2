@@ -1,0 +1,104 @@
+class DrillCategory {
+  final String id;
+  final String name;
+  final String nameVi;
+  final String icon;
+  final List<Drill> drills;
+
+  const DrillCategory({
+    required this.id,
+    required this.name,
+    required this.nameVi,
+    required this.icon,
+    required this.drills,
+  });
+}
+
+class Drill {
+  final String code;
+  final String name;
+  final String nameVi;
+  final String category;
+  final String difficulty;
+  final String description;
+  final String setup;
+  final List<String> steps;
+  final String goal;
+  final List<DrillLevel> levels;
+  final List<String> knowledgeIds;
+
+  /// Nguyen van dong *Tieu chi dat* cua nguon.
+  final String criteriaVi;
+
+  /// Loi thuong gap. RONG cho toi khi nguon bo sung muc nay —
+  /// UI phai an han muc thay vi hien danh sach chung bia ra.
+  final List<String> commonMistakes;
+
+  const Drill({
+    required this.code,
+    required this.name,
+    required this.nameVi,
+    required this.category,
+    required this.difficulty,
+    required this.description,
+    required this.setup,
+    required this.steps,
+    required this.goal,
+    required this.levels,
+    required this.knowledgeIds,
+    required this.criteriaVi,
+    this.commonMistakes = const [],
+  });
+
+  int get currentLevel {
+    // Placeholder - sẽ lấy từ user progress
+    return 1;
+  }
+
+  bool isLevelUnlocked(int level) {
+    if (level == 1) return true;
+    // Level unlocked if previous level passed
+    // Placeholder logic
+    return true;
+  }
+
+  DrillLevel? getLevel(int level) {
+    return levels.firstWhere(
+      (l) => l.level == level,
+      orElse: () => levels.first,
+    );
+  }
+}
+
+class DrillLevel {
+  final int level;
+  final int attempts;
+  final int passCount;
+  // Optional difficulty parameters
+  final String? distance;
+  final String? angle;
+  final String? accuracy;
+  final String? zone;
+  final int? balls;
+
+  const DrillLevel({
+    required this.level,
+    required this.attempts,
+    required this.passCount,
+    this.distance,
+    this.angle,
+    this.accuracy,
+    this.zone,
+    this.balls,
+  });
+
+  /// Nguong dang so; rong neu nguon khong neu nguong.
+  String get criteriaText {
+    if (passCount == 0) return '';
+    if (distance != null) return '$attempts attempts → $passCount success ($distance)';
+    if (angle != null) return '$attempts attempts → $passCount success ($angle)';
+    if (accuracy != null) return '$attempts attempts → $passCount success ($accuracy)';
+    if (zone != null) return '$attempts attempts → $passCount success (zone: $zone)';
+    return '$attempts attempts → $passCount success';
+  }
+}
