@@ -34,9 +34,13 @@ profile → play).
 `flutter analyze` 0 error · `flutter test` 767/767 · `expectTokenHygiene` phủ
 đủ 68 màn.
 
-**Việc kế tiếp là bật `ThemeMode.system` ở `main.dart:137`** — cổng đó nay đã
-mở. Nhưng phải là task RIÊNG có bước nhìn bằng mắt: mọi tỉ lệ tương phản chế độ
-tối ghi trong bốn plan đến giờ đều là **tính toán, chưa ai chạy thật lần nào**.
+**`ThemeMode.system` ĐÃ BẬT** (11/9/2026) và đã kiểm bằng mắt — không chỉ bằng
+tính toán. Dựng web thật, chụp 6 màn qua Playwright với `colorScheme: 'dark'`,
+đo độ sáng ảnh: cả 6 ra nền tối và có nội dung.
+
+Spec ở `tests/90-dark-mode-visual.spec.ts` + bộ giải mã PNG tối giản ở
+`tests/helpers/png-luminance.ts` (Flutter Web vẽ bằng WebGL nên `getImageData`
+trả null — phải đo trên ảnh chụp của Playwright).
 
 **Bài học đắt nhất (lô 3a):** thêm một token màu thì phải kiểm **CẢ HAI
 chiều** — nó làm chữ trên nền gì, và nó làm nền cho chữ gì. `difficultyExpert`
@@ -51,6 +55,20 @@ bắt.
 
 **Luật hygiene không đo tương phản** — nó đọc mã nguồn. Nó cũng quét cả
 COMMENT, nên đừng viết tên token bị cấm hay emoji vào chú thích.
+
+## Chip không được nằm trong vùng cuộn ngang
+
+Tìm ra khi nhìn ảnh thật: mọi chip lọc **cụt ký tự cuối** ("Kiểm Soát Vị Trí" →
+"Kiểm Soát Vị Tr"). Có ở **cả hai chế độ**, không phải lỗi của chế độ tối.
+
+Nguyên nhân: trong `ListView`/`SingleChildScrollView` cuộn ngang, con được cấp
+**bề rộng vô hạn**; Material Chip đo bề rộng nhãn trong hoàn cảnh đó bị hụt rồi
+cắt phần thừa. Đặt trong **`Wrap`** thì hết.
+
+Ba giả thuyết đã loại trừ bằng thực nghiệm (đừng thử lại): `height: 50` bó chip,
+`google_fonts` tải chậm, thiếu `labelPadding`.
+
+Luật chặn tái phát: `test/screens/chip_layout_test.dart`.
 
 **Why:** Đây là đợt thay đổi lớn nhất kể từ Sprint-19 và nó **đảo ngược** các
 quy ước token của Sprint-19 — xem [[design-system-tokens]].
