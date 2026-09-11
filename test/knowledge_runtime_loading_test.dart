@@ -28,14 +28,14 @@ void main() {
   }
 
   test(
-      'KnowledgeNotifier loads 138 articles from bundled asset '
+      'KnowledgeNotifier loads all articles from bundled asset '
       '(not from 10-article const fallback)', () async {
-    // First, confirm the asset itself contains 138 entries (proves asset
-    // bundling works).
+    // Asset và notifier phải khớp nhau — nếu lệch thì notifier đã rơi về
+    // fallback. Con số 36 là toàn bộ thư viện sau khi gỡ 102 khuôn rỗng
+    // (xem knowledge_article_count_test.dart); trước đó nó là 138.
     final raw = await rootBundle.loadString('assets/knowledge/knowledge.json');
     final rawCount = (json.decode(raw) as List).length;
-    expect(rawCount, 138,
-        reason: 'Bundled asset must contain 138 articles.');
+    expect(rawCount, 36, reason: 'Bundled asset must contain 36 articles.');
 
     // Now exercise the notifier — the production loading path.
     final container = ProviderContainer();
@@ -43,21 +43,23 @@ void main() {
 
     final state = await awaitLoad(container);
 
-    expect(state.allKnowledge.length, 138,
-        reason: 'Notifier must resolve 138 articles from asset. '
+    expect(state.allKnowledge.length, rawCount,
+        reason: 'Notifier must resolve every article from asset. '
             'Got ${state.allKnowledge.length} — fallback was used.');
+    expect(state.allKnowledge.length, greaterThan(10),
+        reason: 'Phải nhiều hơn fallback hằng 10 mục.');
     expect(state.fromAssets, true,
         reason: 'fromAssets flag must be true after asset load.');
     expect(state.isLoading, false);
     expect(state.error, isNull);
 
-    // Sanity check: a specific migrated article must be present.
-    final openBridge = state.allKnowledge
-        .where((a) => a.id == 'bridge.open_bridge')
-        .toList();
-    expect(openBridge.length, 1);
-    expect(openBridge.first.titleVi, isNotNull);
-    expect(openBridge.first.content.length, greaterThan(100));
+    // Sanity check: một bài THẬT phải có mặt. Trước đây mốc là
+    // `bridge.open_bridge` — một trong 102 khuôn rỗng, nay đã gỡ.
+    final bridge =
+        state.allKnowledge.where((a) => a.id == 'kn_bridge').toList();
+    expect(bridge.length, 1);
+    expect(bridge.first.titleVi, isNotNull);
+    expect(bridge.first.content.length, greaterThan(400));
   });
 
   test('knowledgeSearchProvider returns matching articles from asset',
@@ -70,7 +72,8 @@ void main() {
     expect(results, isNotEmpty,
         reason: 'Search for "open bridge" must return at least one article '
             'loaded from the bundled asset.');
-    expect(results.any((a) => a.id == 'bridge.open_bridge'), true);
+    // `kn_bridge` khai keyword 'open bridge' nên vẫn khớp truy vấn này.
+    expect(results.any((a) => a.id == 'kn_bridge'), true);
   });
 
   test('getBySlug returns live article loaded from asset', () async {
@@ -85,7 +88,7 @@ void main() {
     expect(stopShot!.titleVi, 'Stun shot — Đánh dừng');
   });
 
-  test('all 138 articles have valid DifficultyLevel', () async {
+  test('mọi bài đều có DifficultyLevel hợp lệ', () async {
     final container = ProviderContainer();
     addTearDown(container.dispose);
     await awaitLoad(container);
