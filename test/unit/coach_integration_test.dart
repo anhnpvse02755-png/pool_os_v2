@@ -28,7 +28,7 @@ void main() {
     test('TrainingSession has level field', () {
       final session = TrainingSession(
         id: 'test-1',
-        drillCode: 'STRAIGHT_SHOT',
+        drillCode: 'BT01',
         drillName: 'Straight Shot',
         level: 2,
         score: 85,
@@ -39,13 +39,13 @@ void main() {
       );
 
       expect(session.level, equals(2));
-      expect(session.drillCode, equals('STRAIGHT_SHOT'));
+      expect(session.drillCode, equals('BT01'));
     });
 
     test('TrainingSession serializes and deserializes correctly', () {
       final original = TrainingSession(
         id: 'test-1',
-        drillCode: 'DRAW_SHOT',
+        drillCode: 'BT07',
         drillName: 'Draw Shot',
         level: 3,
         score: 75,
@@ -620,7 +620,7 @@ void main() {
       // Add training session with weakness and known drill
       pi = pi.updateWithSession(
         TrainingSessionData(
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'BT01',
           score: 40, // Low score = weakness
           durationMinutes: 10,
           completedAt: DateTime.now(),
@@ -663,13 +663,13 @@ void main() {
     );
 
     test('Case 1: Strong training with skills → skill level increases', () {
-      // Build PI with strong performance in STRAIGHT_POT drill (trains aiming, stroke)
+      // Build PI with strong performance in BT01 drill (trains aiming, stroke)
       var pi = PlayerIntelligence.empty('test');
 
       // Add 3 sessions with high score (85%)
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
-          _session('STRAIGHT_POT', 85),
+          _session('BT01', 85),
           drillSkills: ['aiming', 'stroke'],
         );
       }
@@ -696,7 +696,7 @@ void main() {
       // Add 3 sessions with low score (40%)
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
-          _session('STRAIGHT_POT', 40),
+          _session('BT01', 40),
           drillSkills: ['aiming', 'stroke'],
         );
       }
@@ -718,7 +718,7 @@ void main() {
       for (var i = 0; i < 5; i++) {
         final oldDate = DateTime.now().subtract(Duration(days: i + 10));
         final oldSession = TrainingSessionData(
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'BT01',
           score: 55,
           durationMinutes: 10,
           completedAt: oldDate,
@@ -731,7 +731,7 @@ void main() {
       for (var i = 0; i < 5; i++) {
         final recentDate = DateTime.now().subtract(Duration(days: i));
         final recentSession = TrainingSessionData(
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'BT01',
           score: 75,
           durationMinutes: 10,
           completedAt: recentDate,
@@ -765,7 +765,7 @@ void main() {
       // Add training sessions with skills
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
-          _session('STRAIGHT_POT', 50),
+          _session('BT01', 50),
           drillSkills: ['aiming'],
         );
       }
@@ -935,10 +935,10 @@ void main() {
     test('P0-1: Coach knows last drill result for specific drill', () {
       var pi = PlayerIntelligence.empty('test');
 
-      // Add a session for STRAIGHT_POT
+      // Add a session for BT01
       final sessionDate = DateTime.now().subtract(const Duration(days: 3));
       pi = pi.updateWithSession(TrainingSessionData(
-        drillCode: 'STRAIGHT_POT',
+        drillCode: 'BT01',
         score: 55,
         durationMinutes: 10,
         completedAt: sessionDate,
@@ -946,10 +946,10 @@ void main() {
       ));
 
       // ShortTermMemory should have this session
-      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('BT01');
       expect(lastSession, isNotNull);
       expect(lastSession!.data['score'], equals(55));
-      expect(lastSession.data['drillCode'], equals('STRAIGHT_POT'));
+      expect(lastSession.data['drillCode'], equals('BT01'));
     });
 
     test('P0-2: Specific evidence - Coach cites drill, date, score', () {
@@ -959,7 +959,7 @@ void main() {
       final sessionDate = DateTime.now().subtract(const Duration(days: 3));
       pi = pi.updateWithSession(
         TrainingSessionData(
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'BT01',
           score: 55,
           durationMinutes: 10,
           completedAt: sessionDate,
@@ -976,7 +976,7 @@ void main() {
       final plan = engine.getCoachingPlan();
 
       // ShortTermMemory should have evidence
-      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('BT01');
       expect(lastSession, isNotNull);
       expect(lastSession!.data['score'], equals(55));
     });
@@ -1009,8 +1009,8 @@ void main() {
     test('Anti-hallucination: No drill history = no evidence claim', () {
       var pi = PlayerIntelligence.empty('test');
 
-      // No sessions for STRAIGHT_POT
-      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      // No sessions for BT01
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('BT01');
       expect(lastSession, isNull,
           reason: 'Should not fabricate evidence when no history exists');
     });
@@ -1030,7 +1030,7 @@ void main() {
       // Add drill session with low score
       pi = pi.updateWithSession(
         TrainingSessionData(
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'BT01',
           score: 45,
           durationMinutes: 10,
           completedAt: DateTime.now().subtract(const Duration(days: 2)),
@@ -1069,7 +1069,7 @@ void main() {
       ));
 
       // Both drill and match data should be available
-      final lastDrill = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      final lastDrill = pi.shortTermMemory.getLastSessionForDrill('BT01');
       final recentMatches = pi.shortTermMemory.getRecentMatches(limit: 3);
 
       expect(lastDrill, isNotNull);
@@ -1092,29 +1092,29 @@ void main() {
       var pi = PlayerIntelligence.empty('test');
 
       // Add some recommendations (returns RecommendationHistory, needs copyWith)
-      var recs = pi.recommendations.addRecommendation('STRAIGHT_POT', 'Need basics');
+      var recs = pi.recommendations.addRecommendation('BT01', 'Need basics');
       pi = pi.copyWith(recommendations: recs);
-      recs = pi.recommendations.addRecommendation('FOLLOW_SHOT', 'Build on basics');
+      recs = pi.recommendations.addRecommendation('BT07', 'Build on basics');
       pi = pi.copyWith(recommendations: recs);
 
       expect(pi.recommendations.entries.length, equals(2));
-      expect(pi.recommendations.getRecommendationCount('STRAIGHT_POT'), equals(1));
-      expect(pi.recommendations.getRecommendationCount('FOLLOW_SHOT'), equals(1));
+      expect(pi.recommendations.getRecommendationCount('BT01'), equals(1));
+      expect(pi.recommendations.getRecommendationCount('BT07'), equals(1));
     });
 
     test('P0-1: Diversity - prefers drills not recently recommended', () {
       var pi = PlayerIntelligence.empty('test');
 
-      // Add 3 recommendations for STRAIGHT_POT
+      // Add 3 recommendations for BT01
       for (var i = 0; i < 3; i++) {
-        final recs = pi.recommendations.addRecommendation('STRAIGHT_POT', 'Practice basics');
+        final recs = pi.recommendations.addRecommendation('BT01', 'Practice basics');
         pi = pi.copyWith(recommendations: recs);
       }
 
       // Get recent drill codes
       final recentDrills = pi.recommendations.getRecentDrillCodes();
       expect(recentDrills.isNotEmpty, isTrue);
-      expect(recentDrills.first, equals('STRAIGHT_POT'));
+      expect(recentDrills.first, equals('BT01'));
     });
 
     test('P0-1: Intelligence overrides diversity for losing streak', () {
@@ -1135,14 +1135,14 @@ void main() {
 
       // Add many recommendations for the same drill
       for (var i = 0; i < 5; i++) {
-        final recs = pi.recommendations.addRecommendation('STRAIGHT_POT', 'Recovery');
+        final recs = pi.recommendations.addRecommendation('BT01', 'Recovery');
         pi = pi.copyWith(recommendations: recs);
       }
 
-      // PriorityEngine should still recommend STRAIGHT_POT because:
+      // PriorityEngine should still recommend BT01 because:
       // - Losing streak >= 3 allows maxRecCount = 5
       // - Recommendation count = 5, which equals max
-      final count = pi.recommendations.getRecommendationCount('STRAIGHT_POT');
+      final count = pi.recommendations.getRecommendationCount('BT01');
       expect(count, equals(5));
 
       // The intelligence (losing streak) should allow this drill
@@ -1157,7 +1157,7 @@ void main() {
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
           TrainingSessionData(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             score: 30, // Very low = clear weakness
             durationMinutes: 10,
             completedAt: DateTime.now(),
@@ -1215,7 +1215,7 @@ void main() {
       var pi = PlayerIntelligence.empty('test');
 
       // No drill history
-      final lastSession = pi.shortTermMemory.getLastSessionForDrill('STRAIGHT_POT');
+      final lastSession = pi.shortTermMemory.getLastSessionForDrill('BT01');
       expect(lastSession, isNull,
           reason: 'Should not fabricate drill evidence');
 

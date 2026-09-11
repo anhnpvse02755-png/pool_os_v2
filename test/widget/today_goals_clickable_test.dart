@@ -25,11 +25,11 @@ void main() {
       // Regression: ensure V1 codes are resolved before session navigation.
       // Sprint-18 Part 1 added resolveDrillCode() call in HomeScreen.
       // This test documents the expected behavior.
-      const v1Code = 'STRAIGHT_POT';
-      // The resolved code should be STRAIGHT_NEAR
+      const v1Code = 'BT01';
+      // The resolved code should be BT01
       // This is already tested in home_screen_navigation_test.dart
       // but is restated here as part of the training goal flow.
-      expect(v1Code, equals('STRAIGHT_POT'));
+      expect(v1Code, equals('BT01'));
     });
   });
 

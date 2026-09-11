@@ -6,7 +6,6 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
-import '../../../data/content/drill_content_vi.dart';
 import '../../widgets/soft_background.dart';
 
 class DrillDetailScreen extends StatefulWidget {
@@ -584,9 +583,14 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     );
   }
 
+  /// Loi thuong gap — chi hien khi nguon CO du lieu.
+  ///
+  /// Truoc day cho nay rot ve `_genericMistakes` ("Danh qua manh hoac qua nhe",
+  /// "Tu the khong vung"...) — danh sach chung chung dung cho moi bai, tuc la
+  /// khong noi len dieu gi. Nguon moi chua co muc nay nen de TRONG.
   Widget _buildCommonMistakes(String drillCode) {
-    final content = drillContentVi[drillCode];
-    final mistakes = content?.commonMistakes ?? _genericMistakes;
+    final mistakes = DrillLibrary.getDrill(drillCode)?.commonMistakes ?? const [];
+    if (mistakes.isEmpty) return const SizedBox.shrink();
     final brightness = Theme.of(context).brightness;
 
     return Column(
@@ -610,62 +614,34 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     );
   }
 
-  static const _genericMistakes = [
-    'Đánh quá mạnh hoặc quá nhẹ',
-    'Tư thế không vững',
-    'Không follow through đầy đủ',
-  ];
-
+  /// Tieu chi dat, NGUYEN VAN tu nguon. Truoc day cho nay doc `drillContentVi`
+  /// — bang noi dung khoa theo ma bai tap CU, da go cung 102 muc kien thuc rong.
   Widget _buildContentSections(String drillCode) {
-    final content = drillContentVi[drillCode];
-    if (content == null) {
-      return _buildComingSoonCard();
-    }
+    final drill = DrillLibrary.getDrill(drillCode);
+    final text = drill?.criteriaVi ?? '';
+    if (text.isEmpty) return _buildComingSoonCard();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (content.equipment.isNotEmpty) ...[
-          _buildSectionTitle(context, 'Dụng cụ cần thiết'),
-          const SizedBox(height: AppSpacing.sm),
-          _buildBulletList(content.equipment, Icons.sports_baseball),
-          const SizedBox(height: AppSpacing.lg),
+    final brightness = Theme.of(context).brightness;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.successSubtle(brightness),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.flag_outlined,
+              color: AppColors.successOnTint(brightness), size: 20),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(text,
+                style: TextStyle(
+                    color: AppColors.textPrimary(brightness), height: 1.45)),
+          ),
         ],
-
-        _buildSectionTitle(context, 'Tư thế đứng'),
-        const SizedBox(height: AppSpacing.sm),
-        _buildTextCard(content.stance),
-        const SizedBox(height: AppSpacing.lg),
-
-        _buildSectionTitle(context, 'Cầu tay'),
-        const SizedBox(height: AppSpacing.sm),
-        _buildTextCard(content.bridge),
-        const SizedBox(height: AppSpacing.lg),
-
-        _buildSectionTitle(context, 'Kỹ thuật ra cơ'),
-        const SizedBox(height: AppSpacing.sm),
-        _buildTextCard(content.stroke),
-        const SizedBox(height: AppSpacing.lg),
-
-        _buildSectionTitle(context, 'Hệ thống ngắm'),
-        const SizedBox(height: AppSpacing.sm),
-        _buildTextCard(content.aiming),
-        const SizedBox(height: AppSpacing.lg),
-
-        if (content.keyPoints.isNotEmpty) ...[
-          _buildSectionTitle(context, 'Điểm cần nhớ'),
-          const SizedBox(height: AppSpacing.sm),
-          _buildBulletList(content.keyPoints, Icons.check_circle_outline),
-          const SizedBox(height: AppSpacing.lg),
-        ],
-
-        if (content.proTips.isNotEmpty) ...[
-          _buildSectionTitle(context, 'Mẹo từ pro'),
-          const SizedBox(height: AppSpacing.sm),
-          _buildBulletList(content.proTips, Icons.star, color: AppColors.gold),
-          const SizedBox(height: AppSpacing.lg),
-        ],
-      ],
+      ),
     );
   }
 

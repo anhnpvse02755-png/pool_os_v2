@@ -511,10 +511,32 @@ class DrillCategoriesScreen extends StatelessWidget {
   ///
   /// 11 nhóm trên 5 tông thì có lặp; spec đã lường điều đó. Cái không chấp
   /// nhận được là màu ĐỔI khi danh sách đổi.
+  /// Tông pastel của từng danh mục bài tập.
+  ///
+  /// Phải liệt kê ĐỦ mọi danh mục có thật — rơi vào `default` nghĩa là hai
+  /// danh mục dùng chung một tông và người dùng không học được màu nữa.
+  /// Bảng pastel có 5 tông nên các danh mục buộc phải chia nhau; cặp nào dùng
+  /// chung thì chọn cặp xa nhau nhất trong danh sách hiển thị.
   int _toneFor(String categoryId) {
     switch (categoryId) {
-      case 'aiming':
+      // 8 danh mục của thư viện sinh từ `Danh-Sach-Bai-Tap-Billiard.md`
+      case 'fundamentals':
         return 0;
+      case 'aiming':
+        return 1;
+      case 'shotmaking':
+        return 2;
+      case 'positioning':
+        return 3;
+      case 'strategy':
+        return 4;
+      case 'psychology':
+        return 0;
+      case 'rules':
+        return 2;
+      case 'equipment':
+        return 4;
+      // Danh mục của thư viện cũ — giữ để dữ liệu cũ không đổi màu đột ngột.
       case 'cueball':
         return 1;
       case 'position':
@@ -529,8 +551,6 @@ class DrillCategoriesScreen extends StatelessWidget {
         return 1;
       case 'pattern':
         return 3;
-      case 'fundamentals':
-        return 0;
       case 'mental':
         return 4;
       case 'situations':

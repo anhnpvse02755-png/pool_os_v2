@@ -84,7 +84,7 @@ void main() {
       final coachState = TestCoachState(
         sessions: [
           TestDrillSession(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             drillName: 'Đánh thẳng',
             targetReps: 10,
             completedReps: 8,
@@ -95,7 +95,7 @@ void main() {
         ],
         recommendations: [
           TestRecommendation(
-            drillCode: 'STOP_BALL',
+            drillCode: 'BT07',
             drillName: 'Dừng bi',
             reason: 'Cần cải thiện cú dừng',
             createdAt: DateTime.now(),
@@ -122,7 +122,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: DrillSessionWidget(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             onStart: (session) => activeSession = session,
           ),
         ),
@@ -132,13 +132,13 @@ void main() {
       await tester.pump();
 
       expect(activeSession, isNotNull);
-      expect(activeSession!.drillCode, equals('STRAIGHT_POT'));
+      expect(activeSession!.drillCode, equals('BT01'));
       expect(activeSession!.completedReps, equals(0));
     });
 
     testWidgets('Complete drill updates Coach', (tester) async {
       final session = TestDrillSession(
-        drillCode: 'STRAIGHT_POT',
+        drillCode: 'BT01',
         drillName: 'Đánh thẳng',
         targetReps: 10,
         completedReps: 10,
@@ -161,7 +161,7 @@ void main() {
 
     testWidgets('Partial completion shows continue option', (tester) async {
       final session = TestDrillSession(
-        drillCode: 'STRAIGHT_POT',
+        drillCode: 'BT01',
         drillName: 'Đánh thẳng',
         targetReps: 10,
         completedReps: 5,
@@ -172,7 +172,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: DrillSessionWidget(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             existingSession: session,
           ),
         ),
@@ -187,7 +187,7 @@ void main() {
       final coachState = TestCoachState(
         recommendations: [
           TestRecommendation(
-            drillCode: 'STOP_BALL',
+            drillCode: 'BT07',
             drillName: 'Dừng bi',
             reason: 'Cần cải thiện cú dừng',
             createdAt: DateTime.now(),
@@ -209,7 +209,7 @@ void main() {
     testWidgets('Accept recommendation updates state', (tester) async {
       bool accepted = false;
       final recommendation = TestRecommendation(
-        drillCode: 'STOP_BALL',
+        drillCode: 'BT07',
         drillName: 'Dừng bi',
         reason: 'Cần cải thiện cú dừng',
         createdAt: DateTime.now(),
@@ -231,7 +231,7 @@ void main() {
     testWidgets('After accept, no new recommendation shown', (tester) async {
       final recommendations = [
         TestRecommendation(
-          drillCode: 'STOP_BALL',
+          drillCode: 'BT07',
           drillName: 'Dừng bi',
           reason: 'Cần cải thiện cú dừng',
           isAccepted: true,
@@ -258,7 +258,7 @@ void main() {
   group('Coach Integration: Interrupted Session', () {
     testWidgets('Interrupted session shows Continue', (tester) async {
       final session = TestDrillSession(
-        drillCode: 'STRAIGHT_POT',
+        drillCode: 'BT01',
         drillName: 'Đánh thẳng',
         targetReps: 10,
         completedReps: 5,
@@ -284,7 +284,7 @@ void main() {
 
     testWidgets('Continue session resumes progress', (tester) async {
       final session = TestDrillSession(
-        drillCode: 'STRAIGHT_POT',
+        drillCode: 'BT01',
         drillName: 'Đánh thẳng',
         targetReps: 10,
         completedReps: 5,
@@ -295,7 +295,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: DrillSessionWidget(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             existingSession: session,
           ),
         ),
@@ -309,7 +309,7 @@ void main() {
     testWidgets('Timeline shows session history', (tester) async {
       final sessions = [
         TestDrillSession(
-          drillCode: 'STRAIGHT_POT',
+          drillCode: 'BT01',
           drillName: 'Đánh thẳng',
           targetReps: 10,
           completedReps: 10,
@@ -332,7 +332,7 @@ void main() {
     testWidgets('Timeline shows recommendations', (tester) async {
       final recommendations = [
         TestRecommendation(
-          drillCode: 'STOP_BALL',
+          drillCode: 'BT07',
           drillName: 'Dừng bi',
           reason: 'Cần cải thiện',
           createdAt: DateTime.now().subtract(const Duration(hours: 2)),

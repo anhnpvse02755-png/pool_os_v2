@@ -90,12 +90,12 @@ void main() {
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10',
+            initialLocation: '/training/session/new?drill=BT01&level=1&target=10',
             routes: [
               GoRoute(
                 path: '/training/session/new',
                 builder: (context, state) => DrillSessionScreen(
-                  drillCode: state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR',
+                  drillCode: state.uri.queryParameters['drill'] ?? 'BT01',
                 ),
               ),
             ],

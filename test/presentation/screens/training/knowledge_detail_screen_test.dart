@@ -20,7 +20,7 @@ void main() {
     categoryId: 'cat_shotmaking',
     difficulty: DifficultyLevel.beginner,
     relatedKnowledgeIds: const ['kn_draw_shot'],
-    relatedDrillCodes: const ['STOP_LV1'],
+    relatedDrillCodes: const ['BT07'],
   );
 
   final relatedItem = KnowledgeItem(
@@ -47,7 +47,7 @@ void main() {
       ),
     ],
     tags: const [],
-    drillKnowledgeMap: const {'STOP_LV1': ['kn_stop_shot']},
+    drillKnowledgeMap: const {'BT07': ['kn_stop_shot']},
   );
 
   Widget buildScreen(String slug) {
@@ -106,8 +106,8 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Luyện tập'));
       await tester.pumpAndSettle();
-      // V1 STOP_LV1 should bridge to V2 STOP_BALL.
-      expect(find.text('Session: STOP_BALL'), findsOneWidget);
+      // V1 BT07 should bridge to V2 BT07.
+      expect(find.text('Session: BT07'), findsOneWidget);
     });
 
     testWidgets('unknown slug shows not-found view', (tester) async {

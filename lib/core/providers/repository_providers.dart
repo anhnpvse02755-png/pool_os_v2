@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/repositories/player_repository.dart' as player_repo;
 import '../../data/repositories/drill_repository.dart' as drill_repo;
-import '../../data/repositories/knowledge_repository.dart' as knowledge_repo;
 import '../../data/repositories/match_repository.dart' as match_repo;
 import '../../data/repositories/notification_repository.dart' as notification_repo;
 import '../../data/repositories/community_repository.dart' as community_repo;
@@ -30,7 +29,6 @@ import '../../data/models/match_aggregates.dart'; // Sprint-11: Typed MatchStats
 import '../../data/models/equipment.dart';
 import '../../data/impl/local_player_repository.dart';
 import '../../data/impl/local_drill_repository.dart';
-import '../../data/impl/local_knowledge_repository.dart';
 import '../../data/impl/local_notification_repository.dart';
 import '../../data/impl/local_community_repository.dart';
 import '../../data/impl/local_settings_repository.dart';
@@ -53,9 +51,6 @@ final drillSessionRepositoryProvider = Provider<IDrillSessionRepository>((ref) {
   return LocalDrillSessionRepository();
 });
 
-final knowledgeRepositoryProvider = Provider<knowledge_repo.KnowledgeRepository>((ref) {
-  return LocalKnowledgeRepository();
-});
 
 final matchRepositoryProvider = Provider<match_repo.IMatchRepository>((ref) {
   return match_repo.LocalMatchRepository();
@@ -106,49 +101,21 @@ final isOnboardingCompletedProvider = FutureProvider<bool>((ref) async {
 // Drill Providers (using repository)
 // ============================================================================
 
-final allDrillsProvider = FutureProvider<List<drill_repo.DrillInfo>>((ref) async {
-  final repository = ref.watch(drillRepositoryProvider);
-  return repository.getAllDrills();
-});
 
-final drillCategoriesProvider = FutureProvider<List<drill_repo.DrillCategory>>((ref) async {
-  final repository = ref.watch(drillRepositoryProvider);
-  return repository.getCategories();
-});
 
-final drillProgressProvider = FutureProvider<List<DrillProgress>>((ref) async {
-  final repository = ref.watch(drillRepositoryProvider);
-  return repository.getUserProgress();
-});
 
 final trainingHistoryProvider = FutureProvider<List<TrainingSession>>((ref) async {
   final repository = ref.watch(drillRepositoryProvider);
   return repository.getTrainingHistory(limit: 20);
 });
 
-final recommendedDrillsProvider = FutureProvider<List<drill_repo.DrillInfo>>((ref) async {
-  final repository = ref.watch(drillRepositoryProvider);
-  return repository.getRecommendedDrills();
-});
 
 // ============================================================================
 // Knowledge Providers (using repository)
 // ============================================================================
 
-final knowledgeArticlesProvider = FutureProvider<List<knowledge_repo.KnowledgeArticle>>((ref) async {
-  final repository = ref.watch(knowledgeRepositoryProvider);
-  return repository.getAllArticles();
-});
 
-final knowledgeCategoriesProvider = FutureProvider<List<knowledge_repo.KnowledgeCategory>>((ref) async {
-  final repository = ref.watch(knowledgeRepositoryProvider);
-  return repository.getCategories();
-});
 
-final knowledgeProgressProvider = FutureProvider<Map<String, knowledge_repo.ReadingProgress>>((ref) async {
-  final repository = ref.watch(knowledgeRepositoryProvider);
-  return repository.getReadingProgress();
-});
 
 // ============================================================================
 // Match Providers (using repository)

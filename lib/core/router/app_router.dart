@@ -254,7 +254,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/training/session/new',
             name: 'newDrillSession',
             builder: (context, state) {
-              final drillCode = state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR';
+              final drillCode = state.uri.queryParameters['drill'] ?? 'BT01';
               return DrillSessionScreen(drillCode: drillCode);
             },
           ),
@@ -263,7 +263,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: 'activeDrillSession',
             builder: (context, state) {
               // Default drill for daily training
-              return const DrillSessionScreen(drillCode: 'DRAW_SHOT');
+              return const DrillSessionScreen(drillCode: 'BT07');
             },
           ),
           GoRoute(

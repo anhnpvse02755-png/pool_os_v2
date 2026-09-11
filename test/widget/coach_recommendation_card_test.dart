@@ -82,7 +82,7 @@ void main() {
 
     test('fromBrain factory creates recommendation correctly', () {
       final rec = CoachRecommendation.fromBrain(
-        drillCode: 'STRAIGHT_NEAR',
+        drillCode: 'BT01',
         drillName: 'Đánh thẳng gần',
         reason: 'Cần cải thiện kỹ năng nền tảng',
         expectedOutcome: 'Cải thiện 20%',
@@ -91,7 +91,7 @@ void main() {
         priority: 1,
       );
 
-      expect(rec.drillCode, equals('STRAIGHT_NEAR'));
+      expect(rec.drillCode, equals('BT01'));
       expect(rec.drillName, equals('Đánh thẳng gần'));
       expect(rec.reason, equals('Cần cải thiện kỹ năng nền tảng'));
       expect(rec.outcomes.first, equals('Cải thiện 20%'));
@@ -108,7 +108,7 @@ void main() {
 
     setUp(() {
       testRecommendation = CoachRecommendation(
-        drillCode: 'STRAIGHT_NEAR',
+        drillCode: 'BT01',
         drillName: 'Đánh thẳng gần',
         reason: 'Đây là kỹ năng nền tảng quan trọng nhất',
         outcomes: ['Cải thiện accuracy', 'Tăng consistency'],

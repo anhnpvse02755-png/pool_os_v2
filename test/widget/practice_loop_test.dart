@@ -67,7 +67,7 @@ DrillSession _sampleSession() => DrillSession(
         DrillAttempt(
           id: 'a1',
           sessionId: 'test-session',
-          drillCode: 'STRAIGHT_NEAR',
+          drillCode: 'BT01',
           attemptNumber: 1,
           made: true,
           createdAt: DateTime(2026, 1, 1, 10),
@@ -75,7 +75,7 @@ DrillSession _sampleSession() => DrillSession(
         DrillAttempt(
           id: 'a2',
           sessionId: 'test-session',
-          drillCode: 'STRAIGHT_NEAR',
+          drillCode: 'BT01',
           attemptNumber: 2,
           made: true,
           createdAt: DateTime(2026, 1, 1, 10, 1),
@@ -99,12 +99,12 @@ void main() {
         ],
         child: MaterialApp.router(
           routerConfig: GoRouter(
-            initialLocation: '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10',
+            initialLocation: '/training/session/new?drill=BT01&level=1&target=10',
             routes: [
               GoRoute(
                 path: '/training/session/new',
                 builder: (context, state) => DrillSessionScreen(
-                  drillCode: state.uri.queryParameters['drill'] ?? 'STRAIGHT_NEAR',
+                  drillCode: state.uri.queryParameters['drill'] ?? 'BT01',
                 ),
               ),
             ],
@@ -151,7 +151,7 @@ void main() {
         child: MaterialApp(
           home: DrillCompletionScreen(
             session: session,
-            drillCode: 'STRAIGHT_NEAR',
+            drillCode: 'BT01',
           ),
         ),
       ),

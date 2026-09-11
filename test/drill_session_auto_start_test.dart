@@ -113,7 +113,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp.router(
           routerConfig: createTestRouter(
-            drillCode: 'STRAIGHT_NEAR',
+            drillCode: 'BT01',
             level: '1',
             target: '10',
           ),
@@ -141,7 +141,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp.router(
           routerConfig: createTestRouter(
-            drillCode: 'STRAIGHT_NEAR',
+            drillCode: 'BT01',
             // No level param
           ),
         ),
@@ -165,7 +165,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp.router(
           routerConfig: createTestRouter(
-            drillCode: 'STRAIGHT_NEAR',
+            drillCode: 'BT01',
             level: '1',
             target: '10',
           ),
@@ -208,7 +208,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp.router(
           routerConfig: createTestRouter(
-            drillCode: 'STRAIGHT_NEAR',
+            drillCode: 'BT01',
             level: '2',
             target: '50',
           ),
@@ -218,7 +218,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Sprint-19 redesign: Format is 'X/Y' e.g., '0/50'
+      // targetReps = 50 (tu query param); currentRep = 0 (chua thuc hien).
       expect(find.text('0/50'), findsOneWidget);
     });
 
@@ -227,7 +227,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp.router(
           routerConfig: createTestRouter(
-            drillCode: 'STRAIGHT_NEAR',
+            drillCode: 'BT01',
             // No level param — session should not start
           ),
         ),

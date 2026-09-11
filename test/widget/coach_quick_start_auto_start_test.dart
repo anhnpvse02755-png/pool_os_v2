@@ -14,8 +14,8 @@ void main() {
 
   group('Coach AI Quick Start URL parameters', () {
     test('HomeScreen Quick Start generates URL with level and target params', () {
-      // Sprint-18 Part 1: STRAIGHT_POT → STRAIGHT_NEAR via resolveDrillCode
-      final resolvedCode = resolveDrillCode('STRAIGHT_POT') ?? 'STRAIGHT_POT';
+      // Sprint-18 Part 1: BT01 → BT01 via resolveDrillCode
+      final resolvedCode = resolveDrillCode('BT01') ?? 'BT01';
       const level = 1;
       const target = 10;
 
@@ -23,7 +23,7 @@ void main() {
       final url =
           '/training/session/new?drill=$resolvedCode&level=$level&target=$target';
 
-      expect(url, contains('drill=STRAIGHT_NEAR'));
+      expect(url, contains('drill=BT01'));
       expect(url, contains('level=1'));
       expect(url, contains('target=10'));
     });
@@ -38,12 +38,12 @@ void main() {
       );
     });
 
-    test('STRAIGHT_POT resolves and includes required params', () {
-      final resolvedCode = resolveDrillCode('STRAIGHT_POT') ?? 'STRAIGHT_POT';
+    test('BT01 resolves and includes required params', () {
+      final resolvedCode = resolveDrillCode('BT01') ?? 'BT01';
       final url =
           '/training/session/new?drill=$resolvedCode&level=1&target=10';
 
-      expect(url, equals('/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10'));
+      expect(url, equals('/training/session/new?drill=BT01&level=1&target=10'));
     });
 
     test('Unknown V1 code falls back to original and still includes params', () {
@@ -90,9 +90,9 @@ void main() {
     test('Coach AI uses same drill param key as DrillDetailScreen', () {
       // Both should use 'drill' as the query parameter key.
       const coachUrl =
-          '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=10';
+          '/training/session/new?drill=BT01&level=1&target=10';
       const detailUrl =
-          '/training/session/new?drill=STRAIGHT_NEAR&level=1&target=25';
+          '/training/session/new?drill=BT01&level=1&target=25';
 
       expect(coachUrl.contains('drill='), isTrue);
       expect(detailUrl.contains('drill='), isTrue);

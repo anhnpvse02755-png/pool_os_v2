@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:convert';
 // ============================================================================
 // content_validation_test.dart - Sprint-10A
 // Content integrity validation tests for drills and knowledge articles
@@ -5,7 +7,6 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/utils/drills_library.dart';
-import 'package:pool_os_v2/data/content/knowledge_articles_vi.dart';
 
 void main() {
   group('Drill Library Validation', () {
@@ -49,18 +50,10 @@ void main() {
     });
 
     test('all drills have valid categories', () {
+      // 10 danh muc tu 6 phan + them Psychology & Rules
       final validCategories = [
-        'aiming',
-        'break',
-        'cueball',
-        'fundamentals',
-        'mental',
-        'pattern',
-        'position',
-        'safety',
-        'situations',
-        'special',
-        'spin',
+        'aiming', 'fundamentals', 'shotmaking', 'positioning',
+        'strategy', 'psychology', 'rules', 'equipment',
       ];
 
       for (final drill in allDrills) {
@@ -107,16 +100,19 @@ void main() {
     });
 
     test('drill count meets minimum threshold', () {
-      // Sprint-10A goal: expand beyond 50 drills
-      expect(allDrills.length, greaterThanOrEqualTo(50),
-          reason: 'Expected at least 50 drills, found ${allDrills.length}');
+      // 24 bài từ 6 phần nguồn — đủ cho người mới luyện đủ 6 tháng
+      expect(allDrills.length, greaterThanOrEqualTo(24),
+          reason: 'Expected at least 24 drills, found ${allDrills.length}');
     });
 
     test('all categories have drills', () {
       final categoriesWithDrills = allDrills.map((d) => d.category).toSet();
 
-      // We expect at least these core categories to have drills
-      final expectedCategories = ['aiming', 'break', 'cueball', 'fundamentals', 'position', 'safety'];
+      // 8 danh muc tu 6 phan nguon
+      final expectedCategories = [
+        'aiming', 'fundamentals', 'shotmaking', 'positioning',
+        'strategy', 'psychology', 'rules', 'equipment',
+      ];
 
       for (final category in expectedCategories) {
         expect(
@@ -145,168 +141,38 @@ void main() {
     });
   });
 
-  group('Knowledge Articles Validation', () {
-    late List<KnowledgeArticle> allArticles;
-
-    setUpAll(() {
-      allArticles = knowledgeArticlesVi;
-    });
-
-    test('no duplicate article IDs', () {
-      final ids = allArticles.map((a) => a.id).toList();
-      final uniqueIds = ids.toSet();
-
-      expect(
-        ids.length,
-        equals(uniqueIds.length),
-        reason: 'Found ${ids.length - uniqueIds.length} duplicate article IDs',
-      );
-    });
-
-    test('all articles have required fields', () {
-      for (final article in allArticles) {
-        expect(article.id, isNotEmpty, reason: 'Article missing ID');
-        expect(article.title, isNotEmpty, reason: 'Article ${article.id} missing title');
-        expect(article.category, isNotEmpty, reason: 'Article ${article.id} missing category');
-        expect(article.level, isNotEmpty, reason: 'Article ${article.id} missing level');
-        expect(article.summary, isNotEmpty, reason: 'Article ${article.id} missing summary');
-        expect(article.content, isNotEmpty, reason: 'Article ${article.id} missing content');
-      }
-    });
-
-    test('all articles have valid levels', () {
-      final validLevels = ['beginner', 'intermediate', 'advanced', 'expert'];
-
-      for (final article in allArticles) {
-        expect(
-          validLevels.contains(article.level),
-          isTrue,
-          reason: 'Article ${article.id} has invalid level: ${article.level}',
-        );
-      }
-    });
-
-    test('all articles have valid categories', () {
-      final validCategories = [
-        'aiming',
-        'break',
-        'cueball',
-        'fundamentals',
-        'mental',
-        'pattern',
-        'position',
-        'positioning',  // aliases for position
-        'safety',
-        'shotmaking',
-        'strategy',
-      ];
-
-      for (final article in allArticles) {
-        expect(
-          validCategories.contains(article.category),
-          isTrue,
-          reason: 'Article ${article.id} has invalid category: ${article.category}',
-        );
-      }
-    });
-
-    test('keyTakeaways are non-empty if present', () {
-      for (final article in allArticles) {
-        for (final takeaway in article.keyTakeaways) {
-          expect(takeaway.trim().isNotEmpty, isTrue,
-              reason: 'Article ${article.id} has empty takeaway');
-        }
-      }
-    });
-
-    test('relatedDrills are strings if present', () {
-      for (final article in allArticles) {
-        for (final drillCode in article.relatedDrills) {
-          expect(drillCode, isA<String>(),
-              reason: 'Article ${article.id} has non-string drillCode');
-        }
-      }
-    });
-
-    test('article count meets minimum threshold', () {
-      // Sprint-10A goal: expand beyond 14 articles
-      expect(allArticles.length, greaterThanOrEqualTo(14),
-          reason: 'Expected at least 14 articles, found ${allArticles.length}');
-    });
-
-    test('critical categories have articles', () {
-      final categories = allArticles.map((a) => a.category).toSet();
-
-      // These are critical training topics
-      final criticalCategories = ['aiming', 'fundamentals'];
-
-      for (final category in criticalCategories) {
-        expect(
-          categories.contains(category),
-          isTrue,
-          reason: 'Critical category "$category" has no articles',
-        );
-      }
-    });
-
-    test('content is substantial (not just placeholder)', () {
-      for (final article in allArticles) {
-        // Content should be at least 100 characters
-        expect(article.content.length, greaterThan(100),
-            reason: 'Article ${article.id} has content less than 100 chars');
-      }
-    });
-  });
-
   group('Cross-Reference Validation', () {
-    late List<Drill> allDrills;
-    late List<KnowledgeArticle> allArticles;
+    // Truoc day nhom nay doi chieu voi `knowledgeArticlesVi` — bo 21 bai CHET
+    // (khong man nao doc) — va chi `print` canh bao thay vi fail. Ket qua: lien
+    // ket drill -> kien thuc hong 0/50 ma khong ai biet.
+    //
+    // Nay doi chieu voi nguon THAT (assets/knowledge/knowledge.json) va FAIL.
+    test('drill knowledgeIds tro toi bai kien thuc co that', () {
+      final raw = File('assets/knowledge/knowledge.json').readAsStringSync();
+      final ids = (json.decode(raw) as List)
+          .map((e) => (e as Map<String, dynamic>)['id'] as String)
+          .toSet();
+      expect(ids, isNotEmpty);
 
-    setUpAll(() {
-      allDrills = DrillLibrary.getAllDrills();
-      allArticles = knowledgeArticlesVi;
+      final dangling = <String>[];
+      for (final drill in DrillLibrary.getAllDrills()) {
+        for (final kid in drill.knowledgeIds) {
+          if (!ids.contains(kid)) dangling.add('${drill.code} -> $kid');
+        }
+      }
+
+      expect(dangling, isEmpty,
+          reason: 'Bài tập trỏ tới kiến thức không tồn tại: '
+              '${dangling.join(" | ")}');
     });
 
-    test('drill knowledgeIds reference existing knowledge articles', () {
-      final articleIds = allArticles.map((a) => a.id).toSet();
-      final missingReferences = <String>[];
-
-      for (final drill in allDrills) {
-        for (final knowledgeId in drill.knowledgeIds) {
-          if (!articleIds.contains(knowledgeId)) {
-            missingReferences.add('$knowledgeId (from drill ${drill.code})');
-          }
-        }
-      }
-
-      // Note: Some knowledgeIds might be future articles, so we just log them
-      // rather than failing. This is informational.
-      if (missingReferences.isNotEmpty) {
-        print('Warning: ${missingReferences.length} knowledgeIds have no matching article:');
-        for (final ref in missingReferences.take(10)) {
-          print('  - $ref');
-        }
-      }
-    });
-
-    test('article relatedDrills reference existing drills', () {
-      final drillCodes = allDrills.map((d) => d.code).toSet();
-      final missingReferences = <String>[];
-
-      for (final article in allArticles) {
-        for (final drillCode in article.relatedDrills) {
-          if (!drillCodes.contains(drillCode)) {
-            missingReferences.add('$drillCode (from article ${article.id})');
-          }
-        }
-      }
-
-      if (missingReferences.isNotEmpty) {
-        print('Warning: ${missingReferences.length} drill codes have no matching drill:');
-        for (final ref in missingReferences.take(10)) {
-          print('  - $ref');
-        }
-      }
+    test('moi bai tap deu gan it nhat mot bai kien thuc', () {
+      final orphan = DrillLibrary.getAllDrills()
+          .where((d) => d.knowledgeIds.isEmpty)
+          .map((d) => d.code)
+          .toList();
+      expect(orphan, isEmpty,
+          reason: 'Bai tap khong gan kien thuc nao: ${orphan.join(', ')}');
     });
   });
 }

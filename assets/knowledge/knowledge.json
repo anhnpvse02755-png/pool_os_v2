@@ -35,10 +35,7 @@
       "kn_stance"
     ],
     "relatedDrillCodes": [
-      "THIN_CUT_30",
-      "THIN_CUT_45",
-      "THICK_CUT_30",
-      "HALF_BALL_LEFT"
+      "BT03"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -83,9 +80,7 @@
       "kn_combination_carom"
     ],
     "relatedDrillCodes": [
-      "BANK_SHOT",
-      "PATTERN_MULTI_RAIL",
-      "LONG_POT_1M"
+      "BT14"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -129,8 +124,7 @@
       "kn_stroke"
     ],
     "relatedDrillCodes": [
-      "BRIDGE_FORM",
-      "STRAIGHT_NEAR"
+      "BT02"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -175,9 +169,7 @@
       "kn_english"
     ],
     "relatedDrillCodes": [
-      "DRAW_SHOT",
-      "DRAW_BACK_FAR",
-      "BACK_SPIN_CONTROL"
+      "BT07"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -222,9 +214,7 @@
       "kn_english"
     ],
     "relatedDrillCodes": [
-      "FOLLOW_SHOT",
-      "FOLLOW_FAR",
-      "TOP_SPIN_CONTROL"
+      "BT07"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -269,10 +259,7 @@
       "kn_run_out_planning"
     ],
     "relatedDrillCodes": [
-      "POSITION_BASIC",
-      "POSITION_3BALL",
-      "POSITION_CUE",
-      "POSITION_TIGHT"
+      "BT09"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -316,9 +303,7 @@
       "kn_rules_8ball"
     ],
     "relatedDrillCodes": [
-      "SAFETY_BASIC",
-      "SAFETY_FORCE",
-      "SAFETY_KICK"
+      "BT10"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -363,10 +348,7 @@
       "kn_safety_advanced"
     ],
     "relatedDrillCodes": [
-      "POSITION_CUE",
-      "POSITION_TIGHT",
-      "STRAIGHT_MID",
-      "STRAIGHT_FAR"
+      "BT17"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -411,8 +393,7 @@
       "kn_aiming"
     ],
     "relatedDrillCodes": [
-      "STANCE_FORM",
-      "STRAIGHT_NEAR"
+      "BT02"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -456,9 +437,7 @@
       "kn_aiming_rail_ball"
     ],
     "relatedDrillCodes": [
-      "STOP_BALL",
-      "STUN_SHOT",
-      "POSITION_BASIC"
+      "BT07"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -499,8 +478,7 @@
       "kn_stroke"
     ],
     "relatedDrillCodes": [
-      "STROKE_STRAIGHT",
-      "STRAIGHT_NEAR"
+      "BT01"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -543,9 +521,7 @@
       "kn_speed_control"
     ],
     "relatedDrillCodes": [
-      "STROKE_STRAIGHT",
-      "STRAIGHT_NEAR",
-      "STRAIGHT_MID"
+      "BT01"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -588,10 +564,7 @@
       "kn_rules_9ball"
     ],
     "relatedDrillCodes": [
-      "BREAK_POWER",
-      "BREAK_CONTROL",
-      "BREAK_ACCURACY",
-      "BREAK_SPLIT"
+      "BT06"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -635,10 +608,7 @@
       "kn_aiming_method_selection"
     ],
     "relatedDrillCodes": [
-      "HALF_BALL_LEFT",
-      "HALF_BALL_RIGHT",
-      "THIN_CUT_30",
-      "THICK_CUT_45"
+      "BT04"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -681,9 +651,7 @@
       "kn_aiming_method_selection"
     ],
     "relatedDrillCodes": [
-      "THIN_CUT_45",
-      "THICK_CUT_30",
-      "LONG_POT_1M"
+      "BT04"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -727,9 +695,7 @@
       "kn_bridge"
     ],
     "relatedDrillCodes": [
-      "THIN_CUT_45",
-      "HALF_BALL_RIGHT",
-      "LONG_POT_1_5M"
+      "BT04"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -771,9 +737,7 @@
       "kn_stop_shot"
     ],
     "relatedDrillCodes": [
-      "THIN_CUT_30",
-      "LONG_POT_1M",
-      "STUN_SHOT"
+      "BT05"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -816,9 +780,7 @@
       "kn_aiming_method_selection"
     ],
     "relatedDrillCodes": [
-      "THICK_CUT_45",
-      "THIN_CUT_45",
-      "THICK_CUT_60"
+      "BT05"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -861,12 +823,7 @@
       "kn_aiming_rail_ball",
       "kn_aiming_cloth_contact"
     ],
-    "relatedDrillCodes": [
-      "THIN_CUT_30",
-      "THIN_CUT_45",
-      "THICK_CUT_30",
-      "THICK_CUT_60"
-    ],
+    "relatedDrillCodes": [],
     "readingTimeMinutes": 2,
     "media": {},
     "sources": [
@@ -912,9 +869,7 @@
       "kn_cue_selection"
     ],
     "relatedDrillCodes": [
-      "INSIDE_ENGLISH",
-      "LEFT_ENGLISH_NEAR",
-      "RIGHT_ENGLISH_NEAR"
+      "BT08"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -957,9 +912,7 @@
       "kn_safety_play"
     ],
     "relatedDrillCodes": [
-      "PATTERN_3_BALLS",
-      "PATTERN_5_BALLS",
-      "POSITION_3BALL"
+      "BT11"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1005,9 +958,7 @@
       "kn_masse_shot"
     ],
     "relatedDrillCodes": [
-      "INSIDE_ENGLISH",
-      "LEFT_ENGLISH_NEAR",
-      "RIGHT_ENGLISH_NEAR"
+      "BT12"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1052,9 +1003,7 @@
       "kn_english"
     ],
     "relatedDrillCodes": [
-      "KICK_SHOT",
-      "SAFETY_KICK",
-      "PATTERN_MULTI_RAIL"
+      "BT13"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1097,7 +1046,7 @@
       "kn_safety_play"
     ],
     "relatedDrillCodes": [
-      "JUMP_SHOT"
+      "BT15"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1140,9 +1089,7 @@
       "kn_english",
       "kn_safety_play"
     ],
-    "relatedDrillCodes": [
-      "MASSE"
-    ],
+    "relatedDrillCodes": [],
     "readingTimeMinutes": 2,
     "media": {},
     "sources": [
@@ -1185,8 +1132,7 @@
       "kn_table_layout"
     ],
     "relatedDrillCodes": [
-      "COMBO_SHORT",
-      "COMBO_LONG"
+      "BT16"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1229,9 +1175,7 @@
       "kn_safety_advanced"
     ],
     "relatedDrillCodes": [
-      "PATTERN_3_BALLS",
-      "PATTERN_5_BALLS",
-      "PATTERN_MULTI_RAIL"
+      "BT18"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1274,9 +1218,7 @@
       "kn_rules_9ball"
     ],
     "relatedDrillCodes": [
-      "SAFETY_FORCE",
-      "SAFETY_KICK",
-      "SAFETY_BASIC"
+      "BT19"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1316,9 +1258,7 @@
       "kn_run_out_planning"
     ],
     "relatedDrillCodes": [
-      "PRESSURE_SHOT",
-      "FOCUS_DRILL",
-      "COMEBACK_PRACTICE"
+      "BT20"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1361,8 +1301,7 @@
       "kn_safety_play"
     ],
     "relatedDrillCodes": [
-      "PATTERN_5_BALLS",
-      "BREAK_CONTROL"
+      "BT21"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1405,9 +1344,7 @@
       "kn_safety_advanced"
     ],
     "relatedDrillCodes": [
-      "PATTERN_3_BALLS",
-      "BREAK_POWER",
-      "SAFETY_BASIC"
+      "BT22"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1449,9 +1386,7 @@
       "kn_run_out_planning"
     ],
     "relatedDrillCodes": [
-      "PATTERN_5_BALLS",
-      "SAFETY_BASIC",
-      "BREAK_ACCURACY"
+      "BT22"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1494,9 +1429,7 @@
       "kn_break_shot"
     ],
     "relatedDrillCodes": [
-      "PATTERN_MULTI_RAIL",
-      "PATTERN_5_BALLS",
-      "POSITION_TIGHT"
+      "BT23"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1538,11 +1471,7 @@
       "kn_table_layout",
       "kn_rules_14_1"
     ],
-    "relatedDrillCodes": [
-      "SAFETY_FORCE",
-      "SAFETY_KICK",
-      "POSITION_TIGHT"
-    ],
+    "relatedDrillCodes": [],
     "readingTimeMinutes": 2,
     "media": {},
     "sources": [
@@ -1585,8 +1514,7 @@
       "kn_grip"
     ],
     "relatedDrillCodes": [
-      "STROKE_STRAIGHT",
-      "STRAIGHT_MID"
+      "BT24"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1629,7 +1557,7 @@
       "kn_grip"
     ],
     "relatedDrillCodes": [
-      "STROKE_STRAIGHT"
+      "BT24"
     ],
     "readingTimeMinutes": 2,
     "media": {},

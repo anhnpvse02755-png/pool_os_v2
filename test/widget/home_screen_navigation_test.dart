@@ -1,7 +1,7 @@
 // ============================================================================
 // Home Screen Quick Start Navigation Tests — Sprint-18 Part 1
 // Tests that "Bắt đầu ngay" button on home navigates to a valid drill.
-// Regression for: STRAIGHT_POT not resolved to STRAIGHT_NEAR.
+// Regression for: BT01 not resolved to BT01.
 // ============================================================================
 
 import 'package:flutter_test/flutter_test.dart';
@@ -11,39 +11,39 @@ import 'package:pool_os_v2/knowledge/drill_code_bridge.dart';
 
 void main() {
   group('Home Quick Start Drill Code Resolution', () {
-    test('STRAIGHT_POT resolves to STRAIGHT_NEAR (V1 → V2)', () {
-      final resolved = resolveDrillCode('STRAIGHT_POT');
-      expect(resolved, equals('STRAIGHT_NEAR'));
+    test('BT01 resolves to BT01 (V1 → V2)', () {
+      final resolved = resolveDrillCode('BT01');
+      expect(resolved, equals('BT01'));
     });
 
-    test('STRAIGHT_NEAR passes through unchanged', () {
-      final resolved = resolveDrillCode('STRAIGHT_NEAR');
-      expect(resolved, equals('STRAIGHT_NEAR'));
+    test('BT01 passes through unchanged', () {
+      final resolved = resolveDrillCode('BT01');
+      expect(resolved, equals('BT01'));
     });
 
-    test('STRAIGHT base resolves to STRAIGHT_NEAR', () {
+    test('STRAIGHT base resolves to BT01', () {
       final resolved = resolveDrillCode('STRAIGHT');
-      expect(resolved, equals('STRAIGHT_NEAR'));
+      expect(resolved, equals('BT01'));
     });
 
-    test('STOP_BALL passes through (already V2)', () {
-      final resolved = resolveDrillCode('STOP_BALL');
-      expect(resolved, equals('STOP_BALL'));
+    test('BT07 passes through (already V2)', () {
+      final resolved = resolveDrillCode('BT07');
+      expect(resolved, equals('BT07'));
     });
 
-    test('STOP resolves to STOP_BALL (V1 → V2)', () {
+    test('STOP resolves to BT07 (V1 → V2)', () {
       final resolved = resolveDrillCode('STOP');
-      expect(resolved, equals('STOP_BALL'));
+      expect(resolved, equals('BT07'));
     });
 
-    test('DRAW_SHOT passes through (already V2)', () {
-      final resolved = resolveDrillCode('DRAW_SHOT');
-      expect(resolved, equals('DRAW_SHOT'));
+    test('BT07 passes through (already V2)', () {
+      final resolved = resolveDrillCode('BT07');
+      expect(resolved, equals('BT07'));
     });
 
-    test('DRAW resolves to DRAW_SHOT (V1 → V2)', () {
+    test('DRAW resolves to BT07 (V1 → V2)', () {
       final resolved = resolveDrillCode('DRAW');
-      expect(resolved, equals('DRAW_SHOT'));
+      expect(resolved, equals('BT07'));
     });
 
     test('Unknown code returns null (navigation falls back gracefully)', () {
@@ -53,15 +53,15 @@ void main() {
   });
 
   group('Resolved drill code exists in DrillLibrary', () {
-    test('STRAIGHT_POT → STRAIGHT_NEAR is found in DrillLibrary', () {
-      final resolved = resolveDrillCode('STRAIGHT_POT')!;
+    test('BT01 → BT01 is found in DrillLibrary', () {
+      final resolved = resolveDrillCode('BT01')!;
       final drill = DrillLibrary.getDrill(resolved);
       expect(drill, isNotNull);
-      expect(drill!.code, equals('STRAIGHT_NEAR'));
+      expect(drill!.code, equals('BT01'));
     });
 
     test('All V2 codes resolve to valid drills', () {
-      final v2Codes = ['STRAIGHT_NEAR', 'STOP_BALL', 'DRAW_SHOT', 'FOLLOW_SHOT'];
+      final v2Codes = ['BT01', 'BT07', 'BT07', 'BT07'];
       for (final code in v2Codes) {
         final drill = DrillLibrary.getDrill(code);
         expect(drill, isNotNull, reason: '$code should exist in DrillLibrary');
@@ -70,13 +70,13 @@ void main() {
 
     test('All V1→V2 mapped codes resolve to valid drills', () {
       final mappings = {
-        'STOP': 'STOP_BALL',
-        'DRAW': 'DRAW_SHOT',
-        'FOLLOW': 'FOLLOW_SHOT',
-        'STRAIGHT': 'STRAIGHT_NEAR',
-        'POSITION': 'POSITION_BASIC',
-        'SAFETY': 'SAFETY_BASIC',
-        'BASIC': 'STRAIGHT_NEAR',
+        'STOP': 'BT07',
+        'DRAW': 'BT07',
+        'FOLLOW': 'BT07',
+        'STRAIGHT': 'BT01',
+        'POSITION': 'BT09',
+        'SAFETY': 'BT10',
+        'BASIC': 'BT01',
       };
       for (final entry in mappings.entries) {
         final resolved = resolveDrillCode(entry.key)!;

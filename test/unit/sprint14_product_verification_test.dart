@@ -35,7 +35,7 @@ void main() {
       for (var i = 0; i < 5; i++) {
         pi = pi.updateWithSession(
           TrainingSessionData(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             score: 35, // Low performance
             durationMinutes: 10,
             completedAt: DateTime.now(),
@@ -82,7 +82,7 @@ void main() {
         final oldDate = DateTime.now().subtract(Duration(days: i + 15));
         pi = pi.updateWithSession(
           TrainingSessionData(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             score: 50,
             durationMinutes: 10,
             completedAt: oldDate,
@@ -97,7 +97,7 @@ void main() {
         final recentDate = DateTime.now().subtract(Duration(days: i));
         pi = pi.updateWithSession(
           TrainingSessionData(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             score: 75,
             durationMinutes: 10,
             completedAt: recentDate,
@@ -227,7 +227,7 @@ void main() {
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
           TrainingSessionData(
-            drillCode: 'STRAIGHT_POT',
+            drillCode: 'BT01',
             score: 40,
             durationMinutes: 10,
             completedAt: DateTime.now(),

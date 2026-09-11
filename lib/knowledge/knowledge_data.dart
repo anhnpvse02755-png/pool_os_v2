@@ -161,7 +161,7 @@ Bi cái dừng ngay tại điểm chạm với bi mục tiêu, không đi xa hơ
     keywords: ['stop shot', 'dừng bi cái', 'cue ball control'],
     difficulty: DifficultyLevel.beginner,
     relatedKnowledgeIds: ['kn_draw_shot', 'kn_follow_shot'],
-    relatedDrillCodes: ['STOP_LV1', 'STOP_LV2', 'STOP_LV3'],
+    relatedDrillCodes: ['BT07', 'STOP_LV2', 'STOP_LV3'],
   ),
   KnowledgeItem(
     id: 'kn_draw_shot',
@@ -606,7 +606,7 @@ Dùng khi cần kiểm soát chặt chẽ hơn, đặc biệt cho cú đánh m�
 // ============================================================================
 
 const drillKnowledgeMapping = {
-  'STOP_LV1': ['kn_stop_shot'],
+  'BT07': ['kn_stop_shot'],
   'STOP_LV2': ['kn_stop_shot'],
   'STOP_LV3': ['kn_stop_shot'],
   'DRAW_LV1': ['kn_draw_shot'],

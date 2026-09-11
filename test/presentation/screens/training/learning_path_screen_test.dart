@@ -14,7 +14,7 @@ void main() {
 
   final testPathItems = [
     LearningPathItem(
-      drillCode: 'STOP_BALL',
+      drillCode: 'BT07',
       drillName: 'Stop Ball',
       drillNameVi: 'Dừng bi',
       description: 'Practice stop shots for cue ball control.',
@@ -46,7 +46,7 @@ void main() {
     allKnowledge: testKnowledge,
     categories: const [],
     tags: const [],
-    drillKnowledgeMap: const {'STOP_BALL': ['kn_stop_shot']},
+    drillKnowledgeMap: const {'BT07': ['kn_stop_shot']},
   );
 
   Widget buildScreen() {

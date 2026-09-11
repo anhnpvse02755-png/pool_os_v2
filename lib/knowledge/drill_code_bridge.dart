@@ -2,18 +2,17 @@
 // drill_code_bridge.dart — V1 drill code → V2 DrillLibrary code
 //
 // V1 knowledge articles (10 live + 100 migrated) reference V1-era drill codes
-// with _LV suffix (e.g. STOP_LV1). V2 DrillLibrary uses different codes
-// (e.g. STOP_BALL). This bridge resolves them at navigation time so callers
+// with _LV suffix (e.g. BT07). V2 DrillLibrary uses different codes
+// (e.g. BT07). This bridge resolves them at navigation time so callers
 // don't need to rewrite article payloads.
 //
-// V1 base → V2 mapping (verified against DrillLibrary.codes):
-//   STOP       → STOP_BALL
-//   DRAW       → DRAW_SHOT
-//   FOLLOW     → FOLLOW_SHOT
-//   STRAIGHT   → STRAIGHT_NEAR
-//   POSITION   → POSITION_BASIC
-//   SAFETY     → SAFETY_BASIC
-//   BASIC      → STRAIGHT_NEAR   (BASIC_LV1 maps to closest beginner drill)
+// V1 base → V2 mapping (doi chieu voi DrillLibrary sinh tu
+// `new knowledge/Danh-Sach-Bai-Tap-Billiard.md`):
+//   STOP / DRAW / FOLLOW → BT07  (Stop – Follow – Draw cung cu ly)
+//   STRAIGHT / BASIC     → BT01  (cam co & day co thang)
+//   POSITION             → BT09  (vi tri 3 bi lien tiep)
+//   SAFETY               → BT10  (safety co ban)
+//   AIM / GHOST          → BT03  (ngam bi ao)
 //
 // Codes already in V2 form pass through unchanged. Codes that cannot be
 // mapped return null so the UI can fall back gracefully (no navigation).
@@ -28,21 +27,20 @@ String? v1ToV2Code(String v1Code) {
   final base = v1Code.replaceFirst(RegExp(r'_LV\d+$', caseSensitive: false), '').toUpperCase();
   switch (base) {
     case 'STOP':
-      return 'STOP_BALL';
+      return 'BT07';
     case 'DRAW':
-      return 'DRAW_SHOT';
+      return 'BT07';
     case 'FOLLOW':
-      return 'FOLLOW_SHOT';
+      return 'BT07';
     case 'STRAIGHT':
-    case 'STRAIGHT_POT':  // Sprint-18: knowledge graph uses STRAIGHT_POT
-    case 'STRAIGHT_NEAR': // already V2 but pass through
-      return 'STRAIGHT_NEAR';
+    case 'BT01':
+      return 'BT01';
     case 'POSITION':
-      return 'POSITION_BASIC';
+      return 'BT09';
     case 'SAFETY':
-      return 'SAFETY_BASIC';
+      return 'BT10';
     case 'BASIC':
-      return 'STRAIGHT_NEAR';
+      return 'BT01';
     default:
       return null;
   }

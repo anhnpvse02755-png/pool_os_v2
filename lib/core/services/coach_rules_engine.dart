@@ -467,7 +467,7 @@ class CoachRulesEngine {
     switch (skill) {
       case CoachSkill.aim:
       case CoachSkill.longPot:
-        drills.addAll(['STRAIGHT_NEAR', 'STRAIGHT_MID', 'STRAIGHT_FAR', 'LONG_POT_1M']);
+        drills.addAll(['BT01', 'STRAIGHT_MID', 'BT01', 'LONG_POT_1M']);
         break;
       case CoachSkill.thinCut:
         drills.addAll(['THIN_CUT_30', 'THIN_CUT_45']);
@@ -476,13 +476,13 @@ class CoachRulesEngine {
         drills.addAll(['THICK_CUT_30', 'THICK_CUT_45', 'THICK_CUT_60']);
         break;
       case CoachSkill.stopShot:
-        drills.addAll(['STOP_BALL']);
+        drills.addAll(['BT07']);
         break;
       case CoachSkill.follow:
-        drills.addAll(['FOLLOW_SHOT', 'FOLLOW_FAR']);
+        drills.addAll(['BT07', 'FOLLOW_FAR']);
         break;
       case CoachSkill.draw:
-        drills.addAll(['DRAW_SHOT', 'DRAW_BACK_FAR']);
+        drills.addAll(['BT07', 'DRAW_BACK_FAR']);
         break;
       case CoachSkill.spin:
         drills.addAll(['LEFT_ENGLISH_NEAR', 'RIGHT_ENGLISH_NEAR', 'TOP_SPIN_CONTROL']);

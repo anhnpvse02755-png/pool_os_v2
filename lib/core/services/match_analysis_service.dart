@@ -71,7 +71,7 @@ class MatchAnalysisService {
     // Priority 4: Scratches (cue ball control)
     if (analysis.scratches > errorThreshold) {
       recommendations.add(DrillRecommendation(
-        drillCode: 'DRAW_SHOT',
+        drillCode: 'BT07',
         drillName: 'Luyện Draw Shot',
         reason: 'Scratch: ${analysis.scratches} lần. Cần cải thiện kiểm soát '
             'động lực và draw để tránh scratch.',
