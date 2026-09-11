@@ -12,7 +12,6 @@ class LocalStorageDataSource {
   static const String _keyDrills = 'drills_data';
   static const String _keyDrillProgress = 'drill_progress';
   static const String _keyTrainingHistory = 'training_history';
-  static const String _keyKnowledgeArticles = 'knowledge_articles';
   static const String _keyKnowledgeProgress = 'knowledge_progress';
   static const String _keyMatches = 'matches_data';
   static const String _keyTournaments = 'tournaments_data';
@@ -183,14 +182,6 @@ class LocalStorageDataSource {
   // ==========================================================================
   // Knowledge
   // ==========================================================================
-
-  static Future<List<Map<String, dynamic>>> getKnowledgeArticles() async {
-    return getJsonList(_keyKnowledgeArticles);
-  }
-
-  static Future<void> saveKnowledgeArticles(List<Map<String, dynamic>> articles) async {
-    await setJsonList(_keyKnowledgeArticles, articles);
-  }
 
   static Future<Map<String, dynamic>> getKnowledgeProgress() async {
     final data = await getJson(_keyKnowledgeProgress);

@@ -12,7 +12,6 @@ import '../../data/repositories/community_repository.dart' as community_repo;
 import '../../data/repositories/settings_repository.dart' as settings_repo;
 import '../../data/repositories/cache_repository.dart' as cache_repo;
 import '../../data/repositories/drill_session_repository.dart';
-import '../../domain/services/drill_library_service.dart' as drill_lib;
 import '../../domain/services/knowledge_graph_service.dart' as kg_svc;
 import '../../domain/services/learning_streak_service.dart' as ls_svc;
 import '../../domain/services/quiz_service.dart' as quiz_svc;
@@ -179,9 +178,6 @@ final cacheRepositoryProvider = Provider<cache_repo.ICacheRepository>((ref) {
 // Service providers — Day 2A.
 // Each service is constructed via the cache provider, so that no
 // consumer ever instantiates the service directly with `new XxxService()`.
-final drillLibraryServiceProvider = Provider<drill_lib.DrillLibraryService>((ref) {
-  return drill_lib.DrillLibraryService(ref.watch(cacheRepositoryProvider));
-});
 final knowledgeGraphServiceProvider = Provider<kg_svc.KnowledgeGraphService>((ref) {
   return kg_svc.KnowledgeGraphService(ref.watch(cacheRepositoryProvider));
 });
