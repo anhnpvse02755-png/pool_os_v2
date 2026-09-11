@@ -3,15 +3,37 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'colors.dart';
 import 'spacing.dart';
-import 'typography.dart';
-import 'shadows.dart';
 
 /// PoolOS Design System - Main Theme Configuration
 /// Based on Minimalist Luxury design philosophy
 class AppTheme {
   AppTheme._();
 
-  // Alias for backward compatibility
+  // ========================================================================
+  // ĐÃ PHẾ — KHÔNG DÙNG TRONG MÀN MỚI HOẶC MÀN ĐÃ DI TRÚ
+  //
+  // Lớp alias này tồn tại "for backward compatibility" và nó là một cái lỗ,
+  // không phải một tiện ích:
+  //
+  // 1. Chúng là `static const Color`, nên KHÔNG BAO GIỜ nhận được một
+  //    `Brightness`. Màn nào dùng chúng là khoá cứng một chế độ — và
+  //    `surfaceLight`/`textPrimary`/`textSecondary` khoá cứng bản SÁNG.
+  //
+  // 2. `primaryGreen` và `primary` mang tên "green" nhưng alias vào
+  //    `AppColors.accent` = #3B82F6, ĐÚNG MÀU XANH ĐIỆN mà đợt redesign này
+  //    tồn tại để loại bỏ. Bản đúng là `AppColors.primary(brightness)` —
+  //    xanh rêu #0F4032 / #34A97C.
+  //
+  // 3. Chúng đi vòng qua cả chín luật vệ sinh token đầu tiên trong
+  //    test/screens/token_hygiene.dart: tên không khớp `AppColors.light*`,
+  //    không có hậu tố Light/Dark, không phải `Colors.*`, không phải hex thô.
+  //    Nên một màn "đã chuyển đổi" vẫn có thể hardcode toàn bộ màu qua đây.
+  //    LUẬT 10 nay cấm mọi `AppTheme.<màu>` trong các màn đã di trú.
+  //
+  // Chưa xoá được: 107 điểm dùng ở 21 tệp thuộc 49 màn CHƯA di trú vẫn phụ
+  // thuộc vào chúng, xoá khai báo là vỡ build. Mỗi lô di trú sau phải dọn
+  // phần của mình; khi điểm dùng cuối cùng biến mất thì xoá cả khối này.
+  // ========================================================================
   static const Color primaryGreen = AppColors.accent;
   static const Color primary = AppColors.accent;
   static const Color primaryDark = AppColors.accentDark;

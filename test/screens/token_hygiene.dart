@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-/// Chín luật vệ sinh token mà MỌI lô quét đều phải đạt.
+/// Mười luật vệ sinh token mà MỌI lô quét đều phải đạt.
 ///
 /// Đọc mã nguồn chứ không render: mục tiêu là chặn token khoá-sáng quay lại,
 /// và việc đó rẻ hơn nhiều so với dựng đủ provider để pump từng màn.
@@ -115,6 +115,33 @@ void expectTokenHygiene(String batchName, List<String> paths) {
     expect(offenders, isEmpty,
         reason: 'Dùng accessor theo brightness (AppColors.foo(brightness), '
             'AppShadows.soft(brightness), AppColors.pastelFor(i, brightness)):\n'
+            '$offenders');
+  });
+
+  test('$batchName không dùng màu alias của AppTheme', () {
+    // LỖ HỔNG mà chín luật trên KHÔNG bịt được. `AppTheme` có một lớp alias
+    // `static const Color` (primaryGreen, primary, accentGold, textSecondary,
+    // …) trỏ thẳng vào hằng của AppColors. Vì chúng là `static const Color`,
+    // chúng KHÔNG BAO GIỜ nhận được `Brightness` — nên một màn có thể dùng
+    // chúng, khoá cứng bản sáng hoàn toàn, mà vẫn xanh cả chín luật kia:
+    // tên không khớp `AppColors.light*`, không có hậu tố Light/Dark, không
+    // phải `Colors.*`, không phải hằng hex thô. "Đã chuyển đổi" vì thế có thể
+    // đồng nghĩa với "vẫn hardcode".
+    //
+    // Tệ hơn: `primaryGreen` và `primary` alias vào `AppColors.accent` — đúng
+    // màu XANH ĐIỆN mà cả đợt redesign này tồn tại để loại bỏ. Luật 6 chặn
+    // `AppColors.accent*` nhưng viết qua `AppTheme.primaryGreen` thì lọt.
+    //
+    // Bắt theo HÌNH DẠNG chứ không liệt kê từng alias, đúng tinh thần luật 8:
+    // liệt kê thì alias thứ mười một thêm vào sau sẽ lọt lưới y như cũ. Miễn
+    // trừ đúng hai thành viên hợp lệ của AppTheme là `lightTheme`/`darkTheme`
+    // — chúng trả về `ThemeData` để gắn vào MaterialApp, không phải màu.
+    final offenders =
+        offendersFor(RegExp(r'AppTheme\.(?!lightTheme\b|darkTheme\b)\w+'));
+    expect(offenders, isEmpty,
+        reason: 'Alias màu của AppTheme không thể theo Brightness. Dùng '
+            'AppColors.foo(brightness) — lưu ý primaryGreen/primary là XANH '
+            'ĐIỆN, bản đúng là AppColors.primary(brightness) (xanh rêu):\n'
             '$offenders');
   });
 
