@@ -90,7 +90,7 @@ class _LeaderboardTab extends StatelessWidget {
                 points: leaders[1]['points'] as int,
                 avatar: leaders[1]['avatar'] as String,
                 height: 80,
-                color: Colors.grey.shade400,
+                color: AppColors.silver,
                 brightness: brightness,
               ),
               _PodiumItem(
@@ -108,7 +108,7 @@ class _LeaderboardTab extends StatelessWidget {
                 points: leaders[2]['points'] as int,
                 avatar: leaders[2]['avatar'] as String,
                 height: 60,
-                color: Colors.brown.shade300,
+                color: AppColors.bronze,
                 brightness: brightness,
               ),
             ],
@@ -227,7 +227,7 @@ class _PodiumItem extends StatelessWidget {
             child: Text(
               '$rank',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.onPrimary(brightness),
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
