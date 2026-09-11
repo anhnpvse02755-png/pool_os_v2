@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
@@ -176,7 +175,7 @@ class CoachTimelineScreen extends ConsumerWidget {
       style: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: AppColors.accentColor(brightness),
+        color: AppColors.primary(brightness),
         letterSpacing: 1,
       ),
     );
@@ -258,7 +257,7 @@ class _TimelineEntryCard extends StatelessWidget {
                   Container(
                     width: 2,
                     height: 12,
-                    color: AppColors.accentColor(brightness).withValues(alpha: 0.3),
+                    color: AppColors.primary(brightness).withValues(alpha: 0.3),
                   ),
                 Container(
                   width: 12,
@@ -267,7 +266,7 @@ class _TimelineEntryCard extends StatelessWidget {
                     color: _getIconColor(),
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.white,
+                      color: AppColors.onPrimary(brightness),
                       width: 2,
                     ),
                     boxShadow: [
@@ -282,7 +281,7 @@ class _TimelineEntryCard extends StatelessWidget {
                   Expanded(
                     child: Container(
                       width: 2,
-                      color: AppColors.accentColor(brightness).withValues(alpha: 0.3),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
                     ),
                   ),
               ],
@@ -397,14 +396,18 @@ class _TimelineEntryCard extends StatelessWidget {
 
   Color _getIconColor() {
     switch (entry.type) {
+      // Năm danh mục, bốn tông có sắc cách nhau ≥45° hue cộng một tông trung
+      // tính cho `break_`. `coachAdvice` nhận tím vì icon của nó là
+      // `Icons.psychology`; `match` nhận đỏ. Dùng bản `goldOnTint` cho
+      // `recommendation` vì `gold` đặc chỉ ~3,0:1 trên nền — sát sàn quá.
       case TimelineEntryType.recommendation:
-        return AppColors.gold;
+        return AppColors.goldOnTint(brightness);
       case TimelineEntryType.practice:
-        return AppColors.accentColor(brightness);
+        return AppColors.primary(brightness);
       case TimelineEntryType.match:
-        return Colors.purple;
+        return AppColors.error;
       case TimelineEntryType.coachAdvice:
-        return Colors.blue;
+        return AppColors.difficultyExpert(brightness);
       case TimelineEntryType.break_:
         return AppColors.textTertiary(brightness);
     }

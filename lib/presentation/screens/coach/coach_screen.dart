@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
@@ -62,14 +61,14 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh, color: AppColors.lightTextSecondary),
+            icon: Icon(Icons.refresh, color: AppColors.textSecondary(brightness)),
             onPressed: () {
               ref.read(coachStateProvider.notifier).refreshCoachPlan();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Đang cập nhật dữ liệu...'),
                   behavior: SnackBarBehavior.floating,
-                  backgroundColor: AppColors.accentColor(brightness),
+                  backgroundColor: AppColors.primary(brightness),
                 ),
               );
             },
@@ -100,7 +99,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
   Widget _buildTodayRecommendation(BuildContext context, WidgetRef ref, Brightness brightness) {
     final coachState = ref.watch(coachStateProvider);
     final recommendation = coachState.currentRecommendation;
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Container(
       width: double.infinity,
@@ -131,16 +130,16 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
-                child: Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                child: Icon(Icons.auto_awesome, color: AppColors.onPrimary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
               Text(
                 'Hôm nay nên tập',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
@@ -151,13 +150,13 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
 
           if (coachState.isLoading)
             Center(
-              child: CircularProgressIndicator(color: Colors.white),
+              child: CircularProgressIndicator(color: AppColors.onPrimary(brightness)),
             )
           else if (recommendation != null) ...[
             Text(
               recommendation.drillName,
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.onPrimary(brightness),
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
@@ -166,7 +165,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             Text(
               recommendation.reason,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: AppColors.onPrimary(brightness).withValues(alpha: 0.9),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -175,24 +174,24 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
+                color: AppColors.onPrimary(brightness).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.timer, color: Colors.white70, size: 16),
+                  Icon(Icons.timer, color: AppColors.onPrimary(brightness).withValues(alpha: 0.70), size: 16),
                   const SizedBox(width: 4),
                   Text(
                     '~${recommendation.estimatedMinutes} phút',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                    style: TextStyle(color: AppColors.onPrimary(brightness).withValues(alpha: 0.70), fontSize: 13),
                   ),
                   const SizedBox(width: AppSpacing.md),
-                  Icon(Icons.trending_up, color: Colors.white70, size: 16),
+                  Icon(Icons.trending_up, color: AppColors.onPrimary(brightness).withValues(alpha: 0.70), size: 16),
                   const SizedBox(width: 4),
                   Text(
                     recommendation.outcomes.isNotEmpty ? recommendation.outcomes.first : 'Cải thiện kỹ năng',
-                    style: TextStyle(color: Colors.white70, fontSize: 13),
+                    style: TextStyle(color: AppColors.onPrimary(brightness).withValues(alpha: 0.70), fontSize: 13),
                   ),
                 ],
               ),
@@ -207,7 +206,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             Text(
               'Straight Shot',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.onPrimary(brightness),
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
@@ -216,7 +215,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             Text(
               'Drill cơ bản nhất, nên thành thạo trước khi chuyển sang các bài khó hơn.',
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: AppColors.onPrimary(brightness).withValues(alpha: 0.9),
                 fontSize: 14,
                 height: 1.5,
               ),
@@ -261,19 +260,19 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             ),
             child: Column(
               children: [
-                Icon(Icons.psychology, size: 40, color: AppColors.lightTextTertiary),
+                Icon(Icons.psychology, size: 40, color: AppColors.textTertiary(brightness)),
                 const SizedBox(height: AppSpacing.md),
                 Text(
                   'Chưa có dữ liệu để phân tích',
                   style: TextStyle(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
                   'Tập ít nhất 1-2 bài tập để Coach phân tích điểm cần cải thiện của bạn.',
-                  style: TextStyle(color: AppColors.lightTextSecondary, fontSize: 13),
+                  style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -331,7 +330,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
                         Text(
                           mistake.description!,
                           style: TextStyle(
-                            color: AppColors.lightTextSecondary,
+                            color: AppColors.textSecondary(brightness),
                             fontSize: 12,
                           ),
                           maxLines: 1,
@@ -340,7 +339,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right, color: AppColors.lightTextTertiary),
+                Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
               ],
             ),
           ),
@@ -430,7 +429,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+        color: AppColors.primary(brightness).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
@@ -438,12 +437,12 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.tips_and_updates, color: AppColors.accentColor(brightness)),
+              Icon(Icons.tips_and_updates, color: AppColors.primary(brightness)),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Bắt đầu như thế nào?',
                 style: TextStyle(
-                  color: AppColors.accentColor(brightness),
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -483,6 +482,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -495,11 +496,10 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? Colors.white : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.onPrimary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null ? [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 12, offset: Offset(0, 4))
-            ] : null,
+            boxShadow:
+                widget.onPressed != null ? AppShadows.soft(brightness) : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -509,12 +509,12 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: widget.onPressed != null ? AppColors.accentColor(Theme.of(context).brightness) : Colors.white,
+                  color: widget.onPressed != null ? AppColors.primary(Theme.of(context).brightness) : AppColors.onPrimary(brightness),
                 ),
               ),
               if (widget.icon != null) ...[
                 const SizedBox(width: AppSpacing.sm),
-                Icon(widget.icon, size: 18, color: widget.onPressed != null ? AppColors.accentColor(Theme.of(context).brightness) : Colors.white),
+                Icon(widget.icon, size: 18, color: widget.onPressed != null ? AppColors.primary(Theme.of(context).brightness) : AppColors.onPrimary(brightness)),
               ],
             ],
           ),
@@ -558,12 +558,12 @@ class _DrillCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+                  color: AppColors.primary(brightness).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Icon(
                   _getDrillIcon(drill.code),
-                  color: AppColors.accentColor(brightness),
+                  color: AppColors.primary(brightness),
                   size: 20,
                 ),
               ),
@@ -621,7 +621,7 @@ class _DrillCard extends StatelessWidget {
       case DrillDifficulty.advanced:
         return AppColors.error;
       case DrillDifficulty.expert:
-        return Colors.purple;
+        return AppColors.difficultyExpert(brightness);
     }
   }
 }
@@ -653,10 +653,10 @@ class _CoachFeatureCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              color: AppColors.primary(brightness).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: Icon(icon, color: AppColors.accentColor(brightness)),
+            child: Icon(icon, color: AppColors.primary(brightness)),
           ),
           const SizedBox(width: AppSpacing.lg),
           Expanded(
@@ -674,7 +674,7 @@ class _CoachFeatureCard extends StatelessWidget {
                 Text(
                   description,
                   style: TextStyle(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 13,
                   ),
                 ),
@@ -704,14 +704,14 @@ class _TipItem extends StatelessWidget {
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              color: AppColors.accentColor(brightness),
+              color: AppColors.primary(brightness),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 number,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),

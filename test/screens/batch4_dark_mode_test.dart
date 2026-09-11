@@ -28,4 +28,15 @@ void main() {
     'lib/presentation/screens/knowledge/knowledge_graph_screen.dart',
     'lib/presentation/screens/knowledge/quiz_screen.dart',
   ]);
+
+  expectTokenHygiene('lo 4 - coach', const [
+    'lib/presentation/screens/coach/analysis_screen.dart',
+    'lib/presentation/screens/coach/coach_chat_screen.dart',
+    'lib/presentation/screens/coach/coach_entry_survey_screen.dart',
+    'lib/presentation/screens/coach/coach_home_screen.dart',
+    'lib/presentation/screens/coach/coach_onboarding_screen.dart',
+    'lib/presentation/screens/coach/coach_screen.dart',
+    'lib/presentation/screens/coach/coach_timeline_screen.dart',
+    'lib/presentation/screens/coach/training_plan_screen.dart',
+  ]);
 }

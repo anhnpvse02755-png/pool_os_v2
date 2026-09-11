@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
@@ -244,19 +243,19 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: AppColors.accentColor(brightness).withValues(alpha: 0.1),
+              color: AppColors.primary(brightness).withValues(alpha: 0.1),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
             ),
             child: Row(
               children: [
-                Icon(Icons.analytics, color: AppColors.accentColor(brightness), size: 20),
+                Icon(Icons.analytics, color: AppColors.primary(brightness), size: 20),
                 const SizedBox(width: AppSpacing.sm),
                 Text(
                   'Từ trận đấu gần nhất',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.accentColor(brightness),
+                    color: AppColors.primary(brightness),
                   ),
                 ),
               ],
@@ -272,12 +271,12 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     decoration: BoxDecoration(
-                      color: AppColors.accentColor(brightness).withValues(alpha: 0.05),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.auto_awesome, size: 20, color: AppColors.accentColor(brightness)),
+                        Icon(Icons.auto_awesome, size: 20, color: AppColors.primary(brightness)),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: Text(
@@ -313,7 +312,7 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                         'Long Run',
                         '${analysis.longestRun} bi',
                         Icons.trending_up,
-                        AppColors.accentColor(brightness),
+                        AppColors.primary(brightness),
                         brightness,
                       ),
                     ),
@@ -328,7 +327,7 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                         'Tổng bi',
                         '${analysis.totalBallsPotted}',
                         Icons.circle,
-                        Colors.blue,
+                        AppColors.primary(brightness),
                         brightness,
                       ),
                     ),
@@ -339,7 +338,7 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                         'Racks',
                         '${analysis.totalRacks}',
                         Icons.layers,
-                        Colors.purple,
+                        AppColors.difficultyExpert(brightness),
                         brightness,
                       ),
                     ),
@@ -405,11 +404,11 @@ class _CoachHomeScreenState extends ConsumerState<CoachHomeScreen> {
                   width: double.infinity,
                   child: OutlinedButton.icon(
                     onPressed: () => context.push('/coach/analysis'),
-                    icon: Icon(Icons.lightbulb_outline, color: AppColors.accentColor(brightness)),
-                    label: Text('Xem đề xuất từ Coach', style: TextStyle(color: AppColors.accentColor(brightness))),
+                    icon: Icon(Icons.lightbulb_outline, color: AppColors.primary(brightness)),
+                    label: Text('Xem đề xuất từ Coach', style: TextStyle(color: AppColors.primary(brightness))),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.accentColor(brightness),
-                      side: BorderSide(color: AppColors.accentColor(brightness)),
+                      foregroundColor: AppColors.primary(brightness),
+                      side: BorderSide(color: AppColors.primary(brightness)),
                       padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
                     ),
                   ),
@@ -518,12 +517,12 @@ class _QuickActionButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            border: Border.all(color: AppColors.lightBorder),
+            border: Border.all(color: AppColors.border(brightness)),
             boxShadow: AppShadows.sm(brightness),
           ),
           child: Column(
             children: [
-              Icon(icon, color: AppColors.accentColor(brightness)),
+              Icon(icon, color: AppColors.primary(brightness)),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 label,

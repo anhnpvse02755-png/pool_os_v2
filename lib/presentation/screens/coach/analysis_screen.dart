@@ -6,7 +6,6 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/providers/coach_provider.dart';
-import '../../../core/services/coach_service.dart';
 import '../../../core/services/coach_types.dart';
 
 /// PoolOS Analysis/Progress Screen - Redesigned with Minimalist Luxury
@@ -109,7 +108,7 @@ class _OverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.space6),
@@ -136,12 +135,12 @@ class _OverviewCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.analytics, color: Colors.white, size: 20),
+              Icon(Icons.analytics, color: AppColors.onPrimary(brightness), size: 20),
               const SizedBox(width: AppSpacing.space2),
-              const Text(
+              Text(
                 'Overview',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),
@@ -199,8 +198,8 @@ class _OverviewStat extends StatelessWidget {
       children: [
         Text(
           value,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.onPrimary(brightness),
             fontWeight: FontWeight.w700,
             fontSize: 24,
           ),
@@ -209,7 +208,7 @@ class _OverviewStat extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
+            color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
             fontSize: 12,
           ),
         ),
@@ -237,7 +236,7 @@ class _StatsRow extends StatelessWidget {
             icon: Icons.timer,
             value: '${summary.totalMinutes}m',
             label: 'Total Time',
-            color: AppColors.accentColor(brightness),
+            color: AppColors.primary(brightness),
             brightness: brightness,
           ),
         ),
@@ -416,7 +415,7 @@ class _WeaknessCard extends StatelessWidget {
                   vertical: AppSpacing.space1,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.errorSubtleLight,
+                  color: AppColors.errorSubtle(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Text(
@@ -466,7 +465,7 @@ class _RecommendationsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -7,7 +7,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../training/drill_detail_screen.dart';
@@ -125,7 +124,7 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
           height: 8,
           decoration: BoxDecoration(
             color: _currentPage == index
-                ? AppColors.accentColor(_brightness)
+                ? AppColors.primary(_brightness)
                 : AppColors.textTertiary(_brightness),
             borderRadius: BorderRadius.circular(4),
           ),
@@ -135,7 +134,7 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
   }
 
   Widget _buildButton() {
-    final accentColor = AppColors.accentColor(_brightness);
+    final accentColor = AppColors.primary(_brightness);
 
     if (_currentPage == _pages.length - 1) {
       return _OnboardingButton(
@@ -182,7 +181,7 @@ class _OnboardingButtonState extends State<_OnboardingButton> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(widget.brightness);
+    final accentColor = AppColors.primary(widget.brightness);
 
     return GestureDetector(
       onTap: widget.onPressed,
@@ -214,12 +213,12 @@ class _OnboardingButtonState extends State<_OnboardingButton> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColors.onPrimary(widget.brightness),
                   letterSpacing: 1,
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              Icon(widget.icon, color: Colors.white, size: 20),
+              Icon(widget.icon, color: AppColors.onPrimary(widget.brightness), size: 20),
             ],
           ),
         ),
@@ -244,7 +243,7 @@ class _OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.xxl),

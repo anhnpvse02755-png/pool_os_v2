@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../knowledge/conversation_engine.dart';
@@ -196,13 +196,7 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
       ),
       decoration: BoxDecoration(
         color: AppColors.surface(_brightness),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        boxShadow: AppShadows.soft(_brightness),
       ),
       child: Row(
         children: [
@@ -231,11 +225,11 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
           const SizedBox(width: AppSpacing.md),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.accentColor(_brightness),
+              color: AppColors.primary(_brightness),
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              icon: Icon(Icons.send, color: Colors.white, size: 20),
+              icon: Icon(Icons.send, color: AppColors.onPrimary(_brightness), size: 20),
               onPressed: () => _handleSend(_textController.text),
             ),
           ),
@@ -458,7 +452,7 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('OK', style: TextStyle(color: AppColors.accentColor(_brightness))),
+            child: Text('OK', style: TextStyle(color: AppColors.primary(_brightness))),
           ),
         ],
       ),

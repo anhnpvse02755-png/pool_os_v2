@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../knowledge/player_intelligence.dart';
@@ -154,8 +153,8 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: answeredCount / 3,
-                backgroundColor: AppColors.lightBorder,
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.accentColor(_brightness)),
+                backgroundColor: AppColors.border(_brightness),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary(_brightness)),
                 minHeight: 6,
               ),
             ),
@@ -180,7 +179,7 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
     required int? selectedIndex,
     required Function(int) onSelected,
   }) {
-    final accentColor = AppColors.accentColor(_brightness);
+    final accentColor = AppColors.primary(_brightness);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +197,7 @@ class _CoachEntrySurveyScreenState extends ConsumerState<CoachEntrySurveyScreen>
                 child: Text(
                   '$number',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.onPrimary(_brightness),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -327,10 +326,10 @@ class _SurveyButtonState extends State<_SurveyButton> {
           width: double.infinity,
           height: 56,
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accentColor(widget.brightness) : AppColors.textTertiary(widget.brightness),
+            color: widget.onPressed != null ? AppColors.primary(widget.brightness) : AppColors.textTertiary(widget.brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null ? [
-              BoxShadow(color: AppColors.accentColor(widget.brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))
+              BoxShadow(color: AppColors.primary(widget.brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))
             ] : null,
           ),
           child: widget.isLoading
@@ -339,7 +338,7 @@ class _SurveyButtonState extends State<_SurveyButton> {
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(
-                      color: Colors.white,
+                      color: AppColors.onPrimary(widget.brightness),
                       strokeWidth: 2,
                     ),
                   ),
@@ -352,11 +351,11 @@ class _SurveyButtonState extends State<_SurveyButton> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        color: Colors.white,
+                        color: AppColors.onPrimary(widget.brightness),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                    Icon(Icons.arrow_forward, color: AppColors.onPrimary(widget.brightness), size: 20),
                   ],
                 ),
         ),
@@ -380,7 +379,7 @@ class _OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(brightness);
+    final accentColor = AppColors.primary(brightness);
 
     return Material(
       color: isSelected ? accentColor.withValues(alpha: 0.1) : AppColors.surface(brightness),
@@ -393,7 +392,7 @@ class _OptionTile extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             border: Border.all(
-              color: isSelected ? accentColor : AppColors.lightBorder,
+              color: isSelected ? accentColor : AppColors.border(brightness),
               width: isSelected ? 2 : 1,
             ),
           ),
@@ -414,7 +413,7 @@ class _OptionTile extends StatelessWidget {
                     ? Icon(
                         Icons.check,
                         size: 14,
-                        color: Colors.white,
+                        color: AppColors.onPrimary(brightness),
                       )
                     : null,
               ),
