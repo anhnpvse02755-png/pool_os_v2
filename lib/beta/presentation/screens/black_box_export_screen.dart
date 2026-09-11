@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../beta/providers/providers.dart';
 import '../../../beta/providers/black_box_provider.dart';
@@ -33,24 +34,28 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final blackBox = ref.watch(blackBoxProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('PoolOS Black Box'),
-        backgroundColor: AppTheme.primaryGreen,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primary(brightness),
+        foregroundColor: AppColors.onPrimary(brightness),
       ),
       body: _buildBody(context, blackBox),
     );
   }
 
   Widget _buildBody(BuildContext context, BlackBoxProvider blackBox) {
+    final brightness = Theme.of(context).brightness;
+
     switch (blackBox.state) {
       case BlackBoxState.idle:
       case BlackBoxState.initializing:
-        return const Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+        return Center(
+          child: CircularProgressIndicator(color: AppColors.primary(brightness)),
         );
 
       case BlackBoxState.ready:
@@ -103,30 +108,32 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildHeader() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryGreen.withValues(alpha: 0.1),
-            AppTheme.accentGold.withValues(alpha: 0.05),
+            AppColors.primary(brightness).withValues(alpha: 0.1),
+            AppColors.gold.withValues(alpha: 0.05),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.primary(brightness).withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+              color: AppColors.primary(brightness).withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.analytics_outlined,
               size: 48,
-              color: AppTheme.primaryGreen,
+              color: AppColors.primary(brightness),
             ),
           ),
           const SizedBox(height: 16),
@@ -140,7 +147,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
           Text(
             'Complete snapshot of Coach AI state',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
           ),
         ],
@@ -149,19 +156,21 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildInfoCard() {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border(brightness)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline, color: AppTheme.primaryGreen, size: 20),
+              Icon(Icons.info_outline, color: AppColors.primary(brightness), size: 20),
               const SizedBox(width: 8),
               Text(
                 'What is this?',
@@ -181,18 +190,18 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha: 0.1),
+              color: AppColors.gold.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
               children: [
-                Icon(Icons.shield_outlined, color: Colors.amber.shade700, size: 20),
+                Icon(Icons.shield_outlined, color: AppColors.goldOnTint(brightness), size: 20),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'No account required. No internet required. Anonymous.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.amber.shade900,
+                          color: AppColors.goldOnTint(brightness),
                         ),
                   ),
                 ),
@@ -205,11 +214,13 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildInfoItem(IconData icon, String text) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppTheme.textSecondary),
+          Icon(icon, size: 18, color: AppColors.textSecondary(brightness)),
           const SizedBox(width: 12),
           Text(text, style: Theme.of(context).textTheme.bodyMedium),
         ],
@@ -218,22 +229,24 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildPreviewCard() {
+    final brightness = Theme.of(context).brightness;
+
     final blackBox = ref.watch(blackBoxProvider);
     final preview = blackBox.preview ?? _generatePreview();
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border(brightness)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.summarize_outlined, color: AppTheme.primaryGreen, size: 20),
+              Icon(Icons.summarize_outlined, color: AppColors.primary(brightness), size: 20),
               const SizedBox(width: 8),
               Text(
                 'Preview',
@@ -257,6 +270,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildPreviewRow(String label, String value, {bool highlight = false}) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -267,7 +282,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             value,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: highlight ? FontWeight.bold : FontWeight.normal,
-                  color: highlight ? AppTheme.primaryGreen : null,
+                  color: highlight ? AppColors.primary(brightness) : null,
                 ),
           ),
         ],
@@ -276,13 +291,15 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildExportButton(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return SizedBox(
       height: 56,
       child: ElevatedButton(
         onPressed: _startExport,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryGreen,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary(brightness),
+          foregroundColor: AppColors.onPrimary(brightness),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -335,13 +352,15 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildExportingState(BuildContext context, BlackBoxProvider blackBox) {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(color: AppTheme.primaryGreen),
+            CircularProgressIndicator(color: AppColors.primary(brightness)),
             const SizedBox(height: 32),
             Text(
               'Building Black Box...',
@@ -360,13 +379,15 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildCompressingState(BuildContext context, BlackBoxProvider blackBox) {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(color: AppTheme.primaryGreen),
+            CircularProgressIndicator(color: AppColors.primary(brightness)),
             const SizedBox(height: 32),
             Text(
               'Compressing...',
@@ -385,28 +406,30 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildProgressStep(String label, bool completed, {bool active = false}) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           if (completed)
-            const Icon(Icons.check_circle, color: AppTheme.primaryGreen, size: 20)
+            Icon(Icons.check_circle, color: AppColors.primary(brightness), size: 20)
           else if (active)
             SizedBox(
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: AppTheme.primaryGreen,
+                color: AppColors.primary(brightness),
               ),
             )
           else
-            Icon(Icons.circle_outlined, color: Colors.grey.shade400, size: 20),
+            Icon(Icons.circle_outlined, color: AppColors.textTertiary(brightness), size: 20),
           const SizedBox(width: 12),
           Text(
             label,
             style: TextStyle(
-              color: completed || active ? null : Colors.grey,
+              color: completed || active ? null : AppColors.textTertiary(brightness),
               fontWeight: active ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -416,6 +439,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildExportedState(BuildContext context, BlackBoxProvider blackBox) {
+    final brightness = Theme.of(context).brightness;
+
     final path = blackBox.lastExportPath ?? '';
     final fileName = path.split('/').last;
     final size = blackBox.preview?.sizeEstimate ?? '~2 MB';
@@ -429,13 +454,13 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                color: AppColors.primary(brightness).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle,
                 size: 64,
-                color: AppTheme.primaryGreen,
+                color: AppColors.primary(brightness),
               ),
             ),
             const SizedBox(height: 24),
@@ -451,9 +476,9 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.surface(brightness),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: AppColors.border(brightness)),
               ),
               child: Column(
                 children: [
@@ -479,8 +504,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                 icon: const Icon(Icons.share),
                 label: const Text('Share via...'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.primary(brightness),
+                  foregroundColor: AppColors.onPrimary(brightness),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -499,8 +524,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                 icon: const Icon(Icons.save_alt),
                 label: const Text('Save to Downloads'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.primaryGreen,
-                  side: const BorderSide(color: AppTheme.primaryGreen),
+                  foregroundColor: AppColors.primary(brightness),
+                  side: BorderSide(color: AppColors.primary(brightness)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -523,13 +548,15 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildInfoRow(String label, String value) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondary,
+                color: AppColors.textSecondary(brightness),
               ),
         ),
         Flexible(
@@ -547,6 +574,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   }
 
   Widget _buildErrorState(BuildContext context, BlackBoxProvider blackBox) {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -556,13 +585,13 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.error_outline,
                 size: 64,
-                color: Colors.red,
+                color: AppColors.error,
               ),
             ),
             const SizedBox(height: 24),
@@ -576,7 +605,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.05),
+                color: AppColors.error.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -585,7 +614,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                   Text(
                     'Failed at',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.red,
+                          color: AppColors.error,
                         ),
                   ),
                   Text(
@@ -599,7 +628,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                     Text(
                       'Reason',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.red,
+                            color: AppColors.error,
                           ),
                     ),
                     Text(blackBox.error!),
@@ -618,8 +647,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                 icon: const Icon(Icons.refresh),
                 label: const Text('Retry'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.primary(brightness),
+                  foregroundColor: AppColors.onPrimary(brightness),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -711,10 +740,12 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: SingleChildScrollView(
@@ -727,7 +758,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.border(brightness),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -744,7 +775,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
             Text(
               'Help us improve Coach AI',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
               textAlign: TextAlign.center,
             ),
@@ -774,8 +805,8 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
                   child: ElevatedButton(
                     onPressed: _submitFeedback,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryGreen,
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primary(brightness),
+                      foregroundColor: AppColors.onPrimary(brightness),
                     ),
                     child: const Text('Submit & Export'),
                   ),
@@ -802,7 +833,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
               return IconButton(
                 icon: Icon(
                   index < value ? Icons.star : Icons.star_border,
-                  color: Colors.amber,
+                  color: AppColors.gold,
                 ),
                 onPressed: () => onChanged(index + 1),
               );

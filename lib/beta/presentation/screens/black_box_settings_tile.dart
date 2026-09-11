@@ -6,6 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/app_theme.dart';
 
 /// Black Box Settings Tile for Settings Screen
@@ -14,19 +16,15 @@ class BlackBoxSettingsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(color: AppColors.border(brightness)),
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Material(
         color: Colors.transparent,
@@ -41,12 +39,12 @@ class BlackBoxSettingsTile extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    color: AppColors.primary(brightness).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.analytics_outlined,
-                    color: AppTheme.primaryGreen,
+                    color: AppColors.primary(brightness),
                     size: 24,
                   ),
                 ),
@@ -67,7 +65,7 @@ class BlackBoxSettingsTile extends ConsumerWidget {
                       Text(
                         'Export Coach Package',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: AppTheme.textSecondary,
+                              color: AppColors.textSecondary(brightness),
                             ),
                       ),
                     ],
@@ -78,22 +76,22 @@ class BlackBoxSettingsTile extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    color: AppColors.primary(brightness).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     'v2.0',
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppTheme.primaryGreen,
+                          color: AppColors.primary(brightness),
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                 ),
                 const SizedBox(width: 8),
 
-                const Icon(
+                Icon(
                   Icons.chevron_right,
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
               ],
             ),
@@ -110,30 +108,32 @@ class BlackBoxInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+        color: AppColors.primary(brightness).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary(brightness).withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.info_outline,
                 size: 18,
-                color: AppTheme.primaryGreen,
+                color: AppColors.primary(brightness),
               ),
               const SizedBox(width: 8),
               Text(
                 'About Black Box',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryGreen,
+                      color: AppColors.primary(brightness),
                     ),
               ),
             ],
@@ -143,17 +143,17 @@ class BlackBoxInfoCard extends StatelessWidget {
             'The Black Box exports a complete snapshot of Coach AI state for analysis. '
             'No account required. No internet required. Anonymous.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              _buildChip('Sessions'),
+              _buildChip('Sessions', brightness),
               const SizedBox(width: 8),
-              _buildChip('Recommendations'),
+              _buildChip('Recommendations', brightness),
               const SizedBox(width: 8),
-              _buildChip('Timeline'),
+              _buildChip('Timeline', brightness),
             ],
           ),
         ],
@@ -161,11 +161,14 @@ class BlackBoxInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildChip(String label) {
+  /// `BlackBoxInfoCard` la StatelessWidget nen khong co `context` san —
+  /// nhan Brightness qua tham so thay vi doc tu context.
+  Widget _buildChip(String label, Brightness brightness) {
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
