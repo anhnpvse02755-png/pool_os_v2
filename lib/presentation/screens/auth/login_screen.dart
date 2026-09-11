@@ -113,12 +113,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                      // Icon và chữ nằm TRÊN nền `errorSubtle` — nền dịu cùng
+                      // tông. Tông gốc ở đó chỉ 3.44:1 bản sáng.
+                      Icon(Icons.error_outline,
+                          color: AppColors.errorOnTint(brightness), size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           _errorMessage!,
-                          style: const TextStyle(color: AppColors.error, fontSize: 14),
+                          style: TextStyle(
+                              color: AppColors.errorOnTint(brightness),
+                              fontSize: 14),
                         ),
                       ),
                     ],

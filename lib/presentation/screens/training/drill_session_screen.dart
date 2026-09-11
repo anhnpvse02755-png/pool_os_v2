@@ -522,7 +522,10 @@ class _LastResultFeedback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSuccess = result == ShotResult.success;
-    final color = isSuccess ? AppColors.success : AppColors.error;
+    // Icon nằm TRÊN `bgColor` — nền dịu cùng tông — nên lấy mực on-tint.
+    final color = isSuccess
+        ? AppColors.successOnTint(brightness)
+        : AppColors.errorOnTint(brightness);
     final bgColor = isSuccess ? AppColors.successSubtle(brightness) : AppColors.errorSubtle(brightness);
 
     return Container(

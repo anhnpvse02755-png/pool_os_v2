@@ -195,13 +195,14 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.error_outline,
-                      color: AppColors.error, size: 20),
+                  Icon(Icons.error_outline,
+                      color: AppColors.errorOnTint(brightness), size: 20),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(_error!,
-                        style: const TextStyle(
-                            color: AppColors.error, fontSize: 14)),
+                        style: TextStyle(
+                            color: AppColors.errorOnTint(brightness),
+                            fontSize: 14)),
                   ),
                 ],
               ),

@@ -150,9 +150,9 @@ class AppColors {
   // Các hằng *Dark có sẵn KHÔNG cứu được: dùng làm chữ chỉ lên
   // 5.74 / 2.95 / 4.23 — warning và error vẫn dưới sàn.
   //
-  // Nên phải có họ accessor riêng, và phải theo Brightness: bản tối cần đi
-  // NGƯỢC chiều (success và warning đã đạt sẵn ở tông gốc, chỉ error phải
-  // sáng lên). Một hằng phẳng không thể phục vụ cả hai chiều.
+  // Nên phải có họ accessor riêng, và phải theo Brightness: bản sáng phải
+  // ĐẬM đi khỏi tông gốc, bản tối phải SÁNG lên. Một hằng phẳng không thể
+  // phục vụ cả hai chiều ngược nhau.
   //
   // Cách dựng giá trị: hạ/nâng độ sáng DỌC ĐÚNG TIA HSL của chính tông đó —
   // giữ nguyên hue và độ bão hoà — nên mỗi tông vẫn là chính nó, chỉ đậm
@@ -161,27 +161,42 @@ class AppColors {
   // Nền chuẩn hoá: ĐO TRÊN CẢ `surface` LẪN `background`, vì badge xuất hiện
   // trên cả hai. Bản sáng bị `background` #F7F4EC siết chặt hơn (nền kem sẫm
   // hơn trắng -> nền 10% sẫm hơn -> chữ sẫm tương phản kém hơn); bản tối thì
-  // ngược lại, `surface` #1B221F mới là mặt siết. Giá trị dưới đây đạt ≥4.5
-  // trên MẶT SIẾT của từng chế độ, nên đạt trên cả hai.
+  // ngược lại, `surface` #1B221F mới là mặt siết.
   //
-  //   tông     sáng      surface / background      tối       surface / background
-  //   success  #0A7753   5.06 / 4.63               #10B981   5.46 / 6.19
-  //   warning  #925E06   5.08 / 4.65               #F59E0B   6.35 / 7.21
-  //   error    #CC1111   5.03 / 4.60               #F15F5F   4.62 / 5.15
-  //   gold     #846200   5.03 / 4.60               #BA8B00   4.66 / 5.25
+  // HỌ NỀN THỨ HAI: các hằng `*Subtle` (successSubtleLight #ECFDF5,
+  // warningSubtleDark #78350F, …) cũng là "nền dịu cùng tông" và cũng đỡ
+  // chữ/icon của chính tông đó — đúng một bài toán. Nên MỘT họ token này
+  // phục vụ CẢ HAI họ nền, không đẻ thêm `*OnSubtle`.
   //
-  // LƯU Ý: nền 10% VẪN lấy từ tông GỐC (`success`, `warning`, …), không lấy
-  // từ token này. Đổi cả nền sẽ làm badge đổi sắc; ở đây chỉ chữ/icon đổi.
+  // Chính họ nền thứ hai mới siết bản TỐI. Nền `*Subtle` bản tối sáng hơn hẳn
+  // một lớp phủ 10% trên #1B221F, nên mực tối lấy thẳng tông gốc (#10B981,
+  // #F59E0B) chỉ đạt 3.83 / 4.22 ở đó — vẫn dưới sàn. Vì thế mực tối phải
+  // nâng sáng khỏi tông gốc, và nâng như vậy KHÔNG hại nền 10% (nền đó rất
+  // sẫm nên mực sáng hơn chỉ tương phản tốt hơn).
+  //
+  //   tông     chế độ  mực      nền 10% (surf/bg)   *Subtle
+  //   success  sáng    #0A7753  5.06 / 4.63         5.28
+  //   success  tối     #12CB8D  6.57 / 7.45         4.61
+  //   warning  sáng    #925E06  5.08 / 4.65         5.29
+  //   warning  tối     #F6AA28  6.95 / 7.89         4.62
+  //   error    sáng    #CC1111  5.03 / 4.60         5.25
+  //   error    tối     #F26464  4.79 / 5.34         4.61
+  //   gold     sáng    #846200  5.03 / 4.60         (không có goldSubtle)
+  //   gold     tối     #BA8B00  4.66 / 5.25         (không có goldSubtle)
+  //
+  // LƯU Ý: NỀN vẫn lấy từ tông GỐC (`success.withValues(alpha: 0.1)`) hoặc từ
+  // `*Subtle(brightness)`, không lấy từ token này. Đổi cả nền sẽ làm badge
+  // đổi sắc; ở đây chỉ chữ/icon đổi.
   // ========================================================================
 
   static const Color successOnTintLight = Color(0xFF0A7753);
-  static const Color successOnTintDark = success;
+  static const Color successOnTintDark = Color(0xFF12CB8D);
 
   static const Color warningOnTintLight = Color(0xFF925E06);
-  static const Color warningOnTintDark = warning;
+  static const Color warningOnTintDark = Color(0xFFF6AA28);
 
   static const Color errorOnTintLight = Color(0xFFCC1111);
-  static const Color errorOnTintDark = Color(0xFFF15F5F);
+  static const Color errorOnTintDark = Color(0xFFF26464);
 
   static const Color goldOnTintLight = Color(0xFF846200);
   static const Color goldOnTintDark = Color(0xFFBA8B00);
@@ -299,25 +314,28 @@ class AppColors {
   static Color successSubtle(Brightness brightness) =>
       brightness == Brightness.light ? successSubtleLight : successSubtleDark;
 
-  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `success`.
-  ///
-  /// Dùng cho thành ngữ badge; nền vẫn là `success.withValues(alpha: 0.1)`.
+  /// Màu chữ/icon đặt TRÊN nền dịu cùng tông `success` — cả nền 10%
+  /// (`success.withValues(alpha: 0.1)`) lẫn `successSubtle(brightness)`.
   static Color successOnTint(Brightness brightness) =>
       brightness == Brightness.light
           ? successOnTintLight
           : successOnTintDark;
 
-  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `warning`.
+  /// Màu chữ/icon đặt TRÊN nền dịu cùng tông `warning` — cả nền 10%
+  /// (`warning.withValues(alpha: 0.1)`) lẫn `warningSubtle(brightness)`.
   static Color warningOnTint(Brightness brightness) =>
       brightness == Brightness.light
           ? warningOnTintLight
           : warningOnTintDark;
 
-  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `error`.
+  /// Màu chữ/icon đặt TRÊN nền dịu cùng tông `error` — cả nền 10%
+  /// (`error.withValues(alpha: 0.1)`) lẫn `errorSubtle(brightness)`.
   static Color errorOnTint(Brightness brightness) =>
       brightness == Brightness.light ? errorOnTintLight : errorOnTintDark;
 
   /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `gold`.
+  ///
+  /// Không có `goldSubtle` nên token này chỉ phục vụ nền 10%.
   static Color goldOnTint(Brightness brightness) =>
       brightness == Brightness.light ? goldOnTintLight : goldOnTintDark;
 

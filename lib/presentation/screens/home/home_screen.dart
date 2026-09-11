@@ -817,7 +817,11 @@ class _GoalRow extends StatelessWidget {
               ),
               child: Icon(
                 isDone ? Icons.check : icon,
-                color: isDone ? AppColors.success : accentColor,
+                // Nhánh isDone đặt icon lên `successSubtle` cùng tông; nhánh
+                // kia đặt lên ô pastel — nền khác, giữ nguyên.
+                color: isDone
+                    ? AppColors.successOnTint(brightness)
+                    : accentColor,
                 size: 20,
               ),
             ),

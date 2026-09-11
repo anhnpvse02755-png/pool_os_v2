@@ -98,7 +98,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   color: AppColors.successSubtle(brightness),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.check_circle, color: AppColors.success, size: 36),
+                // Icon xác nhận trên nền `successSubtle` cùng tông.
+                child: Icon(Icons.check_circle,
+                    color: AppColors.successOnTint(brightness), size: 36),
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
@@ -180,12 +182,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                      Icon(Icons.error_outline,
+                          color: AppColors.errorOnTint(brightness), size: 20),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
                           _errorMessage!,
-                          style: const TextStyle(color: AppColors.error, fontSize: 14),
+                          style: TextStyle(
+                              color: AppColors.errorOnTint(brightness),
+                              fontSize: 14),
                         ),
                       ),
                     ],

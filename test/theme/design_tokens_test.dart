@@ -385,10 +385,62 @@ void main() {
       }
     });
 
-    // CO CHU Y chi khoa ban TOI. Ban sang cung co van de cung loai
-    // (`warning` tren #FFFBEB = 2.07:1, `success` tren #ECFDF5 = 2.41:1) nhung
-    // do la no ton tu truoc va ngoai pham vi dot sua nay — khoa lai o day se
-    // do ngay ma khong ai duoc giao sua. Da bao cao rieng.
+    // Truoc day nhom nay CO CHU Y chi khoa ban toi, vi ban sang co van de
+    // cung loai (`warning` tren #FFFBEB = 2.07:1, `success` tren #ECFDF5 =
+    // 2.41:1) nhung chua ai duoc giao sua. Nay da sua: pham vi do da duoc mo,
+    // va ho *OnTint chinh la ban va. Ghi chu mien tru do BO.
+    //
+    // Nen `*Subtle` la ho nen THU HAI cua cung mot bai toan "chu/icon tren
+    // nen diu cung tong" — ho thu nhat la nen 10%. Mot ho token phuc vu ca
+    // hai, nen khoa ca hai o day.
+    test('muc on-tint dat 4.5:1 tren nen diu, o CA HAI che do', () {
+      for (final spec in [
+        [
+          AppColors.successOnTint(Brightness.light),
+          AppColors.successSubtle(Brightness.light)
+        ],
+        [
+          AppColors.successOnTint(Brightness.dark),
+          AppColors.successSubtle(Brightness.dark)
+        ],
+        [
+          AppColors.warningOnTint(Brightness.light),
+          AppColors.warningSubtle(Brightness.light)
+        ],
+        [
+          AppColors.warningOnTint(Brightness.dark),
+          AppColors.warningSubtle(Brightness.dark)
+        ],
+        [
+          AppColors.errorOnTint(Brightness.light),
+          AppColors.errorSubtle(Brightness.light)
+        ],
+        [
+          AppColors.errorOnTint(Brightness.dark),
+          AppColors.errorSubtle(Brightness.dark)
+        ],
+      ]) {
+        expect(
+          contrast(spec[0], spec[1]),
+          greaterThanOrEqualTo(4.5),
+          reason: 'chu tren nen diu la chu thuong — san 4.5:1, khong phai 3:1',
+        );
+      }
+    });
+
+    // Khoa lai ly do muc TOI phai sang hon tong goc. Nen `*Subtle` ban toi
+    // sang hon han mot lop phu 10% tren #1B221F, nen lay thang tong goc lam
+    // muc chi duoc 3.83 / 4.22 / 3.80 — day la cho da tung truot.
+    test('tong GOC lam muc tren nen diu ban toi thi truot 4.5', () {
+      for (final pair in [
+        [AppColors.success, AppColors.successSubtle(Brightness.dark)],
+        [AppColors.warning, AppColors.warningSubtle(Brightness.dark)],
+        [AppColors.error, AppColors.errorSubtle(Brightness.dark)],
+      ]) {
+        expect(contrast(pair[0], pair[1]), lessThan(4.5),
+            reason: 'neu cho nay da dat 4.5 thi muc toi khong can sang len');
+      }
+    });
   });
 
   group('Gold tach khoi warning', () {

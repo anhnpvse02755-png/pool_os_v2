@@ -167,7 +167,7 @@ class CertificationDetailScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(Icons.info_outline,
-                        color: AppColors.warning, size: 20),
+                        color: AppColors.warningOnTint(brightness), size: 20),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
