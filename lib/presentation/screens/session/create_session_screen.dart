@@ -38,20 +38,22 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         title: Text(
           'Buổi chơi mới',
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.close, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.close, color: AppColors.textPrimary(brightness)),
           onPressed: () => context.pop(),
         ),
       ),
@@ -65,7 +67,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               'Loại buổi chơi',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
             ).animate().fadeIn(),
             SizedBox(height: AppSpacing.sm),
@@ -106,14 +108,14 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
               'Tình trạng hiện tại',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                   ),
             ).animate().fadeIn(delay: 200.ms),
             SizedBox(height: AppSpacing.xs),
             Text(
               'Đánh giá tình trạng của bạn trước khi bắt đầu',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
             ).animate().fadeIn(delay: 200.ms),
             SizedBox(height: AppSpacing.lg),
@@ -184,7 +186,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                         Text(
                           'Năng lượng thấp? Có thể ảnh hưởng đến độ chính xác của cú đánh. Cân nhắc khởi động kỹ hơn.',
                           style: TextStyle(
-                            color: AppColors.lightTextSecondary,
+                            color: AppColors.textSecondary(brightness),
                             fontSize: 13,
                             height: 1.4,
                           ),
@@ -207,7 +209,7 @@ class _CreateSessionScreenState extends State<CreateSessionScreen> {
                       height: 24,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: Colors.white,
+                        color: AppColors.onPrimary(brightness),
                       ),
                     )
                   : null,
@@ -234,22 +236,24 @@ class _TypeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.accent : AppColors.lightSurface,
+          color: isSelected ? AppColors.primary(brightness) : AppColors.surface(brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
-            color: isSelected ? AppColors.accent : AppColors.lightBorder,
+            color: isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.accent.withValues(alpha: 0.2),
+                    color: AppColors.primary(brightness).withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: Offset(0, 2),
                   ),
@@ -260,14 +264,14 @@ class _TypeCard extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? Colors.white : AppColors.lightTextSecondary,
+              color: isSelected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
               size: 28,
             ),
             SizedBox(height: AppSpacing.sm),
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : AppColors.lightTextSecondary,
+                color: isSelected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                 fontSize: 12,
               ),
@@ -296,31 +300,33 @@ class _ReadinessSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 20, color: AppColors.accent),
+            Icon(icon, size: 20, color: AppColors.primary(brightness)),
             SizedBox(width: AppSpacing.sm),
             Text(
               label,
               style: TextStyle(
                 fontWeight: FontWeight.w500,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
             ),
             Spacer(),
             Container(
               padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
               decoration: BoxDecoration(
-                color: AppColors.accent.withValues(alpha: 0.1),
+                color: AppColors.primary(brightness).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
               child: Text(
                 labels[value - 1],
                 style: TextStyle(
-                  color: AppColors.accent,
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
                 ),
@@ -340,7 +346,7 @@ class _ReadinessSlider extends StatelessWidget {
                   height: 8,
                   margin: EdgeInsets.only(right: index < 4 ? 6 : 0),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.accent : AppColors.lightBorder,
+                    color: isSelected ? AppColors.primary(brightness) : AppColors.border(brightness),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 ),
@@ -369,6 +375,8 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -381,16 +389,16 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
-                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
                 : null,
           ),
           child: widget.child ??
               Text(
                 widget.label,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness)),
                 textAlign: TextAlign.center,
               ),
         ),

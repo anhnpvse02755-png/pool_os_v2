@@ -472,6 +472,28 @@ Mỗi nhóm theo đúng hình dạng task của lô này: token trước (kèm t
 
 **`flutter test` đầy đủ chạy MỘT LƯỢT sau nhóm play** — không chạy giữa chừng. Đây là yêu cầu của chủ dự án; bù lại `flutter analyze` chạy sau mỗi nhóm để lỗi biên dịch không tích luỹ qua tám nhóm.
 
+## Nợ phát hiện trong lúc chạy lô 4
+
+**Nhãn nút vô hiệu không đọc được — nợ hệ thống, KHÔNG sửa lẻ.**
+
+Khuôn `onPressed != null ? primary(brightness) : textTertiary(brightness)` làm
+nền nút, với nhãn `onPrimary`, đang dùng ở **ít nhất 7 màn đã merge** —
+`onboarding_screen:960`, `drill_detail_screen:978`, `assessment_screen`,
+`drill_recording_preparation`, `drill_result`, `learning_path`, `recommended` —
+và nay cả `create_session_screen`.
+
+Đo thật ở trạng thái vô hiệu: nền `textTertiary` với chữ `onPrimary` chỉ được
+**2,59:1 ở bản sáng** và 3,87:1 ở bản tối. Đổi chữ sang `textPrimary` cũng
+không cứu được bản tối (4,01).
+
+WCAG 1.4.3 **miễn trừ** thành phần đang bị vô hiệu nên đây không phải vi phạm,
+và đó là lý do nó chưa từng bị bắt. Nhưng nhãn vẫn khó đọc, và vì khuôn này
+trải trên nhiều màn nên sửa một chỗ sẽ làm chỗ đó lệch khỏi phần còn lại.
+
+**Cần một task riêng đổi đồng loạt**, gợi ý: nền `surfaceRecessed`/`border` với
+nhãn `textTertiary` — đúng hình dạng "vô hiệu" quy ước, thay vì một khối đặc
+mang chữ tương phản thấp.
+
 ## Hai việc còn nợ từ lô 2
 
 1. **`_NotificationCard` chưa có widget test** — `lib/presentation/screens/home/notification_screen.dart`. Luật đọc-mã-nguồn không bắt được `Dismissible.onDismissed` bị vô hiệu hay `maxLines` bị rơi. Gộp vào nhóm `profile`.
