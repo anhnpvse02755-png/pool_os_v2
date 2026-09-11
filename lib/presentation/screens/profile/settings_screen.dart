@@ -8,6 +8,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/services/test_logging_service.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/repository_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -226,7 +227,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xxl),
 
             // Logout
-            _buildLogoutButton(context),
+            _buildLogoutButton(context, ref),
             const SizedBox(height: 40),
           ],
         ),
@@ -276,7 +277,13 @@ class SettingsScreen extends ConsumerWidget {
     ).animate().fadeIn(duration: 300.ms, delay: (100 * 0).ms);
   }
 
-  Widget _buildLogoutButton(BuildContext context) {
+  /// Nút đăng xuất.
+  ///
+  /// Phải gọi `signOut()` THẬT. Bản trước chỉ `context.go('/auth/login')` —
+  /// người dùng bị đưa tới màn đăng nhập nên tưởng đã thoát, nhưng token vẫn
+  /// nằm nguyên trong máy: mở lại app là vào thẳng, và vì router không chặn
+  /// nên gõ tay một đường dẫn bất kỳ cũng vào được.
+  Widget _buildLogoutButton(BuildContext context, WidgetRef ref) {
     final brightness = Theme.of(context).brightness;
 
     return _PrimaryButton(
@@ -309,9 +316,11 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  final router = GoRouter.of(context);
                   Navigator.pop(context);
-                  context.go('/auth/login');
+                  await ref.read(authProvider.notifier).signOut();
+                  router.go('/auth/login');
                 },
                 child: const Text(
                   'Đăng xuất',

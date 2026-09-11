@@ -65,8 +65,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _auth;
 
   /// Khôi phục phiên đã lưu khi mở app.
+  ///
+  /// Đọc phiên là thao tác bất đồng bộ, mà notifier có thể đã bị huỷ trước khi
+  /// nó xong — người dùng đóng app ngay lúc mở, hoặc provider bị dựng lại.
+  /// Gán `state` sau khi huỷ sẽ ném "Tried to use AuthNotifier after dispose".
   Future<void> _restore() async {
     final userId = await _auth.currentUserId();
+    if (!mounted) return;
     state = userId == null
         ? const AuthState(status: AuthStatus.unauthenticated)
         : AuthState(status: AuthStatus.authenticated, userId: userId);
@@ -75,6 +80,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<bool> signIn(String email, String password) async {
     state = state.copyWith(error: null);
     final r = await _auth.signIn(email: email, password: password);
+    // Chỉ chặn việc gán state, vẫn trả kết quả THẬT — thao tác đã chạy xong
+    // trên máy chủ rồi, báo sai sẽ khiến chỗ gọi hiểu nhầm.
+    if (!mounted) return r.ok;
     state = r.ok
         ? AuthState(
             status: AuthStatus.authenticated, userId: r.userId, email: email)
@@ -83,9 +91,22 @@ class AuthNotifier extends StateNotifier<AuthState> {
     return r.ok;
   }
 
-  Future<bool> signUp(String email, String password) async {
+  /// Đăng ký. [fullName] là ô "Họ và tên" người dùng gõ ở màn đăng ký.
+  ///
+  /// Bản trước bỏ tham số này: màn đăng ký thu thập họ tên rồi **vứt đi**, tài
+  /// khoản tạo ra không có tên. Directus tách `first_name`/`last_name` nên
+  /// phải cắt — tiếng Việt đặt họ trước, nên từ đầu tiên là họ, phần còn lại
+  /// là tên đệm + tên. Gõ mỗi một từ thì coi cả cụm là tên.
+  Future<bool> signUp(String email, String password, {String? fullName}) async {
     state = state.copyWith(error: null);
-    final r = await _auth.signUp(email: email, password: password);
+    final (firstName, lastName) = _splitName(fullName);
+    final r = await _auth.signUp(
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+    );
+    if (!mounted) return r.ok;
     state = r.ok
         ? AuthState(
             status: AuthStatus.authenticated, userId: r.userId, email: email)
@@ -96,20 +117,33 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<bool> requestPasswordReset(String email) async {
     state = state.copyWith(error: null);
     final r = await _auth.requestPasswordReset(email);
-    if (!r.ok) state = state.copyWith(error: r.errorMessage);
+    if (!r.ok && mounted) state = state.copyWith(error: r.errorMessage);
     return r.ok;
   }
 
   Future<bool> resetPassword(String token, String newPassword) async {
     state = state.copyWith(error: null);
     final r = await _auth.resetPassword(token: token, newPassword: newPassword);
-    if (!r.ok) state = state.copyWith(error: r.errorMessage);
+    if (!r.ok && mounted) state = state.copyWith(error: r.errorMessage);
     return r.ok;
   }
 
   Future<void> signOut() async {
     await _auth.signOut();
+    if (!mounted) return;
     state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Cắt "Họ và tên" thành `(first_name, last_name)` theo lối đặt tên Việt.
+  ///
+  /// "Nguyễn Văn A" -> first: "Văn A", last: "Nguyễn".
+  /// "An"           -> first: "An",   last: null.
+  static (String?, String?) _splitName(String? fullName) {
+    final name = fullName?.trim() ?? '';
+    if (name.isEmpty) return (null, null);
+    final parts = name.split(RegExp(r'\s+'));
+    if (parts.length == 1) return (parts.first, null);
+    return (parts.sublist(1).join(' '), parts.first);
   }
 }
 

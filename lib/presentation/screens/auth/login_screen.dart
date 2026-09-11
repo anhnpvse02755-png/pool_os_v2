@@ -10,7 +10,11 @@ import '../../widgets/icon_tile.dart';
 import '../../widgets/soft_background.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.from});
+
+  /// Màn người dùng định tới nhưng bị guard chặn vì chưa đăng nhập.
+  /// Đăng nhập xong quay lại đúng đó; `null` thì về `/home`.
+  final String? from;
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -48,13 +52,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _isLoading = false;
     });
 
-    if (success && mounted) {
-      context.go('/home');
-    } else {
-      setState(() {
-        _errorMessage = 'Email hoặc mật khẩu không đúng';
-      });
+    if (!mounted) return;
+
+    if (success) {
+      // Quay lại đúng màn người dùng định tới trước khi bị chặn.
+      final from = widget.from;
+      context.go(from != null && from.isNotEmpty ? from : '/home');
+      return;
     }
+
+    // Dùng thông báo THẬT từ AuthService, đừng đoán nguyên nhân.
+    //
+    // Bản trước hardcode 'Email hoặc mật khẩu không đúng' cho MỌI lỗi — đúng
+    // câu mà AuthService được viết lại để loại bỏ. Máy chủ sập hay mất mạng
+    // cũng bị đổ cho người dùng gõ sai mật khẩu, nên họ gõ lại mãi không xong.
+    setState(() {
+      _errorMessage = ref.read(authProvider).error ??
+          'Không đăng nhập được. Thử lại sau ít phút.';
+    });
   }
 
   @override

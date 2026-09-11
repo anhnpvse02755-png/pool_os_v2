@@ -55,6 +55,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       final success = await ref.read(authProvider.notifier).signUp(
             _emailController.text.trim(),
             _passwordController.text,
+            fullName: _nameController.text.trim(),
           );
 
       setState(() {
@@ -64,14 +65,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (success && mounted) {
         _showSuccessDialog();
       } else {
+        // Thông báo THẬT từ AuthService — nó phân biệt được "email đã đăng ký"
+        // với "mật khẩu không hợp lệ" với "máy chủ lỗi". Bản trước gộp hết
+        // thành 'Đăng ký thất bại', người dùng không biết phải sửa gì.
         setState(() {
-          _errorMessage = 'Đăng ký thất bại. Vui lòng thử lại.';
+          _errorMessage = ref.read(authProvider).error ??
+              'Không tạo được tài khoản. Thử lại sau ít phút.';
         });
       }
-    } catch (e) {
+    } catch (_) {
+      // KHÔNG hiện `e.toString()`: đó là lỗi kỹ thuật, người dùng đọc không
+      // hiểu và cũng không làm gì được với nó.
       setState(() {
         _isLoading = false;
-        _errorMessage = e.toString();
+        _errorMessage = 'Không tạo được tài khoản. Thử lại sau ít phút.';
       });
     }
   }

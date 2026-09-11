@@ -45,6 +45,41 @@ class DirectusSession {
 
   String? get roleId => _claim('role');
 
+  /// Mốc hết hạn, đọc từ claim `exp` của JWT.
+  ///
+  /// KHÔNG dùng [expiresInMs] cho việc này: đó là *thời lượng* kể từ lúc cấp,
+  /// mà không chỗ nào ghi lại mốc cấp — nên nó không trả lời được câu hỏi
+  /// "token còn sống không". Claim `exp` là mốc tuyệt đối nên tự đủ.
+  DateTime? get expiresAt {
+    final seconds = _numClaim('exp');
+    if (seconds == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(seconds * 1000, isUtc: true);
+  }
+
+  /// Token chắc chắn đã hết hạn.
+  ///
+  /// Token không đọc được coi như CÒN hạn — đoán bừa là hết hạn sẽ đăng xuất
+  /// oan người dùng. Cứ để máy chủ trả 401 rồi xử lý, đó mới là nguồn sự thật.
+  bool get isExpired {
+    final exp = expiresAt;
+    if (exp == null) return false;
+    return DateTime.now().toUtc().isAfter(exp);
+  }
+
+  int? _numClaim(String key) {
+    final parts = accessToken.split('.');
+    if (parts.length != 3) return null;
+    try {
+      var payload = parts[1];
+      payload += '=' * ((4 - payload.length % 4) % 4);
+      final decoded = jsonDecode(utf8.decode(base64Url.decode(payload)));
+      final value = (decoded as Map)[key];
+      return value is num ? value.toInt() : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   String? _claim(String key) {
     final parts = accessToken.split('.');
     if (parts.length != 3) return null;
@@ -285,16 +320,28 @@ class DirectusClient {
   // ==========================================================================
 
   /// Gửi request và bóc lớp vỏ `{"data": ...}` / `{"errors": [...]}`.
+  ///
+  /// Gặp 401 thì **tự gia hạn phiên một lần rồi thử lại**. Trước đây bước này
+  /// không có: `refresh()` viết sẵn từ đầu nhưng không chỗ nào gọi, mà access
+  /// token mặc định của Directus chỉ sống 15 phút — qua mốc đó mọi thao tác
+  /// đều 401 trong khi giao diện vẫn báo đã đăng nhập.
+  ///
+  /// [_retrying] chặn đệ quy: chỉ gia hạn đúng một lần cho mỗi request.
   Future<Object?> _send(
     String method,
     String path, {
     Map<String, dynamic>? body,
     Map<String, dynamic>? query,
     bool authenticated = true,
+    bool retrying = false,
   }) async {
     final headers = <String, dynamic>{};
     if (authenticated) {
-      final session = await _tokenStore.read();
+      var session = await _tokenStore.read();
+      // Biết chắc đã hết hạn thì gia hạn ngay, đừng phí một vòng 401.
+      if (session != null && session.isExpired && !retrying) {
+        if (await _tryRefresh()) session = await _tokenStore.read();
+      }
       if (session != null) {
         headers['Authorization'] = 'Bearer ${session.accessToken}';
       }
@@ -318,12 +365,36 @@ class DirectusClient {
     final status = response.statusCode ?? 0;
     final payload = response.data;
 
+    if (status == 401 && authenticated && !retrying) {
+      final renewed = await _tryRefresh();
+      if (renewed) {
+        return _send(method, path,
+            body: body, query: query, authenticated: true, retrying: true);
+      }
+    }
     if (status >= 400) {
       throw _errorFrom(payload, status);
     }
     // 204 No Content (quên mật khẩu, đăng xuất) không có body.
     if (payload is Map && payload.containsKey('data')) return payload['data'];
     return null;
+  }
+
+  /// Thử gia hạn phiên. Trả `false` nếu không gia hạn được.
+  ///
+  /// Refresh token chết cũng là phiên chết — xoá luôn phần lưu cục bộ để app
+  /// biết mà đưa người dùng về màn đăng nhập, thay vì kẹt ở trạng thái "đã
+  /// đăng nhập" mà mọi thao tác đều hỏng.
+  Future<bool> _tryRefresh() async {
+    final current = await _tokenStore.read();
+    if (current == null || current.refreshToken.isEmpty) return false;
+    try {
+      await refresh();
+      return true;
+    } on DirectusException {
+      await _tokenStore.clear();
+      return false;
+    }
   }
 
   DirectusException _errorFrom(Object? payload, int status) {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/auth_provider.dart';
+
 import '../../presentation/screens/onboarding/welcome_screen.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
 import '../../presentation/screens/onboarding/interest_selection_screen.dart';
@@ -81,9 +83,66 @@ String initialLocationFromUrl([Uri? url]) {
   return '/welcome';
 }
 
+/// Các tiền tố đường dẫn đọc/ghi **dữ liệu riêng** của người dùng.
+///
+/// Mọi thứ ngoài danh sách này xem được tự do — giá trị của app (thư viện bài
+/// tập, từ điển kiến thức) phải nhìn thấy được TRƯỚC khi quyết định đăng ký.
+const _privatePrefixes = <String>[
+  '/profile',
+  '/notifications',
+  '/community',
+  '/session',
+  '/coach',
+  '/play',
+  '/settings',
+  '/training/progress',
+  '/training/history',
+  '/training/session',
+];
+
+/// Đường dẫn này có đòi đăng nhập không?
+///
+/// Tách thành hàm thuần để test được mà không phải dựng cả GoRouter.
+bool requiresAuth(String location) {
+  // Bỏ query string: '/training/session/new?drill=BT01' vẫn là màn riêng tư.
+  final path = location.split('?').first;
+  for (final prefix in _privatePrefixes) {
+    // Phải khớp TRỌN đoạn đường dẫn. So sánh chuỗi trần sẽ chặn nhầm
+    // '/playbook' chỉ vì nó bắt đầu bằng '/play'.
+    if (path == prefix || path.startsWith('$prefix/')) return true;
+  }
+  return false;
+}
+
+/// Đánh thức GoRouter mỗi khi trạng thái đăng nhập đổi.
+///
+/// `redirect` chỉ chạy lúc điều hướng. Không có cái này thì đăng xuất xong
+/// người dùng vẫn ngồi nguyên ở màn riêng tư cho tới lần chuyển màn kế tiếp.
+class _AuthRefresh extends ChangeNotifier {
+  _AuthRefresh(Ref ref) {
+    ref.listen<AuthState>(authProvider, (_, __) => notifyListeners());
+  }
+}
+
 final routerProvider = Provider<GoRouter>((ref) {
+  final refresh = _AuthRefresh(ref);
+  ref.onDispose(refresh.dispose);
+
   return GoRouter(
     initialLocation: initialLocationFromUrl(),
+    refreshListenable: refresh,
+    // Chặn màn riêng tư khi chưa đăng nhập, và đưa người dùng về đăng nhập khi
+    // phiên hết hạn giữa chừng. Trước đây router không có `redirect` nào.
+    redirect: (context, state) {
+      final auth = ref.read(authProvider);
+      // Chưa biết trạng thái (đang khôi phục phiên) thì đừng đá đi đâu cả —
+      // đá lúc này sẽ đăng xuất oan người vừa mở app.
+      if (auth.status == AuthStatus.unknown) return null;
+      if (!requiresAuth(state.matchedLocation)) return null;
+      if (auth.isAuthenticated) return null;
+      // Nhớ nơi định tới để đăng nhập xong quay lại đúng chỗ.
+      return '/auth/login?from=${Uri.encodeComponent(state.matchedLocation)}';
+    },
     routes: [
       // Onboarding Flow
       GoRoute(
@@ -106,7 +165,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/auth/login',
         name: 'login',
-        builder: (context, state) => const LoginScreen(),
+        // `from` do guard gắn vào khi chặn một màn riêng tư — đăng nhập xong
+        // thì quay lại đúng chỗ đó. Truyền qua constructor như
+        // `reset-password` làm với token, để màn không phụ thuộc context.
+        builder: (context, state) => LoginScreen(
+          from: state.uri.queryParameters['from'],
+        ),
       ),
       GoRoute(
         path: '/reset-password',
