@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/repositories/match_repository.dart';
@@ -44,40 +45,42 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         centerTitle: true,
         title: Text(
           'Bao cao Thang',
           style: TextStyle(
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.lightTextPrimary),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary(brightness)),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.share_outlined, color: AppColors.lightTextPrimary),
+            icon: Icon(Icons.share_outlined, color: AppColors.textPrimary(brightness)),
             onPressed: () => _onShare(),
           ),
         ],
       ),
       body: _loading
-          ? Center(child: CircularProgressIndicator(color: AppColors.accent))
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary(brightness)))
           : _report == null || _report!.matchesPlayed == 0
-              ? _empty()
-              : _content(_report!),
+              ? _empty(brightness)
+              : _content(_report!, brightness),
     );
   }
 
-  Widget _empty() => Center(
+  Widget _empty(Brightness brightness) => Center(
         child: Padding(
           padding: EdgeInsets.all(AppSpacing.xxl),
           child: Column(
@@ -86,16 +89,16 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
               Container(
                 padding: EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.1),
+                  color: AppColors.primary(brightness).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.bar_chart, size: 48, color: AppColors.accent.withValues(alpha: 0.5)),
+                child: Icon(Icons.bar_chart, size: 48, color: AppColors.primary(brightness).withValues(alpha: 0.5)),
               ),
               SizedBox(height: AppSpacing.lg),
               Text(
                 'Chua co du lieu thang nay',
                 style: TextStyle(
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -104,7 +107,7 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
               Text(
                 'Hay ghi them tran dau trong thang nay de xem bao cao chi tiet.',
                 style: TextStyle(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -114,28 +117,28 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
         ),
       );
 
-  Widget _content(MonthlyReport r) {
+  Widget _content(MonthlyReport r, Brightness brightness) {
     return ListView(
       padding: EdgeInsets.all(AppSpacing.lg),
       children: [
         Container(
           padding: EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+            boxShadow: AppShadows.soft(brightness),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(Icons.calendar_month_outlined, size: 20, color: AppColors.accent),
+                  Icon(Icons.calendar_month_outlined, size: 20, color: AppColors.primary(brightness)),
                   SizedBox(width: AppSpacing.sm),
                   Text(
                     DateFormat('MMMM yyyy', 'vi').format(DateTime(r.year, r.month)),
                     style: TextStyle(
-                      color: AppColors.lightTextPrimary,
+                      color: AppColors.textPrimary(brightness),
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -146,13 +149,13 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
               Container(
                 padding: EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.lightBackground,
+                  color: AppColors.background(brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Text(
                   r.narrative,
                   style: TextStyle(
-                    color: AppColors.lightTextPrimary,
+                    color: AppColors.textPrimary(brightness),
                     fontSize: 14,
                     height: 1.5,
                   ),
@@ -162,7 +165,7 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
           ),
         ),
         SizedBox(height: AppSpacing.lg),
-        _kpiGrid(r),
+        _kpiGrid(r, brightness),
         SizedBox(height: AppSpacing.lg),
         if (r.suggestedDrills.isNotEmpty)
           _DrillsSection(drills: r.suggestedDrills),
@@ -171,13 +174,13 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
     );
   }
 
-  Widget _kpiGrid(MonthlyReport r) {
+  Widget _kpiGrid(MonthlyReport r, Brightness brightness) {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: GridView.count(
         crossAxisCount: 2,
@@ -197,10 +200,11 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
   }
 
   void _onShare() {
+    final brightness = Theme.of(context).brightness;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Chia se bao cao (dang phat trien)'),
-        backgroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.textPrimary(brightness),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
       ),
@@ -217,10 +221,12 @@ class _KpiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightBackground,
+        color: AppColors.background(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
@@ -229,13 +235,13 @@ class _KpiCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: AppColors.accent),
+              Icon(icon, size: 16, color: AppColors.primary(brightness)),
               SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 12,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -247,7 +253,7 @@ class _KpiCard extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
               fontSize: 22,
               fontWeight: FontWeight.w700,
             ),
@@ -265,24 +271,26 @@ class _DrillsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.sports_outlined, size: 20, color: AppColors.accent),
+              Icon(Icons.sports_outlined, size: 20, color: AppColors.primary(brightness)),
               SizedBox(width: AppSpacing.sm),
               Text(
                 'Drill de goi y',
                 style: TextStyle(
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -304,30 +312,32 @@ class _DrillItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.sm),
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightBackground,
+        color: AppColors.background(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary(brightness).withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: AppColors.accent.withValues(alpha: 0.1),
+              color: AppColors.primary(brightness).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.fitness_center, size: 18, color: AppColors.accent),
+            child: Icon(Icons.fitness_center, size: 18, color: AppColors.primary(brightness)),
           ),
           SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               drill,
               style: TextStyle(
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
                 fontSize: 14,
               ),
             ),

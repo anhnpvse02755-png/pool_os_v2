@@ -11,4 +11,9 @@ void main() {
     'lib/presentation/screens/session/create_session_screen.dart',
     'lib/presentation/screens/session/session_list_screen.dart',
   ]);
+
+  expectTokenHygiene('lô 4 — reports', const [
+    'lib/presentation/screens/reports/weekly_report_screen.dart',
+    'lib/presentation/screens/reports/monthly_report_screen.dart',
+  ]);
 }

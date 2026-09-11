@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/repositories/match_repository.dart';
@@ -53,36 +54,38 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         centerTitle: true,
         title: Text(
           'Bao cao Tuan',
           style: TextStyle(
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.share_outlined, color: AppColors.lightTextPrimary),
+            icon: Icon(Icons.share_outlined, color: AppColors.textPrimary(brightness)),
             onPressed: () => _onShare(),
           ),
         ],
       ),
       body: _loading
-          ? Center(child: CircularProgressIndicator(color: AppColors.accent))
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary(brightness)))
           : _report == null || _report!.matchesPlayed == 0
-              ? _empty()
-              : _content(_report!),
+              ? _empty(brightness)
+              : _content(_report!, brightness),
     );
   }
 
-  Widget _empty() => Center(
+  Widget _empty(Brightness brightness) => Center(
         child: Padding(
           padding: EdgeInsets.all(AppSpacing.xxl),
           child: Column(
@@ -91,16 +94,16 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
               Container(
                 padding: EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withValues(alpha: 0.1),
+                  color: AppColors.primary(brightness).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.bar_chart, size: 48, color: AppColors.accent.withValues(alpha: 0.5)),
+                child: Icon(Icons.bar_chart, size: 48, color: AppColors.primary(brightness).withValues(alpha: 0.5)),
               ),
               SizedBox(height: AppSpacing.lg),
               Text(
                 'Chua co tran dau tuan nay',
                 style: TextStyle(
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -109,7 +112,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
               Text(
                 'Hay ghi them tran dau trong tuan nay de thay bao cao chi tiet.',
                 style: TextStyle(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -119,7 +122,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
         ),
       );
 
-  Widget _content(WeeklyReport r) {
+  Widget _content(WeeklyReport r, Brightness brightness) {
     final fmt = DateFormat('dd/MM');
     return ListView(
       padding: EdgeInsets.all(AppSpacing.lg),
@@ -127,17 +130,17 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
         Container(
           padding: EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: AppColors.lightSurface,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
           child: Row(
             children: [
-              Icon(Icons.calendar_today_outlined, size: 18, color: AppColors.accent),
+              Icon(Icons.calendar_today_outlined, size: 18, color: AppColors.primary(brightness)),
               SizedBox(width: AppSpacing.sm),
               Text(
                 'Tuan ${fmt.format(r.weekStart)} - ${fmt.format(r.weekEnd)}',
                 style: TextStyle(
-                  color: AppColors.lightTextSecondary,
+                  color: AppColors.textSecondary(brightness),
                   fontSize: 14,
                 ),
               ),
@@ -145,7 +148,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
           ),
         ),
         SizedBox(height: AppSpacing.lg),
-        _kpiGrid(r),
+        _kpiGrid(r, brightness),
         SizedBox(height: AppSpacing.xl),
         _SectionCard(
           title: 'Diem manh noi bat',
@@ -159,32 +162,32 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
         _SectionCard(
           title: 'Diem yeu can cai thien',
           icon: Icons.warning_amber_outlined,
-          iconColor: Colors.orange,
+          iconColor: AppColors.warning,
           items: r.topWeaknesses,
           emptyText: 'Chua co diem yeu nao duoc AI phat hien.',
-          bulletColor: Colors.orange,
+          bulletColor: AppColors.warning,
         ),
         SizedBox(height: AppSpacing.lg),
         _SectionCard(
           title: 'Drill de goi y',
           icon: Icons.sports_outlined,
-          iconColor: AppColors.accent,
+          iconColor: AppColors.primary(brightness),
           items: r.suggestedDrills,
           emptyText: 'AI chua goi y drill tuan nay.',
-          bulletColor: AppColors.accent,
+          bulletColor: AppColors.primary(brightness),
         ),
         SizedBox(height: AppSpacing.xl),
       ],
     );
   }
 
-  Widget _kpiGrid(WeeklyReport r) {
+  Widget _kpiGrid(WeeklyReport r, Brightness brightness) {
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: GridView.count(
         crossAxisCount: 2,
@@ -206,10 +209,11 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
   }
 
   void _onShare() {
+    final brightness = Theme.of(context).brightness;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Chia se bao cao (dang phat trien)'),
-        backgroundColor: AppColors.lightTextPrimary,
+        backgroundColor: AppColors.textPrimary(brightness),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
       ),
@@ -226,10 +230,12 @@ class _KpiCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.lightBackground,
+        color: AppColors.background(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
       ),
       child: Column(
@@ -238,13 +244,13 @@ class _KpiCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: AppColors.accent),
+              Icon(icon, size: 16, color: AppColors.primary(brightness)),
               SizedBox(width: AppSpacing.xs),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
-                    color: AppColors.lightTextSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontSize: 12,
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -256,7 +262,7 @@ class _KpiCard extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
               fontSize: 22,
               fontWeight: FontWeight.w700,
             ),
@@ -286,12 +292,14 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,7 +311,7 @@ class _SectionCard extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  color: AppColors.lightTextPrimary,
+                  color: AppColors.textPrimary(brightness),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -315,7 +323,7 @@ class _SectionCard extends StatelessWidget {
             Text(
               emptyText,
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 14,
                 fontStyle: FontStyle.italic,
               ),
@@ -336,6 +344,8 @@ class _BulletItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
@@ -355,7 +365,7 @@ class _BulletItem extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
                 fontSize: 14,
                 height: 1.4,
               ),
