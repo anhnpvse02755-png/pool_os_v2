@@ -246,6 +246,32 @@ class AppColors {
   /// để nguyên #FBBF24 thì nó vẫn là bản sao của `warningLight`.
   static const Color goldLight = Color(0xFFC79500);
 
+  /// Huy chương bạc — bậc 2 của bục vinh danh.
+  ///
+  /// Không dùng `Colors.grey.shade400` (#BDBDBD): quá sáng để mang chữ
+  /// `onPrimary` ở chế độ sáng, và nó nằm đúng dải xám mà `border` và
+  /// `textTertiary` đang chiếm, nên khối bục sẽ đọc ra như một ô bị vô hiệu
+  /// hoá chứ không phải một thứ hạng.
+  static const Color silver = Color(0xFF6E7276);
+
+  /// Huy chương đồng — bậc 3.
+  ///
+  /// Không dùng `Colors.brown.shade300` (#A1887F) vì cùng lý do độ sáng, và
+  /// vì sắc nâu xám của nó đọc ra "bẩn" cạnh nền kem #F7F4EC.
+  ///
+  /// Đẩy về phía đỏ (hue 24°) có chủ đích: ở hue nâu tự nhiên ~30° nó chỉ
+  /// cách `gold` 45° đúng 15 độ — dưới sàn 20° mà hệ này dùng để hai tông
+  /// cạnh nhau còn phân biệt được. Vàng và đồng là cùng họ kim loại ấm nên
+  /// đây là cặp dễ trùng nhất của bục vinh danh.
+  static const Color bronze = Color(0xFFB15D25);
+
+  /// Bản đọc được của [silver] và [bronze] khi chúng làm CHỮ trên nền 10% của
+  /// chính mình — chiều thứ hai mà lô 3a từng bỏ sót.
+  static const Color silverOnTintLight = Color(0xFF585C60);
+  static const Color silverOnTintDark = Color(0xFFAFB4B9);
+  static const Color bronzeOnTintLight = Color(0xFF7A4E24);
+  static const Color bronzeOnTintDark = Color(0xFFCE9A63);
+
   // Streak - Day streaks, Fire
   static const Color streak = Color(0xFFF97316);
   static const Color streakLight = Color(0xFFFB923C);
@@ -338,6 +364,14 @@ class AppColors {
   /// Không có `goldSubtle` nên token này chỉ phục vụ nền 10%.
   static Color goldOnTint(Brightness brightness) =>
       brightness == Brightness.light ? goldOnTintLight : goldOnTintDark;
+
+  /// Màu chữ/icon đặt TRÊN nền 10% của tông [silver].
+  static Color silverOnTint(Brightness brightness) =>
+      brightness == Brightness.light ? silverOnTintLight : silverOnTintDark;
+
+  /// Màu chữ/icon đặt TRÊN nền 10% của tông [bronze].
+  static Color bronzeOnTint(Brightness brightness) =>
+      brightness == Brightness.light ? bronzeOnTintLight : bronzeOnTintDark;
 
   static Color primary(Brightness brightness) =>
       brightness == Brightness.light ? lightPrimary : darkPrimary;
