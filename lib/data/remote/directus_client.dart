@@ -9,6 +9,7 @@
 // Xem [[backend-directus]] trong memory để biết các bẫy đã gặp.
 // ============================================================================
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -164,7 +165,24 @@ class DirectusClient {
   final Dio _dio;
   final TokenStore _tokenStore;
 
+  final StreamController<void> _sessionExpired =
+      StreamController<void>.broadcast();
+
   TokenStore get tokenStore => _tokenStore;
+
+  /// Phát tín hiệu khi phiên **chết mà không do người dùng chủ động**: gia hạn
+  /// thất bại nên token bị xoá.
+  ///
+  /// Không có kênh này thì client xoá token trong im lặng còn `AuthNotifier`
+  /// vẫn tin là đang đăng nhập — guard thấy `isAuthenticated == true` nên
+  /// không đá đi đâu, người dùng ngồi nguyên trên màn riêng tư mà mọi request
+  /// đều 401.
+  ///
+  /// Tự bấm Đăng xuất **không** phát tín hiệu này: đó là việc họ cố ý làm, báo
+  /// "phiên đã hết hạn" sẽ vô nghĩa.
+  Stream<void> get onSessionExpired => _sessionExpired.stream;
+
+  void dispose() => _sessionExpired.close();
 
   // ==========================================================================
   // Auth
@@ -393,6 +411,8 @@ class DirectusClient {
       return true;
     } on DirectusException {
       await _tokenStore.clear();
+      // Báo ra ngoài, nếu không thì app vẫn tin là đang đăng nhập.
+      if (!_sessionExpired.isClosed) _sessionExpired.add(null);
       return false;
     }
   }

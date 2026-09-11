@@ -116,6 +116,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               const SizedBox(height: AppSpacing.xxl),
 
+              // Phiên hết hạn giữa chừng.
+              //
+              // Tông `warning` chứ không phải `error`: người dùng không làm gì
+              // sai, họ chỉ để lâu quá. Dùng đỏ ở đây đọc ra như một lời trách.
+              // Chỉ hiện khi CHƯA gõ lỗi nào — bắt tay đăng nhập là thông báo
+              // này thành cũ, và `signIn` đã xoá cờ.
+              if (_errorMessage == null && ref.watch(authProvider).sessionExpired)
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  margin: const EdgeInsets.only(bottom: AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.warningSubtle(brightness),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    border: Border.all(
+                        color: AppColors.warning.withValues(alpha: 0.2)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.schedule,
+                          color: AppColors.warningOnTint(brightness), size: 20),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+                          style: TextStyle(
+                              color: AppColors.warningOnTint(brightness),
+                              fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate().fadeIn(),
+
               // Error message
               if (_errorMessage != null)
                 Container(

@@ -2,6 +2,8 @@
 // AUTH PROVIDER — trên nền Directus
 // ============================================================================
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/remote/directus_client.dart';
@@ -12,10 +14,13 @@ import '../services/auth_service.dart';
 /// Client Directus dùng chung. Phiên đăng nhập lưu xuống SharedPreferences
 /// nên đóng app mở lại vẫn còn.
 final directusClientProvider = Provider<DirectusClient>((ref) {
-  return DirectusClient(
+  final client = DirectusClient(
     baseUrl: DirectusConfig.baseUrl,
     tokenStore: PrefsTokenStore(),
   );
+  // Client giữ một StreamController cho tín hiệu hết phiên — phải đóng.
+  ref.onDispose(client.dispose);
+  return client;
 });
 
 final authServiceProvider = Provider<AuthService>((ref) {
@@ -30,6 +35,7 @@ class AuthState {
     this.userId,
     this.email,
     this.error,
+    this.sessionExpired = false,
   });
 
   final AuthStatus status;
@@ -39,6 +45,14 @@ class AuthState {
   /// Thông báo tiếng Việt cho người dùng, không phải lỗi kỹ thuật.
   final String? error;
 
+  /// Phiên chết **giữa chừng**, không phải do người dùng bấm Đăng xuất.
+  ///
+  /// Tách khỏi [error] có chủ đích: `error` là kết quả của thao tác vừa rồi,
+  /// còn cờ này là lời giải thích cho việc người dùng *đột nhiên* bị đưa về
+  /// màn đăng nhập dù họ không làm gì cả. Gộp chung sẽ khiến thông báo hết hạn
+  /// bị xoá mất ngay khi họ bấm Đăng nhập.
+  final bool sessionExpired;
+
   bool get isAuthenticated => status == AuthStatus.authenticated;
   bool get isLoading => status == AuthStatus.unknown;
 
@@ -47,12 +61,14 @@ class AuthState {
     String? userId,
     String? email,
     String? error,
+    bool? sessionExpired,
   }) {
     return AuthState(
       status: status ?? this.status,
       userId: userId ?? this.userId,
       email: email ?? this.email,
       error: error,
+      sessionExpired: sessionExpired ?? this.sessionExpired,
     );
   }
 }
@@ -60,9 +76,28 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier(this._auth) : super(const AuthState()) {
     _restore();
+    // Phiên có thể chết giữa chừng (refresh token hết hạn hoặc bị thu hồi).
+    // Client xoá token khi đó; không nghe tín hiệu này thì notifier vẫn tin là
+    // đang đăng nhập và guard không đưa người dùng đi đâu cả.
+    _expirySub = _auth.onSessionExpired.listen((_) => _onSessionExpired());
   }
 
   final AuthService _auth;
+  StreamSubscription<void>? _expirySub;
+
+  @override
+  void dispose() {
+    _expirySub?.cancel();
+    super.dispose();
+  }
+
+  void _onSessionExpired() {
+    if (!mounted) return;
+    state = const AuthState(
+      status: AuthStatus.unauthenticated,
+      sessionExpired: true,
+    );
+  }
 
   /// Khôi phục phiên đã lưu khi mở app.
   ///
@@ -72,13 +107,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> _restore() async {
     final userId = await _auth.currentUserId();
     if (!mounted) return;
+    // Chỉ điền vào chỗ CHƯA biết. Đọc phiên là bất đồng bộ, trong lúc chờ có
+    // thể đã có chuyện xảy ra — phiên hết hạn, hoặc người dùng kịp đăng nhập.
+    // Ghi đè ở đây sẽ xoá mất những thứ đó, và thông báo hết hạn biến mất
+    // đúng lúc cần hiện nhất.
+    if (state.status != AuthStatus.unknown) return;
     state = userId == null
         ? const AuthState(status: AuthStatus.unauthenticated)
         : AuthState(status: AuthStatus.authenticated, userId: userId);
   }
 
   Future<bool> signIn(String email, String password) async {
-    state = state.copyWith(error: null);
+    // Bắt tay đăng nhập là đã tiếp nhận thông báo hết hạn — xoá đi, nếu không
+    // nó sẽ hiện chồng với lỗi "sai mật khẩu" và người dùng không biết đọc cái
+    // nào.
+    state = state.copyWith(error: null, sessionExpired: false);
     final r = await _auth.signIn(email: email, password: password);
     // Chỉ chặn việc gán state, vẫn trả kết quả THẬT — thao tác đã chạy xong
     // trên máy chủ rồi, báo sai sẽ khiến chỗ gọi hiểu nhầm.

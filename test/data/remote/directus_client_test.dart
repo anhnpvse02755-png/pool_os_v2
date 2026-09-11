@@ -69,6 +69,7 @@ DirectusClient _clientWith(_FakeAdapter adapter, {InMemoryTokenStore? store}) {
 void main() {
   _mainRefresh();
   _mainExpiry();
+  _mainExpiredSignal();
 
   group('Đăng nhập', () {
     test('trả về token và lưu vào store', () async {
@@ -502,6 +503,116 @@ void _mainExpiry() {
       final paths = adapter.seen.map((r) => '${r.method} ${r.path}').toList();
       expect(paths, ['POST /auth/refresh', 'GET /items/poolos_players'],
           reason: 'Gia han truoc, khong gui request chac chan that bai');
+    });
+  });
+}
+
+// ============================================================================
+// Bao hieu phien chet
+//
+// `_tryRefresh` xoa token khi refresh that bai, nhung truoc day KHONG BAO CHO
+// AI. AuthNotifier van o trang thai `authenticated`, guard thay `isAuthenticated
+// == true` nen khong da nguoi dung di dau — ho ngoi nguyen tren man rieng tu
+// ma moi request deu 401.
+// ============================================================================
+void _mainExpiredSignal() {
+  group('Bao hieu phien chet', () {
+    const song = DirectusSession(
+        accessToken: 'token-cu', refreshToken: 'refresh-cu', expiresInMs: 900000);
+
+    test('refresh that bai thi phat tin hieu onSessionExpired', () async {
+      final store = InMemoryTokenStore();
+      await store.write(song);
+
+      final adapter = _SequenceAdapter({
+        'GET /items/poolos_players': [
+          (401, {
+            'errors': [
+              {'message': 'Token expired.',
+               'extensions': {'code': 'TOKEN_EXPIRED'}}
+            ]
+          }),
+        ],
+        'POST /auth/refresh': [
+          (401, {
+            'errors': [
+              {'message': 'Invalid refresh token.',
+               'extensions': {'code': 'INVALID_CREDENTIALS'}}
+            ]
+          }),
+        ],
+      });
+
+      final client = _seqClient(adapter, store);
+      final phatTinHieu = client.onSessionExpired.first;
+
+      await expectLater(
+        () => client.readItems('poolos_players'),
+        throwsA(isA<DirectusException>()),
+      );
+
+      await expectLater(
+        phatTinHieu.timeout(const Duration(seconds: 1)),
+        completes,
+        reason: 'Phien chet phai bao ra ngoai de app dua ve dang nhap',
+      );
+    });
+
+    test('gia han THANH CONG thi KHONG phat tin hieu', () async {
+      final store = InMemoryTokenStore();
+      await store.write(song);
+
+      final adapter = _SequenceAdapter({
+        'GET /items/poolos_players': [
+          (401, {
+            'errors': [
+              {'message': 'Token expired.',
+               'extensions': {'code': 'TOKEN_EXPIRED'}}
+            ]
+          }),
+          (200, {'data': <Map<String, dynamic>>[]}),
+        ],
+        'POST /auth/refresh': [
+          (200, {
+            'data': {
+              'access_token': 'token-moi',
+              'refresh_token': 'refresh-moi',
+              'expires': 900000,
+            }
+          }),
+        ],
+      });
+
+      final client = _seqClient(adapter, store);
+      var phat = false;
+      final sub = client.onSessionExpired.listen((_) => phat = true);
+
+      await client.readItems('poolos_players');
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      await sub.cancel();
+
+      expect(phat, isFalse,
+          reason: 'Gia han duoc thi phien VAN SONG, dung bat dang nhap lai');
+    });
+
+    test('dang xuat CHU DONG khong phat tin hieu het han', () async {
+      final store = InMemoryTokenStore();
+      await store.write(song);
+
+      final adapter = _SequenceAdapter({
+        'POST /auth/logout': [(204, {})],
+      });
+
+      final client = _seqClient(adapter, store);
+      var phat = false;
+      final sub = client.onSessionExpired.listen((_) => phat = true);
+
+      await client.logout();
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+      await sub.cancel();
+
+      expect(phat, isFalse,
+          reason: 'Tu bam dang xuat thi dung bao "phien da het han"');
     });
   });
 }

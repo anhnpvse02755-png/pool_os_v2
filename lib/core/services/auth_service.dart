@@ -42,6 +42,10 @@ class AuthService {
 
   DirectusClient get client => _client;
 
+  /// Phiên chết giữa chừng — gia hạn thất bại nên token bị xoá.
+  /// Tự bấm Đăng xuất không đi qua kênh này.
+  Stream<void> get onSessionExpired => _client.onSessionExpired;
+
   Future<bool> isSignedIn() async =>
       (await _client.tokenStore.read()) != null;
 
