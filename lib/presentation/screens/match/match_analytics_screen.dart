@@ -6,8 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../data/models/match.dart';
@@ -76,16 +76,18 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
+      backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        backgroundColor: AppColors.lightSurface,
+        backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         centerTitle: true,
         title: Text(
           'Phân tích trận đấu',
           style: TextStyle(
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
             fontWeight: FontWeight.w600,
             fontSize: 18,
           ),
@@ -95,7 +97,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             IconButton(
               icon: Icon(
                 _showHeatMap ? Icons.layers_clear : Icons.layers,
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
               ),
               onPressed: () {
                 setState(() {
@@ -107,9 +109,9 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
         ],
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: AppColors.accent,
-          labelColor: AppColors.accent,
-          unselectedLabelColor: AppColors.lightTextSecondary,
+          indicatorColor: AppColors.primary(brightness),
+          labelColor: AppColors.primary(brightness),
+          unselectedLabelColor: AppColors.textSecondary(brightness),
           labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
           tabs: const [
@@ -124,10 +126,12 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
   }
 
   Widget _buildBody() {
+    final brightness = Theme.of(context).brightness;
+
     if (_isLoading) {
       return Center(
         child: CircularProgressIndicator(
-          color: AppColors.accent,
+          color: AppColors.primary(brightness),
         ),
       );
     }
@@ -151,6 +155,8 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
   }
 
   Widget _buildErrorState() {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.xxl),
@@ -160,16 +166,16 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             Container(
               padding: EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.error_outline, size: 48, color: Colors.red),
+              child: Icon(Icons.error_outline, size: 48, color: AppColors.error),
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
               'Lỗi: $_error',
               style: TextStyle(
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
                 fontSize: 16,
               ),
               textAlign: TextAlign.center,
@@ -183,6 +189,8 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
   }
 
   Widget _buildEmptyState() {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.xxl),
@@ -192,20 +200,20 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             Container(
               padding: EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
-                color: AppColors.accent.withValues(alpha: 0.1),
+                color: AppColors.primary(brightness).withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.analytics_outlined,
                 size: 48,
-                color: AppColors.accent.withValues(alpha: 0.5),
+                color: AppColors.primary(brightness).withValues(alpha: 0.5),
               ),
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
               'Chưa có dữ liệu trận đấu',
               style: TextStyle(
-                color: AppColors.lightTextPrimary,
+                color: AppColors.textPrimary(brightness),
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -214,7 +222,7 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
             Text(
               'Ghi lại ít nhất 1 trận đấu để xem phân tích',
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 14,
               ),
               textAlign: TextAlign.center,
@@ -240,6 +248,8 @@ class _RetryButtonState extends State<_RetryButton> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return GestureDetector(
       onTap: widget.onPressed,
       onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
@@ -252,13 +262,13 @@ class _RetryButtonState extends State<_RetryButton> {
           width: 140,
           padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.accent : AppColors.lightTextTertiary,
+            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
-                ? [BoxShadow(color: AppColors.accent.withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
+                ? [BoxShadow(color: AppColors.primary(brightness).withValues(alpha: 0.3), blurRadius: 12, offset: Offset(0, 4))]
                 : null,
           ),
-          child: Text('Thử lại', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white), textAlign: TextAlign.center),
+          child: Text('Thử lại', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness)), textAlign: TextAlign.center),
         ),
       ),
     );
@@ -273,6 +283,8 @@ class _ShotMapTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (match.racks.isEmpty) {
       return _buildNoDataState(context, 'Chưa có dữ liệu shot trong trận đấu này');
     }
@@ -288,7 +300,7 @@ class _ShotMapTab extends StatelessWidget {
           Text(
             'Shot Map',
             style: TextStyle(
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
@@ -296,9 +308,9 @@ class _ShotMapTab extends StatelessWidget {
           SizedBox(height: AppSpacing.md),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightSurface,
+              color: AppColors.surface(brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+              boxShadow: AppShadows.soft(brightness),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -316,22 +328,24 @@ class _ShotMapTab extends StatelessWidget {
   }
 
   Widget _buildInfoCard(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.accent.withValues(alpha: 0.08),
+        color: AppColors.primary(brightness).withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary(brightness).withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, color: AppColors.accent, size: 20),
+          Icon(Icons.info_outline, color: AppColors.primary(brightness), size: 20),
           SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
               'Shot Map hien thi duong di cua cac cu danh. Duong xanh = trung, duong do = truot.',
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 13,
               ),
             ),
@@ -345,18 +359,20 @@ class _ShotMapTab extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _LegendItem(color: Colors.white, label: 'Bi trắng', border: Colors.black),
+        _LegendItem(color: AppColors.ballCue, label: 'Bi trắng', border: AppColors.tableLine),
         SizedBox(width: AppSpacing.md),
-        _LegendItem(color: Colors.yellow, label: 'Bi mục tiêu'),
+        _LegendItem(color: AppColors.ballObject, label: 'Bi mục tiêu'),
         SizedBox(width: AppSpacing.md),
         _LegendItem(color: AppColors.success, label: 'Trúng', line: true),
         SizedBox(width: AppSpacing.md),
-        _LegendItem(color: Colors.redAccent, label: 'Trượt', line: true),
+        _LegendItem(color: AppColors.shotMiss, label: 'Trượt', line: true),
       ],
     );
   }
 
   Widget _buildStatsSummary(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final totalShots = match.racks.fold<int>(
       0,
       (sum, r) => sum + r.shots.length,
@@ -365,9 +381,9 @@ class _ShotMapTab extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -384,16 +400,18 @@ class _ShotMapTab extends StatelessWidget {
   }
 
   Widget _buildNoDataState(BuildContext context, String message) {
+    final brightness = Theme.of(context).brightness;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.gps_off, size: 48, color: AppColors.lightTextTertiary),
+          Icon(Icons.gps_off, size: 48, color: AppColors.textTertiary(brightness)),
           SizedBox(height: AppSpacing.md),
           Text(
             message,
             style: TextStyle(
-              color: AppColors.lightTextSecondary,
+              color: AppColors.textSecondary(brightness),
               fontSize: 16,
             ),
             textAlign: TextAlign.center,
@@ -412,17 +430,19 @@ class _HeatMapTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (match.racks.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.gps_off, size: 48, color: AppColors.lightTextTertiary),
+            Icon(Icons.gps_off, size: 48, color: AppColors.textTertiary(brightness)),
             SizedBox(height: AppSpacing.md),
             Text(
               'Chưa có dữ liệu shot',
               style: TextStyle(
-                color: AppColors.lightTextSecondary,
+                color: AppColors.textSecondary(brightness),
                 fontSize: 16,
               ),
             ),
@@ -439,19 +459,19 @@ class _HeatMapTab extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: Colors.redAccent.withValues(alpha: 0.08),
+              color: AppColors.shotMiss.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: Colors.redAccent.withValues(alpha: 0.2)),
+              border: Border.all(color: AppColors.shotMiss.withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
-                Icon(Icons.local_fire_department, color: Colors.redAccent, size: 20),
+                Icon(Icons.local_fire_department, color: AppColors.shotMiss, size: 20),
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     'Heat Map cho thay khu vuc thuong xuyen danh (do = nhieu, xanh = it).',
                     style: TextStyle(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 13,
                     ),
                   ),
@@ -464,7 +484,7 @@ class _HeatMapTab extends StatelessWidget {
           Text(
             'Heat Map',
             style: TextStyle(
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
@@ -480,11 +500,13 @@ class _HeatMapTab extends StatelessWidget {
   }
 
   Widget _buildHeatMapVisualization(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -494,14 +516,16 @@ class _HeatMapTab extends StatelessWidget {
   }
 
   Widget _buildHeatAnalysis(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final totalShots = match.racks.fold<int>(0, (sum, r) => sum + r.shots.length);
 
     return Container(
       padding: EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: AppColors.lightSurface,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+        boxShadow: AppShadows.soft(brightness),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,7 +533,7 @@ class _HeatMapTab extends StatelessWidget {
           Text(
             'Phân tích',
             style: TextStyle(
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -518,7 +542,7 @@ class _HeatMapTab extends StatelessWidget {
           Text(
             'Tổng số cú đánh: $totalShots',
             style: TextStyle(
-              color: AppColors.lightTextPrimary,
+              color: AppColors.textPrimary(brightness),
               fontSize: 14,
             ),
           ),
@@ -526,7 +550,7 @@ class _HeatMapTab extends StatelessWidget {
           Text(
             'Dữ liệu heat map được tính từ vị trí shot gần nhất.',
             style: TextStyle(
-              color: AppColors.lightTextSecondary,
+              color: AppColors.textSecondary(brightness),
               fontSize: 13,
             ),
           ),
@@ -544,6 +568,8 @@ class _PocketAccuracyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -552,19 +578,19 @@ class _PocketAccuracyTab extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.accent.withValues(alpha: 0.08),
+              color: AppColors.primary(brightness).withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
+              border: Border.all(color: AppColors.primary(brightness).withValues(alpha: 0.2)),
             ),
             child: Row(
               children: [
-                Icon(Icons.gps_fixed, color: AppColors.accent, size: 20),
+                Icon(Icons.gps_fixed, color: AppColors.primary(brightness), size: 20),
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
                     'Pocket Accuracy thể hiện tỉ lệ trúng theo từng lỗ trên bàn.',
                     style: TextStyle(
-                      color: AppColors.lightTextSecondary,
+                      color: AppColors.textSecondary(brightness),
                       fontSize: 13,
                     ),
                   ),
@@ -576,9 +602,9 @@ class _PocketAccuracyTab extends StatelessWidget {
 
           Container(
             decoration: BoxDecoration(
-              color: AppColors.lightSurface,
+              color: AppColors.surface(brightness),
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: Offset(0, 2))],
+              boxShadow: AppShadows.soft(brightness),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
@@ -616,22 +642,22 @@ class _HeatMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final tablePaint = Paint()..color = const Color(0xFF0E5C3B);
+    final tablePaint = Paint()..color = AppColors.tableFelt;
     canvas.drawRect(Offset.zero & size, tablePaint);
 
     final railPaint = Paint()
-      ..color = const Color(0xFF1E7E55)
+      ..color = AppColors.tableRail
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6;
     canvas.drawRect(Rect.fromLTWH(4, 4, size.width - 8, size.height - 8), railPaint);
 
     final borderPaint = Paint()
-      ..color = Colors.black
+      ..color = AppColors.tableLine
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     canvas.drawRect(Offset.zero & size, borderPaint);
 
-    final pocketPaint = Paint()..color = Colors.black;
+    final pocketPaint = Paint()..color = AppColors.tableLine;
     final pockets = [
       Offset.zero,
       Offset(size.width / 2, 0),
@@ -679,7 +705,7 @@ class _HeatMapPainter extends CustomPainter {
 
         final intensity = (v / maxV).clamp(0.1, 1.0);
         final heatPaint = Paint()
-          ..color = Colors.redAccent.withValues(alpha: intensity * 0.5);
+          ..color = AppColors.shotMiss.withValues(alpha: intensity * 0.5);
 
         canvas.drawRect(
           Rect.fromLTWH(x * cellW, y * cellH, cellW, cellH),
@@ -709,6 +735,8 @@ class _LegendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -732,7 +760,7 @@ class _LegendItem extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
             fontSize: 12,
           ),
         ),
@@ -753,12 +781,14 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       children: [
         Text(
           value,
           style: TextStyle(
-            color: AppColors.lightTextPrimary,
+            color: AppColors.textPrimary(brightness),
             fontSize: 24,
             fontWeight: FontWeight.w700,
           ),
@@ -767,7 +797,7 @@ class _StatItem extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.lightTextSecondary,
+            color: AppColors.textSecondary(brightness),
             fontSize: 13,
           ),
         ),

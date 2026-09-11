@@ -272,6 +272,35 @@ class AppColors {
   static const Color bronzeOnTintLight = Color(0xFF7A4E24);
   static const Color bronzeOnTintDark = Color(0xFFCE9A63);
 
+  // ========================================================================
+  // MÀU MINH HOẠ BÀN BI-A
+  // ========================================================================
+  //
+  // KHÔNG đổi theo Brightness, và đó là chủ đích. Đây là màu của VẬT THỂ được
+  // vẽ lại — mặt nỉ, băng, lỗ, bi — chứ không phải màu giao diện. Một bàn bi-a
+  // xanh ở cả chế độ sáng lẫn tối; tô nó theo theme thì nó thôi là bàn bi-a.
+  //
+  // Chúng tồn tại thành token chỉ để `_HeatMapPainter` không phải nhúng hằng
+  // hex thô — cùng lý do `gold` là hằng chứ không phải cặp light/dark.
+
+  /// Mặt nỉ bàn.
+  static const Color tableFelt = Color(0xFF0E5C3B);
+
+  /// Băng bàn, sáng hơn mặt nỉ một bậc.
+  static const Color tableRail = Color(0xFF1E7E55);
+
+  /// Lỗ và nét viền bàn.
+  static const Color tableLine = Color(0xFF000000);
+
+  /// Bi cái.
+  static const Color ballCue = Color(0xFFFFFFFF);
+
+  /// Bi mục tiêu.
+  static const Color ballObject = Color(0xFFFFEB3B);
+
+  /// Đường đánh trượt trên heat map.
+  static const Color shotMiss = Color(0xFFFF5252);
+
   // Streak - Day streaks, Fire
   static const Color streak = Color(0xFFF97316);
   static const Color streakLight = Color(0xFFFB923C);

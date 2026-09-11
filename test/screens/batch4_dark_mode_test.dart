@@ -16,4 +16,9 @@ void main() {
     'lib/presentation/screens/reports/weekly_report_screen.dart',
     'lib/presentation/screens/reports/monthly_report_screen.dart',
   ]);
+
+  expectTokenHygiene('lô 4 — match', const [
+    'lib/presentation/screens/match/match_analytics_screen.dart',
+    'lib/presentation/screens/match/match_replay_screen.dart',
+  ]);
 }
