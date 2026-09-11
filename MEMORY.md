@@ -14,6 +14,8 @@
 
 - [knowledge-drill-data](.claude/memory/knowledge-drill-data.md) — Thư viện kiến thức 36 bài & bài tập 24 bài: nguồn thật, cách sinh lại, thang cấp độ 50 cú
 
+- [auth-account](.claude/memory/auth-account.md) — Đăng nhập/tài khoản trên Directus: 7 lỗi đã sửa, ranh giới guard
+
 ## Known Issues
 
 - [backend-directus](.claude/memory/backend-directus.md) — Backend Directus trên EasyPanel: URL đang sống, 6 bẫy đã vấp, và nợ kỹ thuật row-level security

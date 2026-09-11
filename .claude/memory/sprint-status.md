@@ -42,8 +42,8 @@ Sức khoẻ tại 11/9/2026: `flutter analyze` **0 error** (216 info/warning, �
 |---|---|
 | 22 commit chưa push | 🔴 `main` hơn `origin/main` 9 commit; `feat/warm-green-3bcde` chưa có upstream, hơn `main` 13 commit |
 | `CLAUDE.md` rỗng | 🔴 File tồn tại nhưng 0 byte — không có project instruction nào được nạp mỗi session |
-| Supabase wiring | 🔴 Cả 10 repository provider đều trả về `Local*`; chưa nhánh nào dùng `SupabaseConfig.client`. Dữ liệu hoàn toàn ở SharedPreferences |
-| Bản web deploy | 🟡 `deploy-web.yml` không truyền `--dart-define` Supabase → chạy offline; bấm Đăng nhập hiện lỗi kỹ thuật thô |
+| ~~Supabase wiring~~ | ✅ **SAI — backend là DIRECTUS**, không phải Supabase. Supabase đã bị thay hẳn: `DirectusConfig` + `DirectusClient` + `AuthService`/`PlayerService` đều chạy thật trên `poolos-api.kjdybl.easypanel.host`. Xem [[backend-directus]] |
+| Bản web deploy | 🟢 Directus không cần khoá bí mật ở client, `DirectusConfig.baseUrl` có mặc định nên build không cần `--dart-define` |
 | Banner "offline-only" | 🟡 Mô tả trong header `supabase_config.dart` nhưng không tồn tại trong `lib/presentation` |
 | 4 test `test.fixme` | 🟡 UI chưa tồn tại (Skip onboarding, Home→Play, Training→path/coach) |
 | `BACKLOG.md` | 🟡 Ghi 2/8/2026, đã lệch thực tế |
