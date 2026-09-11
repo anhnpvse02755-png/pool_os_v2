@@ -78,7 +78,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             ),
           ),
         ),
-        body: Center(child: CircularProgressIndicator(color: AppColors.accentColor(_brightness))),
+        body: Center(child: CircularProgressIndicator(color: AppColors.primary(_brightness))),
       );
     }
     if (_due.isEmpty) {
@@ -157,7 +157,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
                           color: _revealed
-                              ? AppColors.accentColor(_brightness)
+                              ? AppColors.primary(_brightness)
                               : AppColors.textPrimary(_brightness),
                         ),
                       ),
@@ -241,7 +241,7 @@ class _GradeButtonState extends State<_GradeButton> {
             child: Text(
               '${widget.grade}',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.onPrimary(widget.brightness),
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),

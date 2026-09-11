@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../data/models/knowledge_node.dart';
 import '../../../domain/services/ai_explain_service.dart';
@@ -63,7 +64,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(_brightness);
+    final accentColor = AppColors.primary(_brightness);
 
     return Scaffold(
       backgroundColor: AppColors.background(_brightness),
@@ -90,7 +91,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
           ),
           if (_loading)
             LinearProgressIndicator(
-              backgroundColor: AppColors.lightBorder,
+              backgroundColor: AppColors.border(_brightness),
               valueColor: AlwaysStoppedAnimation<Color>(accentColor),
             ),
           SafeArea(
@@ -98,13 +99,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
                 color: AppColors.surface(_brightness),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
+                boxShadow: AppShadows.soft(_brightness),
               ),
               child: Row(
                 children: [
@@ -136,7 +131,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.send, color: Colors.white, size: 20),
+                      icon: Icon(Icons.send, color: AppColors.onPrimary(_brightness), size: 20),
                       onPressed: _send,
                     ),
                   ),
@@ -151,7 +146,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
 
   Widget _bubble(_Chat m) {
     final isUser = m.role == 'user';
-    final accentColor = AppColors.accentColor(_brightness);
+    final accentColor = AppColors.primary(_brightness);
 
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -164,12 +159,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
               ? accentColor.withValues(alpha: 0.1)
               : AppColors.surface(_brightness),
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 8,
-            ),
-          ],
+          boxShadow: AppShadows.soft(_brightness),
         ),
         child: Text(
           m.text,

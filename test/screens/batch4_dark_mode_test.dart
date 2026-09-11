@@ -21,4 +21,11 @@ void main() {
     'lib/presentation/screens/match/match_analytics_screen.dart',
     'lib/presentation/screens/match/match_replay_screen.dart',
   ]);
+
+  expectTokenHygiene('lô 4 — knowledge', const [
+    'lib/presentation/screens/knowledge/ai_explain_screen.dart',
+    'lib/presentation/screens/knowledge/flashcard_screen.dart',
+    'lib/presentation/screens/knowledge/knowledge_graph_screen.dart',
+    'lib/presentation/screens/knowledge/quiz_screen.dart',
+  ]);
 }

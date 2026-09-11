@@ -95,7 +95,7 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
         ),
       ),
       body: _loading
-          ? Center(child: CircularProgressIndicator(color: AppColors.accentColor(_brightness)))
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary(_brightness)))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
@@ -126,7 +126,7 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
             width: 32,
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
             decoration: BoxDecoration(
-              color: AppColors.accentColor(_brightness).withValues(alpha: 0.1),
+              color: AppColors.primary(_brightness).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             ),
             child: Center(
@@ -134,7 +134,7 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
                 '$depth',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: AppColors.accentColor(_brightness),
+                  color: AppColors.primary(_brightness),
                 ),
               ),
             ),
@@ -153,19 +153,30 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
   }
 
   Widget _nodeChip(KnowledgeNode n) {
-    Color color;
+    // Bốn bậc độ khó theo THỨ HẠNG, dùng đúng bộ bốn hue tách bạch của hệ —
+    // `difficultyExpert` 262° / họ xanh rêu 157-163° / `warning` 38° /
+    // `error` 0° — giống `assessment_screen` và `community_screen`.
+    // Màu NỀN (dùng ở 10%) tách khỏi màu NÉT. Đo thật: viền `warning` đặc chỉ
+    // được 1,95:1 trên nền kem ở bản sáng — dưới sàn 3:1 của thành phần UI.
+    // Bản `OnTint` đưa nó lên 4,99. Cùng khuôn đã dùng ở `community_screen`.
+    Color fill;
+    Color stroke;
     switch (n.difficulty) {
-      case 'advanced':
-        color = Colors.deepOrange;
-        break;
       case 'master':
-        color = Colors.red;
+        fill = AppColors.difficultyExpert(_brightness);
+        stroke = fill;
+        break;
+      case 'advanced':
+        fill = AppColors.primary(_brightness);
+        stroke = fill;
         break;
       case 'intermediate':
-        color = AppColors.warning;
+        fill = AppColors.warning;
+        stroke = AppColors.warningOnTint(_brightness);
         break;
       default:
-        color = AppColors.accentColor(_brightness);
+        fill = AppColors.error;
+        stroke = AppColors.errorOnTint(_brightness);
     }
 
     return InkWell(
@@ -174,8 +185,8 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          border: Border.all(color: color),
+          color: fill.withValues(alpha: 0.1),
+          border: Border.all(color: stroke),
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
         ),
         child: Column(

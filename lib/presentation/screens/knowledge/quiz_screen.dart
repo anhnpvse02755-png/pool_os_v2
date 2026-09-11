@@ -82,7 +82,7 @@ class _QuizScreenState extends State<QuizScreen> {
         ),
       ),
       body: _loading
-          ? Center(child: CircularProgressIndicator(color: AppColors.accentColor(_brightness)))
+          ? Center(child: CircularProgressIndicator(color: AppColors.primary(_brightness)))
           : _quiz == null
               ? Center(
                   child: Text(
@@ -98,7 +98,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   Widget _question() {
     final q = _quiz!.questions[_index];
-    final accentColor = AppColors.accentColor(_brightness);
+    final accentColor = AppColors.primary(_brightness);
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -115,7 +115,7 @@ class _QuizScreenState extends State<QuizScreen> {
           const SizedBox(height: AppSpacing.md),
           LinearProgressIndicator(
             value: (_index + 1) / _quiz!.questions.length,
-            backgroundColor: AppColors.lightBorder,
+            backgroundColor: AppColors.border(_brightness),
             valueColor: AlwaysStoppedAnimation<Color>(accentColor),
           ),
           const SizedBox(height: AppSpacing.xl),
@@ -145,7 +145,7 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _result() {
-    final accentColor = AppColors.accentColor(_brightness);
+    final accentColor = AppColors.primary(_brightness);
     IconData icon;
     Color iconColor;
     String message;
@@ -248,7 +248,7 @@ class _OptionButtonState extends State<_OptionButton> {
               padding: const EdgeInsets.all(AppSpacing.lg),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                border: Border.all(color: AppColors.lightBorder),
+                border: Border.all(color: AppColors.border(widget.brightness)),
                 boxShadow: AppShadows.sm(widget.brightness),
               ),
               child: Row(
@@ -257,7 +257,7 @@ class _OptionButtonState extends State<_OptionButton> {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: AppColors.accentColor(widget.brightness).withValues(alpha: 0.1),
+                      color: AppColors.primary(widget.brightness).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Center(
@@ -265,7 +265,7 @@ class _OptionButtonState extends State<_OptionButton> {
                         String.fromCharCode(65 + widget.index),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.accentColor(widget.brightness),
+                          color: AppColors.primary(widget.brightness),
                         ),
                       ),
                     ),
@@ -322,11 +322,11 @@ class _ResultButtonState extends State<_ResultButton> {
           width: double.infinity,
           height: 56,
           decoration: BoxDecoration(
-            color: AppColors.accentColor(widget.brightness),
+            color: AppColors.primary(widget.brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: [
               BoxShadow(
-                color: AppColors.accentColor(widget.brightness).withValues(alpha: 0.3),
+                color: AppColors.primary(widget.brightness).withValues(alpha: 0.3),
                 blurRadius: 12,
                 offset: Offset(0, 4),
               ),
@@ -338,7 +338,7 @@ class _ResultButtonState extends State<_ResultButton> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColors.onPrimary(widget.brightness),
               ),
             ),
           ),
