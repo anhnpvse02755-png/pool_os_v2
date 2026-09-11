@@ -391,6 +391,64 @@ void main() {
     // do ngay ma khong ai duoc giao sua. Da bao cao rieng.
   });
 
+  group('Gold tach khoi warning', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    /// Nen 10% cua `tone` sau khi da chong len `ground` — dung chinh
+    /// Color.alphaBlend cua Flutter chu khong tu tinh, de con so khoa o day
+    /// la con so ma may thuc su ve ra.
+    Color tint(Color tone, Color ground) =>
+        Color.alphaBlend(tone.withValues(alpha: 0.1), ground);
+
+    // Loi goc: `gold` va `warning` cung la #F59E0B, `goldLight` va
+    // `warningLight` cung la #FBBF24. Hai nghia khac nhau, mot ma mau.
+    test('gold KHONG con trung ma voi warning', () {
+      expect(AppColors.gold, isNot(AppColors.warning));
+      expect(AppColors.goldLight, isNot(AppColors.warningLight));
+    });
+
+    test('gold sam hon han warning — do la truc tach hai tong', () {
+      // Tach bang do sang: gold L=33%, warning L=50%. Hue van o dai vang
+      // (45° vs 38°) nen gold VAN la vang, khong truot sang olive.
+      expect(
+        AppColors.gold.computeLuminance(),
+        lessThan(AppColors.warning.computeLuminance() * 0.6),
+        reason: 'gold phai la vang huy chuong sau, khong phai ho phach choi',
+      );
+    });
+
+    test('gold KHONG duoc trung streak — ba tong am nam canh nhau', () {
+      expect(AppColors.gold, isNot(AppColors.streak));
+    });
+
+    // 49 man chua di tru van to thang AppColors.gold vao icon. Gia tri moi
+    // phai tu no dat san 3:1 tren nen 10% cua chinh no o CA HAI che do, neu
+    // khong thi dot sua nay chi doi mot loi tiep xuc thanh mot loi khac.
+    test('gold dat 3:1 lam icon tren nen 10% cua chinh no, ca hai che do', () {
+      for (final ground in [
+        AppColors.surface(Brightness.light),
+        AppColors.background(Brightness.light),
+        AppColors.surface(Brightness.dark),
+        AppColors.background(Brightness.dark),
+      ]) {
+        expect(
+          contrast(AppColors.gold, tint(AppColors.gold, ground)),
+          greaterThanOrEqualTo(3.0),
+          reason: 'gold chim vao nen 10% cua chinh no tren $ground',
+        );
+      }
+    });
+
+    test('goldLight nhat hon gold, cung mot tia', () {
+      expect(AppColors.goldLight.computeLuminance(),
+          greaterThan(AppColors.gold.computeLuminance()));
+    });
+  });
+
   group('Nen loang cua the ti le (drill_result)', () {
     double contrast(Color a, Color b) {
       final l1 = a.computeLuminance(), l2 = b.computeLuminance();

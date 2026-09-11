@@ -152,8 +152,33 @@ class AppColors {
   // ========================================================================
 
   // Gold - Achievements, Premium
-  static const Color gold = Color(0xFFF59E0B);
-  static const Color goldLight = Color(0xFFFBBF24);
+  //
+  // Trước là #F59E0B — TRÙNG TUYỆT ĐỐI với `warning`, và `goldLight` cũng
+  // trùng tuyệt đối với `warningLight` (#FBBF24). Hai token, hai nghĩa
+  // ("cẩn thận" và "thành tựu/cao cấp"), một mã màu: màn nào dùng cả hai
+  // trong một khung nhìn thì người dùng không thể phân biệt, mà lint cũng
+  // không kêu vì về mặt kiểu dữ liệu chúng là hai hằng hợp lệ.
+  //
+  // Không gộp vào `warning`: đọc các điểm dùng thật thì gold đang gánh
+  // "Mẹo từ pro", "Mục tiêu Level", "AI Coach gợi ý", tile cao cấp, trận
+  // chung kết. Không chỗ nào mang nghĩa cảnh báo — tô chúng thành `warning`
+  // sẽ biến một gợi ý huấn luyện thành một lời cảnh báo.
+  //
+  // Giữ hue vàng (45°) nhưng hạ hẳn độ sáng (L 50% -> 33%) và đẩy bão hoà
+  // lên tối đa: ra vàng huy chương sâu thay vì hổ phách chói. Tách khỏi
+  // `warning` dE2000 = 17.4 và khỏi `streak` #F97316 dE2000 = 23.2 — cả hai
+  // đều vượt xa ngưỡng ~10 của "khác màu rõ ràng".
+  //
+  // Chọn đúng L=33% còn vì một lý do thực dụng: 49 màn CHƯA di trú vẫn tô
+  // thẳng `AppColors.gold` vào icon. Ở giá trị này nó đạt 3:1 trên nền 10%
+  // của chính nó ở CẢ HAI chế độ (3.41/3.12 sáng, 3.78/4.26 tối) — bản cũ
+  // chỉ được 1.99/1.82. Nút đặc chữ trắng trong coach/ cũng lên 2.10 -> 3.82.
+  static const Color gold = Color(0xFFA67C00);
+
+  /// Bậc nhạt hơn của [gold], cùng tia HSL, +6 điểm L — đúng quan hệ mà
+  /// `warningLight` có với `warning`. Phải đi kèm [gold] chứ không đứng yên:
+  /// để nguyên #FBBF24 thì nó vẫn là bản sao của `warningLight`.
+  static const Color goldLight = Color(0xFFC79500);
 
   // Streak - Day streaks, Fire
   static const Color streak = Color(0xFFF97316);
