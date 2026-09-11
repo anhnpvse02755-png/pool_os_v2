@@ -1,4 +1,7 @@
-# Redesign "Kem ấm & Xanh rêu" — Kế hoạch lô 4 (community)
+# Redesign "Kem ấm & Xanh rêu" — Kế hoạch lô 4 (community → play)
+
+> **ĐÃ THỰC THI XONG 11/9/2026.** Cả 8 nhóm, 40 màn. `flutter analyze` 0 error,
+> `flutter test` 767/767 pass, `expectTokenHygiene` phủ **68/68 màn**.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -498,6 +501,32 @@ mang chữ tương phản thấp.
 
 1. **`_NotificationCard` chưa có widget test** — `lib/presentation/screens/home/notification_screen.dart`. Luật đọc-mã-nguồn không bắt được `Dismissible.onDismissed` bị vô hiệu hay `maxLines` bị rơi. Gộp vào nhóm `profile`.
 2. **`DrillListScreen` chưa đổi sang `PoolCard`/`IconTile`** — còn một đường nối thấy được cách một cú chạm. Gộp vào nhóm `play`.
+
+## ĐÍNH CHÍNH (ghi sau khi thực thi)
+
+Bốn chỗ plan này ghi thiếu, phát hiện lúc chạy:
+
+1. **Plan bỏ sót `AppColors.accentColor`.** Task 4 chỉ ghi sửa màu chữ trên nút
+   mà không thấy NỀN nút chính là token xanh điện phải gỡ — 17 chỗ riêng ở
+   community, 47 ở coach, 35 `accentSubtle` ở profile. Luật 6 bắt được.
+
+2. **Bài test "ba huy chương tách bạch" đo sai thứ.** Bản đầu dùng tỉ lệ tương
+   phản (phép đo ĐỘ SÁNG) trong khi thứ tách ba kim loại là SẮC. Đã đổi sang
+   khoảng hue, sàn 20° — cùng sàn `assessment_screen` dùng cho bốn bậc độ khó.
+
+3. **Luật hygiene KHÔNG bắt được lỗi tương phản.** Nó đọc mã nguồn chứ không
+   render: bục vinh danh có chữ avatar cùng màu với nền 30% của chính nó
+   (2,11–2,84:1) và nó vẫn báo xanh. Cũng vì đọc mã nguồn nên nó bắt cả emoji
+   và tên token nằm trong COMMENT — phải diễn đạt lại chú thích hai lần.
+
+4. **Hygiene xanh không có nghĩa là biên dịch được.** `flashcard_screen` còn
+   lỗi `_brightness` ngoài phạm vi trong khi 50/50 luật báo xanh. `flutter
+   analyze` sau mỗi nhóm là bắt buộc, không thể thay bằng hygiene.
+
+**Bài học cho lô sau: thay token hàng loạt bằng regex thì phải rà lại bằng
+analyze VÀ bằng mắt.** Ba lỗi do chính script gây ra: `Colors.white70` thành
+`onPrimary(brightness)70`, widget `const` không còn là hằng sau khi màu thành
+lời gọi method (212 chỗ), và chèn câu lệnh vào hàm thân biểu thức `=>`.
 
 ## Cổng sau lô 8
 

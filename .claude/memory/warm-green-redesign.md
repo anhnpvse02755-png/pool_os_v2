@@ -26,9 +26,17 @@ Bo góc: `radiusSm=12` `radiusMd=20` `radiusLg=28` `radiusTile=18` `radiusFull=9
 3. `main.dart:137` giữ `ThemeMode.light` **cho tới khi hết lô 8**. Mọi tỉ lệ
    tương phản chế độ tối ghi trong plan đều là **tính toán, chưa quan sát**.
 
-**Tiến độ:** lô 1 (token + 6 component + onboarding/auth), lô 2 (shell/home),
-lô 3a–3e (20 màn training) — xong. Còn **40 màn**: coach, play, profile,
-knowledge, match, session, reports, community.
+**Tiến độ: XONG TOÀN BỘ 68/68 màn** (11/9/2026). Lô 1 (token + 6 component +
+onboarding/auth), lô 2 (shell/home), lô 3a–3e (20 màn training), lô 4 (40 màn
+còn lại, 8 nhóm: community → session → reports → match → knowledge → coach →
+profile → play).
+
+`flutter analyze` 0 error · `flutter test` 767/767 · `expectTokenHygiene` phủ
+đủ 68 màn.
+
+**Việc kế tiếp là bật `ThemeMode.system` ở `main.dart:137`** — cổng đó nay đã
+mở. Nhưng phải là task RIÊNG có bước nhìn bằng mắt: mọi tỉ lệ tương phản chế độ
+tối ghi trong bốn plan đến giờ đều là **tính toán, chưa ai chạy thật lần nào**.
 
 **Bài học đắt nhất (lô 3a):** thêm một token màu thì phải kiểm **CẢ HAI
 chiều** — nó làm chữ trên nền gì, và nó làm nền cho chữ gì. `difficultyExpert`
@@ -36,7 +44,13 @@ chỉ được kiểm một chiều nên nút back tụt 3,16 → 2,03:1 ở ch�
 cả ba vòng review.
 
 **Việc còn nợ:** `_NotificationCard` (lô 2) chưa có widget test ·
-`DrillListScreen` chưa đổi hết sang `PoolCard`/`IconTile`.
+`DrillListScreen` chưa đổi hết sang `PoolCard`/`IconTile` · **nhãn nút VÔ HIỆU
+chỉ đạt 2,59:1** (nền `textTertiary`, chữ `onPrimary`) — khuôn này trải trên ít
+nhất 8 màn nên cần một task đổi đồng loạt, WCAG miễn trừ nên không có test nào
+bắt.
+
+**Luật hygiene không đo tương phản** — nó đọc mã nguồn. Nó cũng quét cả
+COMMENT, nên đừng viết tên token bị cấm hay emoji vào chú thích.
 
 **Why:** Đây là đợt thay đổi lớn nhất kể từ Sprint-19 và nó **đảo ngược** các
 quy ước token của Sprint-19 — xem [[design-system-tokens]].
