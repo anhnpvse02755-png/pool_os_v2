@@ -134,7 +134,9 @@ class _PoolOSAppState extends ConsumerState<PoolOSApp> with WidgetsBindingObserv
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light,
+      // Mở sau khi cả 8 lô redesign xong và `expectTokenHygiene` phủ đủ 68 màn
+      // — đúng điều kiện mà plan lô 1 đặt ra làm cổng.
+      themeMode: ThemeMode.system,
       routerConfig: router,
     );
   }

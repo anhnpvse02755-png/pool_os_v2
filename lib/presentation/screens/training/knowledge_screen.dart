@@ -89,56 +89,48 @@ class _KnowledgeScreenState extends ConsumerState<KnowledgeScreen> {
 
   Widget _buildCategoryTabs(List<KnowledgeCategory> categories) {
     return Container(
-      height: 50,
       margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        itemCount: categories.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return _CategoryChip(
-              label: 'Tất cả',
-              isSelected: _selectedCategoryId == null,
-              onTap: () => setState(() => _selectedCategoryId = null),
-            );
-          }
-
-          final category = categories[index - 1];
-          return _CategoryChip(
-            label: category.nameVi ?? category.name,
-            isSelected: _selectedCategoryId == category.id,
-            onTap: () => setState(() => _selectedCategoryId = category.id),
-          );
-        },
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      width: double.infinity,
+      child: Wrap(
+        spacing: 0,
+        runSpacing: AppSpacing.sm,
+        children: [
+          _CategoryChip(
+            label: 'Tất cả',
+            isSelected: _selectedCategoryId == null,
+            onTap: () => setState(() => _selectedCategoryId = null),
+          ),
+          ...categories.map((category) => _CategoryChip(
+                label: category.nameVi ?? category.name,
+                isSelected: _selectedCategoryId == category.id,
+                onTap: () => setState(() => _selectedCategoryId = category.id),
+              )),
+        ],
       ),
     );
   }
 
   Widget _buildDifficultyFilter() {
     return Container(
-      height: 50,
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        itemCount: DifficultyLevel.values.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return _CategoryChip(
-              label: 'Tất cả',
-              isSelected: _selectedDifficulty == null,
-              onTap: () => setState(() => _selectedDifficulty = null),
-            );
-          }
-
-          final diff = DifficultyLevel.values[index - 1];
-          return _CategoryChip(
-            label: diff.label,
-            isSelected: _selectedDifficulty == diff,
-            onTap: () => setState(() => _selectedDifficulty = diff),
-          );
-        },
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      width: double.infinity,
+      child: Wrap(
+        spacing: 0,
+        runSpacing: AppSpacing.sm,
+        children: [
+          _CategoryChip(
+            label: 'Tất cả',
+            isSelected: _selectedDifficulty == null,
+            onTap: () => setState(() => _selectedDifficulty = null),
+          ),
+          ...DifficultyLevel.values.map((diff) => _CategoryChip(
+                label: diff.label,
+                isSelected: _selectedDifficulty == diff,
+                onTap: () => setState(() => _selectedDifficulty = diff),
+              )),
+        ],
       ),
     );
   }

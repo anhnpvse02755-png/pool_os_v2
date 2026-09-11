@@ -91,3 +91,7 @@ deploy/directus/.env.generated
 *.tmp
 *.tmp.js
 *.tmp.json
+
+# Anh chup tu spec kiem tra giao dien — sinh lai duoc, khong commit
+test-results/dark-mode/
+test-results/light-mode/

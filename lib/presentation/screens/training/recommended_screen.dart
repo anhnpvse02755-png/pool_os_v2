@@ -156,45 +156,43 @@ class _RecommendedScreenState extends State<RecommendedScreen> {
   Widget _buildGoalFilter() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            _GoalChip(
-              label: 'Tất cả',
-              isSelected: _selectedGoal == 'all',
-              onTap: () => setState(() => _selectedGoal = 'all'),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            _GoalChip(
-              label: 'Cá nhân hóa',
-              isSelected: _selectedGoal == 'personalized',
-              onTap: () => setState(() => _selectedGoal = 'personalized'),
-              icon: Icons.person,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            _GoalChip(
-              label: 'Điểm yếu',
-              isSelected: _selectedGoal == 'weakness',
-              onTap: () => setState(() => _selectedGoal = 'weakness'),
-              icon: Icons.trending_down,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            _GoalChip(
-              label: 'Thử thách',
-              isSelected: _selectedGoal == 'challenge',
-              onTap: () => setState(() => _selectedGoal = 'challenge'),
-              icon: Icons.emoji_events,
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            _GoalChip(
-              label: 'Ôn tập',
-              isSelected: _selectedGoal == 'maintenance',
-              onTap: () => setState(() => _selectedGoal = 'maintenance'),
-              icon: Icons.refresh,
-            ),
-          ],
-        ),
+      width: double.infinity,
+      // Wrap chu KHONG phai vung cuon ngang: FilterChip nam trong vung rong
+      // VO HAN se do hut be rong nhan va cat mat ky tu cuoi.
+      child: Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        children: [
+          _GoalChip(
+            label: 'Tất cả',
+            isSelected: _selectedGoal == 'all',
+            onTap: () => setState(() => _selectedGoal = 'all'),
+          ),
+          _GoalChip(
+            label: 'Cá nhân hóa',
+            isSelected: _selectedGoal == 'personalized',
+            onTap: () => setState(() => _selectedGoal = 'personalized'),
+            icon: Icons.person,
+          ),
+          _GoalChip(
+            label: 'Điểm yếu',
+            isSelected: _selectedGoal == 'weakness',
+            onTap: () => setState(() => _selectedGoal = 'weakness'),
+            icon: Icons.trending_down,
+          ),
+          _GoalChip(
+            label: 'Thử thách',
+            isSelected: _selectedGoal == 'challenge',
+            onTap: () => setState(() => _selectedGoal = 'challenge'),
+            icon: Icons.emoji_events,
+          ),
+          _GoalChip(
+            label: 'Ôn tập',
+            isSelected: _selectedGoal == 'maintenance',
+            onTap: () => setState(() => _selectedGoal = 'maintenance'),
+            icon: Icons.refresh,
+          ),
+        ],
       ),
     );
   }

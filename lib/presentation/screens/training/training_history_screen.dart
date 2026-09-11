@@ -191,41 +191,40 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
   }
 
   Widget _buildFilterChips() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-      child: Row(
+      width: double.infinity,
+      // Wrap chu KHONG phai vung cuon ngang: chip nam trong vung rong VO HAN
+      // se do hut be rong nhan va cat mat ky tu cuoi.
+      child: Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
         children: [
           ChoiceChip(
             label: const Text('Tất cả'),
             selected: _selectedFilter == 'all',
             onSelected: (_) => setState(() => _selectedFilter = 'all'),
           ),
-          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Stop'),
             selected: _selectedFilter == 'STOP',
             onSelected: (_) => setState(() => _selectedFilter = 'STOP'),
           ),
-          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Draw'),
             selected: _selectedFilter == 'DRAW',
             onSelected: (_) => setState(() => _selectedFilter = 'DRAW'),
           ),
-          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Follow'),
             selected: _selectedFilter == 'FOLLOW',
             onSelected: (_) => setState(() => _selectedFilter = 'FOLLOW'),
           ),
-          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Position'),
             selected: _selectedFilter == 'POSITION',
             onSelected: (_) => setState(() => _selectedFilter = 'POSITION'),
           ),
-          const SizedBox(width: AppSpacing.sm),
           ChoiceChip(
             label: const Text('Bank'),
             selected: _selectedFilter == 'BANK',
