@@ -60,7 +60,10 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                     child: Icon(
                       Icons.error_outline,
                       size: 56,
-                      color: AppColors.warning,
+                      // Icon nằm TRÊN nền 10% của chính `warning`. Tông gốc ở
+                      // đó chỉ 1.99:1 — dưới sàn 3:1 của đối tượng đồ hoạ;
+                      // kích thước lớn không miễn trừ sàn đó.
+                      color: AppColors.warningOnTint(brightness),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xxl),
@@ -260,7 +263,11 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.flag, color: AppColors.success, size: 22),
+                          // Icon trên nền 10% của chính `success` (2.31:1 ở
+                          // bản sáng) — phải dùng tông on-tint.
+                          Icon(Icons.flag,
+                              color: AppColors.successOnTint(brightness),
+                              size: 22),
                           const SizedBox(width: AppSpacing.md),
                           Expanded(
                               child: Text(drill.goal,
@@ -725,7 +732,8 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       ),
       child: Row(
         children: [
-          Icon(Icons.construction, color: AppColors.warning, size: 28),
+          Icon(Icons.construction,
+              color: AppColors.warningOnTint(brightness), size: 28),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(
@@ -736,7 +744,9 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    color: AppColors.warning,
+                    // Chữ 15px đậm trên nền 10% của chính `warning`: vẫn là
+                    // chữ thường theo WCAG, sàn 4.5:1.
+                    color: AppColors.warningOnTint(brightness),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),

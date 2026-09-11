@@ -277,12 +277,13 @@ class DrillResultScreen extends StatelessWidget {
                       Row(
                         children: [
                           Icon(Icons.lightbulb,
-                              color: AppColors.gold, size: 24),
+                              color: AppColors.goldOnTint(brightness),
+                              size: 24),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
                             'AI Coach gợi ý',
                             style: TextStyle(
-                              color: AppColors.gold,
+                              color: AppColors.goldOnTint(brightness),
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),

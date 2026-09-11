@@ -207,7 +207,11 @@ class DrillCompletionScreen extends ConsumerWidget {
                     children: [
                       Icon(
                         _passed ? Icons.verified_outlined : Icons.info_outline,
-                        color: _passed ? AppColors.success : AppColors.warning,
+                        // Icon trên nền 10% của chính tông đó — tông gốc
+                        // không đạt sàn 3:1 ở bản sáng.
+                        color: _passed
+                            ? AppColors.successOnTint(brightness)
+                            : AppColors.warningOnTint(brightness),
                         size: 24,
                       ),
                       const SizedBox(width: AppSpacing.md),
@@ -303,6 +307,11 @@ class _CompletionHero extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     final theme = Theme.of(context);
     final color = passed ? AppColors.success : AppColors.warning;
+    // `color` chỉ còn dùng cho NỀN 10% và viền — hai vai không có sàn tương
+    // phản. Mọi chữ/icon nằm TRÊN nền đó phải lấy `onTint`.
+    final onTint = passed
+        ? AppColors.successOnTint(brightness)
+        : AppColors.warningOnTint(brightness);
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xxl),
       decoration: BoxDecoration(
@@ -322,7 +331,7 @@ class _CompletionHero extends StatelessWidget {
             child: Icon(
               passed ? Icons.emoji_events_outlined : Icons.flag_outlined,
               size: 48,
-              color: color,
+              color: onTint,
             ),
           ),
           const SizedBox(height: AppSpacing.md),
@@ -338,7 +347,7 @@ class _CompletionHero extends StatelessWidget {
           Text(
             passed ? 'Hoàn thành xuất sắc' : 'Hoàn thành, tiếp tục cố gắng',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: color,
+              color: onTint,
               fontWeight: FontWeight.w500,
             ),
           ),

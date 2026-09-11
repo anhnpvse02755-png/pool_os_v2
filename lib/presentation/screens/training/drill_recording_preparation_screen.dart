@@ -310,7 +310,7 @@ class _ObjectiveCard extends StatelessWidget {
         children: [
           Icon(
             Icons.track_changes,
-            color: AppColors.gold,
+            color: AppColors.goldOnTint(brightness),
             size: 28,
           ),
           const SizedBox(width: AppSpacing.md),
@@ -321,7 +321,7 @@ class _ObjectiveCard extends StatelessWidget {
                 Text(
                   'Mục tiêu Level',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppColors.gold,
+                        color: AppColors.goldOnTint(brightness),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -499,8 +499,10 @@ class _ReadinessCheckbox extends StatelessWidget {
           children: [
             Icon(
               isReady ? Icons.check_circle : Icons.circle_outlined,
-              color:
-                  isReady ? AppColors.success : AppColors.textTertiary(brightness),
+              // Nhánh isReady đặt icon lên nền 10% của chính `success`.
+              color: isReady
+                  ? AppColors.successOnTint(brightness)
+                  : AppColors.textTertiary(brightness),
               size: 28,
             ),
             const SizedBox(width: AppSpacing.md),
@@ -513,7 +515,7 @@ class _ReadinessCheckbox extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: isReady
-                              ? AppColors.success
+                              ? AppColors.successOnTint(brightness)
                               : AppColors.textPrimary(brightness),
                         ),
                   ),

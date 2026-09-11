@@ -136,6 +136,57 @@ class AppColors {
   static const Color errorSubtleDark = Color(0xFF531313);
 
   // ========================================================================
+  // TÔNG CHỮ/ICON TRÊN NỀN 10% CỦA CHÍNH TÔNG ĐÓ ("badge")
+  //
+  // Thành ngữ badge của repo là chữ tông semantic đặt trên nền 10% của chính
+  // tông ấy:
+  //
+  //   Container(color: tone.withValues(alpha: 0.1), child: Text(color: tone))
+  //
+  // Ở 10–13px đậm, đó là chữ thường -> sàn 4.5:1. Đo trên surface bản SÁNG —
+  // chế độ duy nhất đang phát hành — thành ngữ này TRƯỢT ở cả ba tông:
+  //   success 2.31 | warning 1.99 | error 3.29
+  //
+  // Các hằng *Dark có sẵn KHÔNG cứu được: dùng làm chữ chỉ lên
+  // 5.74 / 2.95 / 4.23 — warning và error vẫn dưới sàn.
+  //
+  // Nên phải có họ accessor riêng, và phải theo Brightness: bản tối cần đi
+  // NGƯỢC chiều (success và warning đã đạt sẵn ở tông gốc, chỉ error phải
+  // sáng lên). Một hằng phẳng không thể phục vụ cả hai chiều.
+  //
+  // Cách dựng giá trị: hạ/nâng độ sáng DỌC ĐÚNG TIA HSL của chính tông đó —
+  // giữ nguyên hue và độ bão hoà — nên mỗi tông vẫn là chính nó, chỉ đậm
+  // hoặc nhạt hơn. Đây đúng tiền lệ đã dùng cho `errorSubtleDark` ở trên.
+  //
+  // Nền chuẩn hoá: ĐO TRÊN CẢ `surface` LẪN `background`, vì badge xuất hiện
+  // trên cả hai. Bản sáng bị `background` #F7F4EC siết chặt hơn (nền kem sẫm
+  // hơn trắng -> nền 10% sẫm hơn -> chữ sẫm tương phản kém hơn); bản tối thì
+  // ngược lại, `surface` #1B221F mới là mặt siết. Giá trị dưới đây đạt ≥4.5
+  // trên MẶT SIẾT của từng chế độ, nên đạt trên cả hai.
+  //
+  //   tông     sáng      surface / background      tối       surface / background
+  //   success  #0A7753   5.06 / 4.63               #10B981   5.46 / 6.19
+  //   warning  #925E06   5.08 / 4.65               #F59E0B   6.35 / 7.21
+  //   error    #CC1111   5.03 / 4.60               #F15F5F   4.62 / 5.15
+  //   gold     #846200   5.03 / 4.60               #BA8B00   4.66 / 5.25
+  //
+  // LƯU Ý: nền 10% VẪN lấy từ tông GỐC (`success`, `warning`, …), không lấy
+  // từ token này. Đổi cả nền sẽ làm badge đổi sắc; ở đây chỉ chữ/icon đổi.
+  // ========================================================================
+
+  static const Color successOnTintLight = Color(0xFF0A7753);
+  static const Color successOnTintDark = success;
+
+  static const Color warningOnTintLight = Color(0xFF925E06);
+  static const Color warningOnTintDark = warning;
+
+  static const Color errorOnTintLight = Color(0xFFCC1111);
+  static const Color errorOnTintDark = Color(0xFFF15F5F);
+
+  static const Color goldOnTintLight = Color(0xFF846200);
+  static const Color goldOnTintDark = Color(0xFFBA8B00);
+
+  // ========================================================================
   // ĐỘ KHÓ — tông riêng cho mức "expert"
   //
   // easy/medium/hard đã có success/warning/error. Mức expert trước đây là
@@ -247,6 +298,28 @@ class AppColors {
 
   static Color successSubtle(Brightness brightness) =>
       brightness == Brightness.light ? successSubtleLight : successSubtleDark;
+
+  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `success`.
+  ///
+  /// Dùng cho thành ngữ badge; nền vẫn là `success.withValues(alpha: 0.1)`.
+  static Color successOnTint(Brightness brightness) =>
+      brightness == Brightness.light
+          ? successOnTintLight
+          : successOnTintDark;
+
+  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `warning`.
+  static Color warningOnTint(Brightness brightness) =>
+      brightness == Brightness.light
+          ? warningOnTintLight
+          : warningOnTintDark;
+
+  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `error`.
+  static Color errorOnTint(Brightness brightness) =>
+      brightness == Brightness.light ? errorOnTintLight : errorOnTintDark;
+
+  /// Màu chữ/icon đặt TRÊN nền 10% của chính tông `gold`.
+  static Color goldOnTint(Brightness brightness) =>
+      brightness == Brightness.light ? goldOnTintLight : goldOnTintDark;
 
   static Color primary(Brightness brightness) =>
       brightness == Brightness.light ? lightPrimary : darkPrimary;

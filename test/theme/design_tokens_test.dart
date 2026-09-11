@@ -449,6 +449,133 @@ void main() {
     });
   });
 
+  group('Chu/icon tren nen 10% cua chinh tong do (badge)', () {
+    double contrast(Color a, Color b) {
+      final l1 = a.computeLuminance(), l2 = b.computeLuminance();
+      final hi = l1 > l2 ? l1 : l2, lo = l1 > l2 ? l2 : l1;
+      return (hi + 0.05) / (lo + 0.05);
+    }
+
+    Color tint(Color tone, Color ground) =>
+        Color.alphaBlend(tone.withValues(alpha: 0.1), ground);
+
+    // Nen 10% VAN lay tu tong GOC, khong lay tu token OnTint — doi ca nen se
+    // lam badge doi sac, o day chi chu/icon doi.
+    final cases = <String, List<Color>>{
+      // ten: [tong goc, OnTint sang, OnTint toi]
+      'success': [
+        AppColors.success,
+        AppColors.successOnTint(Brightness.light),
+        AppColors.successOnTint(Brightness.dark),
+      ],
+      'warning': [
+        AppColors.warning,
+        AppColors.warningOnTint(Brightness.light),
+        AppColors.warningOnTint(Brightness.dark),
+      ],
+      'error': [
+        AppColors.error,
+        AppColors.errorOnTint(Brightness.light),
+        AppColors.errorOnTint(Brightness.dark),
+      ],
+      'gold': [
+        AppColors.gold,
+        AppColors.goldOnTint(Brightness.light),
+        AppColors.goldOnTint(Brightness.dark),
+      ],
+    };
+
+    // San 4.5:1: `titleLarge` cua repo nay la 16px w600 (app_theme.dart),
+    // KHONG phai 22px cua Material, nen badge 10-13px dam khong bao gio la
+    // "large text". Khong duoc ha xuong 3:1.
+    test('dat 4.5:1 tren nen 10% cua chinh no — CA surface LAN background', () {
+      for (final entry in cases.entries) {
+        final tone = entry.value[0];
+        for (final spec in [
+          [Brightness.light, entry.value[1]],
+          [Brightness.dark, entry.value[2]],
+        ]) {
+          final brightness = spec[0] as Brightness;
+          final onTint = spec[1] as Color;
+          for (final ground in [
+            AppColors.surface(brightness),
+            AppColors.background(brightness),
+          ]) {
+            expect(
+              contrast(onTint, tint(tone, ground)),
+              greaterThanOrEqualTo(4.5),
+              reason: '${entry.key} / $brightness tren $ground: badge la chu '
+                  'thuong o 10-13px, san la 4.5:1',
+            );
+          }
+        }
+      }
+    });
+
+    // Khoa lai chinh cai loi da sua: to tong GOC lam chu thi truot o ban
+    // sang. Neu mot lo sau "don dep" bang cach tra ve tong goc, test nay do.
+    test('tong GOC lam chu thi truot o ban sang — day la ly do co ho nay', () {
+      for (final name in ['success', 'warning', 'error']) {
+        final tone = cases[name]![0];
+        expect(
+          contrast(tone, tint(tone, AppColors.surface(Brightness.light))),
+          lessThan(4.5),
+          reason: '$name: neu cho nay da dat 4.5 thi ho OnTint la thua',
+        );
+      }
+    });
+
+    // Cac hang *Dark co san da duoc thu lam ban vao va da bo: chung cho
+    // warning 2.95 va error 4.23 — van duoi san.
+    test('hang *Dark co san KHONG du — da thu va da bo', () {
+      final ground = AppColors.surface(Brightness.light);
+      expect(contrast(AppColors.warningDark, tint(AppColors.warning, ground)),
+          lessThan(4.5));
+      expect(contrast(AppColors.errorDark, tint(AppColors.error, ground)),
+          lessThan(4.5));
+    });
+
+    test('doi theo che do', () {
+      expect(AppColors.successOnTint(Brightness.light),
+          isNot(AppColors.successOnTint(Brightness.dark)));
+      expect(AppColors.warningOnTint(Brightness.light),
+          isNot(AppColors.warningOnTint(Brightness.dark)));
+      expect(AppColors.errorOnTint(Brightness.light),
+          isNot(AppColors.errorOnTint(Brightness.dark)));
+      expect(AppColors.goldOnTint(Brightness.light),
+          isNot(AppColors.goldOnTint(Brightness.dark)));
+    });
+
+    // Ban sang phai SAM hon tong goc, ban toi phai SANG hon (hoac bang, khi
+    // tong goc da dat). Neu mot lo sau dao chieu thi badge se chim.
+    test('ban sang sam hon tong goc, ban toi khong sam hon', () {
+      for (final entry in cases.entries) {
+        final tone = entry.value[0];
+        expect(entry.value[1].computeLuminance(),
+            lessThan(tone.computeLuminance()),
+            reason: '${entry.key}: ban sang phai sam hon tong goc');
+        expect(entry.value[2].computeLuminance(),
+            greaterThanOrEqualTo(tone.computeLuminance()),
+            reason: '${entry.key}: ban toi khong duoc sam hon tong goc');
+      }
+    });
+
+    // Giu nguyen hue: moi tong van phai la chinh no, khong duoc troi sang
+    // mot mau khac de "mua" tuong phan.
+    test('giu nguyen hue cua tong goc — chi doi do sang', () {
+      for (final entry in cases.entries) {
+        final base = HSLColor.fromColor(entry.value[0]).hue;
+        for (final onTint in [entry.value[1], entry.value[2]]) {
+          final h = HSLColor.fromColor(onTint).hue;
+          final delta = (h - base).abs();
+          expect(delta < 2 || delta > 358, isTrue,
+              reason: '${entry.key}: hue troi tu $base sang $h — phai ha dao '
+                  'sang doc dung tia HSL cua chinh no');
+        }
+      }
+    });
+  });
+
   group('Nen loang cua the ti le (drill_result)', () {
     double contrast(Color a, Color b) {
       final l1 = a.computeLuminance(), l2 = b.computeLuminance();
