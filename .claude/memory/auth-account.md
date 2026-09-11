@@ -33,6 +33,33 @@ Supabase đã bị thay hẳn — đừng tin memory cũ nào còn nhắc tới 
 7. **`AuthNotifier` gán `state` sau `await` mà không kiểm `mounted`** → "Tried
    to use AuthNotifier after dispose".
 
+## Phiên hết hạn giữa chừng (lỗ hổng thứ 8, sửa cùng ngày)
+
+`_tryRefresh` xoá token khi gia hạn thất bại nhưng **không báo cho ai** →
+`AuthNotifier` vẫn tin là đang đăng nhập → guard không đá đi đâu.
+
+Đường đi hiện tại:
+
+```
+DirectusClient.onSessionExpired (Stream)
+  → AuthService.onSessionExpired
+  → AuthNotifier: unauthenticated + sessionExpired = true
+  → refreshListenable đánh thức router → /auth/login?from=...
+  → màn đăng nhập hiện "Phiên đăng nhập đã hết hạn..."
+```
+
+Ba quy ước **đừng phá**:
+
+1. `sessionExpired` **tách khỏi** `error`. `error` là kết quả thao tác vừa rồi;
+   cờ này giải thích vì sao người dùng *đột nhiên* bị đưa về. Gộp chung thì
+   thông báo biến mất ngay khi họ bấm Đăng nhập.
+2. **Tự bấm Đăng xuất không phát tín hiệu này** — báo "hết hạn" cho việc họ cố ý
+   làm là nói sai sự thật.
+3. Thông báo dùng tông **`warning`**, không phải `error` — họ không làm gì sai.
+
+`_restore()` chỉ điền vào chỗ **chưa biết** (`status == unknown`). Ghi đè sẽ xoá
+mất cờ hết hạn nếu nó về sau.
+
 ## Ranh giới guard (`requiresAuth` trong `app_router.dart`)
 
 **Chặn** — đọc/ghi dữ liệu riêng: `/profile` `/notifications` `/community`
