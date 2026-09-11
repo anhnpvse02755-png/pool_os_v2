@@ -18,11 +18,11 @@ metadata:
 **Tech stack:**
 | Thành phần | Công nghệ |
 |---|---|
-| Framework | Flutter 3.44.6 |
+| Framework | Flutter 3.47.0 · Dart 3.12.2 |
 | State | Riverpod 2.x |
 | Navigation | GoRouter |
 | Backend | Supabase (Auth, DB, Edge Functions) |
-| UI | Material Design 3 |
+| UI | Material 3 + design token riêng — xem [[warm-green-redesign]] |
 
 **Version:** 0.9.0+900 · **Repo:** https://github.com/anhnpvse02755-png/pool_os_v2
 
