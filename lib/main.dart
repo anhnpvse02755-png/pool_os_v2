@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/providers/repository_providers.dart';
 import 'core/services/local_storage_service.dart';
 import 'core/theme/app_theme.dart';
 import 'core/router/app_router.dart';
@@ -83,7 +84,16 @@ void main() async {
   }
 
 
-  runApp(const ProviderScope(child: PoolOSApp()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        // `themeProvider` cần `sharedPreferencesProvider`, mà nó ném nếu không
+        // override. Ghi đè ở đây để `ThemeNotifier` trong settings chạy được.
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+      child: const PoolOSApp(),
+    ),
+  );
 }
 
 // ============================================================================
@@ -128,15 +138,20 @@ class _PoolOSAppState extends ConsumerState<PoolOSApp> with WidgetsBindingObserv
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
+    // Theo `themeProvider` thay vì hardcode `ThemeMode.system`: nếu người dùng
+    // đã chọn `light`/`dark` trong settings thì dùng đúng chế độ họ đặt,
+    // nếu chưa chọn (hoặc chọn system) thì dùng chế độ hệ thống.
+    // Trước đây hardcode `system` ở đây trong khi `ThemeNotifier` lưu `light`/`dark`,
+    // nên nút toggle trong settings không có tác dụng gì — app vẫn đọc system
+    // còn toggle hiển thị trạng thái hoàn toàn khác.
+    final themeMode = ref.watch(themeProvider);
 
     return MaterialApp.router(
       title: 'PoolOS',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      // Mở sau khi cả 8 lô redesign xong và `expectTokenHygiene` phủ đủ 68 màn
-      // — đúng điều kiện mà plan lô 1 đặt ra làm cổng.
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       routerConfig: router,
     );
   }
