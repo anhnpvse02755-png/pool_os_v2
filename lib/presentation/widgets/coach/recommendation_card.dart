@@ -10,9 +10,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/services/coach_voice_service.dart';
 
 /// Coach Recommendation - ONE Priority Card
@@ -81,11 +82,13 @@ class CoachRecommendation {
   }
 
   /// Get confidence color
-  Color get confidenceColor {
-    if (confidence >= 80) return Colors.green;
-    if (confidence >= 60) return Colors.blue;
-    if (confidence >= 40) return Colors.orange;
-    return Colors.grey;
+  /// Nhận [brightness] thay vì là getter: `textTertiary` đổi theo chế độ,
+  /// mà getter không có `BuildContext` để hỏi.
+  Color confidenceColor(Brightness brightness) {
+    if (confidence >= 80) return AppColors.success;
+    if (confidence >= 60) return AppColors.primary(brightness);
+    if (confidence >= 40) return AppColors.warning;
+    return AppColors.textTertiary(brightness);
   }
 }
 
@@ -104,6 +107,8 @@ class RecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -126,20 +131,22 @@ class RecommendationCard extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryGreen.withValues(alpha: 0.1),
-            AppTheme.accentGold.withValues(alpha: 0.05),
+            AppColors.primary(brightness).withValues(alpha: 0.1),
+            AppColors.gold.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+          color: AppColors.primary(brightness).withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -147,12 +154,12 @@ class RecommendationCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+              color: AppColors.primary(brightness).withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.pool,
-              color: AppTheme.primaryGreen,
+              color: AppColors.primary(brightness),
               size: 28,
             ),
           ),
@@ -165,13 +172,13 @@ class RecommendationCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: _getPriorityColor().withValues(alpha: 0.15),
+                    color: _getPriorityColor(brightness).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     recommendation.priorityLabel,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: _getPriorityColor(),
+                          color: _getPriorityColor(brightness),
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -189,7 +196,7 @@ class RecommendationCard extends StatelessWidget {
                     Text(
                       '${recommendation.estimatedMinutes} phút',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.textSecondary,
+                            color: AppColors.textSecondary(brightness),
                           ),
                     ),
                     const SizedBox(width: 12),
@@ -197,7 +204,7 @@ class RecommendationCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: recommendation.confidenceColor.withValues(alpha: 0.1),
+                        color: recommendation.confidenceColor(brightness).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Row(
@@ -206,13 +213,13 @@ class RecommendationCard extends StatelessWidget {
                           Icon(
                             Icons.verified,
                             size: 12,
-                            color: recommendation.confidenceColor,
+                            color: recommendation.confidenceColor(brightness),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '${recommendation.confidence}%',
                             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: recommendation.confidenceColor,
+                                  color: recommendation.confidenceColor(brightness),
                                   fontWeight: FontWeight.w500,
                                 ),
                           ),
@@ -229,16 +236,16 @@ class RecommendationCard extends StatelessWidget {
     );
   }
 
-  Color _getPriorityColor() {
+  Color _getPriorityColor(Brightness brightness) {
     switch (recommendation.priority) {
       case 1:
-        return Colors.orange;
+        return AppColors.warning;
       case 2:
-        return Colors.blue;
+        return AppColors.primary(brightness);
       case 3:
-        return Colors.purple;
+        return AppColors.primaryDeep(brightness);
       default:
-        return Colors.grey;
+        return AppColors.textTertiary(brightness);
     }
   }
 
@@ -252,12 +259,14 @@ class RecommendationCard extends StatelessWidget {
   }
 
   Widget _buildOutcomes(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border(brightness)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +274,7 @@ class RecommendationCard extends StatelessWidget {
           Text(
             'Nếu hoàn thành hôm nay:',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
           ),
           const SizedBox(height: 12),
@@ -276,7 +285,7 @@ class RecommendationCard extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.check_circle,
-                      color: AppTheme.success,
+                      color: AppColors.success,
                       size: 18,
                     ),
                     const SizedBox(width: 8),
@@ -295,13 +304,15 @@ class RecommendationCard extends StatelessWidget {
   }
 
   Widget _buildCTA(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return SizedBox(
       height: 56,
       child: ElevatedButton(
         onPressed: onStart,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryGreen,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary(brightness),
+          foregroundColor: AppColors.onPrimary(brightness),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -313,13 +324,13 @@ class RecommendationCard extends StatelessWidget {
             Text(
               'BẮT ĐẦU',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.white,
+                    color: AppColors.onPrimary(brightness),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1,
                   ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.arrow_forward, color: Colors.white),
+            Icon(Icons.arrow_forward, color: AppColors.onPrimary(brightness)),
           ],
         ),
       ),

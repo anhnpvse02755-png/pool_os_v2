@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../core/theme/app_theme.dart';
 import '../../data/repositories/match_repository.dart';
 import '../../domain/services/coach_profile_aggregator.dart';
 
@@ -35,21 +36,23 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
     });
   }
 
-  Color _toneColor(String tone) {
+  Color _toneColor(String tone, Brightness brightness) {
     switch (tone) {
       case 'Hot':
-        return Colors.redAccent;
+        return AppColors.error;
       case 'Rising':
-        return Colors.green;
+        return AppColors.success;
       case 'Slumping':
-        return Colors.grey;
+        return AppColors.textTertiary(brightness);
       default:
-        return AppTheme.primary;
+        return AppColors.primary(brightness);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_loading) {
       return const Padding(
         padding: EdgeInsets.all(16),
@@ -63,7 +66,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Icon(Icons.insights, color: AppTheme.primary),
+              Icon(Icons.insights, color: AppColors.primary(brightness)),
               const SizedBox(width: 8),
               const Expanded(
                 child: Text('Chưa có match nào trong 30 ngày để AI Coach phân tích.'),
@@ -81,7 +84,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
           children: [
             Row(
               children: [
-                Icon(Icons.insights, color: AppTheme.primary),
+                Icon(Icons.insights, color: AppColors.primary(brightness)),
                 const SizedBox(width: 8),
                 const Text('Hồ sơ huấn luyện viên AI',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -89,27 +92,27 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: _toneColor(p.tone).withOpacity(0.15),
+                    color: _toneColor(p.tone, brightness).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(p.tone,
                       style: TextStyle(
-                          color: _toneColor(p.tone), fontWeight: FontWeight.w700)),
+                          color: _toneColor(p.tone, brightness), fontWeight: FontWeight.w700)),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _kpi('Matches', '${p.matchesAnalyzed}')),
+                Expanded(child: _kpi('Matches', '${p.matchesAnalyzed}', brightness)),
                 const SizedBox(width: 8),
-                Expanded(child: _kpi('Win %', '${p.winRate.toStringAsFixed(1)}%')),
+                Expanded(child: _kpi('Win %', '${p.winRate.toStringAsFixed(1)}%', brightness)),
                 const SizedBox(width: 8),
-                Expanded(child: _kpi('Wins/Losses', '${p.wins}/${p.losses}')),
+                Expanded(child: _kpi('Wins/Losses', '${p.wins}/${p.losses}', brightness)),
               ],
             ),
             const SizedBox(height: 12),
-            ...p.skillScores.entries.map((e) => _skillBar(e.key, e.value)),
+            ...p.skillScores.entries.map((e) => _skillBar(e.key, e.value, brightness)),
             if (p.recommendations.isNotEmpty) ...[
               const SizedBox(height: 12),
               const Text('Đề xuất',
@@ -118,7 +121,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
               ...p.recommendations.map((r) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Row(children: [
-                      Icon(Icons.arrow_right, color: AppTheme.primary),
+                      Icon(Icons.arrow_right, color: AppColors.primary(brightness)),
                       const SizedBox(width: 4),
                       Expanded(child: Text(r)),
                     ]),
@@ -130,17 +133,17 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
     );
   }
 
-  Widget _kpi(String label, String value) => Column(
+  Widget _kpi(String label, String value, Brightness brightness) => Column(
         children: [
           Text(value,
               style:
                   const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           Text(label,
-              style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              style: TextStyle(fontSize: 12, color: AppColors.textTertiary(brightness))),
         ],
       );
 
-  Widget _skillBar(String label, double score) {
+  Widget _skillBar(String label, double score, Brightness brightness) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -156,7 +159,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
                 value: score / 100,
                 minHeight: 8,
                 backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primary),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary(brightness)),
               ),
             ),
           ),

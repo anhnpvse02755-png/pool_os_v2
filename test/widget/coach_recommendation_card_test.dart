@@ -4,6 +4,7 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+import 'package:pool_os_v2/core/theme/colors.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/presentation/widgets/coach/recommendation_card.dart';
 import 'package:pool_os_v2/core/services/coach_voice_service.dart';
@@ -66,7 +67,7 @@ void main() {
       expect(rec.confidenceLabel, equals('Ít dữ liệu'));
     });
 
-    test('confidenceColor returns green for high confidence', () {
+    test('confidenceColor trả token success khi độ tin cậy cao', () {
       final rec = CoachRecommendation(
         drillCode: 'TEST',
         drillName: 'Test Drill',
@@ -77,7 +78,12 @@ void main() {
         priority: 1,
       );
 
-      expect(rec.confidenceColor, equals(Colors.green));
+      // Từ `Colors.green` của Material sang token của app: luật vệ sinh cấm
+      // `Colors.*`, và màu Material không đổi theo chế độ sáng/tối.
+      // Là hàm chứ không getter vì nhánh mặc định cần Brightness.
+      expect(rec.confidenceColor(Brightness.light),
+          equals(AppColors.success));
+      expect(rec.confidenceColor(Brightness.dark), equals(AppColors.success));
     });
 
     test('fromBrain factory creates recommendation correctly', () {

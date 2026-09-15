@@ -7,9 +7,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 
 /// Explain Bottom Sheet - Global capability
 class ExplainBottomSheet extends StatelessWidget {
@@ -26,12 +27,14 @@ class ExplainBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.75,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: AppColors.onPrimary(brightness),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -43,7 +46,7 @@ class ExplainBottomSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: Colors.grey.shade300,
+              color: AppColors.border(brightness),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -56,12 +59,12 @@ class ExplainBottomSheet extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    color: AppColors.primary(brightness).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     Icons.help_outline,
-                    color: AppTheme.primaryGreen,
+                    color: AppColors.primary(brightness),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -72,7 +75,7 @@ class ExplainBottomSheet extends StatelessWidget {
                       Text(
                         'TẠI SAO?',
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: AppTheme.primaryGreen,
+                              color: AppColors.primary(brightness),
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.2,
                             ),
@@ -137,7 +140,7 @@ class ExplainBottomSheet extends StatelessWidget {
               bottom: MediaQuery.of(context).padding.bottom + 12,
             ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.onPrimary(brightness),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.05),
@@ -166,8 +169,8 @@ class ExplainBottomSheet extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onStartDrill,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryGreen,
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primary(brightness),
+                      foregroundColor: AppColors.onPrimary(brightness),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -240,6 +243,7 @@ class ExplainBottomSheet extends StatelessWidget {
     List<String> items,
     int index,
   ) {
+    final brightness = Theme.of(context).brightness;
     final icons = ['1️⃣', '2️⃣', '3️⃣', '4️⃣'];
     final emoji = index < icons.length ? icons[index] : '${index + 1}.';
 
@@ -247,9 +251,9 @@ class ExplainBottomSheet extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: AppColors.surfaceRecessed(brightness),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border(brightness)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,7 +267,7 @@ class ExplainBottomSheet extends StatelessWidget {
                   title,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppTheme.primaryGreen,
+                        color: AppColors.primary(brightness),
                       ),
                 ),
               ),
@@ -280,7 +284,7 @@ class ExplainBottomSheet extends StatelessWidget {
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: AppTheme.textSecondary,
+                        color: AppColors.textSecondary(brightness),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -300,14 +304,16 @@ class ExplainBottomSheet extends StatelessWidget {
   }
 
   Widget _buildConfidenceSection(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Row(
       children: [
-        Icon(Icons.verified_outlined, color: AppTheme.textSecondary, size: 16),
+        Icon(Icons.verified_outlined, color: AppColors.textSecondary(brightness), size: 16),
         const SizedBox(width: 8),
         Text(
           'Độ tin cậy: 75%',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondary,
+                color: AppColors.textSecondary(brightness),
               ),
         ),
         const SizedBox(width: 8),
@@ -316,8 +322,8 @@ class ExplainBottomSheet extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
             child: LinearProgressIndicator(
               value: 0.75,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryGreen),
+              backgroundColor: AppColors.border(brightness),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary(brightness)),
               minHeight: 4,
             ),
           ),

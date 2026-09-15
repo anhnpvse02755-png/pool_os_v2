@@ -4,9 +4,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../screens/coach/coach_chat_screen.dart' show ChatMessage;
 
 /// Coach Chat Bubble
@@ -24,6 +25,8 @@ class CoachChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (message.isUser) {
       return _buildUserBubble(context);
     } else {
@@ -32,6 +35,8 @@ class CoachChatBubble extends StatelessWidget {
   }
 
   Widget _buildUserBubble(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
@@ -41,15 +46,15 @@ class CoachChatBubble extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: AppTheme.primaryGreen,
+          color: AppColors.primary(brightness),
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomRight: const Radius.circular(4),
           ),
         ),
         child: Text(
           message.content,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.onPrimary(brightness),
             fontSize: 15,
           ),
         ),
@@ -58,6 +63,8 @@ class CoachChatBubble extends StatelessWidget {
   }
 
   Widget _buildCoachBubble(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -66,7 +73,7 @@ class CoachChatBubble extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.8,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.onPrimary(brightness),
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomLeft: const Radius.circular(4),
           ),
@@ -90,20 +97,20 @@ class CoachChatBubble extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                      color: AppColors.primary(brightness).withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.psychology,
                       size: 16,
-                      color: AppTheme.primaryGreen,
+                      color: AppColors.primary(brightness),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     'Huấn luyện viên',
                     style: TextStyle(
-                      color: AppTheme.primaryGreen,
+                      color: AppColors.primary(brightness),
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
                     ),
@@ -139,15 +146,17 @@ class CoachChatBubble extends StatelessWidget {
   }
 
   Widget _buildRecommendationCard(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final rec = message.recommendation!;
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 4, 12, 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppTheme.primaryGreen.withValues(alpha: 0.05),
+        color: AppColors.primary(brightness).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+          color: AppColors.primary(brightness).withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -158,14 +167,14 @@ class CoachChatBubble extends StatelessWidget {
               Icon(
                 Icons.pool,
                 size: 18,
-                color: AppTheme.primaryGreen,
+                color: AppColors.primary(brightness),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   rec.drillName,
                   style: TextStyle(
-                    color: AppTheme.primaryGreen,
+                    color: AppColors.primary(brightness),
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -177,7 +186,7 @@ class CoachChatBubble extends StatelessWidget {
           Text(
             rec.reason,
             style: TextStyle(
-              color: AppTheme.textSecondary,
+              color: AppColors.textSecondary(brightness),
               fontSize: 13,
             ),
           ),
@@ -187,6 +196,8 @@ class CoachChatBubble extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       child: Row(
@@ -198,8 +209,8 @@ class CoachChatBubble extends StatelessWidget {
                 icon: const Icon(Icons.help_outline, size: 16),
                 label: const Text('Tại sao?'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.textSecondary,
-                  side: BorderSide(color: Colors.grey.shade300),
+                  foregroundColor: AppColors.textSecondary(brightness),
+                  side: BorderSide(color: AppColors.border(brightness)),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -216,8 +227,8 @@ class CoachChatBubble extends StatelessWidget {
                 icon: const Icon(Icons.play_arrow, size: 16),
                 label: const Text('Bắt đầu'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryGreen,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.primary(brightness),
+                  foregroundColor: AppColors.onPrimary(brightness),
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
