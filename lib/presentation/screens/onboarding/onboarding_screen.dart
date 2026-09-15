@@ -736,7 +736,12 @@ class _OptionCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
+                  // Viền là thứ DUY NHẤT cho biết ô này chọn được, nên nó
+                  // mang nghĩa và cần >= 3:1 với nền. `textTertiary` chỉ đạt
+                  // 2.36 ở bản sáng.
+                  color: isSelected
+                      ? AppColors.primary(brightness)
+                      : AppColors.textSecondary(brightness),
                   width: 2,
                 ),
                 color: isSelected ? AppColors.primary(brightness) : Colors.transparent,
@@ -957,7 +962,11 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
+            // Nút tắt: nền lõm + chữ phụ. Trước đây là chữ TRẮNG trên
+            // `textTertiary` — 2.59 ở bản sáng, nhãn gần như không đọc được.
+            color: widget.onPressed != null
+                ? AppColors.primary(brightness)
+                : AppColors.surfaceRecessed(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: widget.onPressed != null
                 ? [
@@ -974,7 +983,9 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: AppColors.onPrimary(brightness),
+              color: widget.onPressed != null
+                  ? AppColors.onPrimary(brightness)
+                  : AppColors.textSecondary(brightness),
             ),
             textAlign: TextAlign.center,
           ),

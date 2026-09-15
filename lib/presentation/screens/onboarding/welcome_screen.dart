@@ -165,9 +165,13 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
+            // Nút tắt: nền lõm + chữ phụ (5.15 sáng / 6.79 tối). Trước đây là
+            // chữ TRẮNG trên `textTertiary` — 2.59 ở bản sáng, nhãn gần như
+            // không đọc được. `textTertiary` là token CHỮ, dùng nó làm NỀN là
+            // đúng cái bẫy kiểm-một-chiều.
             color: enabled
                 ? AppColors.primary(brightness)
-                : AppColors.textTertiary(brightness),
+                : AppColors.surfaceRecessed(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             boxShadow: enabled
                 ? [
@@ -185,7 +189,9 @@ class _PrimaryButtonState extends State<_PrimaryButton> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: AppColors.onPrimary(brightness),
+              color: enabled
+                  ? AppColors.onPrimary(brightness)
+                  : AppColors.textSecondary(brightness),
             ),
             textAlign: TextAlign.center,
           ),
