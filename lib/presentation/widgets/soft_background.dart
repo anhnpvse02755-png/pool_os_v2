@@ -18,10 +18,9 @@ class SoftBackground extends StatelessWidget {
     final brightness = Theme.of(context).brightness;
     final isLight = brightness == Brightness.light;
 
-    final peach = isLight ? AppColors.lightBlobPeach : AppColors.darkBlobPeach;
-    final mint = isLight ? AppColors.lightBlobMint : AppColors.darkBlobMint;
-    final butter =
-        isLight ? AppColors.lightBlobButter : AppColors.darkBlobButter;
+    final peach = AppColors.blobPeach(brightness);
+    final mint = AppColors.blobMint(brightness);
+    final butter = AppColors.blobButter(brightness);
 
     return Container(
       key: const Key('soft-background-ground'),

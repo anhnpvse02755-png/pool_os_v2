@@ -426,6 +426,29 @@ class AppColors {
           ? lightPrimaryContainer
           : darkPrimaryContainer;
 
+  /// Ba đốm màu mờ của [SoftBackground]. Chúng là NỀN trang trí, luôn đi
+  /// cùng nhau, nên có accessor riêng thay vì để mỗi nơi tự `isLight ? … : …`.
+  static Color blobPeach(Brightness brightness) =>
+      brightness == Brightness.light ? lightBlobPeach : darkBlobPeach;
+
+  static Color blobMint(Brightness brightness) =>
+      brightness == Brightness.light ? lightBlobMint : darkBlobMint;
+
+  static Color blobButter(Brightness brightness) =>
+      brightness == Brightness.light ? lightBlobButter : darkBlobButter;
+
+  /// Màu chữ/icon đặt TRÊN nền [primaryContainer].
+  ///
+  /// KHÔNG dùng [onPrimary] cho nền này: `primaryContainer` là xanh rêu ĐẬM ở
+  /// CẢ HAI chế độ (#0F4032 sáng, #16382C tối), nên chữ phải sáng ở cả hai.
+  /// `onPrimary` bản tối là mực #08201A — đặt lên đây gần như tàng hình.
+  ///
+  /// Kiểm cả hai chiều:
+  ///   - làm CHỮ trên `primaryContainer`: 11.67 sáng / 12.83 tối ✓
+  ///   - làm NỀN: không dùng — đây là mực, và nền trắng đã có `surface`.
+  static Color onPrimaryContainer(Brightness brightness) =>
+      const Color(0xFFFFFFFF);
+
   static Color accentLabel(Brightness brightness) =>
       brightness == Brightness.light ? lightAccentLabel : darkAccentLabel;
 

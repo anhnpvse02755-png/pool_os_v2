@@ -24,9 +24,8 @@ class AppBottomNav extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: brightness == Brightness.light
-                ? const Color(0x0D000000)
-                : const Color(0x26000000),
+            color: AppColors.textPrimary(brightness)
+                .withValues(alpha: brightness == Brightness.light ? 0.05 : 0.15),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -92,10 +91,9 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = AppColors.accentColor(Theme.of(context).brightness);
-    final mutedColor = Theme.of(context).brightness == Brightness.light
-        ? AppColors.lightTextSecondary
-        : AppColors.darkTextSecondary;
+    final brightness = Theme.of(context).brightness;
+    final accentColor = AppColors.primary(brightness);
+    final mutedColor = AppColors.textSecondary(brightness);
 
     return GestureDetector(
       onTap: onTap,

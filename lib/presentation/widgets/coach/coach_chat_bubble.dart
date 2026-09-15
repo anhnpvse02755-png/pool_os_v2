@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/colors.dart';
+import '../../../core/theme/shadows.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../screens/coach/coach_chat_screen.dart' show ChatMessage;
@@ -77,13 +78,7 @@ class CoachChatBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomLeft: const Radius.circular(4),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          boxShadow: AppShadows.soft(brightness),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,8 +119,8 @@ class CoachChatBubble extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Text(
                 message.content,
-                style: const TextStyle(
-                  color: Colors.black87,
+                style: TextStyle(
+                  color: AppColors.textPrimary(brightness),
                   fontSize: 15,
                   height: 1.4,
                 ),

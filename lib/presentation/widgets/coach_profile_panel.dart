@@ -158,7 +158,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
               child: LinearProgressIndicator(
                 value: score / 100,
                 minHeight: 8,
-                backgroundColor: Colors.grey[200],
+                backgroundColor: AppColors.border(brightness),
                 valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary(brightness)),
               ),
             ),

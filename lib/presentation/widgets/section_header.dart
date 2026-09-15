@@ -63,8 +63,8 @@ class SectionHeader extends StatelessWidget {
           ),
           child: Text(
             '$step',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: AppColors.onPrimary(brightness),
               fontWeight: FontWeight.w700,
               fontSize: 16,
             ),

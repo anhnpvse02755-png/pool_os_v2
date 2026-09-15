@@ -43,7 +43,7 @@ class ScoreBar extends StatelessWidget {
                 key: ValueKey('score-bar-divider-$i'),
                 width: 1,
                 height: 34,
-                color: Colors.white24,
+                color: AppColors.onPrimaryContainer(brightness).withValues(alpha: 0.24),
               ),
             Expanded(child: _PlayerCell(player: players[i])),
           ],
@@ -60,6 +60,8 @@ class _PlayerCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -67,15 +69,18 @@ class _PlayerCell extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (player.icon != null) ...[
-              Icon(player.icon, size: 16, color: Colors.white70),
+              Icon(player.icon,
+                  size: 16,
+                  color: AppColors.onPrimaryContainer(brightness)
+                      .withValues(alpha: 0.70)),
               const SizedBox(width: 6),
             ],
             Flexible(
               child: Text(
                 player.name,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.onPrimaryContainer(brightness),
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                 ),
@@ -86,8 +91,8 @@ class _PlayerCell extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           '${player.score}',
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.onPrimaryContainer(brightness),
             fontSize: 22,
             fontWeight: FontWeight.w700,
           ),

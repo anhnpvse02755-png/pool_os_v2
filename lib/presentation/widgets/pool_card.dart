@@ -40,7 +40,7 @@ class PoolCard extends StatelessWidget {
         boxShadow: AppShadows.soft(brightness),
         // Nền tối nuốt shadow, nên phải có viền mới thấy được mép thẻ.
         border: brightness == Brightness.dark
-            ? Border.all(color: AppColors.darkBorder)
+            ? Border.all(color: AppColors.border(brightness))
             : null,
       ),
       child: child,

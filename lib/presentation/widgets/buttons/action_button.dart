@@ -29,6 +29,8 @@ class _ActionButtonState extends State<ActionButton>
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final isSuccess = widget.isSuccess;
     final backgroundColor = isSuccess ? AppColors.success : AppColors.error;
 
@@ -63,16 +65,18 @@ class _ActionButtonState extends State<ActionButton>
               children: [
                 Icon(
                   widget.icon,
-                  color: Colors.white,
+                  // Nền là `success`/`error` đặc — không đổi theo chế độ, nên
+                  // chữ cũng phải sáng ở cả hai.
+                  color: AppColors.onPrimaryContainer(brightness),
                   size: 28,
                 ),
                 const SizedBox(width: AppSpacing.space3),
                 Text(
                   widget.label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: AppColors.onPrimaryContainer(brightness),
                   ),
                 ),
               ],

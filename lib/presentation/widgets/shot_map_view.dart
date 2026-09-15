@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/colors.dart';
+
 import '../../data/models/match.dart';
 import 'shot_map_painter.dart';
 
@@ -35,12 +37,14 @@ class ShotMapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final shots = _extract();
     return AspectRatio(
       aspectRatio: 2,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: AppColors.border(brightness)),
           borderRadius: BorderRadius.circular(4),
         ),
         child: ClipRRect(

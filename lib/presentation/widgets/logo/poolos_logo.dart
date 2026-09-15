@@ -16,7 +16,8 @@ class PoolOSLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logoColor = color ?? AppColors.accentColor(Theme.of(context).brightness);
+    // `accentColor` trả xanh điện; logo phải theo tông xanh rêu của app.
+    final logoColor = color ?? AppColors.primary(Theme.of(context).brightness);
 
     return SizedBox(
       width: size,
@@ -127,10 +128,9 @@ class PoolOSLogoWithText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logoColor = color ?? AppColors.accentColor(Theme.of(context).brightness);
-    final textColor = Theme.of(context).brightness == Brightness.light
-        ? AppColors.lightTextPrimary
-        : AppColors.darkTextPrimary;
+    // `accentColor` trả xanh điện; logo phải theo tông xanh rêu của app.
+    final logoColor = color ?? AppColors.primary(Theme.of(context).brightness);
+    final textColor = AppColors.textPrimary(Theme.of(context).brightness);
 
     return Row(
       mainAxisSize: MainAxisSize.min,

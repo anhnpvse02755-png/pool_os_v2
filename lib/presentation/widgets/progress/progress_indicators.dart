@@ -20,10 +20,10 @@ class LinearProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = backgroundColor ??
-        (isDark ? AppColors.darkBorder : AppColors.lightBorder);
-    final fgColor = fillColor ?? AppColors.accentColor(Theme.of(context).brightness);
+    final brightness = Theme.of(context).brightness;
+    final bgColor = backgroundColor ?? AppColors.border(brightness);
+    // `accentColor` trả xanh điện — tông mà đợt redesign này tồn tại để loại.
+    final fgColor = fillColor ?? AppColors.primary(brightness);
 
     return Container(
       height: height,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
@@ -13,12 +14,14 @@ class SkillTrendChart extends ConsumerStatefulWidget {
     super.key,
     this.playerId = '',
     this.skill = 'winRate',
-    this.color = Colors.blue,
+    this.color,
     this.height = 160,
   });
   final String playerId;
   final String skill;
-  final Color color;
+  /// Null = dùng `primary` theo chế độ. Trước đây mặc định
+  /// `Colors.blue` — màu Material không đổi theo sáng/tối.
+  final Color? color;
   final double height;
 
   @override
@@ -54,6 +57,8 @@ class _SkillTrendChartState extends ConsumerState<SkillTrendChart> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_loading) {
       return SizedBox(
           height: widget.height,
@@ -70,8 +75,8 @@ class _SkillTrendChartState extends ConsumerState<SkillTrendChart> {
       child: CustomPaint(
         painter: _LineChartPainter(
           points: _points,
-          color: widget.color,
-          axisColor: Colors.grey.shade400,
+          color: widget.color ?? AppColors.primary(brightness),
+          axisColor: AppColors.border(brightness),
         ),
         child: Container(),
       ),
