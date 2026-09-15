@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_theme.dart';
+import '../../core/theme/colors.dart';
+
 import 'ai_progress_score_card.dart';
 import 'coach_profile_panel.dart';
 import 'learning_streak_widget.dart';
@@ -35,6 +36,8 @@ class _ProgressCardState extends State<ProgressCard>
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(12),
@@ -43,7 +46,7 @@ class _ProgressCardState extends State<ProgressCard>
           children: [
             Row(
               children: [
-                Icon(Icons.dashboard, color: AppTheme.primary),
+                Icon(Icons.dashboard, color: AppColors.primary(brightness)),
                 const SizedBox(width: 8),
                 const Text('Tiến độ của bạn',
                     style: TextStyle(
@@ -58,8 +61,8 @@ class _ProgressCardState extends State<ProgressCard>
             const SizedBox(height: 8),
             TabBar(
               controller: _tab,
-              labelColor: AppTheme.primary,
-              unselectedLabelColor: Colors.grey,
+              labelColor: AppColors.primary(brightness),
+              unselectedLabelColor: AppColors.textTertiary(brightness),
               tabs: const [
                 Tab(text: 'Score'),
                 Tab(text: 'Trend'),
@@ -82,7 +85,7 @@ class _ProgressCardState extends State<ProgressCard>
                         SkillTrendChart(
                           playerId: widget.playerId,
                           skill: 'accuracy',
-                          color: Colors.green,
+                          color: AppColors.success,
                         ),
                       ],
                     ),

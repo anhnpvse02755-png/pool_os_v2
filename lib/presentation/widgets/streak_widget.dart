@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../core/theme/app_theme.dart';
 import '../../data/repositories/match_repository.dart';
 import '../../domain/services/streak_calculator.dart';
 
@@ -40,6 +41,8 @@ class _StreakWidgetState extends ConsumerState<StreakWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_loading) {
       return const Padding(
         padding: EdgeInsets.all(16),
@@ -65,11 +68,11 @@ class _StreakWidgetState extends ConsumerState<StreakWidget> {
                   Text('Hiện tại: $_current ngày',
                       style: TextStyle(
                           color: _current > 0
-                              ? AppTheme.primary
-                              : Colors.grey,
+                              ? AppColors.primary(brightness)
+                              : AppColors.textTertiary(brightness),
                           fontWeight: FontWeight.w600)),
                   Text('Dài nhất: $_longest ngày',
-                      style: const TextStyle(color: Colors.grey)),
+                      style: TextStyle(color: AppColors.textTertiary(brightness))),
                 ],
               ),
             ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../core/theme/app_theme.dart';
 import '../../domain/services/learning_streak_service.dart';
 
 class LearningStreakWidget extends StatefulWidget {
@@ -27,12 +28,14 @@ class _LearningStreakWidgetState extends State<LearningStreakWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(Icons.school, color: AppTheme.primary, size: 36),
+            Icon(Icons.school, color: AppColors.primary(brightness), size: 36),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -45,11 +48,11 @@ class _LearningStreakWidgetState extends State<LearningStreakWidget> {
                   Text('Hiện tại: $_current ngày',
                       style: TextStyle(
                           color: _current > 0
-                              ? AppTheme.primary
-                              : Colors.grey,
+                              ? AppColors.primary(brightness)
+                              : AppColors.textTertiary(brightness),
                           fontWeight: FontWeight.w600)),
                   Text('Dài nhất: $_longest ngày',
-                      style: const TextStyle(color: Colors.grey)),
+                      style: TextStyle(color: AppColors.textTertiary(brightness))),
                 ],
               ),
             ),

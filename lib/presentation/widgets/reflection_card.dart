@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_theme.dart';
+import '../../core/theme/colors.dart';
+
 
 /// Sprint 3A Task 3 — Reflection.
 ///
@@ -24,6 +25,8 @@ class ReflectionCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -83,18 +86,20 @@ class _ImmediateProgress extends StatelessWidget {
     return delta > 0 ? Icons.trending_up : Icons.trending_down;
   }
 
-  Color _progressColor() {
-    if (isFirstSession) return AppTheme.primaryGreen;
-    if (previousAccuracy == null) return AppTheme.textSecondary;
+  Color _progressColor(Brightness brightness) {
+    if (isFirstSession) return AppColors.primary(brightness);
+    if (previousAccuracy == null) return AppColors.textSecondary(brightness);
     final delta = accuracy - previousAccuracy!;
-    if (delta.abs() < 0.5) return AppTheme.textSecondary;
-    return delta > 0 ? AppTheme.primaryGreen : Colors.orange;
+    if (delta.abs() < 0.5) return AppColors.textSecondary(brightness);
+    return delta > 0 ? AppColors.primary(brightness) : AppColors.warning;
   }
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final theme = Theme.of(context);
-    final color = _progressColor();
+    final color = _progressColor(brightness);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -126,7 +131,7 @@ class _ImmediateProgress extends StatelessWidget {
               Text(
                 'Hôm nay',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
               ),
               const SizedBox(width: 12),
@@ -143,7 +148,7 @@ class _ImmediateProgress extends StatelessWidget {
           Text(
             _progressSubtitle(),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: AppTheme.textSecondary,
+              color: AppColors.textSecondary(brightness),
             ),
           ),
         ],
@@ -160,6 +165,8 @@ class _PersonalBest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final theme = Theme.of(context);
     final achieved = pb != null && accuracy >= pb!;
     final exceeded = pb != null && accuracy > pb!;
@@ -172,18 +179,18 @@ class _PersonalBest extends StatelessWidget {
     if (pb == null) {
       headline = 'Chưa có PB';
       body = 'PB sẽ tự thiết lập khi bạn có nhiều session hơn.';
-      color = AppTheme.textSecondary;
+      color = AppColors.textSecondary(brightness);
       icon = Icons.flag_outlined;
     } else if (exceeded) {
       headline = 'PB MỚI!';
       body = 'PB: ${accuracy.toStringAsFixed(0)}% (trước đó ${pb!.toStringAsFixed(0)}%).';
-      color = AppTheme.primaryGreen;
+      color = AppColors.primary(brightness);
       icon = Icons.emoji_events;
     } else {
       final gap = pb! - accuracy;
       headline = 'PB hiện tại';
       body = '${pb!.toStringAsFixed(0)}% — còn ${gap.toStringAsFixed(0)}% để phá kỷ lục.';
-      color = AppTheme.accentGold;
+      color = AppColors.gold;
       icon = Icons.military_tech_outlined;
     }
 
@@ -214,7 +221,7 @@ class _PersonalBest extends StatelessWidget {
           Text(
             body,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
+              color: AppColors.textSecondary(brightness),
             ),
           ),
           if (achieved && !exceeded)
@@ -223,7 +230,7 @@ class _PersonalBest extends StatelessWidget {
               child: Text(
                 'Bạn đã chạm PB hôm nay.',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.primaryGreen,
+                  color: AppColors.primary(brightness),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -239,21 +246,23 @@ class _CoachInsightPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.onPrimary(brightness),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.textSecondary.withValues(alpha: 0.3),
+          color: AppColors.textSecondary(brightness).withValues(alpha: 0.3),
         ),
       ),
       child: Row(
         children: [
           Icon(
             Icons.lightbulb_outline,
-            color: AppTheme.textSecondary.withValues(alpha: 0.7),
+            color: AppColors.textSecondary(brightness).withValues(alpha: 0.7),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -263,7 +272,7 @@ class _CoachInsightPlaceholder extends StatelessWidget {
                 Text(
                   'Nhận định từ huấn luyện viên',
                   style: theme.textTheme.titleSmall?.copyWith(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.textSecondary(brightness),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -271,7 +280,7 @@ class _CoachInsightPlaceholder extends StatelessWidget {
                 Text(
                   'Sẽ có ở Sprint 3D — gợi ý tập tiếp theo dựa trên hiệu suất của bạn.',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
                 ),
               ],

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../core/theme/app_theme.dart';
 import '../../data/repositories/match_repository.dart';
 import '../../domain/services/ai_progress_score_service.dart';
 
@@ -36,6 +37,8 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     if (_loading) {
       return const Padding(
         padding: EdgeInsets.all(16),
@@ -54,7 +57,7 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
           children: [
             Row(
               children: [
-                Icon(Icons.psychology, color: AppTheme.primary),
+                Icon(Icons.psychology, color: AppColors.primary(brightness)),
                 const SizedBox(width: 8),
                 const Text('Điểm tiến bộ theo AI',
                     style: TextStyle(
@@ -64,12 +67,12 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: _trendColor(trend).withOpacity(0.15),
+                    color: _trendColor(trend, brightness).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(trend,
                       style: TextStyle(
-                          color: _trendColor(trend),
+                          color: _trendColor(trend, brightness),
                           fontWeight: FontWeight.w700)),
                 ),
               ],
@@ -79,14 +82,14 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
                 style: const TextStyle(
                     fontSize: 36, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            ...breakdown.entries.map((e) => _bar(e.key, (e.value as num).toDouble())),
+            ...breakdown.entries.map((e) => _bar(e.key, (e.value as num).toDouble(), brightness)),
           ],
         ),
       ),
     );
   }
 
-  Widget _bar(String label, double score) {
+  Widget _bar(String label, double score, Brightness brightness) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -98,8 +101,8 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
               child: LinearProgressIndicator(
                 value: (score / 100).clamp(0, 1),
                 minHeight: 8,
-                backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primary),
+                backgroundColor: AppColors.border(brightness),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary(brightness)),
               ),
             ),
           ),
@@ -110,14 +113,14 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
     );
   }
 
-  Color _trendColor(String trend) {
+  Color _trendColor(String trend, Brightness brightness) {
     switch (trend) {
       case 'rising':
-        return Colors.green;
+        return AppColors.success;
       case 'declining':
-        return Colors.redAccent;
+        return AppColors.error;
       default:
-        return AppTheme.primary;
+        return AppColors.primary(brightness);
     }
   }
 }
