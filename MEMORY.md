@@ -22,6 +22,7 @@
 
 - [web-deploy-easypanel](.claude/memory/web-deploy-easypanel.md) — Đưa bundle Flutter web lên server: nhánh deploy-easypanel, build ở máy dev, cách kiểm chứng
 - [backend-directus](.claude/memory/backend-directus.md) — Backend Directus trên EasyPanel: URL đang sống, 6 bẫy đã vấp, và nợ kỹ thuật row-level security
+- [e2e-auth-and-theme-seeding](.claude/memory/e2e-auth-and-theme-seeding.md) — E2E: seed phiên + chế độ tối vào localStorage; bẫy fixture chạy sau beforeEach
 - [e2e-playwright-accessibility](.claude/memory/e2e-playwright-accessibility.md) — ✅ Đã sửa (ce2391f): 4 nguyên nhân Playwright không chạy được với Flutter Web — hash routing, boot race, canvas semantics, data-testid
 - [sprint-17-training-flow-bug](.claude/memory/sprint-17-training-flow-bug.md) — ✅ Đã fix: DrillDetail CTA nhảy nhầm sang Training History
 
