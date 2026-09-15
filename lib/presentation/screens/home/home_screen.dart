@@ -66,11 +66,11 @@ class HomeScreen extends ConsumerWidget {
     final hour = DateTime.now().hour;
     String greeting;
     if (hour < 12) {
-      greeting = 'Good morning';
+      greeting = 'Chào buổi sáng';
     } else if (hour < 18) {
-      greeting = 'Good afternoon';
+      greeting = 'Chào buổi chiều';
     } else {
-      greeting = 'Good evening';
+      greeting = 'Chào buổi tối';
     }
 
     final textPrimary = AppColors.textPrimary(brightness);
@@ -604,7 +604,7 @@ class HomeScreen extends ConsumerWidget {
       children: [
         // Section label
         Text(
-          "TODAY'S GOAL",
+          'MỤC TIÊU HÔM NAY',
           style: TextStyle(
             color: textSecondary,
             fontSize: 11,
@@ -627,7 +627,7 @@ class HomeScreen extends ConsumerWidget {
               // Training goal
               _GoalRow(
                 icon: Icons.fitness_center,
-                label: '${goals.drillsCompleted}/${goals.drillsTarget} drills',
+                label: '${goals.drillsCompleted}/${goals.drillsTarget} bài',
                 isDone: goals.drillsCompleted >= goals.drillsTarget,
                 onTap: goals.drillsCompleted < goals.drillsTarget ? goToTraining : null,
                 brightness: brightness,
@@ -790,7 +790,7 @@ class HomeScreen extends ConsumerWidget {
                 label: 'Thử thách hôm nay',
                 onTap: () => context.go('/training'),
                 brightness: brightness,
-                badge: 'New',
+                badge: 'Mới',
               ),
             ],
           ),
@@ -802,11 +802,11 @@ class HomeScreen extends ConsumerWidget {
   String _getCoachGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      return "Good morning! Let's start with some aiming drills.";
+      return "Chào buổi sáng! Bắt đầu bằng vài bài ngắm bi nhé.";
     } else if (hour < 18) {
-      return "Afternoon practice makes perfect. Ready for a session?";
+      return "Buổi chiều luyện tập là chắc tay nhất. Vào một buổi chứ?";
     } else {
-      return "Evening wind-down session? Let's keep the streak going!";
+      return "Một buổi nhẹ buổi tối? Giữ chuỗi ngày nào!";
     }
   }
 }

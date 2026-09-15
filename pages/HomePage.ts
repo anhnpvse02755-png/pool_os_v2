@@ -35,8 +35,11 @@ export class HomePage extends BasePage {
     });
     this.profileTab = page.getByRole('button', { name: 'Hồ sơ', exact: true });
 
+    // CTA chinh cua the hero tro ve man "Buoi tap hom nay". Nhan
+    // "Bắt đầu luyện tập" chi con o hai nut empty-state, khong hien khi
+    // nguoi dung da co du lieu — bam vao do thi test do o moi tai khoan that.
     this.startTrainingButton = page.getByRole('button', {
-      name: /^bắt đầu luyện tập$/i,
+      name: /^buổi tập hôm nay$/i,
     });
     this.startTrainingSessionButton = page.getByRole('button', {
       name: /bắt đầu buổi tập/i,
