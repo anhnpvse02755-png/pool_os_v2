@@ -4,9 +4,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 
 /// Coach Error State - When Coach is unavailable
 class CoachErrorState extends StatelessWidget {
@@ -21,6 +22,8 @@ class CoachErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -32,13 +35,13 @@ class CoachErrorState extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.red.shade50,
+                  color: AppColors.errorSubtle(brightness),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.cloud_off,
                   size: 48,
-                  color: Colors.red.shade400,
+                  color: AppColors.errorOnTint(brightness),
                 ),
               ).animate().scale(duration: 400.ms),
 
@@ -59,7 +62,7 @@ class CoachErrorState extends StatelessWidget {
                 'Xin lỗi nhé. Có chút vấn đề kết nối.\n'
                 'Thử lại sau được không?',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.textSecondary,
+                      color: AppColors.textSecondary(brightness),
                       height: 1.5,
                     ),
                 textAlign: TextAlign.center,
@@ -74,8 +77,8 @@ class CoachErrorState extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onRetry,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary(brightness),
+                    foregroundColor: AppColors.onPrimary(brightness),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -89,7 +92,7 @@ class CoachErrorState extends StatelessWidget {
                       Text(
                         'THỬ LẠI',
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Colors.white,
+                              color: AppColors.onPrimary(brightness),
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
                             ),
@@ -109,7 +112,7 @@ class CoachErrorState extends StatelessWidget {
                 child: Text(
                   'Hoặc bắt đầu tập ngay',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.textSecondary,
+                        color: AppColors.textSecondary(brightness),
                       ),
                 ),
               ).animate().fadeIn(delay: 500.ms),

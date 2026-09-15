@@ -394,6 +394,19 @@ class AppColors {
   static Color goldOnTint(Brightness brightness) =>
       brightness == Brightness.light ? goldOnTintLight : goldOnTintDark;
 
+  /// Màu chữ/icon đặt TRÊN nền [gold] ĐẶC — khác [goldOnTint], vốn dành cho
+  /// nền gold 10%.
+  ///
+  /// `gold` sáng (#A67C00) nên không màu sẵn có nào đạt 4.5:1 trên nó: chữ
+  /// trắng chỉ 3.82, `textPrimary` 3.51, `onPrimary` bản tối 4.47 — đều hụt.
+  /// Mực nâu-đen này cho 4.81.
+  ///
+  /// Kiểm CẢ HAI chiều theo CLAUDE.md:
+  ///   - làm CHỮ trên `gold`: 4.81 ✓ (ngưỡng 4.5)
+  ///   - làm NỀN: không dùng, và không nên — nó là mực, không phải mặt phẳng.
+  /// Một giá trị cho cả hai chế độ vì `gold` cũng không đổi theo chế độ.
+  static Color onGold(Brightness brightness) => const Color(0xFF1A1400);
+
   /// Màu chữ/icon đặt TRÊN nền 10% của tông [silver].
   static Color silverOnTint(Brightness brightness) =>
       brightness == Brightness.light ? silverOnTintLight : silverOnTintDark;

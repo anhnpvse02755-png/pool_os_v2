@@ -8,9 +8,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/services/coach_voice_service.dart';
 
 /// Continue Session Card - When user has an interrupted session
@@ -30,6 +31,8 @@ class ContinueSessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     final drillName = session['drillName'] ?? 'bài tập';
     final progress = session['progress'] ?? 0;
 
@@ -42,15 +45,15 @@ class ContinueSessionCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppTheme.accentGold.withValues(alpha: 0.15),
-                AppTheme.primaryGreen.withValues(alpha: 0.05),
+                AppColors.gold.withValues(alpha: 0.15),
+                AppColors.primary(brightness).withValues(alpha: 0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: AppTheme.accentGold.withValues(alpha: 0.4),
+              color: AppColors.gold.withValues(alpha: 0.4),
             ),
           ),
           child: Column(
@@ -62,12 +65,12 @@ class ContinueSessionCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.accentGold.withValues(alpha: 0.2),
+                      color: AppColors.gold.withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.play_circle_filled,
-                      color: AppTheme.accentGold,
+                      color: AppColors.gold,
                       size: 28,
                     ),
                   ),
@@ -79,7 +82,7 @@ class ContinueSessionCard extends StatelessWidget {
                         Text(
                           'TIẾP TỤC $drillName?',
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                color: AppTheme.accentGold,
+                                color: AppColors.gold,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
                               ),
@@ -88,7 +91,7 @@ class ContinueSessionCard extends StatelessWidget {
                         Text(
                           'Bạn đang tập dở ($progress%)',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppTheme.textSecondary,
+                                color: AppColors.textSecondary(brightness),
                               ),
                         ),
                       ],
@@ -112,8 +115,8 @@ class ContinueSessionCard extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onContinue,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.accentGold,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.gold,
+                    foregroundColor: AppColors.onGold(brightness),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -125,13 +128,13 @@ class ContinueSessionCard extends StatelessWidget {
                       Text(
                         'TIẾP TỤC',
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: Colors.white,
+                              color: AppColors.onGold(brightness),
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
                             ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.play_arrow, color: Colors.white),
+                      Icon(Icons.play_arrow, color: AppColors.onGold(brightness)),
                     ],
                   ),
                 ),
@@ -149,7 +152,7 @@ class ContinueSessionCard extends StatelessWidget {
             child: Text(
               'Hoặc bắt đầu bài mới',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.textSecondary,
+                    color: AppColors.textSecondary(brightness),
                   ),
             ),
           ),

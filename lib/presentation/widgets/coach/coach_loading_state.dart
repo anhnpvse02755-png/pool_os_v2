@@ -4,9 +4,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 
 /// Coach Loading State - Coach is thinking
 class CoachLoadingState extends StatelessWidget {
@@ -14,6 +15,8 @@ class CoachLoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -25,13 +28,13 @@ class CoachLoadingState extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                  color: AppColors.primary(brightness).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.psychology,
                   size: 48,
-                  color: AppTheme.primaryGreen,
+                  color: AppColors.primary(brightness),
                 ),
               ).animate(
                 onPlay: (controller) => controller.repeat(reverse: true),
@@ -57,9 +60,9 @@ class CoachLoadingState extends StatelessWidget {
               SizedBox(
                 width: 200,
                 child: LinearProgressIndicator(
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: AppColors.border(brightness),
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    AppTheme.primaryGreen,
+                    AppColors.primary(brightness),
                   ),
                 ),
               ).animate().fadeIn(delay: 200.ms),
@@ -70,7 +73,7 @@ class CoachLoadingState extends StatelessWidget {
               Text(
                 'Đang xem dữ liệu của bạn',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textSecondary,
+                      color: AppColors.textSecondary(brightness),
                     ),
               ).animate().fadeIn(delay: 400.ms),
             ],

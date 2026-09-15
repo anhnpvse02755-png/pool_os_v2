@@ -9,9 +9,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 
 /// Coach Empty State - When user has no data
 class CoachEmptyState extends StatelessWidget {
@@ -26,6 +27,8 @@ class CoachEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -35,15 +38,15 @@ class CoachEmptyState extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppTheme.primaryGreen.withValues(alpha: 0.1),
-                AppTheme.accentGold.withValues(alpha: 0.05),
+                AppColors.primary(brightness).withValues(alpha: 0.1),
+                AppColors.gold.withValues(alpha: 0.05),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+              color: AppColors.primary(brightness).withValues(alpha: 0.3),
             ),
           ),
           child: Column(
@@ -52,13 +55,13 @@ class CoachEmptyState extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryGreen.withValues(alpha: 0.2),
+                  color: AppColors.primary(brightness).withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.psychology,
                   size: 48,
-                  color: AppTheme.primaryGreen,
+                  color: AppColors.primary(brightness),
                 ),
               ).animate().scale(duration: 400.ms, curve: Curves.elasticOut),
 
@@ -80,7 +83,7 @@ class CoachEmptyState extends StatelessWidget {
                 'Bắt đầu tập $drillName đi!\n'
                 'Đây là bài tập cơ bản nhất.',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: AppTheme.textSecondary,
+                      color: AppColors.textSecondary(brightness),
                       height: 1.5,
                     ),
                 textAlign: TextAlign.center,
@@ -91,7 +94,7 @@ class CoachEmptyState extends StatelessWidget {
               Text(
                 'Mình sẽ học về bạn từ đây.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.primaryGreen,
+                      color: AppColors.primary(brightness),
                       fontWeight: FontWeight.w500,
                     ),
                 textAlign: TextAlign.center,
@@ -106,8 +109,8 @@ class CoachEmptyState extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onStartDrill,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryGreen,
-                    foregroundColor: Colors.white,
+                    backgroundColor: AppColors.primary(brightness),
+                    foregroundColor: AppColors.onPrimary(brightness),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -119,13 +122,13 @@ class CoachEmptyState extends StatelessWidget {
                       Text(
                         'BẮT ĐẦU $drillName',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
+                              color: AppColors.onPrimary(brightness),
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1,
                             ),
                       ),
                       const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward, color: Colors.white),
+                      Icon(Icons.arrow_forward, color: AppColors.onPrimary(brightness)),
                     ],
                   ),
                 ),
@@ -140,9 +143,9 @@ class CoachEmptyState extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(color: AppColors.border(brightness)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +153,7 @@ class CoachEmptyState extends StatelessWidget {
               Text(
                 'Sau vài buổi tập, bạn sẽ thấy:',
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: AppTheme.textSecondary,
+                      color: AppColors.textSecondary(brightness),
                     ),
               ),
               const SizedBox(height: 12),
@@ -177,11 +180,13 @@ class CoachEmptyState extends StatelessWidget {
   }
 
   Widget _buildWhatItem(BuildContext context, IconData icon, String text) {
+    final brightness = Theme.of(context).brightness;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, color: AppTheme.primaryGreen, size: 20),
+          Icon(icon, color: AppColors.primary(brightness), size: 20),
           const SizedBox(width: 12),
           Text(
             text,
