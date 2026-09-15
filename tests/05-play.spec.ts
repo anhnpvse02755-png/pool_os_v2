@@ -1,6 +1,11 @@
 import { test, expect } from '../fixtures/app.fixture';
 
 test.describe('Play Screen', () => {
+  // `/play` la route rieng tu nen fixture phai dang nhap truoc. Mot test o
+  // day boot app hai lan (man login, roi man play) cong mot vong goi mang —
+  // vuot xa nguong 30s mac dinh.
+  test.describe.configure({ timeout: 120_000 });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('/play');
   });

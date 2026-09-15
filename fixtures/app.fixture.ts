@@ -78,6 +78,38 @@ export async function waitForAppReady(page: Page): Promise<void> {
   );
 }
 
+/**
+ * Tai khoan dung rieng cho E2E, tao san tren Directus.
+ *
+ * Cac route `/play`, `/profile`, `/coach`, `/session`, `/notifications`,
+ * `/community`, `/settings` deu nam trong `_privatePrefixes` cua router, nen
+ * mo thang chung khi chua dang nhap se bi day ve `/auth/login`. Truoc khi co
+ * ham nay, moi test cham vao nhung route do that bai voi mot thong bao vo
+ * nghia ("khong tim thay nut ...") trong khi thuc te dang dung o man dang
+ * nhap.
+ */
+export const E2E_EMAIL = process.env.E2E_EMAIL ?? 'e2e-test@example.com';
+export const E2E_PASSWORD = process.env.E2E_PASSWORD ?? 'E2eTest!2026';
+
+export async function signIn(page: Page): Promise<void> {
+  await page.goto('/auth/login');
+
+  await page.getByRole('textbox', { name: /email/i }).first().fill(E2E_EMAIL);
+  await page
+    .getByRole('textbox', { name: /mật khẩu/i })
+    .first()
+    .fill(E2E_PASSWORD);
+  await page.getByRole('button', { name: /^đăng nhập$/i }).first().click();
+
+  // Dang nhap xong router chuyen ve /home; cho den khi roi khoi man login.
+  await page
+    .getByRole('button', { name: /^đăng nhập$/i })
+    .first()
+    .waitFor({ state: 'detached', timeout: 20_000 })
+    .catch(() => {});
+  await waitForAppReady(page);
+}
+
 export const test = base.extend<AppFixtures>({
   // Wrap `goto` so every spec gets hash-correct routing and a booted app
   // without repeating the boilerplate. Fixing it here covers all specs.
@@ -117,6 +149,9 @@ export const test = base.extend<AppFixtures>({
   },
 
   playPage: async ({ page }, use) => {
+    // `/play` la route rieng tu — khong dang nhap thi moi test o day chi nhin
+    // thay man dang nhap.
+    await signIn(page);
     const playPage = new PlayPage(page);
     await use(playPage);
   },
