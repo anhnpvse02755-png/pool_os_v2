@@ -29,7 +29,7 @@ class AnalysisScreen extends ConsumerWidget {
               backgroundColor: AppColors.background(brightness),
               elevation: 0,
               title: Text(
-                'Progress',
+                'Tiến độ',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -138,7 +138,7 @@ class _OverviewCard extends StatelessWidget {
               Icon(Icons.analytics, color: AppColors.onPrimary(brightness), size: 20),
               const SizedBox(width: AppSpacing.space2),
               Text(
-                'Overview',
+                'Tổng quan',
                 style: TextStyle(
                   color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.w600,
@@ -153,21 +153,21 @@ class _OverviewCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _OverviewStat(
-                  label: 'Sessions',
+                  label: 'Buổi tập',
                   value: '${summary.totalSessions}',
                   brightness: brightness,
                 ),
               ),
               Expanded(
                 child: _OverviewStat(
-                  label: 'Shots',
+                  label: 'Số cú',
                   value: '${summary.totalShots}',
                   brightness: brightness,
                 ),
               ),
               Expanded(
                 child: _OverviewStat(
-                  label: 'Accuracy',
+                  label: 'Độ chính xác',
                   value: '${summary.overallAccuracy}%',
                   brightness: brightness,
                 ),
@@ -235,7 +235,7 @@ class _StatsRow extends StatelessWidget {
           child: _StatCard(
             icon: Icons.timer,
             value: '${summary.totalMinutes}m',
-            label: 'Total Time',
+            label: 'Tổng thời gian',
             color: AppColors.primary(brightness),
             brightness: brightness,
           ),
@@ -245,7 +245,7 @@ class _StatsRow extends StatelessWidget {
           child: _StatCard(
             icon: Icons.fitness_center,
             value: '${summary.totalSessions}',
-            label: 'Sessions',
+            label: 'Buổi tập',
             color: AppColors.success,
             brightness: brightness,
           ),
@@ -255,7 +255,7 @@ class _StatsRow extends StatelessWidget {
           child: _StatCard(
             icon: Icons.track_changes,
             value: '${summary.weakestDrill?.rate ?? 0}%',
-            label: 'Needs Work',
+            label: 'Cần cải thiện',
             color: AppColors.warning,
             brightness: brightness,
           ),
@@ -335,7 +335,7 @@ class _WeaknessesSection extends StatelessWidget {
             Icon(Icons.trending_down, color: AppColors.error, size: 20),
             const SizedBox(width: AppSpacing.space2),
             Text(
-              'AREAS TO IMPROVE',
+              'ĐIỂM CẦN CẢI THIỆN',
               style: TextStyle(
                 color: AppColors.textSecondary(brightness),
                 fontSize: 11,
@@ -361,7 +361,7 @@ class _WeaknessesSection extends StatelessWidget {
                 const SizedBox(width: AppSpacing.space3),
                 Expanded(
                   child: Text(
-                    'Great job! No weaknesses detected.',
+                    'Rất tốt! Chưa phát hiện điểm yếu nào.',
                     style: TextStyle(
                       color: AppColors.textSecondary(brightness),
                     ),
@@ -471,7 +471,7 @@ class _RecommendationsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'RECOMMENDATIONS',
+          'ĐỀ XUẤT',
           style: TextStyle(
             color: AppColors.textSecondary(brightness),
             fontSize: 11,
@@ -506,7 +506,7 @@ class _RecommendationsSection extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Focus on ${summary.weakestDrill?.name ?? "aiming drills"}',
+                          'Tập trung vào ${summary.weakestDrill?.name ?? "các bài ngắm bi"}',
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.textPrimary(brightness),

@@ -442,7 +442,7 @@ class KnowledgeDetailScreen extends ConsumerWidget {
                 size: 20, color: AppColors.textSecondary(brightness)),
             const SizedBox(width: AppSpacing.sm),
             Text(
-              'Tags',
+              'Thẻ',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,

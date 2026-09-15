@@ -38,7 +38,7 @@ class _LearningStreakWidgetState extends State<LearningStreakWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Learning Streak',
+                  const Text('Chuỗi ngày học',
                       style: TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),

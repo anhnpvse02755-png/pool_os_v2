@@ -99,7 +99,7 @@ class _DrillRecordingPreparationScreenState
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
+                    'Bài tập với mã "${widget.drillCode}" không tồn tại.',
                     style: TextStyle(
                       color: AppColors.textSecondary(brightness),
                       fontSize: 14,
@@ -272,7 +272,7 @@ class _DrillLevelHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                   ),
                   child: Text(
-                    'Level $level',
+                    'Cấp $level',
                     style: TextStyle(
                       color: AppColors.onPrimary(brightness),
                       fontWeight: FontWeight.bold,
@@ -365,7 +365,7 @@ class _SetupInstructions extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Cach setup ban / camera',
+                  'Cách bố trí bàn / camera',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary(brightness),

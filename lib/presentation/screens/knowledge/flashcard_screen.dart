@@ -70,7 +70,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           backgroundColor: AppColors.background(_brightness),
           elevation: 0,
           title: Text(
-            'Flashcards',
+            'Thẻ ghi nhớ',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -88,7 +88,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           backgroundColor: AppColors.background(_brightness),
           elevation: 0,
           title: Text(
-            'Flashcards',
+            'Thẻ ghi nhớ',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -125,7 +125,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
         backgroundColor: AppColors.background(_brightness),
         elevation: 0,
         title: Text(
-          'Flashcard ${_index + 1}/${_due.length}',
+          'Thẻ ${_index + 1}/${_due.length}',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,

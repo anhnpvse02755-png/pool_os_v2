@@ -52,7 +52,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
         backgroundColor: AppColors.background(brightness),
         elevation: 0,
         title: Text(
-          'Coach AI',
+          'Huấn luyện viên AI',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,
@@ -204,7 +204,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             ),
           ] else ...[
             Text(
-              'Straight Shot',
+              'Cú thẳng (Straight Shot)',
               style: TextStyle(
                 color: AppColors.onPrimary(brightness),
                 fontWeight: FontWeight.bold,

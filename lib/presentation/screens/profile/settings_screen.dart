@@ -414,7 +414,7 @@ class SettingsScreen extends ConsumerWidget {
       if (testLogger.logCount == 0) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('No logs to export. Start a test session first.'),
+            content: const Text('Chưa có nhật ký để xuất. Hãy bắt đầu một phiên kiểm thử trước.'),
             backgroundColor: AppColors.warning,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -446,7 +446,7 @@ class SettingsScreen extends ConsumerWidget {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Exported ${testLogger.logCount} actions'),
+            content: Text('Đã xuất ${testLogger.logCount} thao tác'),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -460,7 +460,7 @@ class SettingsScreen extends ConsumerWidget {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Export failed: $e'),
+            content: Text('Xuất thất bại: $e'),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -476,7 +476,7 @@ class SettingsScreen extends ConsumerWidget {
     testLogger.startSession();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Test session started - logging all actions'),
+        content: const Text('Đã bắt đầu phiên kiểm thử — đang ghi lại mọi thao tác'),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
@@ -498,21 +498,21 @@ class SettingsScreen extends ConsumerWidget {
           borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
         ),
         title: Text(
-          'Clear Logs',
+          'Xoá nhật ký',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary(brightness),
           ),
         ),
         content: Text(
-          'Are you sure you want to clear all test logs?',
+          'Bạn có chắc muốn xoá toàn bộ nhật ký kiểm thử?',
           style: TextStyle(color: AppColors.textSecondary(brightness)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              'Cancel',
+              'Huỷ',
               style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
           ),
@@ -522,7 +522,7 @@ class SettingsScreen extends ConsumerWidget {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Logs cleared'),
+                  content: const Text('Đã xoá nhật ký'),
                   backgroundColor: AppColors.error,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
@@ -532,7 +532,7 @@ class SettingsScreen extends ConsumerWidget {
               );
             },
             child: const Text(
-              'Clear',
+              'Xoá',
               style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
             ),
           ),
@@ -946,7 +946,7 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
               ),
               const SizedBox(width: AppSpacing.md),
               Text(
-                'Streak Reminder',
+                'Nhắc duy trì chuỗi ngày',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -970,14 +970,14 @@ class _StreakSettingsSheetState extends ConsumerState<_StreakSettingsSheet> {
                 _StatColumn(
                   icon: Icons.local_fire_department,
                   value: '$currentStreak',
-                  label: 'Current',
+                  label: 'Hiện tại',
                   color: AppColors.warningOnTint(brightness),
                 ),
                 Container(width: 1, height: 40, color: AppColors.border(brightness)),
                 _StatColumn(
                   icon: Icons.emoji_events,
                   value: '$longestStreak',
-                  label: 'Longest',
+                  label: 'Dài nhất',
                   color: AppColors.goldOnTint(brightness),
                 ),
               ],

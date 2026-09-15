@@ -595,9 +595,9 @@ class _PlayerProfileSheet extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _StatColumn(label: 'Drills', value: '${player['drills']}', brightness: brightness),
-              _StatColumn(label: 'Win Rate', value: '72%', brightness: brightness),
-              _StatColumn(label: 'Rank', value: '#1', brightness: brightness),
+              _StatColumn(label: 'Bài tập', value: '${player['drills']}', brightness: brightness),
+              _StatColumn(label: 'Tỉ lệ thắng', value: '72%', brightness: brightness),
+              _StatColumn(label: 'Hạng', value: '#1', brightness: brightness),
             ],
           ),
           const SizedBox(height: AppSpacing.xxl),

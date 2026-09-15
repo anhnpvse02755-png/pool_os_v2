@@ -851,7 +851,7 @@ class _ResultPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   ),
                   child: Text(
-                    'Pool Rating: $rating',
+                    'Trình độ bi-a: $rating',
                     style: TextStyle(
                       color: AppColors.accentLabel(brightness),
                       fontWeight: FontWeight.bold,

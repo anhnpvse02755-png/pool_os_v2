@@ -113,7 +113,7 @@ class LearningPathScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'AI de xuat ${path.length} bai tap cho ban',
+                  'AI đề xuất ${path.length} bài tập cho bạn',
                   // KHÔNG hạ alpha xuống 0.9 như bản cũ: luật của bộ này là
                   // không đặt alpha lên MÀU CHỮ, và ở chế độ tối chữ sẫm mờ đi
                   // là mất luôn phần tương phản ít ỏi còn lại.
@@ -141,7 +141,7 @@ class LearningPathScreen extends ConsumerWidget {
                       ),
                     );
                   },
-                  label: 'Follow AI',
+                  label: 'Theo lộ trình AI',
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -207,7 +207,7 @@ class LearningPathScreen extends ConsumerWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   child: Text(
-                    'Ban co the bo qua bat ky bai tap nao. Tat ca bai tap deu mo cho ban.',
+                    'Bạn có thể bỏ qua bất kỳ bài tập nào. Tất cả bài tập đều mở cho bạn.',
                     style: TextStyle(
                       color: AppColors.textSecondary(brightness),
                       fontSize: 12,

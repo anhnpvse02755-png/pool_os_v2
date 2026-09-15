@@ -143,7 +143,7 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
         backgroundColor: AppColors.background(brightness),
         elevation: 0,
         title: Text(
-          'Player State',
+          'Trạng thái người chơi',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -228,14 +228,14 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
                                 ),
                               ),
                               title: Text(
-                                'Match ${s.matchId.substring(0, s.matchId.length.clamp(0, 10))}…',
+                                'Trận ${s.matchId.substring(0, s.matchId.length.clamp(0, 10))}…',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: AppColors.textPrimary(brightness),
                                 ),
                               ),
                               subtitle: Text(
-                                'Focus ${s.focus}/5  •  Pressure ${s.pressure}/5  •  Tilt ${s.tilt}/5',
+                                'Tập trung ${s.focus}/5  •  Áp lực ${s.pressure}/5  •  Mất bình tĩnh ${s.tilt}/5',
                                 style: TextStyle(
                                   color: AppColors.textSecondary(brightness),
                                   fontSize: 12,

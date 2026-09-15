@@ -216,7 +216,7 @@ class _SessionDetailView extends StatelessWidget {
               children: [
                 Expanded(child: _StatCard(
                   icon: Icons.leaderboard,
-                  label: 'Level',
+                  label: 'Cấp',
                   // #8B5CF6 là đúng hằng tím mà `difficultyExpert` sinh ra để
                   // thay — nay có bản tối đi kèm.
                   value: '${session.level}',

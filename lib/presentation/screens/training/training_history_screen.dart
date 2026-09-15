@@ -206,27 +206,27 @@ class _TrainingHistoryScreenState extends ConsumerState<TrainingHistoryScreen> {
             onSelected: (_) => setState(() => _selectedFilter = 'all'),
           ),
           ChoiceChip(
-            label: const Text('Stop'),
+            label: const Text('Bi dừng (Stop)'),
             selected: _selectedFilter == 'STOP',
             onSelected: (_) => setState(() => _selectedFilter = 'STOP'),
           ),
           ChoiceChip(
-            label: const Text('Draw'),
+            label: const Text('Bi lùi (Draw)'),
             selected: _selectedFilter == 'DRAW',
             onSelected: (_) => setState(() => _selectedFilter = 'DRAW'),
           ),
           ChoiceChip(
-            label: const Text('Follow'),
+            label: const Text('Bi tới (Follow)'),
             selected: _selectedFilter == 'FOLLOW',
             onSelected: (_) => setState(() => _selectedFilter = 'FOLLOW'),
           ),
           ChoiceChip(
-            label: const Text('Position'),
+            label: const Text('Vị trí (Position)'),
             selected: _selectedFilter == 'POSITION',
             onSelected: (_) => setState(() => _selectedFilter = 'POSITION'),
           ),
           ChoiceChip(
-            label: const Text('Bank'),
+            label: const Text('Băng (Bank)'),
             selected: _selectedFilter == 'BANK',
             onSelected: (_) => setState(() => _selectedFilter = 'BANK'),
           ),
@@ -481,7 +481,7 @@ class _HistoryCard extends StatelessWidget {
             // `primary` (158°) và teal KHÔNG có token nào — mọi token xanh
             // còn lại (`primary` 158°, `success` 160°, `accentLabel` 158°)
             // đều nằm trong 15° của chip đầu, nên gán bất kỳ cái nào cũng
-            // làm hai chip trùng màu. 'Shots' là một SỐ ĐẾM thuần, không
+            // làm hai chip trùng màu. 'Số cú' là một SỐ ĐẾM thuần, không
             // mang phán quyết, nên nó là chip bị hạ màu về trung tính.
             // Ba hue sau khi đổi: 158° / trung tính / 262°.
             Row(
@@ -493,13 +493,13 @@ class _HistoryCard extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 _StatChip(
-                  label: 'Shots',
+                  label: 'Số cú',
                   value: '${session.shotsMade}/${session.shotsMade + session.shotsMissed}',
                   color: AppColors.textSecondary(brightness),
                 ),
                 const SizedBox(width: AppSpacing.sm),
                 _StatChip(
-                  label: 'Level',
+                  label: 'Cấp',
                   value: '${session.level}',
                   color: AppColors.difficultyExpert(brightness),
                 ),

@@ -34,7 +34,7 @@ class TrainingCenterScreen extends ConsumerWidget {
                 backgroundColor: AppColors.background(brightness),
                 elevation: 0,
                 title: Text(
-                  'Train',
+                  'Luyện tập',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
@@ -101,7 +101,7 @@ class _SearchBar extends StatelessWidget {
         readOnly: true,
         onTap: () => context.push('/training/drills'),
         decoration: InputDecoration(
-          hintText: 'Search drills...',
+          hintText: 'Tìm bài tập...',
           prefixIcon: Icon(
             Icons.search,
             color: AppColors.textTertiary(brightness),
@@ -135,7 +135,7 @@ class _QuickActionsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'QUICK START',
+          'BẮT ĐẦU NHANH',
           style: TextStyle(
             color: AppColors.textSecondary(brightness),
             fontSize: 11,
@@ -242,7 +242,7 @@ class _CategoriesSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'CATEGORIES',
+          'NHÓM BÀI TẬP',
           style: TextStyle(
             color: AppColors.textSecondary(brightness),
             fontSize: 11,

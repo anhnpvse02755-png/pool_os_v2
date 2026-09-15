@@ -115,7 +115,7 @@ class _DrillListScreenState extends State<DrillListScreen>
                           onChanged: (value) => setState(() => _searchQuery = value),
                           style: TextStyle(fontSize: 14, color: AppColors.textPrimary(brightness)),
                           decoration: InputDecoration(
-                            hintText: 'Search drills...',
+                            hintText: 'Tìm bài tập...',
                             hintStyle: TextStyle(color: AppColors.textTertiary(brightness), fontSize: 14),
                             prefixIcon: Icon(Icons.search, size: 20, color: AppColors.textSecondary(brightness)),
                             isDense: true,
@@ -141,35 +141,35 @@ class _DrillListScreenState extends State<DrillListScreen>
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           value: null,
-                          child: Text('All', style: TextStyle(
+                          child: Text('Tất cả', style: TextStyle(
                             color: _selectedDifficulty == null ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                             fontWeight: _selectedDifficulty == null ? FontWeight.w600 : FontWeight.normal,
                           )),
                         ),
                         PopupMenuItem(
                           value: 'easy',
-                          child: Text('Easy', style: TextStyle(
+                          child: Text('Dễ', style: TextStyle(
                             color: _selectedDifficulty == 'easy' ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                             fontWeight: _selectedDifficulty == 'easy' ? FontWeight.w600 : FontWeight.normal,
                           )),
                         ),
                         PopupMenuItem(
                           value: 'medium',
-                          child: Text('Medium', style: TextStyle(
+                          child: Text('Trung bình', style: TextStyle(
                             color: _selectedDifficulty == 'medium' ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                             fontWeight: _selectedDifficulty == 'medium' ? FontWeight.w600 : FontWeight.normal,
                           )),
                         ),
                         PopupMenuItem(
                           value: 'hard',
-                          child: Text('Hard', style: TextStyle(
+                          child: Text('Khó', style: TextStyle(
                             color: _selectedDifficulty == 'hard' ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                             fontWeight: _selectedDifficulty == 'hard' ? FontWeight.w600 : FontWeight.normal,
                           )),
                         ),
                         PopupMenuItem(
                           value: 'expert',
-                          child: Text('Expert', style: TextStyle(
+                          child: Text('Chuyên sâu', style: TextStyle(
                             color: _selectedDifficulty == 'expert' ? AppColors.primary(brightness) : AppColors.textPrimary(brightness),
                             fontWeight: _selectedDifficulty == 'expert' ? FontWeight.w600 : FontWeight.normal,
                           )),
@@ -240,7 +240,7 @@ class _DrillListScreenState extends State<DrillListScreen>
         return cat.nameVi;
       }
     }
-    return 'Drill Library';
+    return 'Thư viện bài tập';
   }
 
   Widget _buildDrillList(List<Drill> drills, {bool showReason = false}) {
@@ -262,7 +262,7 @@ class _DrillListScreenState extends State<DrillListScreen>
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'No drills found',
+              'Không tìm thấy bài tập nào',
               style: TextStyle(
                 color: AppColors.textSecondary(brightness),
                 fontSize: 16,
@@ -326,13 +326,13 @@ class _DrillCard extends StatelessWidget {
   String _getDifficultyLabel() {
     switch (drill.difficulty) {
       case 'easy':
-        return 'Easy';
+        return 'Dễ';
       case 'medium':
-        return 'Medium';
+        return 'Trung bình';
       case 'hard':
-        return 'Hard';
+        return 'Khó';
       case 'expert':
-        return 'Expert';
+        return 'Chuyên sâu';
       default:
         return drill.difficulty;
     }
@@ -567,7 +567,7 @@ class DrillCategoriesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        title: const Text('Drill Library'),
+        title: const Text('Thư viện bài tập'),
         backgroundColor: AppColors.surface(brightness),
         foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,

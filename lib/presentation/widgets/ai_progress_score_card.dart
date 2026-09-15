@@ -56,7 +56,7 @@ class _AiProgressScoreCardState extends ConsumerState<AiProgressScoreCard> {
               children: [
                 Icon(Icons.psychology, color: AppTheme.primary),
                 const SizedBox(width: 8),
-                const Text('AI Progress Score',
+                const Text('Điểm tiến bộ theo AI',
                     style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 const Spacer(),

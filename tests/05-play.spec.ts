@@ -15,7 +15,9 @@ test.describe('Play Screen', () => {
   test('should navigate to quick match', async ({ page, playPage }) => {
     await playPage.clickQuickMatch();
     await expect(
-      page.getByRole('button', { name: '9-Ball', exact: true }).first(),
+      // Nhan da viet hoa thanh "Bi-a 9 bi (9-Ball)" — bam theo regex de khong
+      // vo them lan nua neu cach dien dat doi.
+      page.getByRole('button', { name: /9-ball/i }).first(),
     ).toBeVisible();
   });
 

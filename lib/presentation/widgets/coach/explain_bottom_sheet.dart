@@ -305,7 +305,7 @@ class ExplainBottomSheet extends StatelessWidget {
         Icon(Icons.verified_outlined, color: AppTheme.textSecondary, size: 16),
         const SizedBox(width: 8),
         Text(
-          'Confidence: 75%',
+          'Độ tin cậy: 75%',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppTheme.textSecondary,
               ),

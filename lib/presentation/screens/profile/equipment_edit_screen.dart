@@ -289,7 +289,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           if (_category == 'cue') ...[
             const SizedBox(height: AppSpacing.lg),
             Text(
-              'Cue Type',
+              'Loại cơ',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
@@ -476,7 +476,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Last tip change',
+              'Lần thay đầu cơ gần nhất',
               style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
             subtitle: Text(
@@ -597,7 +597,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Active playing cue',
+              'Cơ đánh chính',
               style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             value: _isActive,
@@ -607,7 +607,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Active break cue',
+              'Cơ phá (break) đang dùng',
               style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             value: _isBreakCue,
@@ -617,7 +617,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Active jump cue',
+              'Cơ nhảy (jump) đang dùng',
               style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             value: _isJumpCue,
@@ -647,7 +647,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Purchase date',
+              'Ngày mua',
               style: TextStyle(color: AppColors.textSecondary(brightness)),
             ),
             subtitle: Text(
@@ -715,11 +715,11 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Archive',
+              'Lưu trữ',
               style: TextStyle(color: AppColors.textPrimary(brightness)),
             ),
             subtitle: Text(
-              'Hide from main list',
+              'Ẩn khỏi danh sách chính',
               style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 12),
             ),
             value: _isArchived,

@@ -261,7 +261,7 @@ class _CoachInsightPlaceholder extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Coach Insight',
+                  'Nhận định từ huấn luyện viên',
                   style: theme.textTheme.titleSmall?.copyWith(
                     color: AppTheme.textSecondary,
                     fontWeight: FontWeight.bold,

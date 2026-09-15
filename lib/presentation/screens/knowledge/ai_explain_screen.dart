@@ -72,7 +72,7 @@ class _AiExplainScreenState extends State<AiExplainScreen> {
         backgroundColor: AppColors.background(_brightness),
         elevation: 0,
         title: Text(
-          'AI Explain',
+          'AI giải thích',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,

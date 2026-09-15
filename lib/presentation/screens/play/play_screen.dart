@@ -19,7 +19,7 @@ class PlayScreen extends StatelessWidget {
         backgroundColor: AppColors.surface(brightness),
         elevation: 0,
         title: Text(
-          'Play',
+          'Thi đấu',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary(brightness),
@@ -293,7 +293,7 @@ class _MatchRecordingCardState extends State<_MatchRecordingCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Match Recording',
+                      'Ghi nhận trận đấu',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
@@ -642,7 +642,7 @@ class MatchRecordingPlaceholder extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.surface(brightness),
         elevation: 0,
-        title: Text('Match Recording', style: TextStyle(color: AppColors.textPrimary(brightness))),
+        title: Text('Ghi nhận trận đấu', style: TextStyle(color: AppColors.textPrimary(brightness))),
       ),
       body: Center(
         child: Column(
@@ -650,7 +650,7 @@ class MatchRecordingPlaceholder extends StatelessWidget {
           children: [
             Icon(Icons.videocam, size: 64, color: AppColors.primary(brightness)),
             SizedBox(height: 16),
-            Text('Match Recording', style: TextStyle(fontSize: 18)),
+            Text('Ghi nhận trận đấu', style: TextStyle(fontSize: 18)),
             SizedBox(height: 8),
             Text('Tính năng đang phát triển', style: TextStyle(color: AppColors.textTertiary(brightness))),
           ],

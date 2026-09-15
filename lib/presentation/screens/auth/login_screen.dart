@@ -107,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ).animate().fadeIn(delay: 100.ms),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'AI Pool Training Platform',
+                'Nền tảng huấn luyện bi-a bằng AI',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary(brightness),
                     ),

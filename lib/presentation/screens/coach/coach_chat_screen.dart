@@ -139,7 +139,7 @@ class _CoachChatScreenState extends ConsumerState<CoachChatScreen> {
         backgroundColor: AppColors.background(_brightness),
         elevation: 0,
         title: Text(
-          'Coach',
+          'Huấn luyện viên',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,

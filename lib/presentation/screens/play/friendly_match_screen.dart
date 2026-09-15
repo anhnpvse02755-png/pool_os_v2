@@ -312,11 +312,11 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
   String _getGameTypeName(String type) {
     switch (type) {
       case '8-ball':
-        return '8-Ball';
+        return 'Bi-a 8 bi (8-Ball)';
       case '9-ball':
-        return '9-Ball';
+        return 'Bi-a 9 bi (9-Ball)';
       case 'straight':
-        return 'Straight Pool';
+        return 'Bi-a tự do (Straight Pool)';
       default:
         return type;
     }
@@ -350,7 +350,7 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
           SizedBox(height: AppSpacing.md),
           ListTile(
             leading: Icon(Icons.sports_cricket, color: AppColors.primary(brightness)),
-            title: Text('8-Ball', style: TextStyle(color: AppColors.textPrimary(brightness))),
+            title: Text('Bi-a 8 bi (8-Ball)', style: TextStyle(color: AppColors.textPrimary(brightness))),
             onTap: () {
               setState(() => _selectedGameType = '8-ball');
               Navigator.pop(context);
@@ -358,7 +358,7 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
           ),
           ListTile(
             leading: Icon(Icons.circle_outlined, color: AppColors.primary(brightness)),
-            title: Text('9-Ball', style: TextStyle(color: AppColors.textPrimary(brightness))),
+            title: Text('Bi-a 9 bi (9-Ball)', style: TextStyle(color: AppColors.textPrimary(brightness))),
             onTap: () {
               setState(() => _selectedGameType = '9-ball');
               Navigator.pop(context);
@@ -366,7 +366,7 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
           ),
           ListTile(
             leading: Icon(Icons.linear_scale, color: AppColors.primary(brightness)),
-            title: Text('Straight Pool', style: TextStyle(color: AppColors.textPrimary(brightness))),
+            title: Text('Bi-a tự do (Straight Pool)', style: TextStyle(color: AppColors.textPrimary(brightness))),
             onTap: () {
               setState(() => _selectedGameType = 'straight');
               Navigator.pop(context);
@@ -401,24 +401,24 @@ class _FriendlyMatchScreenState extends State<FriendlyMatchScreen> {
           ),
           SizedBox(height: AppSpacing.md),
           ListTile(
-            title: Text('FT 3', style: TextStyle(color: AppColors.textPrimary(brightness), fontWeight: FontWeight.w600)),
-            subtitle: Text('First to 3', style: TextStyle(color: AppColors.textSecondary(brightness))),
+            title: Text('Đến 3', style: TextStyle(color: AppColors.textPrimary(brightness), fontWeight: FontWeight.w600)),
+            subtitle: Text('Đấu đến 3 ván thắng', style: TextStyle(color: AppColors.textSecondary(brightness))),
             onTap: () {
               setState(() => _selectedRaceTo = 'first-to-3');
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text('FT 5', style: TextStyle(color: AppColors.textPrimary(brightness), fontWeight: FontWeight.w600)),
-            subtitle: Text('First to 5', style: TextStyle(color: AppColors.textSecondary(brightness))),
+            title: Text('Đến 5', style: TextStyle(color: AppColors.textPrimary(brightness), fontWeight: FontWeight.w600)),
+            subtitle: Text('Đấu đến 5 ván thắng', style: TextStyle(color: AppColors.textSecondary(brightness))),
             onTap: () {
               setState(() => _selectedRaceTo = 'first-to-5');
               Navigator.pop(context);
             },
           ),
           ListTile(
-            title: Text('FT 7', style: TextStyle(color: AppColors.textPrimary(brightness), fontWeight: FontWeight.w600)),
-            subtitle: Text('First to 7', style: TextStyle(color: AppColors.textSecondary(brightness))),
+            title: Text('Đến 7', style: TextStyle(color: AppColors.textPrimary(brightness), fontWeight: FontWeight.w600)),
+            subtitle: Text('Đấu đến 7 ván thắng', style: TextStyle(color: AppColors.textSecondary(brightness))),
             onTap: () {
               setState(() => _selectedRaceTo = 'first-to-7');
               Navigator.pop(context);

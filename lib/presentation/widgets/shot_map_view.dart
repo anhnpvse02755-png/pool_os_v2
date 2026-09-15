@@ -46,7 +46,7 @@ class ShotMapView extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: shots.isEmpty
-              ? const Center(child: Text('No shots recorded.'))
+              ? const Center(child: Text('Chưa ghi nhận cú đánh nào.'))
               : CustomPaint(painter: ShotMapPainter(shots: shots, showHeat: showHeat)),
         ),
       ),

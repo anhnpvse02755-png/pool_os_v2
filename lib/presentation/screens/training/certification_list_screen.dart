@@ -44,7 +44,7 @@ class CertificationListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        title: const Text('Skill Certification'),
+        title: const Text('Chứng nhận kỹ năng'),
         backgroundColor: AppColors.surface(brightness),
         foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
@@ -96,7 +96,7 @@ class CertificationListScreen extends StatelessWidget {
                             color: AppColors.primary(brightness)),
                         const SizedBox(width: 8),
                         Text(
-                          'Skill Certification',
+                          'Chứng nhận kỹ năng',
                           style: TextStyle(
                             color: AppColors.textPrimary(brightness),
                             fontWeight: FontWeight.bold,

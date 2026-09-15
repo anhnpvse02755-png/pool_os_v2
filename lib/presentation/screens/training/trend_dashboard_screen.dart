@@ -425,9 +425,9 @@ class _TrendDashboardScreenState extends ConsumerState<TrendDashboardScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text('Tong buoi tap: ${s.totalSessions}', style: TextStyle(color: AppColors.textSecondary(brightness))),
-          Text('Tong tran dau: ${s.totalMatches}', style: TextStyle(color: AppColors.textSecondary(brightness))),
-          Text('Bai tap da tap: ${s.drillTrends.length}', style: TextStyle(color: AppColors.textSecondary(brightness))),
+          Text('Tổng buổi tập: ${s.totalSessions}', style: TextStyle(color: AppColors.textSecondary(brightness))),
+          Text('Tổng trận đấu: ${s.totalMatches}', style: TextStyle(color: AppColors.textSecondary(brightness))),
+          Text('Bài tập đã tập: ${s.drillTrends.length}', style: TextStyle(color: AppColors.textSecondary(brightness))),
         ],
       ),
     );

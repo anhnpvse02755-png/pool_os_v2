@@ -534,7 +534,7 @@ class _ParticipantRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
-              'Seed #$seed',
+              'Hạt giống #$seed',
               style: TextStyle(
                 color: AppColors.textSecondary(brightness),
                 fontSize: 11,

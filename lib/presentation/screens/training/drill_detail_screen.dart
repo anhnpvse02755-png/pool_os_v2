@@ -76,7 +76,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    'Bai tap voi ma "${widget.drillCode}" khong ton tai.',
+                    'Bài tập với mã "${widget.drillCode}" không tồn tại.',
                     style: TextStyle(
                       color: AppColors.textSecondary(brightness),
                       fontSize: 14,
@@ -486,7 +486,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                           Row(
                             children: [
                               Text(
-                                'Level ${level.level}',
+                                'Cấp ${level.level}',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
@@ -507,7 +507,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
                                     borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                                   ),
                                   child: Text(
-                                    'Completed',
+                                    'Đã hoàn thành',
                                     style: TextStyle(
                                       // Nền `success` bất biến theo chế độ.
                                       color:
@@ -905,7 +905,7 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
       child: SafeArea(
         child: _PrimaryButton(
           onPressed: () => _onStartPressed(drill),
-          label: 'Bat dau nhap lieu - Level $_selectedLevel',
+          label: 'Bắt đầu nhập liệu — Cấp $_selectedLevel',
         ),
       ),
     );
@@ -993,7 +993,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Mac dinh cho level nay: ${widget.defaultAttempts} lan',
+              'Mặc định cho cấp này: ${widget.defaultAttempts} lần',
               style: TextStyle(
                   color: AppColors.textSecondary(brightness), fontSize: 13),
             ),
@@ -1022,7 +1022,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
             const SizedBox(height: AppSpacing.lg),
 
             ChoiceChip(
-              label: Text('Mac dinh (${widget.defaultAttempts})', style: TextStyle(
+              label: Text('Mặc định (${widget.defaultAttempts})', style: TextStyle(
                 color: _selected == widget.defaultAttempts
                     ? AppColors.onPrimary(brightness)
                     : AppColors.textPrimary(brightness),
@@ -1082,7 +1082,7 @@ class _RepetitionsDialogState extends State<_RepetitionsDialog> {
             if (_selected <= 0) return;
             Navigator.of(context).pop(_selected);
           },
-          label: 'Bat dau $_selected lan',
+          label: 'Bắt đầu $_selected lần',
         ),
       ],
     );

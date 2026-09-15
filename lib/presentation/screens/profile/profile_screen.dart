@@ -158,7 +158,7 @@ class _ProfileHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Level ${player.currentLevel}',
+                      'Cấp ${player.currentLevel}',
                       style: TextStyle(
                         fontSize: 13,
                         color: accentColor,
@@ -199,7 +199,7 @@ class _SettingsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SETTINGS',
+          'CÀI ĐẶT',
           style: TextStyle(
             color: AppColors.textSecondary(brightness),
             fontSize: 11,
@@ -220,7 +220,7 @@ class _SettingsSection extends StatelessWidget {
               // Equipment
               _SettingsItem(
                 icon: Icons.sports,
-                label: 'Equipment',
+                label: 'Dụng cụ',
                 brightness: brightness,
                 onTap: () => context.push('/profile/equipment'),
               ),
@@ -232,7 +232,7 @@ class _SettingsSection extends StatelessWidget {
               // Dark Mode Toggle
               _SettingsToggle(
                 icon: Icons.dark_mode,
-                label: 'Dark Mode',
+                label: 'Chế độ tối',
                 brightness: brightness,
               ),
               Divider(
@@ -243,7 +243,7 @@ class _SettingsSection extends StatelessWidget {
               // Notifications
               _SettingsToggle(
                 icon: Icons.notifications,
-                label: 'Notifications',
+                label: 'Thông báo',
                 brightness: brightness,
               ),
               Divider(
@@ -254,7 +254,7 @@ class _SettingsSection extends StatelessWidget {
               // Sound Effects
               _SettingsToggle(
                 icon: Icons.volume_up,
-                label: 'Sound Effects',
+                label: 'Hiệu ứng âm thanh',
                 brightness: brightness,
               ),
             ],
@@ -379,7 +379,7 @@ class _SupportSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'SUPPORT',
+          'HỖ TRỢ',
           style: TextStyle(
             color: AppColors.textSecondary(brightness),
             fontSize: 11,
@@ -399,7 +399,7 @@ class _SupportSection extends StatelessWidget {
             children: [
               _SettingsItem(
                 icon: Icons.help_outline,
-                label: 'Help & FAQ',
+                label: 'Trợ giúp & Câu hỏi thường gặp',
                 brightness: brightness,
                 onTap: () {},
               ),
@@ -409,7 +409,7 @@ class _SupportSection extends StatelessWidget {
               ),
               _SettingsItem(
                 icon: Icons.email_outlined,
-                label: 'Contact Us',
+                label: 'Liên hệ',
                 brightness: brightness,
                 onTap: () {},
               ),
@@ -419,7 +419,7 @@ class _SupportSection extends StatelessWidget {
               ),
               _SettingsItem(
                 icon: Icons.privacy_tip_outlined,
-                label: 'Privacy Policy',
+                label: 'Chính sách riêng tư',
                 brightness: brightness,
                 onTap: () {},
               ),
@@ -447,12 +447,12 @@ class _SignOutButton extends StatelessWidget {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Sign Out'),
-              content: const Text('Are you sure you want to sign out?'),
+              title: const Text('Đăng xuất'),
+              content: const Text('Bạn có chắc muốn đăng xuất?'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: const Text('Huỷ'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -460,7 +460,7 @@ class _SignOutButton extends StatelessWidget {
                     // Handle sign out
                   },
                   child: Text(
-                    'Sign Out',
+                    'Đăng xuất',
                     style: TextStyle(color: AppColors.error),
                   ),
                 ),
@@ -472,7 +472,7 @@ class _SignOutButton extends StatelessWidget {
           foregroundColor: AppColors.error,
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.space4),
         ),
-        child: const Text('Sign Out'),
+        child: const Text('Đăng xuất'),
       ),
     ).animate().fadeIn(delay: 300.ms);
   }

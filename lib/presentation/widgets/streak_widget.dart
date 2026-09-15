@@ -58,7 +58,7 @@ class _StreakWidgetState extends ConsumerState<StreakWidget> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Daily Streak',
+                  const Text('Chuỗi ngày liên tiếp',
                       style: TextStyle(
                           fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 4),

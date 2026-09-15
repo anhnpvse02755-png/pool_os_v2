@@ -71,7 +71,7 @@ class _MatchReplayScreenState extends State<MatchReplayScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Replay - Rack ${rack.rackNumber}/${widget.match.racks.length}',
+          'Xem lại — Ván ${rack.rackNumber}/${widget.match.racks.length}',
           style: TextStyle(
             color: AppColors.textPrimary(brightness),
             fontWeight: FontWeight.w600,
@@ -105,7 +105,7 @@ class _MatchReplayScreenState extends State<MatchReplayScreen> {
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Text(
-                        'Shot ${_shotIndex + 1}/${rack.shots.length}',
+                        'Cú ${_shotIndex + 1}/${rack.shots.length}',
                         style: TextStyle(
                           color: AppColors.primary(brightness),
                           fontWeight: FontWeight.w600,
@@ -126,19 +126,19 @@ class _MatchReplayScreenState extends State<MatchReplayScreen> {
                 ),
                 SizedBox(height: AppSpacing.lg),
                 if (shot != null) ...[
-                  _DetailRow(label: 'Type', value: shot.shotType),
+                  _DetailRow(label: 'Loại', value: shot.shotType),
                   _DetailRow(
-                    label: 'Made',
+                    label: 'Vào bi',
                     value: shot.result == 'made' ? 'Co' : 'Khong',
                     valueColor: shot.result == 'made' ? AppColors.success : AppColors.shotMiss,
                   ),
                   _DetailRow(
-                    label: 'Foul',
+                    label: 'Lỗi (Foul)',
                     value: shot.result == 'foul' || shot.result == 'scratch' ? 'Co' : 'Khong',
                     valueColor: shot.result == 'foul' || shot.result == 'scratch' ? AppColors.shotMiss : AppColors.success,
                   ),
                   if (shot.playerNote != null && shot.playerNote!.isNotEmpty)
-                    _DetailRow(label: 'Note', value: shot.playerNote!),
+                    _DetailRow(label: 'Ghi chú', value: shot.playerNote!),
                 ] else
                   Center(
                     child: Padding(
@@ -148,7 +148,7 @@ class _MatchReplayScreenState extends State<MatchReplayScreen> {
                           Icon(Icons.gps_off, size: 32, color: AppColors.textTertiary(brightness)),
                           SizedBox(height: AppSpacing.sm),
                           Text(
-                            'Khong co shot trong rack nay',
+                            'Không có cú đánh nào trong ván này',
                             style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 14),
                           ),
                         ],
@@ -259,7 +259,7 @@ class _PrevButtonState extends State<_PrevButton> {
             children: [
               Icon(Icons.chevron_left, color: isEnabled ? AppColors.primary(brightness) : AppColors.textSecondary(brightness), size: 24),
               SizedBox(width: AppSpacing.xs),
-              Text('Prev', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isEnabled ? AppColors.primary(brightness) : AppColors.textSecondary(brightness))),
+              Text('Trước', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isEnabled ? AppColors.primary(brightness) : AppColors.textSecondary(brightness))),
             ],
           ),
         ),
@@ -303,7 +303,7 @@ class _NextButtonState extends State<_NextButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Next', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness))),
+              Text('Sau', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.onPrimary(brightness))),
               SizedBox(width: AppSpacing.xs),
               Icon(Icons.chevron_right, color: AppColors.onPrimary(brightness), size: 24),
             ],

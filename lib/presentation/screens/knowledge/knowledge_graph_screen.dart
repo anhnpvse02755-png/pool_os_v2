@@ -86,7 +86,7 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
         backgroundColor: AppColors.background(_brightness),
         elevation: 0,
         title: Text(
-          'Knowledge Graph',
+          'Sơ đồ kiến thức',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -102,7 +102,7 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Articles in prerequisite order',
+                    'Bài viết xếp theo thứ tự kiến thức nền',
                     style: TextStyle(
                       fontSize: 14,
                       color: AppColors.textSecondary(_brightness),
@@ -235,12 +235,12 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            _DetailRow(label: 'Category', value: n.category),
-            _DetailRow(label: 'Difficulty', value: n.difficulty),
+            _DetailRow(label: 'Nhóm', value: n.category),
+            _DetailRow(label: 'Độ khó', value: n.difficulty),
             if (n.prerequisites.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Prerequisites:',
+                'Cần biết trước:',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary(_brightness),
@@ -252,7 +252,7 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
             if (n.relatedDrills.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Related drills:',
+                'Bài tập liên quan:',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary(_brightness),

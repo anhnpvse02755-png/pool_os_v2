@@ -139,7 +139,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
               Expanded(
                 child: _PrimaryButton(
                   onPressed: () => context.push('/play/match/${m.id}/timeline'),
-                  label: 'Xem Timeline',
+                  label: 'Xem dòng thời gian',
                   icon: Icons.timeline,
                 ),
               ),
@@ -417,7 +417,7 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
       children: m.timeline.map((e) => ListTile(
             leading: _timelineIcon(e.eventType),
             title: Text(e.description ?? e.eventType),
-            subtitle: Text('Rack ${e.rackNumber} • ${DateFormat('HH:mm').format(e.timestamp)}'),
+            subtitle: Text('Ván ${e.rackNumber} • ${DateFormat('HH:mm').format(e.timestamp)}'),
           )).toList(),
     );
   }

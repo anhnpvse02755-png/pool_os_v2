@@ -25,30 +25,30 @@ export class HomePage extends BasePage {
   constructor(page: Page) {
     super(page, '/home');
 
-    // `exact` matters: "Home" would otherwise also match "Home" inside longer
+    // `exact` matters: "Trang chủ" would otherwise also match inside longer
     // accessible names on the screen body.
-    this.homeTab = page.getByRole('button', { name: 'Home', exact: true });
-    this.trainingTab = page.getByRole('button', { name: 'Train', exact: true });
+    this.homeTab = page.getByRole('button', { name: 'Trang chủ', exact: true });
+    this.trainingTab = page.getByRole('button', { name: 'Luyện tập', exact: true });
     this.progressTab = page.getByRole('button', {
-      name: 'Progress',
+      name: 'Tiến độ',
       exact: true,
     });
-    this.profileTab = page.getByRole('button', { name: 'Profile', exact: true });
+    this.profileTab = page.getByRole('button', { name: 'Hồ sơ', exact: true });
 
     this.startTrainingButton = page.getByRole('button', {
-      name: /^start training$/i,
+      name: /^bắt đầu luyện tập$/i,
     });
     this.startTrainingSessionButton = page.getByRole('button', {
-      name: /start training session/i,
+      name: /bắt đầu buổi tập/i,
     });
     this.trainingHistoryButton = page.getByRole('button', {
-      name: /view training history/i,
+      name: /xem lịch sử luyện tập/i,
     });
     this.knowledgeArticleButton = page.getByRole('button', {
-      name: /read knowledge article/i,
+      name: /đọc bài kiến thức/i,
     });
     this.dailyChallengeButton = page.getByRole('button', {
-      name: /daily challenge/i,
+      name: /thử thách hôm nay/i,
     });
   }
 

@@ -56,14 +56,14 @@ class BlackBoxSettingsTile extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'PoolOS Black Box',
+                        'Hộp đen (Black Box) PoolOS',
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Export Coach Package',
+                        'Xuất gói dữ liệu Coach',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: AppColors.textSecondary(brightness),
                             ),
@@ -130,7 +130,7 @@ class BlackBoxInfoCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                'About Black Box',
+                'Về hộp đen',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary(brightness),
@@ -140,8 +140,8 @@ class BlackBoxInfoCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'The Black Box exports a complete snapshot of Coach AI state for analysis. '
-            'No account required. No internet required. Anonymous.',
+            'Hộp đen xuất ra ảnh chụp đầy đủ trạng thái Coach AI để phân tích. '
+            'Không cần tài khoản. Không cần mạng. Ẩn danh.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.textSecondary(brightness),
                 ),
@@ -149,11 +149,11 @@ class BlackBoxInfoCard extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              _buildChip('Sessions', brightness),
+              _buildChip('Buổi tập', brightness),
               const SizedBox(width: 8),
-              _buildChip('Recommendations', brightness),
+              _buildChip('Đề xuất', brightness),
               const SizedBox(width: 8),
-              _buildChip('Timeline', brightness),
+              _buildChip('Dòng thời gian', brightness),
             ],
           ),
         ],

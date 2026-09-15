@@ -63,7 +63,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Bao cao Tuan',
+          'Báo cáo tuần',
           style: TextStyle(
             color: AppColors.textPrimary(brightness),
             fontWeight: FontWeight.w600,
@@ -101,7 +101,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
               ),
               SizedBox(height: AppSpacing.lg),
               Text(
-                'Chua co tran dau tuan nay',
+                'Chưa có trận đấu tuần này',
                 style: TextStyle(
                   color: AppColors.textPrimary(brightness),
                   fontSize: 18,
@@ -110,7 +110,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
-                'Hay ghi them tran dau trong tuan nay de thay bao cao chi tiet.',
+                'Hãy ghi thêm trận đấu trong tuần này để thấy báo cáo chi tiết.',
                 style: TextStyle(
                   color: AppColors.textSecondary(brightness),
                   fontSize: 14,
@@ -138,7 +138,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
               Icon(Icons.calendar_today_outlined, size: 18, color: AppColors.primary(brightness)),
               SizedBox(width: AppSpacing.sm),
               Text(
-                'Tuan ${fmt.format(r.weekStart)} - ${fmt.format(r.weekEnd)}',
+                'Tuần ${fmt.format(r.weekStart)} — ${fmt.format(r.weekEnd)}',
                 style: TextStyle(
                   color: AppColors.textSecondary(brightness),
                   fontSize: 14,
@@ -197,12 +197,12 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
         mainAxisSpacing: AppSpacing.md,
         crossAxisSpacing: AppSpacing.md,
         children: [
-          _KpiCard(label: 'Tran dau', value: '${r.matchesPlayed}', icon: Icons.sports_score_outlined),
-          _KpiCard(label: 'Ty le thang', value: '${r.winRate.toStringAsFixed(1)}%', icon: Icons.emoji_events_outlined),
-          _KpiCard(label: 'Racks', value: '${r.racksPlayed}', icon: Icons.grid_view_outlined),
-          _KpiCard(label: 'Break & Run', value: '${r.totalBreakAndRun}', icon: Icons.bolt_outlined),
-          _KpiCard(label: 'Run Outs', value: '${r.totalRunOuts}', icon: Icons.trending_up_outlined),
-          _KpiCard(label: 'Fouls', value: '${r.totalFouls}', icon: Icons.gpp_bad_outlined),
+          _KpiCard(label: 'Trận đấu', value: '${r.matchesPlayed}', icon: Icons.sports_score_outlined),
+          _KpiCard(label: 'Tỉ lệ thắng', value: '${r.winRate.toStringAsFixed(1)}%', icon: Icons.emoji_events_outlined),
+          _KpiCard(label: 'Số ván', value: '${r.racksPlayed}', icon: Icons.grid_view_outlined),
+          _KpiCard(label: 'Phá và dọn (Break & Run)', value: '${r.totalBreakAndRun}', icon: Icons.bolt_outlined),
+          _KpiCard(label: 'Dọn bàn (Run Out)', value: '${r.totalRunOuts}', icon: Icons.trending_up_outlined),
+          _KpiCard(label: 'Lỗi (Foul)', value: '${r.totalFouls}', icon: Icons.gpp_bad_outlined),
         ],
       ),
     );
@@ -212,7 +212,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
     final brightness = Theme.of(context).brightness;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Chia se bao cao (dang phat trien)'),
+        content: Text('Chia sẻ báo cáo (đang phát triển)'),
         backgroundColor: AppColors.textPrimary(brightness),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),

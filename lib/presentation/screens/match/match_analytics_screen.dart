@@ -115,9 +115,9 @@ class _MatchAnalyticsScreenState extends ConsumerState<MatchAnalyticsScreen>
           labelStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
           tabs: const [
-            Tab(text: 'Shot Map'),
-            Tab(text: 'Heat Map'),
-            Tab(text: 'Pocket'),
+            Tab(text: 'Cú đánh'),
+            Tab(text: 'Bản đồ nhiệt'),
+            Tab(text: 'Lỗ'),
           ],
         ),
       ),
@@ -298,7 +298,7 @@ class _ShotMapTab extends StatelessWidget {
           SizedBox(height: AppSpacing.lg),
 
           Text(
-            'Shot Map',
+            'Bản đồ cú đánh (Shot Map)',
             style: TextStyle(
               color: AppColors.textPrimary(brightness),
               fontSize: 18,
@@ -343,7 +343,7 @@ class _ShotMapTab extends StatelessWidget {
           SizedBox(width: AppSpacing.md),
           Expanded(
             child: Text(
-              'Shot Map hien thi duong di cua cac cu danh. Duong xanh = trung, duong do = truot.',
+              'Bản đồ cú đánh hiển thị đường đi của các cú. Đường xanh = trúng, đường đỏ = trượt.',
               style: TextStyle(
                 color: AppColors.textSecondary(brightness),
                 fontSize: 13,
@@ -388,10 +388,10 @@ class _ShotMapTab extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _StatItem(label: 'Racks', value: '${match.racks.length}'),
+          _StatItem(label: 'Số ván (Rack)', value: '${match.racks.length}'),
           _StatItem(label: 'Tổng shots', value: '$totalShots'),
           _StatItem(
-            label: 'Win Rate',
+            label: 'Tỉ lệ thắng',
             value: '${match.winner == 'player' ? 100 : 0}%',
           ),
         ],
@@ -469,7 +469,7 @@ class _HeatMapTab extends StatelessWidget {
                 SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Text(
-                    'Heat Map cho thay khu vuc thuong xuyen danh (do = nhieu, xanh = it).',
+                    'Bản đồ nhiệt cho thấy khu vực thường xuyên đánh (đỏ = nhiều, xanh = ít).',
                     style: TextStyle(
                       color: AppColors.textSecondary(brightness),
                       fontSize: 13,
@@ -482,7 +482,7 @@ class _HeatMapTab extends StatelessWidget {
           SizedBox(height: AppSpacing.lg),
 
           Text(
-            'Heat Map',
+            'Bản đồ nhiệt (Heat Map)',
             style: TextStyle(
               color: AppColors.textPrimary(brightness),
               fontSize: 18,

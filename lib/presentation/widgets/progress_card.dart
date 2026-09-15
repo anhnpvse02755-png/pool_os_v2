@@ -45,7 +45,7 @@ class _ProgressCardState extends State<ProgressCard>
               children: [
                 Icon(Icons.dashboard, color: AppTheme.primary),
                 const SizedBox(width: 8),
-                const Text('Your Progress',
+                const Text('Tiến độ của bạn',
                     style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 const Spacer(),

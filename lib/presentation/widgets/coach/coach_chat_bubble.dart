@@ -101,7 +101,7 @@ class CoachChatBubble extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Coach',
+                    'Huấn luyện viên',
                     style: TextStyle(
                       color: AppTheme.primaryGreen,
                       fontWeight: FontWeight.bold,

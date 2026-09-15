@@ -63,7 +63,7 @@ class WelcomeScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.sm),
 
                 Text(
-                  'AI Pool Training Platform',
+                  'Nền tảng huấn luyện bi-a bằng AI',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary(brightness),
                       ),

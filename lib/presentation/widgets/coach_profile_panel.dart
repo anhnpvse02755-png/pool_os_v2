@@ -83,7 +83,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
               children: [
                 Icon(Icons.insights, color: AppTheme.primary),
                 const SizedBox(width: 8),
-                const Text('AI Coach Profile',
+                const Text('Hồ sơ huấn luyện viên AI',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const Spacer(),
                 Container(
@@ -112,7 +112,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
             ...p.skillScores.entries.map((e) => _skillBar(e.key, e.value)),
             if (p.recommendations.isNotEmpty) ...[
               const SizedBox(height: 12),
-              const Text('Recommendations',
+              const Text('Đề xuất',
                   style: TextStyle(fontWeight: FontWeight.w700)),
               const SizedBox(height: 4),
               ...p.recommendations.map((r) => Padding(

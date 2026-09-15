@@ -160,7 +160,7 @@ class AppConstants {
         AssessmentOption(value: 6, label: '6'),
         AssessmentOption(value: 7, label: '7'),
         AssessmentOption(value: 8, label: '8'),
-        AssessmentOption(value: 9, label: 'Runout'),
+        AssessmentOption(value: 9, label: 'Dọn bàn (Run Out)'),
       ],
       skillGroup: 'peak_run',
     ),

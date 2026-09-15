@@ -76,7 +76,7 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'Knowledge Progress',
+                'Tiến độ kiến thức',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -172,7 +172,7 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Read at ${_format((_progress[id] as Map)['readAt'])}',
+                                'Đọc lúc ${_format((_progress[id] as Map)['readAt'])}',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: AppColors.textSecondary(brightness),

@@ -168,7 +168,7 @@ class PocketAccuracyWidget extends StatelessWidget {
             color: Colors.grey.shade300,
           ),
           _SummaryItem(
-            label: 'Accuracy',
+            label: 'Độ chính xác',
             value: '${overallAccuracy.toStringAsFixed(1)}%',
             color: _getAccuracyColor(overallAccuracy),
           ),

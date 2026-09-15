@@ -40,7 +40,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PoolOS Black Box'),
+        title: const Text('Hộp đen (Black Box) PoolOS'),
         backgroundColor: AppColors.primary(brightness),
         foregroundColor: AppColors.onPrimary(brightness),
       ),
@@ -100,7 +100,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
           // Skip button
           TextButton(
             onPressed: () => _startExport(skipFeedback: true),
-            child: const Text('Skip feedback, export now'),
+            child: const Text('Bỏ qua góp ý, xuất ngay'),
           ),
         ],
       ),
@@ -138,14 +138,14 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'PoolOS Black Box',
+            'Hộp đen (Black Box) PoolOS',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Complete snapshot of Coach AI state',
+            'Ảnh chụp đầy đủ trạng thái Coach AI',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary(brightness),
                 ),
@@ -173,7 +173,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               Icon(Icons.info_outline, color: AppColors.primary(brightness), size: 20),
               const SizedBox(width: 8),
               Text(
-                'What is this?',
+                'Đây là gì?',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -199,7 +199,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'No account required. No internet required. Anonymous.',
+                    'Không cần tài khoản. Không cần mạng. Ẩn danh.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppColors.goldOnTint(brightness),
                         ),
@@ -249,7 +249,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               Icon(Icons.summarize_outlined, color: AppColors.primary(brightness), size: 20),
               const SizedBox(width: 8),
               Text(
-                'Preview',
+                'Xem trước',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -311,7 +311,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             Icon(Icons.upload_outlined),
             SizedBox(width: 8),
             Text(
-              'Export Coach Package',
+              'Xuất gói dữ liệu Coach',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
@@ -363,7 +363,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             CircularProgressIndicator(color: AppColors.primary(brightness)),
             const SizedBox(height: 32),
             Text(
-              'Building Black Box...',
+              'Đang dựng hộp đen...',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
@@ -390,7 +390,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             CircularProgressIndicator(color: AppColors.primary(brightness)),
             const SizedBox(height: 32),
             Text(
-              'Compressing...',
+              'Đang nén...',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
@@ -465,7 +465,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Black Box Ready!',
+              'Hộp đen đã sẵn sàng!',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -502,7 +502,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               child: ElevatedButton.icon(
                 onPressed: () => _sharePackage(),
                 icon: const Icon(Icons.share),
-                label: const Text('Share via...'),
+                label: const Text('Chia sẻ qua...'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary(brightness),
                   foregroundColor: AppColors.onPrimary(brightness),
@@ -522,7 +522,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               child: OutlinedButton.icon(
                 onPressed: () => _savePackage(),
                 icon: const Icon(Icons.save_alt),
-                label: const Text('Save to Downloads'),
+                label: const Text('Lưu vào thư mục Tải về'),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.primary(brightness),
                   side: BorderSide(color: AppColors.primary(brightness)),
@@ -539,7 +539,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               onPressed: () {
                 ref.read(blackBoxProvider.notifier).clearAll();
               },
-              child: const Text('Export Another'),
+              child: const Text('Xuất gói khác'),
             ),
           ],
         ),
@@ -596,7 +596,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Export Failed',
+              'Xuất thất bại',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -612,7 +612,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Failed at',
+                    'Thất bại ở',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppColors.error,
                         ),
@@ -626,7 +626,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
                   if (blackBox.error != null) ...[
                     const SizedBox(height: 8),
                     Text(
-                      'Reason',
+                      'Lý do',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.error,
                           ),
@@ -645,7 +645,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               child: ElevatedButton.icon(
                 onPressed: () => ref.read(blackBoxProvider.notifier).clearAll(),
                 icon: const Icon(Icons.refresh),
-                label: const Text('Retry'),
+                label: const Text('Thử lại'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary(brightness),
                   foregroundColor: AppColors.onPrimary(brightness),
@@ -660,7 +660,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
 
             TextButton(
               onPressed: () => context.pop(),
-              child: const Text('Cancel'),
+              child: const Text('Huỷ'),
             ),
           ],
         ),
@@ -672,7 +672,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
     final success = await ref.read(blackBoxProvider.notifier).sharePackage();
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Share failed. Please try again.')),
+        const SnackBar(content: Text('Chia sẻ thất bại. Vui lòng thử lại.')),
       );
     }
   }
@@ -682,11 +682,11 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
     if (mounted) {
       if (path != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Saved to: $path')),
+          SnackBar(content: Text('Đã lưu vào: $path')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Save failed. Please try again.')),
+          const SnackBar(content: Text('Lưu thất bại. Vui lòng thử lại.')),
         );
       }
     }
@@ -765,7 +765,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Your Feedback',
+              'Góp ý của bạn',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -773,7 +773,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Help us improve Coach AI',
+              'Giúp chúng tôi cải thiện Coach AI',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondary(brightness),
                   ),
@@ -796,7 +796,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Skip'),
+                    child: const Text('Bỏ qua'),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -808,7 +808,7 @@ class _FeedbackBottomSheetState extends State<_FeedbackBottomSheet> {
                       backgroundColor: AppColors.primary(brightness),
                       foregroundColor: AppColors.onPrimary(brightness),
                     ),
-                    child: const Text('Submit & Export'),
+                    child: const Text('Gửi và xuất'),
                   ),
                 ),
               ],

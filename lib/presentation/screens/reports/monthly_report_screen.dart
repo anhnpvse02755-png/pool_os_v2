@@ -54,7 +54,7 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Bao cao Thang',
+          'Báo cáo tháng',
           style: TextStyle(
             color: AppColors.textPrimary(brightness),
             fontWeight: FontWeight.w600,
@@ -96,7 +96,7 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
               ),
               SizedBox(height: AppSpacing.lg),
               Text(
-                'Chua co du lieu thang nay',
+                'Chưa có dữ liệu tháng này',
                 style: TextStyle(
                   color: AppColors.textPrimary(brightness),
                   fontSize: 18,
@@ -105,7 +105,7 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
-                'Hay ghi them tran dau trong thang nay de xem bao cao chi tiet.',
+                'Hãy ghi thêm trận đấu trong tháng này để xem báo cáo chi tiết.',
                 style: TextStyle(
                   color: AppColors.textSecondary(brightness),
                   fontSize: 14,
@@ -190,10 +190,10 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
         mainAxisSpacing: AppSpacing.md,
         crossAxisSpacing: AppSpacing.md,
         children: [
-          _KpiCard(label: 'Tran dau', value: '${r.matchesPlayed}', icon: Icons.sports_score_outlined),
-          _KpiCard(label: 'Ty le thang', value: '${r.winRate.toStringAsFixed(0)}%', icon: Icons.emoji_events_outlined),
-          _KpiCard(label: 'Racks', value: '${r.racksPlayed}', icon: Icons.grid_view_outlined),
-          _KpiCard(label: 'Break & Run', value: '${r.breakAndRun}', icon: Icons.bolt_outlined),
+          _KpiCard(label: 'Trận đấu', value: '${r.matchesPlayed}', icon: Icons.sports_score_outlined),
+          _KpiCard(label: 'Tỉ lệ thắng', value: '${r.winRate.toStringAsFixed(0)}%', icon: Icons.emoji_events_outlined),
+          _KpiCard(label: 'Số ván', value: '${r.racksPlayed}', icon: Icons.grid_view_outlined),
+          _KpiCard(label: 'Phá và dọn (Break & Run)', value: '${r.breakAndRun}', icon: Icons.bolt_outlined),
         ],
       ),
     );
@@ -203,7 +203,7 @@ class _MonthlyReportScreenState extends ConsumerState<MonthlyReportScreen> {
     final brightness = Theme.of(context).brightness;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Chia se bao cao (dang phat trien)'),
+        content: Text('Chia sẻ báo cáo (đang phát triển)'),
         backgroundColor: AppColors.textPrimary(brightness),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSpacing.radiusSm)),
@@ -288,7 +288,7 @@ class _DrillsSection extends StatelessWidget {
               Icon(Icons.sports_outlined, size: 20, color: AppColors.primary(brightness)),
               SizedBox(width: AppSpacing.sm),
               Text(
-                'Drill de goi y',
+                'Bài tập được gợi ý',
                 style: TextStyle(
                   color: AppColors.textPrimary(brightness),
                   fontSize: 16,

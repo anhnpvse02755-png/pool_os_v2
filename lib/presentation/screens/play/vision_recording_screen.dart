@@ -23,7 +23,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vision Recording'),
+        title: const Text('Ghi hình tự động'),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
@@ -126,7 +126,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
           const SizedBox(height: 24),
 
           Text(
-            'Vision Auto Recording',
+            'Ghi hình tự động bằng thị giác máy',
             style: TextStyle(
               color: AppColors.onPrimary(brightness),
               fontWeight: FontWeight.bold,
@@ -590,9 +590,9 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
               'Công nghệ:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text('- Ball Detection (YOLO)'),
-            Text('- Shot Tracking (Optical Flow)'),
-            Text('- Table Calibration (OpenCV)'),
+            Text('- Nhận diện bi (YOLO)'),
+            Text('- Bám cú đánh (Optical Flow)'),
+            Text('- Hiệu chỉnh bàn (OpenCV)'),
             SizedBox(height: 12),
             Text(
               'Bảo mật:',

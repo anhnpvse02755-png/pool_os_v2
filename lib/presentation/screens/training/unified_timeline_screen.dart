@@ -109,7 +109,7 @@ class _UnifiedTimelineScreenState extends ConsumerState<UnifiedTimelineScreen> {
     return Scaffold(
       backgroundColor: AppColors.background(brightness),
       appBar: AppBar(
-        title: const Text('Timeline'),
+        title: const Text('Dòng thời gian'),
         backgroundColor: AppColors.surface(brightness),
         foregroundColor: AppColors.textPrimary(brightness),
         elevation: 0,
