@@ -11,6 +11,8 @@
 - [shell-encoding-traps](.claude/memory/shell-encoding-traps.md) — `flutter` không có trên PATH; PowerShell 5.1 làm hỏng UTF-8 tiếng Việt khi patch file
 - [phase-conventions](.claude/memory/phase-conventions.md) — Phase A/B/C/D conventions, Phase 3 Constitution
 - [coach-design](.claude/memory/coach-design.md) — Coach UX Blueprint v2.1 & Voice Guidelines
+- [drill-code-two-systems](.claude/memory/drill-code-two-systems.md) — Hai hệ mã bài tập (KG vs DrillLibrary); quên resolve là ra màn lỗi
+- [kg-service-duality](.claude/memory/kg-service-duality.md) — Hai class KnowledgeGraphService trùng tên: provider nào cho đường dẫn nào
 
 - [knowledge-drill-data](.claude/memory/knowledge-drill-data.md) — Thư viện kiến thức 36 bài & bài tập 24 bài: nguồn thật, cách sinh lại, thang cấp độ 50 cú
 
@@ -18,6 +20,7 @@
 
 ## Known Issues
 
+- [web-deploy-easypanel](.claude/memory/web-deploy-easypanel.md) — Đưa bundle Flutter web lên server: nhánh deploy-easypanel, build ở máy dev, cách kiểm chứng
 - [backend-directus](.claude/memory/backend-directus.md) — Backend Directus trên EasyPanel: URL đang sống, 6 bẫy đã vấp, và nợ kỹ thuật row-level security
 - [e2e-playwright-accessibility](.claude/memory/e2e-playwright-accessibility.md) — ✅ Đã sửa (ce2391f): 4 nguyên nhân Playwright không chạy được với Flutter Web — hash routing, boot race, canvas semantics, data-testid
 - [sprint-17-training-flow-bug](.claude/memory/sprint-17-training-flow-bug.md) — ✅ Đã fix: DrillDetail CTA nhảy nhầm sang Training History
