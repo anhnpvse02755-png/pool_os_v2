@@ -41,6 +41,36 @@ String? v1ToV2Code(String v1Code) {
       return 'BT10';
     case 'BASIC':
       return 'BT01';
+
+    // ── Mã DrillNode của knowledge graph ────────────────────────────────
+    //
+    // Buổi tập hôm nay đề xuất bài theo các mã này. Thiếu chúng thì nút
+    // "Bắt đầu buổi tập" đưa người dùng tới màn lỗi — xem
+    // `test/knowledge/drill_code_bridge_coverage_test.dart`, test đó bắt
+    // buộc MỌI DrillNode phải có đích đến.
+    case 'STUN_SHOT':
+      return 'BT07'; // bi cái dừng — cùng bài với Stop/Follow/Draw
+    case 'THIN_CUT':
+      return 'BT05'; // cắt mỏng <30° — ngắm bi sát băng & bi góc lệch
+    case 'THICK_CUT':
+      return 'BT03'; // cắt dày >45° — ngắm bi ảo theo góc tăng dần
+    case 'BANK_SHOT':
+      return 'BT14';
+    case 'KICK_SHOT':
+      return 'BT13';
+    case 'SAFETY_PLAY':
+      return 'BT10';
+    case 'BREAK_SHOT':
+      return 'BT06';
+    case 'POSITION_CONTROL':
+      return 'BT09';
+    case 'RUN_OUT':
+      return 'BT11';
+    case 'SPEED_CONTROL':
+      return 'BT17';
+    case 'ESCAPING':
+      return 'BT13'; // thoát kẹt bi đi bằng kick shot một băng
+
     default:
       return null;
   }

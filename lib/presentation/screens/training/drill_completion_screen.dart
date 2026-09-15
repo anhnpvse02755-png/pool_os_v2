@@ -7,6 +7,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../../core/providers/active_session_provider.dart';
 import '../../../data/models/drill_session.dart';
 import '../../../data/models/personal_best.dart';
 import '../../../data/repositories/drill_session_repository.dart';
@@ -256,27 +257,138 @@ class DrillCompletionScreen extends ConsumerWidget {
 
                 const SizedBox(height: AppSpacing.lg),
 
-                // Next Action
-                FutureBuilder<_ReflectionData>(
-                  future: _loadReflection(ref),
-                  builder: (context, snapshot) {
-                    final data = snapshot.data ??
-                        _ReflectionData(
-                          previousAccuracy: null,
-                          pb: null,
-                          isFirstSession: true,
-                          currentAccuracy: _accuracy,
-                        );
-                    return NextActionPanel(
-                      currentDrillCode: drillCode,
-                      tone: _resolveTone(data),
-                    ).animate().fadeIn(delay: 450.ms);
-                  },
-                ),
+                // Đang trong một buổi tập nhiều bài thì bài kế tiếp đã do buổi
+                // tập quyết định — gợi ý bài khác của NextActionPanel lúc này
+                // chỉ gây phân vân, nên thay bằng khối điều hướng buổi tập.
+                //
+                // Điều kiện phải là "bài VỪA XONG thuộc buổi đang chạy", không
+                // chỉ "có buổi đang chạy": người bỏ buổi giữa chừng rồi đi tập
+                // một bài lẻ sẽ thấy panel của buổi cũ nếu chỉ xét isActive.
+                if (ref
+                    .watch(activeSessionProvider)
+                    .items
+                    .any((i) => i.drillCode == drillCode))
+                  _SessionFlowPanel(
+                    state: ref.watch(activeSessionProvider),
+                    brightness: brightness,
+                  ).animate().fadeIn(delay: 450.ms)
+                else
+                  FutureBuilder<_ReflectionData>(
+                    future: _loadReflection(ref),
+                    builder: (context, snapshot) {
+                      final data = snapshot.data ??
+                          _ReflectionData(
+                            previousAccuracy: null,
+                            pb: null,
+                            isFirstSession: true,
+                            currentAccuracy: _accuracy,
+                          );
+                      return NextActionPanel(
+                        currentDrillCode: drillCode,
+                        tone: _resolveTone(data),
+                      ).animate().fadeIn(delay: 450.ms);
+                    },
+                  ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Khối điều hướng khi bài vừa xong nằm trong một buổi tập nhiều bài.
+///
+/// Bài cuối thì nút chính đổi thành "Xem tổng kết" — không còn bài để sang.
+class _SessionFlowPanel extends ConsumerWidget {
+  final ActiveSessionState state;
+  final Brightness brightness;
+
+  const _SessionFlowPanel({required this.state, required this.brightness});
+
+  void _goToSummary(BuildContext context, WidgetRef ref) {
+    final summary = ref.read(activeSessionProvider.notifier).finish();
+    context.go('/training/session/summary', extra: summary);
+  }
+
+  void _goToNext(BuildContext context, WidgetRef ref) {
+    final next = ref.read(activeSessionProvider.notifier).advance();
+    if (next == null) {
+      _goToSummary(context, ref);
+      return;
+    }
+    // pushReplacement: màn hoàn thành của bài vừa xong không cần nằm lại
+    // trong stack, nếu không bấm back sẽ lùi ngược qua từng bài đã tập.
+    context.pushReplacement(
+        '/training/session/new?drill=${next.drillCode}&level=1');
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLast = state.isLast;
+    final next = isLast ? null : state.items[state.currentIndex + 1];
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.surface(brightness),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: AppColors.border(brightness)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Buổi tập hôm nay · bài ${state.position}/${state.total}',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+              color: AppColors.textSecondary(brightness),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            isLast
+                ? 'Đây là bài cuối của buổi tập.'
+                : 'Bài tiếp theo: ${next!.drillName}',
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary(brightness),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          ElevatedButton(
+            onPressed: () => isLast
+                ? _goToSummary(context, ref)
+                : _goToNext(context, ref),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary(brightness),
+              foregroundColor: AppColors.onPrimary(brightness),
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+              ),
+            ),
+            child: Text(
+              isLast ? 'Xem tổng kết buổi tập' : 'Bài tiếp theo',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+          if (!isLast) ...[
+            const SizedBox(height: AppSpacing.sm),
+            TextButton(
+              onPressed: () => _goToSummary(context, ref),
+              child: Text(
+                'Kết thúc buổi sớm',
+                style: TextStyle(color: AppColors.textSecondary(brightness)),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

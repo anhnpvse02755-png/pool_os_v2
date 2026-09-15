@@ -22,6 +22,7 @@ class LocalStorageDataSource {
   static const String _keyRecommendations = 'ai_recommendations';
   static const String _keyCoachingHistory = 'coaching_history';
   static const String _keyStreakInfo = 'streak_info';
+  static const String _keyWarmupLog = 'warmup_log';
   static const String _keyOnboardingCompleted = 'onboarding_completed';
   static const String _keyFirstLaunch = 'first_launch_complete';
 
@@ -300,6 +301,18 @@ class LocalStorageDataSource {
 
   static Future<void> saveStreakInfo(Map<String, dynamic> info) async {
     await setJson(_keyStreakInfo, info);
+  }
+
+  // ==========================================================================
+  // Warmup Log — Dac-Ta-Che-Do-Khoi-Dong.md
+  // ==========================================================================
+
+  static Future<List<Map<String, dynamic>>> getWarmupLogs() async {
+    return getJsonList(_keyWarmupLog);
+  }
+
+  static Future<void> saveWarmupLogs(List<Map<String, dynamic>> logs) async {
+    await setJsonList(_keyWarmupLog, logs);
   }
 
   // ==========================================================================

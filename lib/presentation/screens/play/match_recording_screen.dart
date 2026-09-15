@@ -28,12 +28,24 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   String? _opponentLevel;
   String _tableCondition = 'familiar';
   String _environment = 'club';
+  bool _warmedUp = false;
 
   Match? _currentMatch;
   int _currentRack = 1;
   int _playerScore = 0;
   int _opponentScore = 0;
   List<Rack> _racks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final goState = GoRouterState.of(context);
+      if (goState.uri.queryParameters['warmed'] == '1') {
+        setState(() => _warmedUp = true);
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -68,6 +80,38 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Warmup badge
+              if (_warmedUp) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppColors.successSubtle(brightness),
+                    borderRadius: BorderRadius.circular(6),
+                    border: Border.all(
+                      color: AppColors.successOnTint(brightness)
+                          .withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.check_circle,
+                          color: AppColors.successOnTint(brightness), size: 16),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Đã khởi động',
+                        style: TextStyle(
+                          color: AppColors.successOnTint(brightness),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+
               // Match type
               Text('Loại trận', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
@@ -100,7 +144,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                 spacing: 8,
                 children: [1, 3, 5, 7].map((value) {
                   return ChoiceChip(
-                    label: Text('FT $value'),
+                    label: Text('Đến $value'),
                     selected: _raceTo == value,
                     onSelected: (_) => setState(() => _raceTo = value),
                   );
@@ -254,6 +298,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
       startTime: now,
       createdAt: now,
       updatedAt: now,
+      warmedUpBeforeMatch: _warmedUp,
     );
     setState(() {
       _currentMatch = m;
@@ -1101,7 +1146,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
             ),
             const SizedBox(width: 4),
             Text(
-              isWin ? 'WIN' : 'LOSE',
+              isWin ? 'THẮNG' : 'THUA',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isWin ? AppColors.success : AppColors.error,
@@ -1116,7 +1161,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'BREAK',
+                  'CÚ PHÁ',
                   style: TextStyle(fontSize: 10, color: AppColors.primary(brightness)),
                 ),
               ),
@@ -1186,7 +1231,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
       builder: (ctx) => AlertDialog(
         title: Row(
           children: [
-            Text('Rack ${rack.rackNumber}'),
+            Text('Ván ${rack.rackNumber}'),
             const Spacer(),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -1195,7 +1240,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                rack.resultBool ? 'WIN' : 'LOSE',
+                rack.resultBool ? 'THẮNG' : 'THUA',
                 style: TextStyle(
                   color: rack.resultBool ? AppColors.success : AppColors.error,
                   fontWeight: FontWeight.bold,
@@ -1354,14 +1399,14 @@ class _RackEditSheetState extends State<_RackEditSheet> {
                 const Text('Kết quả:', style: TextStyle(fontWeight: FontWeight.w500)),
                 const SizedBox(width: 16),
                 ChoiceChip(
-                  label: const Text('WIN'),
+                  label: const Text('THẮNG'),
                   selected: _resultBool,
                   selectedColor: AppColors.successOnTint(brightness),
                   onSelected: (v) => setState(() => _resultBool = v),
                 ),
                 const SizedBox(width: 8),
                 ChoiceChip(
-                  label: const Text('LOSE'),
+                  label: const Text('THUA'),
                   selected: !_resultBool,
                   selectedColor: AppColors.errorSubtle(brightness),
                   onSelected: (v) => setState(() => _resultBool = !v),

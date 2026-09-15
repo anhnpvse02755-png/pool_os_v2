@@ -9,6 +9,7 @@ import '../../../core/theme/shadows.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/providers/training_provider.dart';
+import '../../../core/providers/active_session_provider.dart';
 import '../../../data/models/drill_session.dart';
 import '../../../data/models/drill_progress.dart';
 import '../../../data/models/personal_best.dart';
@@ -165,6 +166,14 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     }
   }
 
+  /// "Bài 2/3" khi bài này thuộc một buổi tập đang chạy, null nếu tập lẻ.
+  String? _sessionProgressLabel() {
+    final active = ref.watch(activeSessionProvider);
+    if (!active.isActive) return null;
+    if (active.current?.drillCode != widget.drillCode) return null;
+    return 'Bài ${active.position}/${active.total}';
+  }
+
   Future<void> _finishSession() async {
     final session = _session;
     if (session == null) return;
@@ -173,6 +182,20 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
     await _commitPersonalBest(completed);
     await _syncToTrainingHistory(completed);
     if (!mounted) return;
+
+    // Nếu bài này nằm trong một buổi tập đang chạy, ghi kết quả lại để màn
+    // tổng kết cuối buổi có số liệu. Ghi ở đây chứ không ở màn hoàn thành:
+    // người dùng có thể thoát khỏi màn đó bằng nút back mà không bấm gì.
+    if (ref.read(activeSessionProvider).isActive) {
+      ref.read(activeSessionProvider.notifier).recordResult(
+            drillCode: widget.drillCode,
+            made: completed.totalShotsMade,
+            missed: completed.totalShotsMissed,
+            minutes: completed.totalMinutes,
+            drillName: _drill?.nameVi,
+          );
+    }
+
     context.push(
       '/training/session/complete?drill=${widget.drillCode}',
       extra: completed,
@@ -251,7 +274,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
         backgroundColor: AppColors.background(brightness),
         appBar: AppBar(
           backgroundColor: AppColors.background(brightness),
-          title: const Text('Error'),
+          title: const Text('Lỗi'),
         ),
         body: Center(
           child: Padding(
@@ -266,7 +289,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
                 ),
                 const SizedBox(height: AppSpacing.space6),
                 Text(
-                  'Drill not found',
+                  'Không tìm thấy bài tập',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -285,7 +308,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
                 const SizedBox(height: AppSpacing.space8),
                 ElevatedButton(
                   onPressed: () => context.pop(),
-                  child: const Text('Go Back'),
+                  child: const Text('Quay lại'),
                 ),
               ],
             ),
@@ -314,6 +337,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
               isActive: isSessionActive,
               onStop: _finishSession,
               brightness: brightness,
+              sessionProgress: _sessionProgressLabel(),
             ),
 
             // Main content
@@ -351,7 +375,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
             children: [
               _StatDisplay(
                 value: '$currentRep/$targetReps',
-                label: 'Reps',
+                label: 'Lượt',
                 brightness: brightness,
               ),
               Container(
@@ -361,7 +385,7 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
               ),
               _StatDisplay(
                 value: '${successRate.toStringAsFixed(0)}%',
-                label: 'Accuracy',
+                label: 'Chính xác',
                 brightness: brightness,
                 valueColor: successRate >= 70
                     ? AppColors.success
@@ -391,8 +415,8 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
                 // Status text
                 Text(
                   lastShotResult != null
-                      ? (lastShotResult == ShotResult.success ? 'Success!' : 'Miss')
-                      : 'Ready to start!',
+                      ? (lastShotResult == ShotResult.success ? 'Vào bi!' : 'Trượt')
+                      : 'Sẵn sàng bắt đầu!',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
@@ -403,12 +427,36 @@ class _DrillSessionScreenState extends ConsumerState<DrillSessionScreen> {
                 const SizedBox(height: AppSpacing.space2),
 
                 Text(
-                  'Tap buttons below after each shot',
+                  isSessionActive
+                      ? 'Bấm nút bên dưới sau mỗi cú đánh'
+                      : 'Bấm "Bắt đầu" để vào phiên tập',
                   style: TextStyle(
                     color: AppColors.textSecondary(brightness),
                     fontSize: 14,
                   ),
                 ),
+
+                // Phiên chỉ tự chạy khi URL có tham số `level`. Mọi lối vào
+                // khác (thiếu tham số, quay lại sau khi dừng) sẽ đứng ở đây,
+                // và trước đây màn không có cách nào bắt đầu — người dùng kẹt
+                // trong một màn trống không nút.
+                if (!isSessionActive) ...[
+                  const SizedBox(height: AppSpacing.space6),
+                  ElevatedButton.icon(
+                    onPressed: _startSession,
+                    icon: const Icon(Icons.play_arrow),
+                    label: const Text('Bắt đầu'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary(brightness),
+                      foregroundColor: AppColors.onPrimary(brightness),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space6,
+                        vertical: AppSpacing.space3,
+                      ),
+                      elevation: 0,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -425,11 +473,15 @@ class _SessionHeader extends StatelessWidget {
   final VoidCallback onStop;
   final Brightness brightness;
 
+  /// "Bài 2/3" — chỉ có khi bài nằm trong một buổi tập nhiều bài.
+  final String? sessionProgress;
+
   const _SessionHeader({
     required this.drillName,
     required this.isActive,
     required this.onStop,
     required this.brightness,
+    this.sessionProgress,
   });
 
   @override
@@ -446,14 +498,29 @@ class _SessionHeader extends StatelessWidget {
             onPressed: () => context.pop(),
           ),
           Expanded(
-            child: Text(
-              drillName,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary(brightness),
-              ),
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (sessionProgress != null)
+                  Text(
+                    sessionProgress!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary(brightness),
+                    ),
+                  ),
+                Text(
+                  drillName,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary(brightness),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
           if (isActive)
@@ -461,7 +528,7 @@ class _SessionHeader extends StatelessWidget {
               onPressed: onStop,
               icon: Icon(Icons.stop, color: AppColors.error, size: 18),
               label: Text(
-                'Stop',
+                'Dừng',
                 style: TextStyle(color: AppColors.error),
               ),
             ),
@@ -584,7 +651,7 @@ class _RecordingBar extends StatelessWidget {
             Expanded(
               child: _ActionButton(
                 icon: Icons.check,
-                label: 'SUCCESS',
+                label: 'VÀO BI',
                 color: AppColors.success,
                 brightness: brightness,
                 onTap: onSuccess,
@@ -595,7 +662,7 @@ class _RecordingBar extends StatelessWidget {
             Expanded(
               child: _ActionButton(
                 icon: Icons.close,
-                label: 'MISS',
+                label: 'TRƯỢT',
                 color: AppColors.error,
                 brightness: brightness,
                 onTap: onMiss,

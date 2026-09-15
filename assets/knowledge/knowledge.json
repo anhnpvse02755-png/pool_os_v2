@@ -1565,5 +1565,21 @@
       "Từ Điển Kiến Thức Billiard Pool"
     ],
     "imageUrl": null
+  },
+  {
+    "id": "kn_warmup",
+    "slug": "warmup",
+    "title": "Warm-up Before Practice or Play",
+    "titleVi": "Khởi động trước khi chơi",
+    "content": "## Overview\n\nA short routine (~5 minutes) performed immediately before serious play — whether a practice session or a real match — to awaken muscle memory, adapt to table speed, and prepare mentally. Many players only warm up before matches, but the same routine before practice is equally important.\n\n## Why it matters\n\nCold muscles make cold decisions. A cold body at the start of practice produces low success rates that don't reflect true skill, leading to incorrect self-assessment or frustration.\n\n## Three phases\n\n**Phase 1 — Awaken the Senses (~1-2 min):** Straight shots, short distance, light-to-medium force, slow stroke. Goal: feel the smooth stroke returning.\n\n**Phase 2 — Adapt to Table Speed (~1.5-2 min):** Light stop/follow/draw at short-to-medium distance. Goal: notice how this table's bounce and friction differs from your practice table.\n\n**Phase 3 — Restore Cut Feel (~1.5-2 min):** Medium-angle cuts (30-45°) at various positions. Goal: re-sync visual angle judgement with hand feel.\n\n## Key reminders\n\n- This is PLAY, not practice — don't analyse or fix technique during warmup.\n- Don't judge yourself by warmup results — warmup success or failure doesn't reflect true performance.\n- Combine with brief visualisation and deep breathing for mental preparation.\n- Best done on the actual table you'll play on.",
+    "contentVi": "## Mô tả\n\nChuỗi hoạt động ngắn (khoảng 5 phút) thực hiện ngay trước khi cầm cơ nghiêm túc — dù là buổi luyện tập hay trận đấu thật — nhằm đánh thức trí nhớ cơ bắp, thích nghi với tốc độ/độ nảy của bàn, và đưa cơ thể/tâm lý vào trạng thái sẵn sàng tốt nhất.\n\n## Vì sao quan trọng\n\nCơ thể \"nguội\" ảnh hưởng như nhau dù là vào buổi luyện tập hay vào trận đấu. Dữ liệu tỉ lệ thành công ghi nhận ở đầu mỗi buổi luyện tập khi cơ thể còn nguội sẽ không phản ánh đúng thực lực, dễ khiến tự đánh giá sai khả năng.\n\n## Ba giai đoạn\n\n**Giai đoạn 1 — Đánh thức cảm giác (~1-2 phút):** Cú thẳng, cự ly ngắn, lực nhẹ-vừa, tốc độ chậm. Mục tiêu: tìm lại cảm giác cú đẩy cơ mượt dần.\n\n**Giai đoạn 2 — Thích nghi tốc độ bàn (~1.5-2 phút):** Stop/follow/draw nhẹ ở cự ly ngắn-trung bình. Mục tiêu: cảm nhận độ nảy/ma sát của bàn đang chơi.\n\n**Giai đoạn 3 — Khôi phục cảm giác góc cắt (~1.5-2 phút):** Cắt góc trung bình (30-45°) ở nhiều vị trí. Mục tiêu: đồng bộ thị giác với cảm giác tay, khôi phục sự tự tin về khoảng cách và góc độ.\n\n## Lưu ý quan trọng\n\n- Đây lúc \"chơi\", không phải lúc \"luyện\" — không phân tích hay sửa kỹ thuật trong khi khởi động.\n- Không đánh giá bản thân qua kết quả khởi động — kết quả này không phản ánh phong độ thực tế.\n- Kết hợp hình dung các cú thành công và vài nhịp hít thở sâu để ổn định tâm lý.\n- Tốt nhất nên khởi động ngay trên chính bàn sẽ thi đấu.",
+    "categoryId": "cat_strategy",
+    "tagIds": ["tag_mental", "tag_warmup"],
+    "difficulty": "beginner",
+    "aliases": ["warmup", "khoi dong", "khởi động", "lam nong", "làm nóng"],
+    "keywords": ["warmup", "khởi động", "làm nóng", "5 phút", "trước khi chơi"],
+    "relatedKnowledgeIds": ["kn_stroke", "kn_stop_shot", "kn_mental_game"],
+    "relatedDrillCodes": [],
+    "imageUrl": null
   }
 ]

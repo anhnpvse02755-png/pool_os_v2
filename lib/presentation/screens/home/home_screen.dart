@@ -8,6 +8,7 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/dashboard_provider.dart';
+import '../../../core/providers/warmup_provider.dart';
 import '../../../core/services/coach_types.dart';
 import '../../../knowledge/drill_code_bridge.dart';
 import '../../widgets/icon_tile.dart';
@@ -164,6 +165,7 @@ class HomeScreen extends ConsumerWidget {
     Brightness brightness,
   ) {
     final accentColor = AppColors.primary(brightness);
+    final warmupAsync = ref.watch(warmupDoneTodayProvider);
 
     return Container(
       width: double.infinity,
@@ -206,7 +208,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               const SizedBox(width: AppSpacing.space3),
               Text(
-                'AI Coach',
+                'Huấn luyện viên AI',
                 style: TextStyle(
                   color: AppColors.onPrimary(brightness),
                   fontWeight: FontWeight.w600,
@@ -229,72 +231,75 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.space4),
 
           // Today's recommended drill
-          learningPathAsync.when(
-            data: (path) {
-              if (path.isEmpty) {
-                return _buildEmptyRecommendations(brightness);
+          warmupAsync.when(
+            data: (warmupDone) {
+              if (!warmupDone) {
+                // Chưa warmup hôm nay → hiện warmup prompt
+                return _buildWarmupPrompt(brightness);
               }
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Today's recommended:",
-                    style: TextStyle(
-                      color: AppColors.onPrimary(brightness),
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.space2),
-                  ...path.take(2).map((item) => Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_right,
-                              color: AppColors.onPrimary(brightness),
-                              size: 18,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                item.drillNameVi,
-                                style: TextStyle(
-                                  color: AppColors.onPrimary(brightness),
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
+              // Đã warmup → hiện drill recommendations
+              return learningPathAsync.when(
+                data: (path) {
+                  if (path.isEmpty) {
+                    return _buildEmptyRecommendations(brightness);
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Today's recommended:",
+                        style: TextStyle(
+                          color: AppColors.onPrimary(brightness),
+                          fontSize: 13,
                         ),
-                      )),
-                ],
+                      ),
+                      const SizedBox(height: AppSpacing.space2),
+                      ...path.take(2).map((item) => Padding(
+                            padding: const EdgeInsets.only(bottom: 6),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_right,
+                                  color: AppColors.onPrimary(brightness),
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    item.drillNameVi,
+                                    style: TextStyle(
+                                      color: AppColors.onPrimary(brightness),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )),
+                    ],
+                  );
+                },
+                loading: () => Center(
+                  child: CircularProgressIndicator(
+                      color: AppColors.onPrimary(brightness)),
+                ),
+                error: (_, __) => _buildEmptyRecommendations(brightness),
               );
             },
             loading: () => Center(
               child: CircularProgressIndicator(
                   color: AppColors.onPrimary(brightness)),
             ),
-            error: (_, _) => _buildEmptyRecommendations(brightness),
+            error: (_, __) => _buildWarmupPrompt(brightness),
           ),
 
           const SizedBox(height: AppSpacing.space5),
 
-          // Start Training button
+          // CTA button — luôn là "Buổi tập hôm nay", warmup là gợi ý bên trên
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {
-                final path = learningPathAsync.valueOrNull;
-                if (path != null && path.isNotEmpty) {
-                  final first = path.first;
-                  final resolvedCode = resolveDrillCode(first.drillCode) ?? first.drillCode;
-                  context.push(
-                    '/training/session/new?drill=$resolvedCode&level=1&target=10',
-                  );
-                } else {
-                  context.go('/training');
-                }
-              },
+              onPressed: () => context.push('/training/session/today'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.onPrimary(brightness),
                 foregroundColor: AppColors.primary(brightness),
@@ -304,18 +309,18 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Start Training',
-                    style: TextStyle(
+                    'Buổi tập hôm nay',
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, size: 18),
+                  const SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18, color: AppColors.primary(brightness)),
                 ],
               ),
             ),
@@ -323,6 +328,36 @@ class HomeScreen extends ConsumerWidget {
         ],
       ),
     ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.1, end: 0);
+  }
+
+  Widget _buildWarmupPrompt(Brightness brightness) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.onPrimary(brightness).withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.local_fire_department,
+            color: AppColors.onPrimary(brightness),
+            size: 20,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              'Hãy dành 5 phút khởi động trước khi luyện tập hoặc thi đấu.',
+              style: TextStyle(
+                color: AppColors.onPrimary(brightness),
+                fontSize: 13,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Context: Sau khi chơi Match
@@ -346,7 +381,7 @@ class HomeScreen extends ConsumerWidget {
               IconTile(icon: Icons.sports_score, toneIndex: 1, size: 36),
               const SizedBox(width: 8),
               Text(
-                'Match Analysis',
+                'Phân tích trận đấu',
                 style: TextStyle(
                   color: AppColors.textPrimary(brightness),
                   fontWeight: FontWeight.w600,
@@ -357,7 +392,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'You had $totalMisses misses. Want to improve?',
+            'Bạn đã trượt $totalMisses cú. Muốn cải thiện chứ?',
             style: TextStyle(
               color: AppColors.textSecondary(brightness),
               fontSize: 14,
@@ -371,7 +406,7 @@ class HomeScreen extends ConsumerWidget {
               foregroundColor: AppColors.onPrimary(brightness),
               elevation: 0,
             ),
-            child: const Text('Start Training'),
+            child: const Text('Bắt đầu luyện tập'),
           ),
         ],
       ),
@@ -401,7 +436,7 @@ class HomeScreen extends ConsumerWidget {
               Icon(Icons.check_circle, color: AppColors.success, size: 20),
               const SizedBox(width: 8),
               Text(
-                'Session Complete!',
+                'Hoàn thành buổi tập!',
                 style: TextStyle(
                   color: AppColors.textPrimary(brightness),
                   fontWeight: FontWeight.w600,
@@ -412,7 +447,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Great work on your training!',
+            'Bạn đã tập rất tốt!',
             style: TextStyle(
               color: AppColors.textSecondary(brightness),
               fontSize: 14,
@@ -421,7 +456,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           OutlinedButton(
             onPressed: () => context.go('/training'),
-            child: const Text('Continue Training'),
+            child: const Text('Tiếp tục luyện tập'),
           ),
         ],
       ),
@@ -451,7 +486,7 @@ class HomeScreen extends ConsumerWidget {
               Icon(Icons.auto_stories, color: AppColors.primary(brightness), size: 20),
               const SizedBox(width: 8),
               Text(
-                'Knowledge Acquired!',
+                'Đã tiếp thu kiến thức!',
                 style: TextStyle(
                   color: AppColors.textPrimary(brightness),
                   fontWeight: FontWeight.w600,
@@ -462,7 +497,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Great job learning! Ready to practice?',
+            'Học tốt lắm! Sẵn sàng vào tập chưa?',
             style: TextStyle(
               color: AppColors.textSecondary(brightness),
               fontSize: 14,
@@ -471,7 +506,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => context.go('/training'),
-            child: const Text('Start Training'),
+            child: const Text('Bắt đầu luyện tập'),
           ),
         ],
       ),
@@ -501,7 +536,7 @@ class HomeScreen extends ConsumerWidget {
                         size: 36),
                     const SizedBox(width: 8),
                     Text(
-                      'Keep your streak!',
+                      'Giữ chuỗi ngày của bạn!',
                       style: TextStyle(
                         color: AppColors.textPrimary(brightness),
                         fontWeight: FontWeight.w600,
@@ -512,7 +547,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Train today to maintain your streak.',
+                  'Tập hôm nay để giữ chuỗi ngày.',
                   style: TextStyle(
                     color: AppColors.textSecondary(brightness),
                     fontSize: 14,
@@ -529,7 +564,7 @@ class HomeScreen extends ConsumerWidget {
               foregroundColor: AppColors.onPrimary(brightness),
               elevation: 0,
             ),
-            child: const Text('Train'),
+            child: const Text('Luyện tập'),
           ),
         ],
       ),
@@ -538,7 +573,7 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildEmptyRecommendations(Brightness brightness) {
     return Text(
-      'Start your training journey today!',
+      'Bắt đầu hành trình luyện tập hôm nay!',
       style: TextStyle(
         color: AppColors.onPrimary(brightness),
         fontSize: 14,
@@ -601,7 +636,7 @@ class HomeScreen extends ConsumerWidget {
               // Knowledge goal
               _GoalRow(
                 icon: Icons.article,
-                label: 'Read knowledge article',
+                label: 'Đọc bài kiến thức',
                 isDone: goals.knowledgeRead,
                 onTap: goals.knowledgeRead ? null : () => context.push('/training/knowledge'),
                 brightness: brightness,
@@ -610,7 +645,7 @@ class HomeScreen extends ConsumerWidget {
               // Test goal
               _GoalRow(
                 icon: Icons.quiz,
-                label: 'Pass Level Test',
+                label: 'Vượt bài kiểm tra cấp độ',
                 isDone: goals.testPassed,
                 onTap: goals.testPassed ? null : () => context.push('/training/assessment'),
                 brightness: brightness,
@@ -637,7 +672,7 @@ class HomeScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'YOUR STATS',
+              'CHỈ SỐ CỦA BẠN',
               style: TextStyle(
                 color: textSecondary,
                 fontSize: 11,
@@ -648,7 +683,7 @@ class HomeScreen extends ConsumerWidget {
             GestureDetector(
               onTap: () => context.go('/coach/analysis'),
               child: Text(
-                'View All',
+                'Xem tất cả',
                 style: TextStyle(
                   color: accentColor,
                   fontSize: 13,
@@ -672,19 +707,19 @@ class HomeScreen extends ConsumerWidget {
             children: [
               _StatItem(
                 value: '${goals.drillsCompleted + 127}', // Example data
-                label: 'Sessions',
+                label: 'Buổi tập',
                 brightness: brightness,
               ),
               Container(width: 1, height: 40, color: AppColors.border(brightness)),
               _StatItem(
                 value: '72%',
-                label: 'Accuracy',
+                label: 'Chính xác',
                 brightness: brightness,
               ),
               Container(width: 1, height: 40, color: AppColors.border(brightness)),
               _StatItem(
                 value: '8',
-                label: 'Day Streak',
+                label: 'Chuỗi ngày',
                 brightness: brightness,
               ),
             ],
@@ -718,7 +753,7 @@ class HomeScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'QUICK ACTIONS',
+          'THAO TÁC NHANH',
           style: TextStyle(
             color: textSecondary,
             fontSize: 11,
@@ -738,21 +773,21 @@ class HomeScreen extends ConsumerWidget {
             children: [
               _ActionRow(
                 icon: Icons.play_arrow,
-                label: 'Start Training Session',
+                label: 'Bắt đầu buổi tập',
                 onTap: goToTraining,
                 brightness: brightness,
               ),
               Divider(color: AppColors.border(brightness), height: 1),
               _ActionRow(
                 icon: Icons.history,
-                label: 'View Training History',
+                label: 'Xem lịch sử luyện tập',
                 onTap: () => context.push('/training/history'),
                 brightness: brightness,
               ),
               Divider(color: AppColors.border(brightness), height: 1),
               _ActionRow(
                 icon: Icons.emoji_events,
-                label: 'Daily Challenge',
+                label: 'Thử thách hôm nay',
                 onTap: () => context.go('/training'),
                 brightness: brightness,
                 badge: 'New',
@@ -844,7 +879,7 @@ class _GoalRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  'Suggested',
+                  'Gợi ý',
                   style: TextStyle(
                     color: AppColors.textPrimary(brightness),
                     fontSize: 10,

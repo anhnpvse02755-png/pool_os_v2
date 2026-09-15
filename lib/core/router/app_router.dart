@@ -27,6 +27,10 @@ import '../../presentation/screens/play/match_summary_screen.dart';
 import '../../presentation/screens/play/match_log_screen.dart';
 import '../../presentation/screens/training/training_history_screen.dart';
 import '../../presentation/screens/training/session_detail_screen.dart';
+import '../../presentation/screens/training/todays_session_screen.dart';
+import '../../presentation/screens/training/session_summary_screen.dart';
+import '../providers/active_session_provider.dart';
+import '../../presentation/screens/training/warmup_screen.dart';
 import '../../presentation/screens/training/unified_timeline_screen.dart';
 import '../../presentation/screens/training/trend_dashboard_screen.dart';
 import '../../presentation/screens/training/recommended_screen.dart';
@@ -50,6 +54,7 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/profile/settings_screen.dart';
 import '../../presentation/screens/profile/edit_profile_screen.dart';
 import '../../presentation/screens/profile/equipment_screen.dart';
+import '../../presentation/screens/profile/equipment_comparison_screen.dart';
 import '../../presentation/screens/community/community_screen.dart';
 import '../../presentation/screens/shell/main_shell.dart';
 import '../../presentation/screens/auth/login_screen.dart';
@@ -240,6 +245,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
           ),
           GoRoute(
+            path: '/training/session/today',
+            name: 'todaysSession',
+            builder: (context, state) => const TodaysSessionScreen(),
+          ),
+          GoRoute(
+            path: '/training/session/warmup',
+            name: 'warmup',
+            builder: (context, state) => const WarmupScreen(),
+          ),
+          GoRoute(
             path: '/training/session/ready',
             name: 'drillRecordingPreparation',
             builder: (context, state) {
@@ -346,8 +361,21 @@ final routerProvider = Provider<GoRouter>((ref) {
               );
             },
           ),
+          GoRoute(
+            path: '/training/session/summary',
+            name: 'sessionSummary',
+            builder: (context, state) {
+              final summary = state.extra as SessionSummary?;
+              if (summary == null) {
+                // Mở thẳng URL này thì không có buổi tập nào để tổng kết —
+                // tổng kết sống trong `extra`, không nằm trong URL.
+                return const TodaysSessionScreen();
+              }
+              return SessionSummaryScreen(summary: summary);
+            },
+          ),
           // Dynamic route MUST be last among /training/session/ routes.
-          // Static routes (new, active, complete) are declared before this.
+          // Static routes (new, active, complete, summary) are declared before this.
           GoRoute(
             path: '/training/session/:sessionId',
             name: 'sessionDetail',
@@ -465,6 +493,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/profile/equipment',
             name: 'equipment',
             builder: (context, state) => const EquipmentScreen(),
+          ),
+          GoRoute(
+            path: '/profile/equipment/compare',
+            name: 'equipmentCompare',
+            builder: (context, state) {
+              // Nhận danh sách id từ query param, VD: ?ids=eq1,eq2,eq3
+              final ids = (state.uri.queryParameters['ids'] ?? '')
+                  .split(',')
+                  .where((s) => s.isNotEmpty)
+                  .toList();
+              return EquipmentComparisonScreen(equipmentIds: ids);
+            },
           ),
           // Black Box
           GoRoute(

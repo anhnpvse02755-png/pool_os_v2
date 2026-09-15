@@ -26,6 +26,8 @@ import '../../knowledge/conversation_engine.dart';
 import '../../presentation/widgets/coach/recommendation_card.dart';
 import 'training_provider.dart';
 import 'repository_providers.dart';
+import '../models/session_item.dart';
+import '../../domain/services/session_builder_service.dart';
 
 // ========================================================================
 // KNOWLEDGE GRAPH PROVIDER
@@ -799,5 +801,46 @@ final coachMatchInsightProvider = Provider<String?>((ref) {
   return service.generateCoachInsight(analysis);
 });
 
-// Note: CoachRecommendation is defined in recommendation_card.dart
-// and imported via the coach_home_widgets export
+/// Available time options for quick selection
+enum SessionDuration {
+  short(15, '15 phút'),
+  medium(30, '30 phút'),
+  long(60, '60 phút');
+
+  const SessionDuration(this.minutes, this.label);
+  final int minutes;
+  final String label;
+}
+
+/// Selected time for session builder
+final selectedSessionDurationProvider = StateProvider<int>((ref) => 30);
+
+/// Provider: completed drill codes (from training history)
+final completedDrillCodesProvider = Provider<List<String>>((ref) {
+  final trainingState = ref.watch(trainingNotifierProvider);
+  return trainingState.sessions.map((s) => s.drillCode).toSet().toList();
+});
+
+/// Provider: proposed session for selected duration
+final proposedSessionProvider = Provider<ProposedSession>((ref) {
+  final duration = ref.watch(selectedSessionDurationProvider);
+  final trainingState = ref.watch(trainingNotifierProvider);
+  final kg = ref.watch(knowledgeGraphProvider);
+  final completedCodes = ref.watch(completedDrillCodesProvider);
+
+  final service = SessionBuilderService(kg: kg);
+  return service.buildSession(
+    availableMinutes: duration,
+    trainingHistory: trainingState.sessions,
+    completedDrillCodes: completedCodes,
+  );
+});
+
+/// Provider: "cần retest" count (for banner badge)
+final retestCountProvider = Provider<int>((ref) {
+  final session = ref.watch(proposedSessionProvider);
+  return session.retestCount;
+});
+
+/// Provider: skip count (user wants to skip "Tự chọn")
+final skipCountProvider = StateProvider<int>((ref) => 0);

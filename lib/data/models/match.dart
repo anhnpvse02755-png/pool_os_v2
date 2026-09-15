@@ -39,6 +39,7 @@ class Match {
   final String? opponentName;
   final String? opponentLevel;
   final String? notes;
+  final bool warmedUpBeforeMatch; // true = user did warmup before this match
 
   // -- V2 score -----------------------------------------------------------
   final int playerScore;
@@ -88,6 +89,7 @@ class Match {
     this.opponentName,
     this.opponentLevel,
     this.notes,
+    this.warmedUpBeforeMatch = false,
     this.playerScore = 0,
     this.opponentScore = 0,
     this.racks = const [],
@@ -199,6 +201,7 @@ class Match {
         'table': table,
         'opponentLevel': opponentLevel,
         'notes': notes,
+        'warmedUpBeforeMatch': warmedUpBeforeMatch,
         'playerScore': playerScore,
         'opponentScore': opponentScore,
         'racks': racks.map((r) => r.toJson()).toList(),
@@ -237,6 +240,7 @@ class Match {
         table: json['table'] as String?,
         opponentLevel: json['opponentLevel'] as String?,
         notes: json['notes'] as String?,
+        warmedUpBeforeMatch: json['warmedUpBeforeMatch'] as bool? ?? false,
         playerScore: json['playerScore'] as int? ?? 0,
         opponentScore: json['opponentScore'] as int? ?? 0,
         racks: (json['racks'] as List?)
