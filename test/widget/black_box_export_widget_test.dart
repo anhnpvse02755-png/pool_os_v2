@@ -1,381 +1,290 @@
 // ============================================================================
-// Black Box Export Widget Tests — D0.2
-// Tests for Black Box Export screen states and interactions
+// Black Box Export — test màn hình THẬT
+//
+// Bản trước của file này không kiểm gì cả: mỗi test tự dựng
+// `Text('PoolOS Black Box')` ngay trong test rồi assert đúng chuỗi vừa dựng.
+// Nó xanh kể cả khi màn hình thật bị xoá sạch. Phát hiện ra vì đợt việt hoá
+// đổi toàn bộ chuỗi của màn mà không test nào đỏ.
+//
+// Bản này dựng `BlackBoxExportScreen` thật và điều khiển trạng thái qua một
+// BlackBoxProvider giả, nên nó thực sự bám vào mã sản phẩm.
 // ============================================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:pool_os_v2/beta/services/package_builder_service.dart';
+import 'package:pool_os_v2/beta/services/replay_builder_service.dart';
+import 'package:pool_os_v2/beta/presentation/screens/black_box_export_screen.dart';
+import 'package:pool_os_v2/beta/providers/black_box_provider.dart';
+import 'package:pool_os_v2/beta/providers/providers.dart';
+
+/// Provider giả: chặn `initialize()` (bản thật đụng file system và
+/// path_provider) và cho phép đặt thẳng trạng thái cần kiểm.
+class FakeBlackBoxProvider extends BlackBoxProvider {
+  FakeBlackBoxProvider(
+    this._state, {
+    String? error,
+    String? exportPath,
+    PackagePreview? preview,
+  })  : _fakeError = error,
+        _fakeExportPath = exportPath,
+        _fakePreview = preview;
+
+  final BlackBoxState _state;
+  final String? _fakeError;
+  final String? _fakeExportPath;
+  final PackagePreview? _fakePreview;
+
+  int clearAllCalls = 0;
+
+  @override
+  BlackBoxState get state => _state;
+  @override
+  String? get error => _fakeError;
+  @override
+  String? get lastExportPath => _fakeExportPath;
+  @override
+  PackagePreview? get preview => _fakePreview;
+  @override
+  bool get isInitialized => true;
+
+  @override
+  Future<void> initialize({String? testerId}) async {}
+
+  /// Bản thật đọc `packageBuilder` — một `late final` chỉ được gán trong
+  /// `initialize()`, mà ở đây ta cố tình không chạy. Không override thì mọi
+  /// test chạm nút xuất sẽ chết vì LateInitializationError.
+  @override
+  PackagePreview generatePreview({required String testerId}) =>
+      fakePreview(testerId);
+
+  @override
+  Future<void> clearAll() async {
+    clearAllCalls++;
+  }
+}
+
+PackagePreview fakePreview(String testerId) => PackagePreview(
+      testerId: testerId,
+      totalEvents: 42,
+      totalSessions: 3,
+      totalMatches: 1,
+      totalRecommendations: 5,
+      totalConversations: 2,
+      totalErrors: 0,
+      validation: ReplayValidation(
+        isValid: true,
+        issues: const [],
+        totalEvents: 42,
+      ),
+      replaySummary: ReplaySummary(
+        totalEvents: 42,
+        sessionStart: DateTime(2026, 9, 15, 9),
+        sessionEnd: DateTime(2026, 9, 15, 10),
+        drillStarts: 3,
+        drillCompletions: 3,
+        drillAbandons: 0,
+        matchesStarted: 1,
+        matchesCompleted: 1,
+        coachChats: 2,
+        recommendations: 5,
+        errors: 0,
+      ),
+    );
+
+Future<FakeBlackBoxProvider> pumpScreen(
+  WidgetTester tester,
+  BlackBoxState state, {
+  String? error,
+  String? exportPath,
+}) async {
+  final fake = FakeBlackBoxProvider(
+    state,
+    error: error,
+    exportPath: exportPath,
+  );
+
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [blackBoxProvider.overrideWith((ref) => fake)],
+      child: const MaterialApp(home: BlackBoxExportScreen()),
+    ),
+  );
+  await tester.pump();
+  return fake;
+}
+
 void main() {
-  group('Black Box Export State Tests', () {
-    testWidgets('Initial state shows loading', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          ),
-        ),
-      );
+  group('BlackBoxExportScreen — mỗi trạng thái hiện đúng thứ cần hiện', () {
+    testWidgets('idle: đang tải, chưa có nút xuất', (tester) async {
+      await pumpScreen(tester, BlackBoxState.idle);
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.text('Xuất gói dữ liệu Coach'), findsNothing);
+    });
+
+    testWidgets('initializing: vẫn là màn tải', (tester) async {
+      await pumpScreen(tester, BlackBoxState.initializing);
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('Ready state shows header', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('PoolOS Black Box'),
-          ),
-        ),
-      );
+    testWidgets('ready: có nút xuất và phần giải thích', (tester) async {
+      await pumpScreen(tester, BlackBoxState.ready);
 
-      expect(find.text('PoolOS Black Box'), findsOneWidget);
+      expect(find.text('Xuất gói dữ liệu Coach'), findsOneWidget);
+      expect(find.text('Đây là gì?'), findsOneWidget);
+      expect(find.text('Không cần tài khoản. Không cần mạng. Ẩn danh.'),
+          findsOneWidget);
     });
 
-    testWidgets('Ready state shows Export button', (tester) async {
-      bool exportPressed = false;
+    testWidgets('ready: liệt kê đủ 5 thứ sẽ được xuất', (tester) async {
+      await pumpScreen(tester, BlackBoxState.ready);
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ElevatedButton(
-              onPressed: () => exportPressed = true,
-              child: const Text('Export Coach Package'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Export Coach Package'));
-      expect(exportPressed, isTrue);
+      for (final item in const [
+        'Hồ sơ & kỹ năng của bạn',
+        'Đề xuất và lập luận của Coach',
+        'Toàn bộ hội thoại',
+        'Dòng thời gian đầy đủ',
+        'Góp ý của bạn',
+      ]) {
+        expect(find.text(item), findsOneWidget, reason: 'thiếu mục "$item"');
+      }
     });
 
-    testWidgets('Ready state shows v2.0 badge', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('v2.0'),
-          ),
-        ),
-      );
+    testWidgets('exporting: hiện tiến trình, không cho bấm xuất lần nữa',
+        (tester) async {
+      await pumpScreen(tester, BlackBoxState.exporting);
 
-      expect(find.text('v2.0'), findsOneWidget);
+      expect(find.text('Đang dựng hộp đen...'), findsOneWidget);
+      expect(find.text('Xuất gói dữ liệu Coach'), findsNothing,
+          reason: 'đang xuất mà vẫn bấm xuất được thì sinh hai tiến trình');
     });
 
-    testWidgets('Ready state shows Info card', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('What is this?'),
-          ),
-        ),
-      );
+    testWidgets('exporting: liệt kê các bước', (tester) async {
+      await pumpScreen(tester, BlackBoxState.exporting);
 
-      expect(find.text('What is this?'), findsOneWidget);
-    });
-  });
-
-  group('Black Box Export Progress Tests', () {
-    testWidgets('Progress shows title', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Building Black Box...'),
-          ),
-        ),
-      );
-
-      expect(find.text('Building Black Box...'), findsOneWidget);
+      for (final step in const [
+        'Ghi lại sự kiện',
+        'Dựng bản phát lại',
+        'Tạo ảnh chụp',
+        'Đóng gói',
+        'Nén ZIP',
+      ]) {
+        expect(find.text(step), findsOneWidget, reason: 'thiếu bước "$step"');
+      }
     });
 
-    testWidgets('Progress shows Recording step', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Recording events'),
-          ),
-        ),
-      );
+    testWidgets('compressing: là bước riêng, không lẫn với exporting',
+        (tester) async {
+      await pumpScreen(tester, BlackBoxState.compressing);
 
-      expect(find.text('Recording events'), findsOneWidget);
+      expect(find.text('Đang nén...'), findsOneWidget);
+      expect(find.text('Đang dựng hộp đen...'), findsNothing);
     });
 
-    testWidgets('Progress shows Replay step', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Building replay'),
-          ),
-        ),
+    testWidgets('exported: báo xong và cho chia sẻ / lưu / xuất tiếp',
+        (tester) async {
+      await pumpScreen(
+        tester,
+        BlackBoxState.exported,
+        exportPath: '/tmp/PoolOS_Coach_001.zip',
       );
 
-      expect(find.text('Building replay'), findsOneWidget);
+      expect(find.text('Hộp đen đã sẵn sàng!'), findsOneWidget);
+      expect(find.text('Chia sẻ qua...'), findsOneWidget);
+      expect(find.text('Lưu vào thư mục Tải về'), findsOneWidget);
+      expect(find.text('Xuất gói khác'), findsOneWidget);
     });
 
-    testWidgets('Progress shows Snapshot step', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Creating snapshots'),
-          ),
-        ),
+    testWidgets('exported: hiện tên file thật đã xuất', (tester) async {
+      await pumpScreen(
+        tester,
+        BlackBoxState.exported,
+        exportPath: '/tmp/PoolOS_Coach_042.zip',
       );
 
-      expect(find.text('Creating snapshots'), findsOneWidget);
+      expect(find.text('PoolOS_Coach_042.zip'), findsOneWidget,
+          reason: 'người dùng cần biết file nào vừa được tạo');
     });
 
-    testWidgets('Progress shows Packaging step', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Packaging'),
-          ),
-        ),
+    testWidgets('error: nói rõ lý do chứ không chỉ "thất bại"',
+        (tester) async {
+      await pumpScreen(
+        tester,
+        BlackBoxState.error,
+        error: 'Hết dung lượng đĩa',
       );
 
-      expect(find.text('Packaging'), findsOneWidget);
+      expect(find.text('Xuất thất bại'), findsOneWidget);
+      expect(find.textContaining('Hết dung lượng đĩa'), findsAtLeastNWidgets(1),
+          reason: 'lý do lỗi phải tới được người dùng');
+      expect(find.text('Thử lại'), findsOneWidget);
     });
 
-    testWidgets('Progress shows Compression step', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Compressing ZIP'),
-          ),
-        ),
+    testWidgets('error: bấm "Thử lại" thì dọn trạng thái lỗi', (tester) async {
+      final fake = await pumpScreen(
+        tester,
+        BlackBoxState.error,
+        error: 'Lỗi gì đó',
       );
 
-      expect(find.text('Compressing ZIP'), findsOneWidget);
-    });
-  });
+      // Nut nam trong vung cuon: khong ensureVisible thi tap() ban ra ngoai
+      // viewport va IM LANG khong lam gi.
+      await tester.ensureVisible(find.text('Thử lại'));
+      await tester.pump();
+      await tester.tap(find.text('Thử lại'));
+      await tester.pump();
 
-  group('Black Box Export Success Tests', () {
-    testWidgets('Success shows ready message', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Black Box Ready!'),
-          ),
-        ),
-      );
-
-      expect(find.text('Black Box Ready!'), findsOneWidget);
+      expect(fake.clearAllCalls, 1,
+          reason: 'không dọn trạng thái thì màn kẹt ở lỗi cũ');
     });
 
-    testWidgets('Success shows package name', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('PoolOS_Coach_v2.0.zip'),
-          ),
-        ),
-      );
+    testWidgets('error: có nút Huỷ để thoát khỏi màn', (tester) async {
+      // "Huỷ" rời màn bằng context.pop() chứ không dọn trạng thái — dọn là
+      // việc của "Thử lại". Hai nút không được làm cùng một chuyện.
+      await pumpScreen(tester, BlackBoxState.error, error: 'Lỗi gì đó');
 
-      expect(find.textContaining('PoolOS_Coach'), findsOneWidget);
+      expect(find.text('Huỷ'), findsOneWidget);
     });
 
-    testWidgets('Success shows version', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Version: 2.0'),
-          ),
-        ),
+    testWidgets('exported: bấm "Xuất gói khác" thì gọi clearAll',
+        (tester) async {
+      final fake = await pumpScreen(
+        tester,
+        BlackBoxState.exported,
+        exportPath: '/tmp/a.zip',
       );
 
-      expect(find.text('Version: 2.0'), findsOneWidget);
+      await tester.ensureVisible(find.text('Xuất gói khác'));
+      await tester.pump();
+      await tester.tap(find.text('Xuất gói khác'));
+      await tester.pump();
+
+      expect(fake.clearAllCalls, 1);
     });
 
-    testWidgets('Success shows size', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Size: 2.3 MB'),
+    testWidgets('tiêu đề giữ nguyên ở mọi trạng thái', (tester) async {
+      for (final state in const [
+        BlackBoxState.ready,
+        BlackBoxState.exporting,
+        BlackBoxState.exported,
+        BlackBoxState.error,
+      ]) {
+        await pumpScreen(tester, state, exportPath: '/tmp/a.zip', error: 'x');
+        // Trang thai `ready` lap lai ten nay trong than man, nen chi kiem
+        // rieng tieu de tren AppBar.
+        expect(
+          find.descendant(
+            of: find.byType(AppBar),
+            matching: find.text('Hộp đen (Black Box) PoolOS'),
           ),
-        ),
-      );
-
-      expect(find.text('Size: 2.3 MB'), findsOneWidget);
-    });
-
-    testWidgets('Success has Share button', (tester) async {
-      bool sharePressed = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ElevatedButton(
-              onPressed: () => sharePressed = true,
-              child: const Text('Share via...'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Share via...'));
-      expect(sharePressed, isTrue);
-    });
-
-    testWidgets('Success has Save button', (tester) async {
-      bool savePressed = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: OutlinedButton(
-              onPressed: () => savePressed = true,
-              child: const Text('Save to Downloads'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Save to Downloads'));
-      expect(savePressed, isTrue);
-    });
-
-    testWidgets('Success shows generated time', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Generated'),
-          ),
-        ),
-      );
-
-      expect(find.text('Generated'), findsOneWidget);
-    });
-  });
-
-  group('Black Box Export Error Tests', () {
-    testWidgets('Error shows failure message', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Export Failed'),
-          ),
-        ),
-      );
-
-      expect(find.text('Export Failed'), findsOneWidget);
-    });
-
-    testWidgets('Error has Retry button', (tester) async {
-      bool retryPressed = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ElevatedButton(
-              onPressed: () => retryPressed = true,
-              child: const Text('Retry'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Retry'));
-      expect(retryPressed, isTrue);
-    });
-
-    testWidgets('Error has Cancel button', (tester) async {
-      bool cancelled = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: TextButton(
-              onPressed: () => cancelled = true,
-              child: const Text('Cancel'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Cancel'));
-      expect(cancelled, isTrue);
-    });
-
-    testWidgets('Error shows reason', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Storage permission denied'),
-          ),
-        ),
-      );
-
-      expect(find.text('Storage permission denied'), findsOneWidget);
-    });
-  });
-
-  group('Black Box Feedback Tests', () {
-    testWidgets('Feedback dialog shows title', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: Text('Your Feedback'),
-          ),
-        ),
-      );
-
-      expect(find.text('Your Feedback'), findsOneWidget);
-    });
-
-    testWidgets('Feedback has rating stars', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Row(
-              children: List.generate(
-                5,
-                (i) => IconButton(
-                  icon: const Icon(Icons.star_border),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.byType(IconButton), findsNWidgets(5));
-    });
-
-    testWidgets('Feedback has Submit button', (tester) async {
-      bool submitted = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: ElevatedButton(
-              onPressed: () => submitted = true,
-              child: const Text('Submit & Export'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Submit & Export'));
-      expect(submitted, isTrue);
-    });
-
-    testWidgets('Feedback has Skip button', (tester) async {
-      bool skipped = false;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: OutlinedButton(
-              onPressed: () => skipped = true,
-              child: const Text('Skip'),
-            ),
-          ),
-        ),
-      );
-
-      await tester.tap(find.text('Skip'));
-      expect(skipped, isTrue);
+          findsOneWidget,
+          reason: 'mất tiêu đề ở trạng thái $state',
+        );
+      }
     });
   });
 }

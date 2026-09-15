@@ -181,11 +181,11 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          _buildInfoItem(Icons.person_outline, 'Your profile & skills'),
-          _buildInfoItem(Icons.psychology_outlined, 'Coach recommendations & reasoning'),
-          _buildInfoItem(Icons.chat_outlined, 'All conversations'),
-          _buildInfoItem(Icons.timeline_outlined, 'Complete event timeline'),
-          _buildInfoItem(Icons.feedback_outlined, 'Your feedback'),
+          _buildInfoItem(Icons.person_outline, 'Hồ sơ & kỹ năng của bạn'),
+          _buildInfoItem(Icons.psychology_outlined, 'Đề xuất và lập luận của Coach'),
+          _buildInfoItem(Icons.chat_outlined, 'Toàn bộ hội thoại'),
+          _buildInfoItem(Icons.timeline_outlined, 'Dòng thời gian đầy đủ'),
+          _buildInfoItem(Icons.feedback_outlined, 'Góp ý của bạn'),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(12),
@@ -367,11 +367,11 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
-            _buildProgressStep('Recording events', true),
-            _buildProgressStep('Building replay', true),
-            _buildProgressStep('Creating snapshots', false, active: true),
-            _buildProgressStep('Packaging', false),
-            _buildProgressStep('Compressing ZIP', false),
+            _buildProgressStep('Ghi lại sự kiện', true),
+            _buildProgressStep('Dựng bản phát lại', true),
+            _buildProgressStep('Tạo ảnh chụp', false, active: true),
+            _buildProgressStep('Đóng gói', false),
+            _buildProgressStep('Nén ZIP', false),
           ],
         ),
       ),
@@ -394,11 +394,11 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 24),
-            _buildProgressStep('Recording events', true),
-            _buildProgressStep('Building replay', true),
-            _buildProgressStep('Creating snapshots', true),
-            _buildProgressStep('Packaging', true),
-            _buildProgressStep('Compressing ZIP', false, active: true),
+            _buildProgressStep('Ghi lại sự kiện', true),
+            _buildProgressStep('Dựng bản phát lại', true),
+            _buildProgressStep('Tạo ảnh chụp', true),
+            _buildProgressStep('Đóng gói', true),
+            _buildProgressStep('Nén ZIP', false, active: true),
           ],
         ),
       ),
@@ -445,12 +445,13 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
     final fileName = path.split('/').last;
     final size = blackBox.preview?.sizeEstimate ?? '~2 MB';
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+    return SingleChildScrollView(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -482,13 +483,13 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               ),
               child: Column(
                 children: [
-                  _buildInfoRow('Package', fileName),
+                  _buildInfoRow('Tên gói', fileName),
                   const Divider(height: 24),
-                  _buildInfoRow('Version', '2.0'),
+                  _buildInfoRow('Phiên bản', '2.0'),
                   const Divider(height: 24),
-                  _buildInfoRow('Size', size),
+                  _buildInfoRow('Dung lượng', size),
                   const Divider(height: 24),
-                  _buildInfoRow('Generated', _formatTime(DateTime.now())),
+                  _buildInfoRow('Tạo lúc', _formatTime(DateTime.now())),
                 ],
               ),
             ),
@@ -542,6 +543,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               child: const Text('Xuất gói khác'),
             ),
           ],
+          ),
         ),
       ),
     );
@@ -576,12 +578,13 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
   Widget _buildErrorState(BuildContext context, BlackBoxProvider blackBox) {
     final brightness = Theme.of(context).brightness;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+    return SingleChildScrollView(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -663,6 +666,7 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
               child: const Text('Huỷ'),
             ),
           ],
+          ),
         ),
       ),
     );
