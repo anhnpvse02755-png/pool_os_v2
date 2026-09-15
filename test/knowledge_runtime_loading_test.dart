@@ -32,10 +32,11 @@ void main() {
       '(not from 10-article const fallback)', () async {
     // Asset và notifier phải khớp nhau — nếu lệch thì notifier đã rơi về
     // fallback. Con số 36 là toàn bộ thư viện sau khi gỡ 102 khuôn rỗng
-    // (xem knowledge_article_count_test.dart); trước đó nó là 138.
+    // (xem knowledge_article_count_test.dart); trước đó nó là 138. Thành 37
+    // khi mục `kn_warmup` (Khởi động) được thêm cho màn Warm-up.
     final raw = await rootBundle.loadString('assets/knowledge/knowledge.json');
     final rawCount = (json.decode(raw) as List).length;
-    expect(rawCount, 36, reason: 'Bundled asset must contain 36 articles.');
+    expect(rawCount, 37, reason: 'Bundled asset must contain 37 articles.');
 
     // Now exercise the notifier — the production loading path.
     final container = ProviderContainer();

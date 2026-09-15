@@ -121,10 +121,10 @@ void main() {
         findsNothing,
         reason: 'FAB removed in Part 6 — no redundant start button');
     // Sprint-19 redesign: recording buttons use English labels (SUCCESS/MISS)
-    expect(find.text('SUCCESS'),
+    expect(find.text('VÀO BI'),
         findsOneWidget,
         reason: 'Success button must render immediately');
-    expect(find.text('MISS'),
+    expect(find.text('TRƯỢT'),
         findsOneWidget,
         reason: 'Failure button must render immediately');
   });

@@ -18,7 +18,12 @@ void main() {
         File('lib/presentation/screens/shell/main_shell.dart')
             .readAsStringSync();
 
-    for (final label in const ['Home', 'Train', 'Progress', 'Profile']) {
+    for (final label in const [
+      'Trang chủ',
+      'Luyện tập',
+      'Tiến độ',
+      'Hồ sơ',
+    ]) {
       expect(source, contains("'$label'"), reason: 'thiếu nhãn "$label"');
     }
   });
@@ -27,16 +32,21 @@ void main() {
     final source = File('lib/presentation/screens/home/home_screen.dart')
         .readAsStringSync();
 
-    // Ràng buộc toàn cục đòi cả BA chỗ gọi 'Start Training' còn sống. Dùng
-    // `contains` thì xoá hai chỗ vẫn xanh — nên phải đếm. Đếm literal có cả
+    // Ràng buộc toàn cục đòi các chỗ gọi 'Start Training' còn sống. Dùng
+    // `contains` thì xoá bớt vẫn xanh — nên phải đếm. Đếm literal có cả
     // dấu nháy đóng: 'Start Training Session' là literal khác, không khớp.
-    expect(RegExp(r"'Start Training'").allMatches(source), hasLength(3),
-        reason: 'Phải giữ đủ 3 chỗ gọi nhãn E2E "Start Training".');
+    //
+    // Từ 3 xuống 2: nút CTA chính của thẻ hero đổi nhãn sang 'Buổi tập hôm
+    // nay' khi trỏ về màn Buổi tập hôm nay — app tiếng Việt, nhãn tiếng Anh
+    // ở đó là sót lại. Hai nút empty-state còn nguyên, và móc E2E thật là
+    // Semantics 'Start Training Session' bên dưới, không phải nhãn nút này.
+    expect(RegExp(r"'Bắt đầu luyện tập'").allMatches(source), hasLength(2),
+        reason: 'Phải giữ đủ 2 chỗ gọi nhãn E2E "Bắt đầu luyện tập".');
 
     for (final label in const [
-      'Start Training Session',
-      'View Training History',
-      'Read knowledge article',
+      'Bắt đầu buổi tập',
+      'Xem lịch sử luyện tập',
+      'Đọc bài kiến thức',
     ]) {
       expect(source, contains(label), reason: 'thiếu nhãn E2E "$label"');
     }

@@ -118,9 +118,9 @@ void main() {
         reason: 'FAB removed in Part 6');
 
     // Assertion 3: Sprint-17 Part 6 / Sprint-19 — Recording buttons shown (English text)
-    expect(find.text('SUCCESS'), findsOneWidget,
+    expect(find.text('VÀO BI'), findsOneWidget,
         reason: 'SUCCESS button should appear');
-    expect(find.text('MISS'), findsOneWidget,
+    expect(find.text('TRƯỢT'), findsOneWidget,
         reason: 'MISS button should appear');
   });
 }

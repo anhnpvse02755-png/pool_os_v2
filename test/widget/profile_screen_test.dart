@@ -108,7 +108,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should display level badge with real level
-      expect(find.text('Level C'), findsOneWidget);
+      expect(find.text('Cấp C'), findsOneWidget);
       // Should NOT show hardcoded "Rank H"
       expect(find.text('Rank H'), findsNothing);
     });

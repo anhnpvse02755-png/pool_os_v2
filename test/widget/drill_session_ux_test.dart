@@ -126,7 +126,7 @@ void main() {
       await _settle(tester);
 
       // Sprint-19 redesign: SUCCESS button must render immediately
-      expect(find.text('SUCCESS'), findsOneWidget,
+      expect(find.text('VÀO BI'), findsOneWidget,
           reason: 'SUCCESS button must appear immediately');
     });
 
@@ -158,7 +158,7 @@ void main() {
       await _settle(tester);
 
       // Sprint-19 redesign: MISS button must render immediately
-      expect(find.text('MISS'), findsOneWidget,
+      expect(find.text('TRƯỢT'), findsOneWidget,
           reason: 'MISS button must appear immediately');
     });
 
@@ -222,7 +222,7 @@ void main() {
       await _settle(tester);
 
       // Sprint-19 redesign: Stop button should be visible
-      expect(find.text('Stop'), findsOneWidget,
+      expect(find.text('Dừng'), findsOneWidget,
           reason: 'Stop button must appear when active');
     });
 
@@ -320,9 +320,9 @@ void main() {
 
       // Sprint-17 Part 6: Should show active session UI, not instructions
       // Sprint-19 redesign: Stats show Reps and Accuracy
-      expect(find.text('Reps'), findsOneWidget,
+      expect(find.text('Lượt'), findsOneWidget,
           reason: 'Reps stat should appear (active session indicator)');
-      expect(find.text('Accuracy'), findsOneWidget,
+      expect(find.text('Chính xác'), findsOneWidget,
           reason: 'Accuracy stat should appear');
     });
   });

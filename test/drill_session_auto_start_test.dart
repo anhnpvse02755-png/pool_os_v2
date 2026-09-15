@@ -131,9 +131,9 @@ void main() {
       expect(find.byType(DrillSessionScreen), findsOneWidget);
 
       // Verify session is active (auto-start fired)
-      // Sprint-19 redesign: English text 'SUCCESS' and 'MISS'
-      expect(find.text('SUCCESS'), findsAtLeastNWidgets(1));
-      expect(find.text('MISS'), findsOneWidget);
+      // Sprint-19 redesign, nay da viet hoa: 'VÀO BI' va 'TRƯỢT'
+      expect(find.text('VÀO BI'), findsAtLeastNWidgets(1));
+      expect(find.text('TRƯỢT'), findsOneWidget);
     });
 
     testWidgets('2. No query level param → does NOT auto-start, no FAB',
@@ -156,7 +156,7 @@ void main() {
           reason: 'FAB removed in Part 6');
       // Recording buttons should NOT show (session not active)
       // Sprint-19 redesign: English text
-      expect(find.text('SUCCESS'), findsNothing,
+      expect(find.text('VÀO BI'), findsNothing,
           reason: 'Recording buttons hidden when session not active');
     });
 
@@ -179,8 +179,8 @@ void main() {
 
       // Session should be active (auto-start fired)
       // Sprint-19 redesign: English text
-      expect(find.text('SUCCESS'), findsAtLeastNWidgets(1));
-      expect(find.text('MISS'), findsOneWidget);
+      expect(find.text('VÀO BI'), findsAtLeastNWidgets(1));
+      expect(find.text('TRƯỢT'), findsOneWidget);
     });
 
     testWidgets('4. Invalid drill code → error state shown, no crash',
@@ -198,9 +198,9 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Sprint-19 redesign: English text 'Drill not found'
-      expect(find.text('Drill not found'), findsOneWidget);
-      expect(find.text('Go Back'), findsOneWidget);
+      // Sprint-19 redesign, nay da viet hoa: 'Không tìm thấy bài tập'
+      expect(find.text('Không tìm thấy bài tập'), findsOneWidget);
+      expect(find.text('Quay lại'), findsOneWidget);
     });
 
     testWidgets('5. Custom target value is read correctly',
@@ -241,7 +241,7 @@ void main() {
           reason: 'FAB removed in Part 6 — no manual start button');
       // Session should be inactive
       // Sprint-19 redesign: English text
-      expect(find.text('SUCCESS'), findsNothing,
+      expect(find.text('VÀO BI'), findsNothing,
           reason: 'Recording buttons hidden when session not active');
     });
   });

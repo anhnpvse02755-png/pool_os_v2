@@ -76,8 +76,8 @@ void main() {
 
     // Assertion 2: recommendation section renders (recommendations list
     // contains lines triggered by the high easy-miss / fouls counts above).
-    expect(find.text('Recommendations'), findsOneWidget,
-        reason: 'profile should surface a Recommendations section');
+    expect(find.text('Đề xuất'), findsOneWidget,
+        reason: 'hồ sơ phải có mục Đề xuất');
     expect(find.textContaining('easy miss', findRichText: false),
         findsAtLeastNWidgets(1),
         reason: 'profile should include at least one recommendation line');
