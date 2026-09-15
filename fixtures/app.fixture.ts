@@ -79,35 +79,43 @@ export async function waitForAppReady(page: Page): Promise<void> {
 }
 
 /**
- * Tai khoan dung rieng cho E2E, tao san tren Directus.
+ * Phien E2E gia, nap thang vao localStorage.
  *
  * Cac route `/play`, `/profile`, `/coach`, `/session`, `/notifications`,
- * `/community`, `/settings` deu nam trong `_privatePrefixes` cua router, nen
- * mo thang chung khi chua dang nhap se bi day ve `/auth/login`. Truoc khi co
- * ham nay, moi test cham vao nhung route do that bai voi mot thong bao vo
- * nghia ("khong tim thay nut ...") trong khi thuc te dang dung o man dang
- * nhap.
+ * `/community`, `/settings` nam trong `_privatePrefixes` cua router: mo thang
+ * chung khi chua dang nhap se bi day ve `/auth/login`. Truoc khi co ham nay,
+ * moi test cham vao nhung route do that bai voi mot thong bao vo nghia
+ * ("khong tim thay nut Đấu nhanh") trong khi thuc te dang dung o man dang nhap.
+ *
+ * KHONG dang nhap qua giao dien: Directus chi cho phep origin production
+ * (`Access-Control-Allow-Origin: https://poolos.kjdybl.easypanel.host`), nen
+ * moi loi goi tu localhost:8080 deu bi CORS chan. Guard cua router chi hoi
+ * "co token khong", nen mot token gia la du — va cach nay khong phu thuoc
+ * mang, khong lam test cham them vai giay moi lan chay.
+ *
+ * `flutter.` la tien to SharedPreferences dung tren web.
  */
-export const E2E_EMAIL = process.env.E2E_EMAIL ?? 'e2e-test@example.com';
-export const E2E_PASSWORD = process.env.E2E_PASSWORD ?? 'E2eTest!2026';
+const E2E_JWT =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' +
+  '.eyJpZCI6ImUyZS11c2VyIiwicm9sZSI6ImUyZS1yb2xlIiwiZXhwIjoxNzkxNzEyOTk1LCJpc3MiOiJkaXJlY3R1cyJ9' +
+  '.chu-ky-gia';
 
-export async function signIn(page: Page): Promise<void> {
-  await page.goto('/auth/login');
-
-  await page.getByRole('textbox', { name: /email/i }).first().fill(E2E_EMAIL);
-  await page
-    .getByRole('textbox', { name: /mật khẩu/i })
-    .first()
-    .fill(E2E_PASSWORD);
-  await page.getByRole('button', { name: /^đăng nhập$/i }).first().click();
-
-  // Dang nhap xong router chuyen ve /home; cho den khi roi khoi man login.
-  await page
-    .getByRole('button', { name: /^đăng nhập$/i })
-    .first()
-    .waitFor({ state: 'detached', timeout: 20_000 })
-    .catch(() => {});
-  await waitForAppReady(page);
+export async function seedSession(page: Page): Promise<void> {
+  await page.addInitScript(
+    ([token]) => {
+      localStorage.setItem(
+        'flutter.directus_session',
+        JSON.stringify(
+          JSON.stringify({
+            access_token: token,
+            refresh_token: 'refresh-e2e',
+            expires: 900000,
+          }),
+        ),
+      );
+    },
+    [E2E_JWT],
+  );
 }
 
 export const test = base.extend<AppFixtures>({
@@ -149,9 +157,8 @@ export const test = base.extend<AppFixtures>({
   },
 
   playPage: async ({ page }, use) => {
-    // `/play` la route rieng tu — khong dang nhap thi moi test o day chi nhin
-    // thay man dang nhap.
-    await signIn(page);
+    // Viec seed phien nam o `beforeEach` cua spec, khong phai o day: fixture
+    // nay khoi tao sau hook do, tuc sau khi da dieu huong.
     const playPage = new PlayPage(page);
     await use(playPage);
   },

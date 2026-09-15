@@ -94,6 +94,12 @@ for (const vp of viewports) {
     await page.addInitScript(
       ([s]) => {
         localStorage.setItem('flutter.directus_session', JSON.stringify(s));
+        // `test.use({ colorScheme: 'dark' })` KHONG du. ThemeNotifier mac
+        // dinh `ThemeMode.light` va chi doc lua chon da luu, nen app bo qua
+        // prefers-color-scheme cua trinh duyet. Khong seed khoa nay thi ca
+        // luot chay o che do SANG, va test bao 24 man "khong doc brightness"
+        // trong khi that ra chung chua bao gio duoc hoi.
+        localStorage.setItem('flutter.poolos_v2.theme', '"dark"');
       },
       [
         JSON.stringify({

@@ -5,7 +5,11 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // Moi test boot mot instance Flutter web (canvas + engine ~5s). De
+  // Playwright tu chon so worker theo so CPU thi may bi qua tai va boot vuot
+  // han 30s — firefox do rai rac, chay rieng lai xanh. Gioi han 2 worker doi
+  // lai vai chuc giay tong thoi gian, nhung het do flaky.
+  workers: process.env.CI ? 1 : 2,
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['list']

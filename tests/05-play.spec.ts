@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/app.fixture';
+import { test, expect, seedSession } from '../fixtures/app.fixture';
 
 test.describe('Play Screen', () => {
   // `/play` la route rieng tu nen fixture phai dang nhap truoc. Mot test o
@@ -7,6 +7,10 @@ test.describe('Play Screen', () => {
   test.describe.configure({ timeout: 120_000 });
 
   test.beforeEach(async ({ page }) => {
+    // Phai seed TRUOC `goto`: fixture `playPage` chi duoc khoi tao khi than
+    // test chay, tuc sau hook nay — seed trong fixture la qua muon, router
+    // da day ve /auth/login roi.
+    await seedSession(page);
     await page.goto('/play');
   });
 
