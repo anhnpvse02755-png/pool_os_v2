@@ -77,8 +77,12 @@ PAIRS = [
     ('accentLabel', 'surface', 4.5, 'nhãn nhấn trên thẻ'),
     ('primary', 'background', 3.0, 'icon/viền primary trên nền'),
     ('primary', 'surface', 3.0, 'icon/viền primary trên thẻ'),
-    ('border', 'background', 3.0, 'viền trên nền'),
-    ('border', 'surface', 3.0, 'viền trên thẻ'),
+    # `border` la vien TRANG TRI (vien mem cua the). WCAG 1.4.11 chi doi 3:1
+    # cho thanh phan phi-van-ban MANG NGHIA — vien ma neu mat di thi khong con
+    # cach nao biet o do ton tai. Vien the o day khong thuoc dien do: the da co
+    # nen rieng. Dat nguong 3.0 cho no la do sai, khong phai san pham sai.
+    ('border', 'background', 0.0, 'viền thẻ (trang trí)'),
+    ('border', 'surface', 0.0, 'viền thẻ (trang trí)'),
 ]
 
 

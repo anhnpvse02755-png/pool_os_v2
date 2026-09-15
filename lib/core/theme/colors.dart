@@ -18,7 +18,7 @@ class AppColors {
   // Text
   static const Color lightTextPrimary = Color(0xFF12352B);
   static const Color lightTextSecondary = Color(0xFF5E6661);
-  static const Color lightTextTertiary = Color(0xFF9AA39D);
+  static const Color lightTextTertiary = Color(0xFF646E67);
 
   // Borders & Dividers
   static const Color lightBorder = Color(0xFFE7E3DA);
@@ -37,7 +37,7 @@ class AppColors {
   // Text
   static const Color darkTextPrimary = Color(0xFFECF1EE);
   static const Color darkTextSecondary = Color(0xFF9AA6A0);
-  static const Color darkTextTertiary = Color(0xFF6F7B75);
+  static const Color darkTextTertiary = Color(0xFF7E8B84);
 
   // Borders & Dividers
   static const Color darkBorder = Color(0xFF2C3531);
