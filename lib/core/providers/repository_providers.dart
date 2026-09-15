@@ -18,6 +18,7 @@ import '../../domain/services/quiz_service.dart' as quiz_svc;
 import '../../domain/services/spaced_repetition_service.dart' as sr_svc;
 import '../../data/repositories/ai_coach_repository.dart' as ai_repo;
 import '../../data/repositories/equipment_repository.dart' as equipment_repo;
+import '../../data/models/equipment.dart';
 import '../services/daily_notification_service.dart';
 import '../../data/models/player.dart';
 import '../../data/models/player_interests.dart';
@@ -288,6 +289,53 @@ final equipmentStatsProvider =
     FutureProvider.family<EquipmentStats, String>((ref, cueId) async {
   final repository = ref.watch(equipmentRepositoryProvider);
   return repository.getStatsForCue(cueId);
+});
+
+// ============================================================================
+// Equipment Notifier — mutable state for CRUD operations
+// ============================================================================
+class EquipmentNotifier extends StateNotifier<AsyncValue<List<Equipment>>> {
+  EquipmentNotifier(this._repository) : super(const AsyncValue.loading()) {
+    _load();
+  }
+  final equipment_repo.EquipmentRepository _repository;
+
+  Future<void> _load() async {
+    try {
+      final items = await _repository.getAllEquipment();
+      state = AsyncValue.data(items);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> refresh() => _load();
+
+  Future<void> delete(String id) async {
+    await _repository.deleteEquipment(id);
+    await _load();
+  }
+
+  Future<void> create(Equipment eq) async {
+    await _repository.createEquipment(eq);
+    await _load();
+  }
+
+  Future<void> update(Equipment eq) async {
+    await _repository.updateEquipment(eq);
+    await _load();
+  }
+
+  Future<void> setActive(String id) async {
+    await _repository.setActiveCue(id);
+    await _load();
+  }
+}
+
+final equipmentNotifierProvider =
+    StateNotifierProvider<EquipmentNotifier, AsyncValue<List<Equipment>>>((ref) {
+  final repository = ref.watch(equipmentRepositoryProvider);
+  return EquipmentNotifier(repository);
 });
 
 // ============================================================================

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -6,114 +7,186 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
+import '../../../core/providers/repository_providers.dart';
+import '../../../data/models/equipment.dart';
 
-/// Equipment Model
-class Equipment {
-  final String id;
-  final String name;
-  final String type; // cue, shaft, tip, accessory
-  final String? brand;
-  final String? imageUrl;
-  final DateTime? purchaseDate;
-  final String? notes;
+class EquipmentScreen extends ConsumerStatefulWidget {
+  const EquipmentScreen({super.key});
 
-  Equipment({
-    required this.id,
-    required this.name,
-    required this.type,
-    this.brand,
-    this.imageUrl,
-    this.purchaseDate,
-    this.notes,
-  });
+  @override
+  ConsumerState<EquipmentScreen> createState() => _EquipmentScreenState();
 }
 
-class EquipmentScreen extends StatelessWidget {
-  const EquipmentScreen({super.key});
+class _EquipmentScreenState extends ConsumerState<EquipmentScreen> {
+  bool _selectionMode = false;
+  final Set<String> _selected = {};
+
+  void _toggleSelection(String id) {
+    setState(() {
+      if (_selected.contains(id)) {
+        _selected.remove(id);
+      } else {
+        _selected.add(id);
+      }
+      if (_selected.isEmpty) _selectionMode = false;
+    });
+  }
+
+  void _enterSelectionMode() {
+    setState(() {
+      _selectionMode = true;
+      _selected.clear();
+    });
+  }
+
+  void _exitSelectionMode() {
+    setState(() {
+      _selectionMode = false;
+      _selected.clear();
+    });
+  }
+
+  void _compare() {
+    if (_selected.isEmpty) return;
+    final ids = _selected.join(',');
+    _exitSelectionMode();
+    context.push('/profile/equipment/compare?ids=$ids');
+  }
 
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-
-    // Demo data
-    final equipment = [
-      Equipment(
-        id: '1',
-        name: 'My Main Cue',
-        type: 'cue',
-        brand: 'Predator',
-        purchaseDate: DateTime(2024, 1, 15),
-        notes: 'Cue chính dùng để thi đấu',
-      ),
-      Equipment(
-        id: '2',
-        name: 'Jump Cue',
-        type: 'cue',
-        brand: 'Predator',
-        purchaseDate: DateTime(2024, 3, 20),
-      ),
-      Equipment(
-        id: '3',
-        name: 'Kamui Clear',
-        type: 'tip',
-        brand: 'Kamui',
-      ),
-    ];
+    final notifier = ref.read(equipmentNotifierProvider.notifier);
+    final equipmentState = ref.watch(equipmentNotifierProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background(brightness),
-      appBar: AppBar(
-        backgroundColor: AppColors.background(brightness),
-        elevation: 0,
-        title: Text(
-          'Dụng cụ của tôi',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary(brightness),
+      appBar: _selectionMode ? _selectionAppBar(brightness) : _normalAppBar(brightness),
+      body: equipmentState.when(
+        loading: () => Center(
+          child: CircularProgressIndicator(
+              color: AppColors.primary(brightness)),
+        ),
+        error: (e, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline,
+                  size: 48, color: AppColors.error),
+              const SizedBox(height: 12),
+              Text('Lỗi: $e',
+                  style: TextStyle(color: AppColors.error)),
+            ],
           ),
         ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.textPrimary(brightness)),
-          onPressed: () => context.pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add_circle_outline, color: AppColors.primary(brightness)),
-            onPressed: () => _showAddEquipmentDialog(context),
-          ),
-        ],
+        data: (items) {
+          if (items.isEmpty) {
+            return _buildEmptyState(brightness);
+          }
+          return _buildEquipmentList(
+              context, brightness, items, notifier);
+        },
       ),
-      body: equipment.isEmpty
-          ? _buildEmptyState(context)
-          : _buildEquipmentList(context, equipment),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary(brightness).withValues(alpha: 0.3),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
+      floatingActionButton: _selectionMode
+          ? (_selected.length >= 2
+              ? FloatingActionButton.extended(
+                  onPressed: _compare,
+                  backgroundColor: AppColors.primary(brightness),
+                  icon: Icon(Icons.compare_arrows,
+                      color: AppColors.onPrimary(brightness)),
+                  label: Text(
+                    'So sánh (${_selected.length})',
+                    style: TextStyle(
+                        color: AppColors.onPrimary(brightness),
+                        fontWeight: FontWeight.w600),
+                  ),
+                )
+              : null)
+          : FloatingActionButton.extended(
+              onPressed: () => context.push('/profile/equipment/add'),
+              backgroundColor: AppColors.primary(brightness),
+              icon: Icon(Icons.add, color: AppColors.onPrimary(brightness)),
+              label: Text(
+                'Thêm dụng cụ',
+                style: TextStyle(
+                    color: AppColors.onPrimary(brightness),
+                    fontWeight: FontWeight.w600),
+              ),
             ),
-          ],
-        ),
-        child: FloatingActionButton.extended(
-          onPressed: () => _showAddEquipmentDialog(context),
-          backgroundColor: AppColors.primary(brightness),
-          icon: Icon(Icons.add, color: AppColors.onPrimary(brightness)),
-          label: Text(
-            'Thêm dụng cụ',
-            style: TextStyle(color: AppColors.onPrimary(brightness), fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
+  // ── AppBar normal ──────────────────────────────────────────────────────────
 
+  PreferredSizeWidget _normalAppBar(Brightness brightness) {
+    return AppBar(
+      backgroundColor: AppColors.background(brightness),
+      elevation: 0,
+      title: Text(
+        'Dụng cụ của tôi',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary(brightness),
+        ),
+      ),
+      centerTitle: true,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back_ios,
+            color: AppColors.textPrimary(brightness)),
+        onPressed: () => context.pop(),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.compare_arrows,
+              color: AppColors.primary(brightness)),
+          tooltip: 'So sánh cơ',
+          onPressed: _enterSelectionMode,
+        ),
+        IconButton(
+          icon: Icon(Icons.add_circle_outline,
+              color: AppColors.primary(brightness)),
+          onPressed: () => context.push('/profile/equipment/add'),
+        ),
+      ],
+    );
+  }
+
+  // ── AppBar selection ───────────────────────────────────────────────────────
+
+  PreferredSizeWidget _selectionAppBar(Brightness brightness) {
+    return AppBar(
+      backgroundColor: AppColors.background(brightness),
+      elevation: 0,
+      leading: IconButton(
+        icon: Icon(Icons.close, color: AppColors.textPrimary(brightness)),
+        onPressed: _exitSelectionMode,
+      ),
+      title: Text(
+        '${_selected.length} đã chọn',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary(brightness),
+        ),
+      ),
+      centerTitle: true,
+      actions: [
+        if (_selected.length >= 2)
+          TextButton.icon(
+            onPressed: _compare,
+            icon: Icon(Icons.compare_arrows,
+                color: AppColors.primary(brightness)),
+            label: Text('So sánh',
+                style: TextStyle(color: AppColors.primary(brightness))),
+          ),
+      ],
+    );
+  }
+
+  // ── Empty state ────────────────────────────────────────────────────────────
+
+  Widget _buildEmptyState(Brightness brightness) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.space12),
@@ -144,9 +217,7 @@ class EquipmentScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Thêm dụng cụ billiards của bạn để theo dõi',
-              style: TextStyle(
-                color: AppColors.textSecondary(brightness),
-              ),
+              style: TextStyle(color: AppColors.textSecondary(brightness)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -155,13 +226,17 @@ class EquipmentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEquipmentList(BuildContext context, List<Equipment> equipment) {
-    final brightness = Theme.of(context).brightness;
+  // ── Equipment list ─────────────────────────────────────────────────────────
 
-    // Group by type
+  Widget _buildEquipmentList(
+    BuildContext context,
+    Brightness brightness,
+    List<Equipment> items,
+    EquipmentNotifier notifier,
+  ) {
     final grouped = <String, List<Equipment>>{};
-    for (final item in equipment) {
-      grouped.putIfAbsent(item.type, () => []).add(item);
+    for (final item in items) {
+      grouped.putIfAbsent(item.category, () => []).add(item);
     }
 
     return ListView(
@@ -178,18 +253,20 @@ class EquipmentScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.sm),
                       decoration: BoxDecoration(
-                        color: _getTypeColor(entry.key, brightness).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                        color: _typeColor(entry.key, brightness)
+                            .withValues(alpha: 0.1),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusSm),
                       ),
                       child: Icon(
-                        _getTypeIcon(entry.key),
+                        _typeIcon(entry.key),
                         size: 16,
-                        color: _getTypeColor(entry.key, brightness),
+                        color: _typeColor(entry.key, brightness),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(
-                      _getTypeName(entry.key),
+                      _typeName(entry.key),
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -204,8 +281,10 @@ class EquipmentScreen extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.background(brightness),
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                        border: Border.all(color: AppColors.border(brightness)),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusSm),
+                        border: Border.all(
+                            color: AppColors.border(brightness)),
                       ),
                       child: Text(
                         '${entry.value.length}',
@@ -226,8 +305,20 @@ class EquipmentScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: AppSpacing.md),
                   child: _EquipmentCard(
                     equipment: item,
-                    onTap: () => _showEquipmentDetail(context, item),
-                  ).animate().fadeIn(duration: 300.ms, delay: (index * 100).ms),
+                    selectionMode: _selectionMode,
+                    isSelected: _selected.contains(item.id),
+                    onTap: () {
+                      if (_selectionMode) {
+                        _toggleSelection(item.id);
+                      } else {
+                        _showDetail(context, brightness, item, notifier);
+                      }
+                    },
+                    onCheckbox: () => _toggleSelection(item.id),
+                  ).animate().fadeIn(
+                        duration: 300.ms,
+                        delay: (index * 100).ms,
+                      ),
                 );
               }),
               const SizedBox(height: AppSpacing.sm),
@@ -239,7 +330,31 @@ class EquipmentScreen extends StatelessWidget {
     );
   }
 
-  IconData _getTypeIcon(String type) {
+  // ── Detail bottom sheet ────────────────────────────────────────────────────
+
+  void _showDetail(BuildContext context, Brightness brightness,
+      Equipment eq, EquipmentNotifier notifier) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface(brightness),
+      shape: const RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
+      ),
+      builder: (_) => _EquipmentDetailSheet(
+        equipment: eq,
+        onDeleted: () {
+          notifier.delete(eq.id);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  IconData _typeIcon(String type) {
     switch (type) {
       case 'cue':
         return Icons.straighten;
@@ -247,14 +362,20 @@ class EquipmentScreen extends StatelessWidget {
         return Icons.linear_scale;
       case 'tip':
         return Icons.circle_outlined;
-      case 'accessory':
-        return Icons.handyman_outlined;
+      case 'chalk':
+        return Icons.brush;
+      case 'glove':
+        return Icons.pan_tool_outlined;
+      case 'case':
+        return Icons.luggage_outlined;
+      case 'extension':
+        return Icons.straighten;
       default:
-        return Icons.inventory_2;
+        return Icons.handyman_outlined;
     }
   }
 
-  String _getTypeName(String type) {
+  String _typeName(String type) {
     switch (type) {
       case 'cue':
         return 'Cue';
@@ -262,14 +383,20 @@ class EquipmentScreen extends StatelessWidget {
         return 'Shaft';
       case 'tip':
         return 'Tip';
-      case 'accessory':
-        return 'Phụ kiện';
+      case 'chalk':
+        return 'Phấn';
+      case 'glove':
+        return 'Găng';
+      case 'case':
+        return 'Túi cơ';
+      case 'extension':
+        return 'Gậy nối';
       default:
         return type;
     }
   }
 
-  Color _getTypeColor(String type, Brightness brightness) {
+  Color _typeColor(String type, Brightness brightness) {
     switch (type) {
       case 'cue':
         return AppColors.primary(brightness);
@@ -277,49 +404,28 @@ class EquipmentScreen extends StatelessWidget {
         return AppColors.primary(brightness);
       case 'tip':
         return AppColors.warning;
-      case 'accessory':
-        return AppColors.difficultyExpert(brightness);
       default:
         return AppColors.textSecondary(brightness);
     }
   }
-
-  void _showAddEquipmentDialog(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(brightness),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
-      ),
-      builder: (context) => const _AddEquipmentSheet(),
-    );
-  }
-
-  void _showEquipmentDetail(BuildContext context, Equipment equipment) {
-    final brightness = Theme.of(context).brightness;
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: AppColors.surface(brightness),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSpacing.radiusLg)),
-      ),
-      builder: (context) => _EquipmentDetailSheet(equipment: equipment),
-    );
-  }
 }
 
+// =============================================================================
+// Equipment Card — hỗ trợ selection mode
+// =============================================================================
 class _EquipmentCard extends StatefulWidget {
   final Equipment equipment;
+  final bool selectionMode;
+  final bool isSelected;
   final VoidCallback onTap;
+  final VoidCallback onCheckbox;
 
   const _EquipmentCard({
     required this.equipment,
+    required this.selectionMode,
+    required this.isSelected,
     required this.onTap,
+    required this.onCheckbox,
   });
 
   @override
@@ -332,36 +438,71 @@ class _EquipmentCardState extends State<_EquipmentCard> {
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
+    final eq = widget.equipment;
 
     return GestureDetector(
-      onTapDown: (_) => setState(() => _scale = 0.98),
-      onTapUp: (_) => setState(() => _scale = 1.0),
-      onTapCancel: () => setState(() => _scale = 1.0),
+      onTapDown: widget.selectionMode ? null : (_) => setState(() => _scale = 0.98),
+      onTapUp: widget.selectionMode ? null : (_) => setState(() => _scale = 1.0),
+      onTapCancel:
+          widget.selectionMode ? null : () => setState(() => _scale = 1.0),
       onTap: widget.onTap,
       child: AnimatedScale(
         scale: _scale,
         duration: const Duration(milliseconds: 100),
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.surface(brightness),
             borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            border: Border.all(color: AppColors.border(brightness)),
+            border: Border.all(
+              color: widget.isSelected
+                  ? AppColors.primary(brightness)
+                  : AppColors.border(brightness),
+              width: widget.isSelected ? 2 : 1,
+            ),
             boxShadow: AppShadows.soft(brightness),
           ),
           child: Row(
             children: [
+              if (widget.selectionMode) ...[
+                GestureDetector(
+                  onTap: widget.onCheckbox,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: widget.isSelected
+                          ? AppColors.primary(brightness)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: widget.isSelected
+                            ? AppColors.primary(brightness)
+                            : AppColors.border(brightness),
+                        width: 2,
+                      ),
+                    ),
+                    child: widget.isSelected
+                        ? Icon(Icons.check,
+                            size: 16,
+                            color: AppColors.onPrimary(brightness))
+                        : null,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+              ],
               Container(
-                width: 56,
-                height: 56,
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
                   color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                 ),
                 child: Icon(
-                  Icons.straighten,
+                  _catIcon(eq.category),
                   color: AppColors.primary(brightness),
-                  size: 28,
+                  size: 24,
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
@@ -369,38 +510,64 @@ class _EquipmentCardState extends State<_EquipmentCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.equipment.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        color: AppColors.textPrimary(brightness),
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            eq.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: AppColors.textPrimary(brightness),
+                            ),
+                          ),
+                        ),
+                        if (eq.isActive)
+                          Container(
+                            margin: const EdgeInsets.only(left: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              'Đang dùng',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: AppColors.gold,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    if (widget.equipment.brand != null) ...[
-                      const SizedBox(height: AppSpacing.xs),
+                    if (eq.brand != null) ...[
+                      const SizedBox(height: 2),
                       Text(
-                        widget.equipment.brand!,
+                        eq.brand!,
                         style: TextStyle(
                           color: AppColors.textSecondary(brightness),
                           fontSize: 13,
                         ),
                       ),
                     ],
-                    if (widget.equipment.purchaseDate != null) ...[
-                      const SizedBox(height: AppSpacing.xs),
+                    if (eq.condition != null) ...[
+                      const SizedBox(height: 2),
                       Text(
-                        'Mua ${_formatDate(widget.equipment.purchaseDate!)}',
+                        'Tình trạng: ${eq.condition}',
                         style: TextStyle(
                           color: AppColors.textTertiary(brightness),
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ],
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
+              if (!widget.selectionMode)
+                Icon(Icons.chevron_right,
+                    color: AppColors.textTertiary(brightness)),
             ],
           ),
         ),
@@ -408,458 +575,388 @@ class _EquipmentCardState extends State<_EquipmentCard> {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+  IconData _catIcon(String category) {
+    switch (category) {
+      case 'cue':
+        return Icons.straighten;
+      case 'shaft':
+        return Icons.linear_scale;
+      case 'tip':
+        return Icons.circle_outlined;
+      case 'chalk':
+        return Icons.brush;
+      case 'glove':
+        return Icons.pan_tool_outlined;
+      case 'case':
+        return Icons.luggage_outlined;
+      default:
+        return Icons.handyman_outlined;
+    }
   }
 }
 
-class _AddEquipmentSheet extends StatefulWidget {
-  const _AddEquipmentSheet();
-
-  @override
-  State<_AddEquipmentSheet> createState() => _AddEquipmentSheetState();
-}
-
-class _AddEquipmentSheetState extends State<_AddEquipmentSheet> {
-  String _selectedType = 'cue';
-  final _nameController = TextEditingController();
-  final _brandController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _brandController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-
-    return Padding(
-      padding: EdgeInsets.only(
-        left: AppSpacing.lg,
-        right: AppSpacing.lg,
-        top: AppSpacing.lg,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border(brightness),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: AppColors.pastelFor(0, brightness),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                ),
-                child: Icon(Icons.add_circle_outline, color: AppColors.primary(brightness), size: 20),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Text(
-                'Thêm dụng cụ',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  color: AppColors.textPrimary(brightness),
-                ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: Icon(Icons.close, color: AppColors.textSecondary(brightness)),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          // Type selector
-          Text(
-            'Loại dụng cụ',
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary(brightness),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: [
-              _TypeChip(label: 'Cue', value: 'cue', selected: _selectedType == 'cue', onTap: () => setState(() => _selectedType = 'cue')),
-              _TypeChip(label: 'Shaft', value: 'shaft', selected: _selectedType == 'shaft', onTap: () => setState(() => _selectedType = 'shaft')),
-              _TypeChip(label: 'Tip', value: 'tip', selected: _selectedType == 'tip', onTap: () => setState(() => _selectedType = 'tip')),
-              _TypeChip(label: 'Phụ kiện', value: 'accessory', selected: _selectedType == 'accessory', onTap: () => setState(() => _selectedType = 'accessory')),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          TextField(
-            controller: _nameController,
-            style: TextStyle(color: AppColors.textPrimary(brightness)),
-            decoration: InputDecoration(
-              labelText: 'Tên dụng cụ',
-              labelStyle: TextStyle(color: AppColors.textSecondary(brightness)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: BorderSide(color: AppColors.border(brightness)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: BorderSide(color: AppColors.border(brightness)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
-              ),
-              filled: true,
-              fillColor: AppColors.background(brightness),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-
-          TextField(
-            controller: _brandController,
-            style: TextStyle(color: AppColors.textPrimary(brightness)),
-            decoration: InputDecoration(
-              labelText: 'Thương hiệu',
-              labelStyle: TextStyle(color: AppColors.textSecondary(brightness)),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: BorderSide(color: AppColors.border(brightness)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: BorderSide(color: AppColors.border(brightness)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                borderSide: BorderSide(color: AppColors.primary(brightness), width: 2),
-              ),
-              filled: true,
-              fillColor: AppColors.background(brightness),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xxl),
-
-          _PrimaryButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Đã thêm dụng cụ!'),
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: AppColors.success,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  ),
-                ),
-              );
-            },
-            label: 'Thêm',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PrimaryButton extends StatefulWidget {
-  final VoidCallback? onPressed;
-  final String label;
-
-  const _PrimaryButton({required this.onPressed, required this.label});
-
-  @override
-  State<_PrimaryButton> createState() => _PrimaryButtonState();
-}
-
-class _PrimaryButtonState extends State<_PrimaryButton> {
-  double _scale = 1.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-
-    return GestureDetector(
-      onTap: widget.onPressed,
-      onTapDown: widget.onPressed != null ? (_) => setState(() => _scale = 0.96) : null,
-      onTapUp: widget.onPressed != null ? (_) => setState(() => _scale = 1.0) : null,
-      onTapCancel: widget.onPressed != null ? () => setState(() => _scale = 1.0) : null,
-      child: AnimatedScale(
-        scale: _scale,
-        duration: const Duration(milliseconds: 100),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-          decoration: BoxDecoration(
-            color: widget.onPressed != null ? AppColors.primary(brightness) : AppColors.textTertiary(brightness),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            boxShadow: widget.onPressed != null
-                ? [
-                    BoxShadow(
-                      color: AppColors.primary(brightness).withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: AppColors.onPrimary(brightness),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TypeChip extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _TypeChip({
-    required this.label,
-    required this.value,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary(brightness) : AppColors.background(brightness),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          border: Border.all(
-            color: selected ? AppColors.primary(brightness) : AppColors.border(brightness),
-          ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: selected ? AppColors.onPrimary(brightness) : AppColors.textSecondary(brightness),
-            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
+// =============================================================================
+// Detail bottom sheet
+// =============================================================================
 class _EquipmentDetailSheet extends StatelessWidget {
   final Equipment equipment;
+  final VoidCallback onDeleted;
 
-  const _EquipmentDetailSheet({required this.equipment});
-
-  @override
-  Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
-
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border(brightness),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: AppColors.pastelFor(0, brightness),
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                ),
-                child: Icon(
-                  Icons.straighten,
-                  color: AppColors.primary(brightness),
-                  size: 32,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      equipment.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        color: AppColors.textPrimary(brightness),
-                      ),
-                    ),
-                    if (equipment.brand != null) ...[
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        equipment.brand!,
-                        style: TextStyle(color: AppColors.textSecondary(brightness)),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xl),
-
-          if (equipment.purchaseDate != null)
-            _DetailRow(
-              icon: Icons.calendar_today,
-              iconColor: AppColors.primary(brightness),
-              label: 'Ngày mua',
-              value: '${equipment.purchaseDate!.day}/${equipment.purchaseDate!.month}/${equipment.purchaseDate!.year}',
-            ),
-
-          if (equipment.notes != null) ...[
-            const SizedBox(height: AppSpacing.md),
-            _DetailRow(
-              icon: Icons.note,
-              iconColor: AppColors.warning,
-              label: 'Ghi chú',
-              value: equipment.notes!,
-            ),
-          ],
-
-          const SizedBox(height: AppSpacing.xl),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text('Đã xóa dụng cụ'),
-                        behavior: SnackBarBehavior.floating,
-                        backgroundColor: AppColors.error,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.delete_outline, color: AppColors.error),
-                  label: const Text('Xóa', style: TextStyle(color: AppColors.error)),
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.error),
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: _PrimaryButton(
-                  onPressed: () => Navigator.pop(context),
-                  label: 'Đóng',
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final String value;
-
-  const _DetailRow({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.value,
+  const _EquipmentDetailSheet({
+    required this.equipment,
+    required this.onDeleted,
   });
 
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
+    final eq = equipment;
 
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.sm),
-          decoration: BoxDecoration(
-            color: iconColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+    return DraggableScrollableSheet(
+      initialChildSize: 0.72,
+      minChildSize: 0.4,
+      maxChildSize: 0.95,
+      expand: false,
+      builder: (_, scrollController) {
+        return SingleChildScrollView(
+          controller: scrollController,
+          padding: EdgeInsets.only(
+            left: AppSpacing.lg,
+            right: AppSpacing.lg,
+            top: AppSpacing.lg,
+            bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
           ),
-          child: Icon(icon, size: 18, color: iconColor),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color: AppColors.textSecondary(brightness),
-                  fontSize: 12,
+              // Handle
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.border(brightness),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary(brightness),
+              const SizedBox(height: AppSpacing.lg),
+
+              // Header
+              Row(
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      color: AppColors.pastelFor(0, brightness),
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: Icon(
+                      Icons.straighten,
+                      color: AppColors.primary(brightness),
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                eq.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  color: AppColors.textPrimary(brightness),
+                                ),
+                              ),
+                            ),
+                            if (eq.isActive)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.gold.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  'Đang dùng',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.gold,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        if (eq.brand != null) ...[
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            eq.brand!,
+                            style: TextStyle(
+                                color: AppColors.textSecondary(brightness)),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: AppSpacing.xl),
+
+              // Thông số kỹ thuật
+              if (_hasSpecs(eq)) ...[
+                _sectionTitle('Thông số kỹ thuật', brightness),
+                const SizedBox(height: AppSpacing.md),
+                ..._specRows(eq, brightness),
+                const SizedBox(height: AppSpacing.xl),
+              ],
+
+              // Thông tin sở hữu
+              if (eq.purchaseDate != null ||
+                  eq.purchasePrice != null ||
+                  eq.currentValue != null ||
+                  eq.condition != null) ...[
+                _sectionTitle('Thông tin sở hữu', brightness),
+                const SizedBox(height: AppSpacing.md),
+                if (eq.purchaseDate != null)
+                  _detailRow(Icons.calendar_today,
+                      AppColors.primary(brightness), 'Ngày mua',
+                      '${eq.purchaseDate!.day}/${eq.purchaseDate!.month}/${eq.purchaseDate!.year}'),
+                if (eq.purchasePrice != null)
+                  _detailRow(Icons.payments_outlined,
+                      AppColors.success, 'Giá mua',
+                      '${eq.purchasePrice!.toStringAsFixed(0)} VNĐ'),
+                if (eq.currentValue != null)
+                  _detailRow(Icons.account_balance_wallet_outlined,
+                      AppColors.warning, 'Giá trị hiện tại',
+                      '${eq.currentValue!.toStringAsFixed(0)} VNĐ'),
+                if (eq.condition != null)
+                  _detailRow(Icons.health_and_safety_outlined,
+                      AppColors.primary(brightness), 'Tình trạng', eq.condition!),
+                const SizedBox(height: AppSpacing.xl),
+              ],
+
+              // Ghi chú
+              if (eq.notes != null && eq.notes!.isNotEmpty) ...[
+                _sectionTitle('Ghi chú', brightness),
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.background(brightness),
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                  child: Text(
+                    eq.notes!,
+                    style: TextStyle(
+                      color: AppColors.textSecondary(brightness),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xl),
+              ],
+
+              // Action buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        context.push(
+                            '/profile/equipment/compare?ids=${eq.id}');
+                      },
+                      icon: Icon(Icons.compare_arrows,
+                          color: AppColors.primary(brightness)),
+                      label: Text('So sánh',
+                          style:
+                              TextStyle(color: AppColors.primary(brightness))),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.primary(brightness)),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radiusMd),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _confirmDelete(context, eq.name, onDeleted);
+                      },
+                      icon:
+                          const Icon(Icons.delete_outline, color: AppColors.error),
+                      label: const Text('Xóa',
+                          style: TextStyle(color: AppColors.error)),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.error),
+                        padding:
+                            const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radiusMd),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.md),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary(brightness),
+                    foregroundColor: AppColors.onPrimary(brightness),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                  ),
+                  child: const Text('Đóng'),
                 ),
               ),
             ],
           ),
-        ),
-      ],
+        );
+      },
+    );
+  }
+
+  bool _hasSpecs(Equipment eq) =>
+      eq.weight != null ||
+      eq.shaftMaterial != null ||
+      eq.shaftDiameter != null ||
+      eq.tipBrand != null ||
+      eq.tipDiameter != null ||
+      eq.tipHardness != null ||
+      eq.balance != null ||
+      eq.joint != null ||
+      eq.wrap != null ||
+      eq.ferrule != null;
+
+  List<Widget> _specRows(Equipment eq, Brightness brightness) {
+    final rows = <Widget>[];
+    if (eq.weight != null)
+      rows.add(_detailRow(Icons.fitness_center, AppColors.primary(brightness),
+          'Trọng lượng', '${eq.weight!.toStringAsFixed(1)} oz'));
+    if (eq.shaftMaterial != null)
+      rows.add(_detailRow(Icons.layers, AppColors.primary(brightness),
+          'Chất liệu thân', eq.shaftMaterial!));
+    if (eq.shaftDiameter != null)
+      rows.add(_detailRow(Icons.straighten, AppColors.primary(brightness),
+          'Đường kính thân', '${eq.shaftDiameter!.toStringAsFixed(2)} mm'));
+    if (eq.tipBrand != null)
+      rows.add(_detailRow(Icons.circle_outlined, AppColors.warning,
+          'Thương hiệu đầu', eq.tipBrand!));
+    if (eq.tipDiameter != null)
+      rows.add(_detailRow(Icons.circle_outlined, AppColors.warning,
+          'Đường kính đầu', '${eq.tipDiameter!.toStringAsFixed(2)} mm'));
+    if (eq.tipHardness != null)
+      rows.add(_detailRow(Icons.circle_outlined, AppColors.warning,
+          'Độ cứng đầu', eq.tipHardness!));
+    if (eq.balance != null)
+      rows.add(_detailRow(Icons.balance, AppColors.primary(brightness),
+          'Cân bằng', eq.balance!));
+    if (eq.joint != null)
+      rows.add(_detailRow(Icons.link, AppColors.primary(brightness),
+          'Joint', eq.joint!));
+    if (eq.wrap != null)
+      rows.add(_detailRow(Icons.gesture, AppColors.primary(brightness),
+          'Wrap', eq.wrap!));
+    if (eq.ferrule != null)
+      rows.add(_detailRow(Icons.circle, AppColors.primary(brightness),
+          'Ferrule', eq.ferrule!));
+    return rows;
+  }
+
+  Widget _sectionTitle(String text, Brightness brightness) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.2,
+        color: AppColors.textSecondary(brightness),
+      ),
+    );
+  }
+
+  Widget _detailRow(
+      IconData icon, Color iconColor, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.xs),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+            ),
+            child: Icon(icon, size: 16, color: iconColor),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelete(
+      BuildContext context, String name, VoidCallback onDeleted) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Xóa dụng cụ?'),
+        content: Text('Bạn có chắc muốn xóa "$name"? Hành động này không thể hoàn tác.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              onDeleted();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Đã xóa "$name"'),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: AppColors.success,
+                ),
+              );
+            },
+            child: Text('Xóa',
+                style: TextStyle(color: AppColors.error)),
+          ),
+        ],
+      ),
     );
   }
 }

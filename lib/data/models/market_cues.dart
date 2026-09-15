@@ -22,6 +22,14 @@ class MarketCue {
   final String description;
   final double rating; // 1-5 stars
 
+  /// Đường kính thân cơ (mm). Predator dùng 12.75mm, phần lớn còn lại 9.5mm.
+  /// Dùng để so sánh với cơ người chơi sở hữu.
+  final double? shaftDiameter;
+
+  /// Độ cứng đầu cơ. Dùng để gợi ý phù hợp với phong cách.
+  /// 'Soft' cho người thích kiểm soát, 'Medium' phổ quát, 'Hard' cho lực.
+  final String? tipHardness;
+
   const MarketCue({
     required this.id,
     required this.brand,
@@ -38,6 +46,8 @@ class MarketCue {
     required this.wrap,
     required this.description,
     required this.rating,
+    this.shaftDiameter,
+    this.tipHardness,
   });
 
   String get priceRange => '${_formatPrice(priceMin)} - ${_formatPrice(priceMax)}';
@@ -69,6 +79,8 @@ class MarketCueDatabase {
       wrap: 'Irish Linen',
       description: 'Cơ gỗ tự nhiên phổ biến tại VN, phù hợp beginners đến intermediate.',
       rating: 3.8,
+      shaftDiameter: 9.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'vn_vics_1',
@@ -86,6 +98,8 @@ class MarketCueDatabase {
       wrap: 'Nylon',
       description: 'Cơ giá rẻ, phù hợp beginners. Độ bền trung bình.',
       rating: 3.2,
+      shaftDiameter: 9.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'vn_century_1',
@@ -103,6 +117,8 @@ class MarketCueDatabase {
       wrap: 'Irish Linen',
       description: 'Cơ VN cao cấp với gỗ Bắc Mỹ, joint chuẩn uni-loc.',
       rating: 4.2,
+      shaftDiameter: 12.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'vn_ceu_1',
@@ -120,6 +136,8 @@ class MarketCueDatabase {
       wrap: 'Irish Linen',
       description: 'Cơ VN được nhiều player ưa chuộng, cảm giác đánh tốt.',
       rating: 4.0,
+      shaftDiameter: 9.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'vn_kachango_1',
@@ -137,6 +155,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Cơ VN cao cấp, design đẹp, performance tốt.',
       rating: 4.5,
+      shaftDiameter: 12.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'vn_tiger_1',
@@ -154,6 +174,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Cơ custom VN, được làm thủ công, cảm giác đánh tuyệt vời.',
       rating: 4.7,
+      shaftDiameter: 12.5,
+      tipHardness: 'Medium',
     ),
 
     // ========== JAPAN CUES ==========
@@ -173,6 +195,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Cơ Nhật cao cấp, gỗ ash chất lượng cao, độ chính xác tuyệt đối.',
       rating: 4.8,
+      shaftDiameter: 12.5,
+      tipHardness: 'Soft',
     ),
     MarketCue(
       id: 'jp_yamaha_1',
@@ -190,6 +214,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Thương hiệu Nhật uy tín, build quality vượt trội.',
       rating: 4.9,
+      shaftDiameter: 12.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'jp_tokuyasu_1',
@@ -207,6 +233,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Cơ Nhật handcrafted, được nhiều pro player sử dụng.',
       rating: 4.9,
+      shaftDiameter: 12.5,
+      tipHardness: 'Medium',
     ),
 
     // ========== TAIWAN CUES ==========
@@ -226,6 +254,8 @@ class MarketCueDatabase {
       wrap: 'Irish Linen',
       description: 'Thương hiệu Đài Loan nổi tiếng, chất lượng ổn định.',
       rating: 4.3,
+      shaftDiameter: 9.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'tw_alpha_1',
@@ -243,6 +273,8 @@ class MarketCueDatabase {
       wrap: 'Irish Linen',
       description: 'Cơ Đài Loan với giá hợp lý, phù hợp intermediate players.',
       rating: 4.1,
+      shaftDiameter: 9.5,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'tw_century_tw_1',
@@ -260,6 +292,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Century Đài Loan, build quality tốt, nhiều pro dùng.',
       rating: 4.5,
+      shaftDiameter: 12.5,
+      tipHardness: 'Medium',
     ),
 
     // ========== USA CUES ==========
@@ -279,6 +313,8 @@ class MarketCueDatabase {
       wrap: 'Irish Linen',
       description: 'Thương hiệu Mỹ nổi tiếng thế giới, công nghệ carbon fiber.',
       rating: 4.8,
+      shaftDiameter: 12.75,
+      tipHardness: 'Medium',
     ),
     MarketCue(
       id: 'usa_mcdaniel_1',
@@ -296,6 +332,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Cơ custom Mỹ handcrafted, độ chính xác cao, pro-level.',
       rating: 4.9,
+      shaftDiameter: 12.5,
+      tipHardness: 'Hard',
     ),
     MarketCue(
       id: 'usa_southwest_1',
@@ -313,6 +351,8 @@ class MarketCueDatabase {
       wrap: 'Leather',
       description: 'Cơ Mỹ cao cấp với design độc đáo, pro tournament standard.',
       rating: 5.0,
+      shaftDiameter: 12.5,
+      tipHardness: 'Hard',
     ),
   ];
 
@@ -336,6 +376,9 @@ class MarketCueDatabase {
         c.description.toLowerCase().contains(lower)).toList();
   }
 
-  static List<String> get origins => ['Vietnam', 'Japan', 'Taiwan', 'USA'];
-  static List<String> get categories => ['Entry-level', 'Mid-range', 'High-end'];
+  static List<String> get origins =>
+      cues.map((c) => c.origin).toSet().toList()..sort();
+
+  static List<String> get categories =>
+      cues.map((c) => c.category).toSet().toList()..sort();
 }

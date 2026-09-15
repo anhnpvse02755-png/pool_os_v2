@@ -26,7 +26,7 @@ class EquipmentStatisticsScreen extends ConsumerWidget {
         backgroundColor: AppColors.background(brightness),
         elevation: 0,
         title: Text(
-          'Equipment Statistics',
+          'Thống kê dụng cụ',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
@@ -175,7 +175,7 @@ class EquipmentStatisticsScreen extends ConsumerWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'Favorite Cue',
+                'Cơ hay dùng nhất',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -217,13 +217,26 @@ class EquipmentStatisticsScreen extends ConsumerWidget {
                   fontSize: 12,
                 ),
               ),
-              trailing: TextButton(
-                onPressed: () =>
-                    context.push('/profile/equipment/${favorite.id}'),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary(brightness),
-                ),
-                child: const Text('View'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton(
+                    onPressed: () =>
+                        context.push('/profile/equipment/compare?ids=${favorite.id}'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary(brightness),
+                    ),
+                    child: const Text('So sánh'),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        context.push('/profile/equipment/${favorite.id}'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.primary(brightness),
+                    ),
+                    child: const Text('Chi tiết'),
+                  ),
+                ],
               ),
             ),
         ],
@@ -252,7 +265,7 @@ class EquipmentStatisticsScreen extends ConsumerWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'Cost Summary',
+                'Tổng chi phí',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -333,7 +346,7 @@ class EquipmentStatisticsScreen extends ConsumerWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'Maintenance Reminders',
+                'Nhắc bảo dưỡng',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
@@ -378,7 +391,7 @@ class EquipmentStatisticsScreen extends ConsumerWidget {
                           style: TextButton.styleFrom(
                             foregroundColor: AppColors.primary(brightness),
                           ),
-                          child: const Text('Update'),
+                          child: const Text('Cập nhật'),
                         );
                       }),
                     ],
