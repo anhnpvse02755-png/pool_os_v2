@@ -4,9 +4,10 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../core/theme/app_theme.dart';
 
 /// Coach Suggestion Chips
 class CoachSuggestionChips extends StatelessWidget {
@@ -25,6 +26,8 @@ class CoachSuggestionChips extends StatelessWidget {
       'Tôi nên cải thiện gì?',
     ];
 
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
@@ -33,7 +36,7 @@ class CoachSuggestionChips extends StatelessWidget {
           Text(
             'Gợi ý:',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                 ),
           ),
           const SizedBox(height: 8),
@@ -64,6 +67,8 @@ class _SuggestionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -72,16 +77,19 @@ class _SuggestionChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+            // Chữ dùng `primary` chứ không `accentLabel`: trên nền 10% cùng
+            // tông, primary đạt 9.77 sáng / 4.71 tối, còn accentLabel chỉ 4.47
+            // ở bản sáng.
+            color: AppColors.primary(brightness).withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.3),
+              color: AppColors.primary(brightness).withValues(alpha: 0.3),
             ),
           ),
           child: Text(
             text,
             style: TextStyle(
-              color: AppTheme.primaryGreen,
+              color: AppColors.primary(brightness),
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),

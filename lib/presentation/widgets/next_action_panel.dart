@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/theme/app_theme.dart';
 import '../../core/utils/drills_library.dart';
 
 /// Sprint 3A Task 4 — Next Action (Forward Path).
@@ -53,6 +54,7 @@ class NextActionPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final next = _nextDrill();
+    final brightness = Theme.of(context).brightness;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,7 +66,7 @@ class NextActionPanel extends StatelessWidget {
             _narrative,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
+                  color: AppColors.textSecondary(brightness),
                   fontStyle: FontStyle.italic,
                 ),
           ),
@@ -72,12 +74,13 @@ class NextActionPanel extends StatelessWidget {
         // Primary action: Retry same drill.
         FilledButton.icon(
           onPressed: () =>
-              context.push('/training/session/new?drill=$currentDrillCode'),
+              context.push(
+                  '/training/session/new?drill=$currentDrillCode&level=1'),
           icon: const Icon(Icons.replay_outlined),
           label: const Text('Tập lại'),
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: AppTheme.primaryGreen,
+            backgroundColor: AppColors.primary(brightness),
           ),
         ),
         const SizedBox(height: 12),
@@ -85,15 +88,16 @@ class NextActionPanel extends StatelessWidget {
         OutlinedButton.icon(
           onPressed: next == null
               ? null
-              : () => context.push('/training/session/new?drill=${next.code}'),
+              : () => context.push(
+                      '/training/session/new?drill=${next.code}&level=1'),
           icon: const Icon(Icons.arrow_forward_outlined),
           label: Text(
             next == null ? 'Đã hết drill gợi ý' : 'Thử: ${next.nameVi}',
           ),
           style: OutlinedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            foregroundColor: AppTheme.primaryGreen,
-            side: const BorderSide(color: AppTheme.primaryGreen, width: 2),
+            foregroundColor: AppColors.primary(brightness),
+            side: BorderSide(color: AppColors.primary(brightness), width: 2),
           ),
         ),
       ],

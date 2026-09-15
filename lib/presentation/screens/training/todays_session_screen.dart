@@ -232,11 +232,11 @@ class _TodaysSessionScreenState extends ConsumerState<TodaysSessionScreen> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: const Icon(Icons.schedule,
-                    color: Colors.white, size: 20),
+                child: Icon(Icons.schedule,
+                    color: AppColors.onPrimary(brightness), size: 20),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -248,8 +248,8 @@ class _TodaysSessionScreenState extends ConsumerState<TodaysSessionScreen> {
                         Flexible(
                           child: Text(
                             _greeting(),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: AppColors.onPrimary(brightness),
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
@@ -261,7 +261,7 @@ class _TodaysSessionScreenState extends ConsumerState<TodaysSessionScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: AppColors.onPrimary(brightness).withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Row(
@@ -269,14 +269,14 @@ class _TodaysSessionScreenState extends ConsumerState<TodaysSessionScreen> {
                               children: [
                                 Icon(
                                   Icons.check_circle,
-                                  color: Colors.white,
+                                  color: AppColors.onPrimary(brightness),
                                   size: 12,
                                 ),
                                 const SizedBox(width: 4),
-                                const Text(
+                                Text(
                                   'Đã khởi động',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: AppColors.onPrimary(brightness),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -291,7 +291,7 @@ class _TodaysSessionScreenState extends ConsumerState<TodaysSessionScreen> {
                     Text(
                       'Hãy chọn thời gian để bắt đầu',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: AppColors.onPrimary(brightness).withValues(alpha: 0.8),
                         fontSize: 13,
                       ),
                     ),
