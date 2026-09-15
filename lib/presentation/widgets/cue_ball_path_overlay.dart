@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/colors.dart';
+
 import 'shot_map_painter.dart';
 
 /// Cue ball path overlay — focuses on the cue ball trajectory alone.
@@ -13,7 +15,7 @@ class CueBallPathOverlay extends StatelessWidget {
       aspectRatio: 2,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: AppColors.tableLine),
           borderRadius: BorderRadius.circular(4),
         ),
         child: ClipRRect(
@@ -33,9 +35,9 @@ class _CueBallPathPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paintTable = Paint()..color = const Color(0xFF0E5C3B);
+    final paintTable = Paint()..color = AppColors.tableFelt;
     final paintBorder = Paint()
-      ..color = Colors.black
+      ..color = AppColors.tableLine
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     canvas.drawRect(Offset.zero & size, paintTable);
@@ -51,7 +53,7 @@ class _CueBallPathPainter extends CustomPainter {
       Offset(size.width, size.height),
     ];
     for (final p in pockets) {
-      canvas.drawCircle(p, 12, Paint()..color = Colors.black);
+      canvas.drawCircle(p, 12, Paint()..color = AppColors.tableLine);
     }
 
     final path = Path();
@@ -66,7 +68,7 @@ class _CueBallPathPainter extends CustomPainter {
       }
     }
     final paint = Paint()
-      ..color = Colors.amber
+      ..color = AppColors.gold
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
     canvas.drawPath(path, paint);
@@ -74,7 +76,7 @@ class _CueBallPathPainter extends CustomPainter {
     // Render cue ball positions
     for (final s in shots) {
       final cue = s.cue.times(size);
-      canvas.drawCircle(cue, 4, Paint()..color = Colors.white);
+      canvas.drawCircle(cue, 4, Paint()..color = AppColors.ballCue);
     }
   }
 

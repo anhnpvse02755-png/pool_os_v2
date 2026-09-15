@@ -19,8 +19,8 @@ class SkillTrendChart extends ConsumerStatefulWidget {
   });
   final String playerId;
   final String skill;
-  /// Null = dùng `primary` theo chế độ. Trước đây mặc định
-  /// `Colors.blue` — màu Material không đổi theo sáng/tối.
+  /// Null = dùng `primary` theo chế độ. Trước đây mặc định là xanh dương
+  /// của Material — màu đó không đổi theo sáng/tối.
   final Color? color;
   final double height;
 

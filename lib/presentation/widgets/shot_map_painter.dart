@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/colors.dart';
+
 /// Pure painter for shot map — 2D pool table with shots plotted as
 /// cue ball → target ball → pocket vectors.
 ///
@@ -15,13 +17,13 @@ class ShotMapPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paintTable = Paint()..color = const Color(0xFF0E5C3B);
+    final paintTable = Paint()..color = AppColors.tableFelt;
     final paintBorder = Paint()
-      ..color = Colors.black
+      ..color = AppColors.tableLine
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
     final paintRail = Paint()
-      ..color = const Color(0xFF1E7E55)
+      ..color = AppColors.tableRail
       ..style = PaintingStyle.stroke
       ..strokeWidth = 6;
 
@@ -34,7 +36,7 @@ class ShotMapPainter extends CustomPainter {
     // Pockets — 6 standard positions.
     final pockets = _pockets(size);
     for (final p in pockets) {
-      canvas.drawCircle(p, 12, Paint()..color = Colors.black);
+      canvas.drawCircle(p, 12, Paint()..color = AppColors.tableLine);
     }
 
     if (shots.isEmpty) return;
@@ -49,27 +51,27 @@ class ShotMapPainter extends CustomPainter {
       final pocket = s.pocket?.times(size);
 
       // Cue ball
-      canvas.drawCircle(cue, 6, Paint()..color = Colors.white);
+      canvas.drawCircle(cue, 6, Paint()..color = AppColors.ballCue);
       canvas.drawCircle(cue, 6,
           Paint()
-            ..color = Colors.black
+            ..color = AppColors.tableLine
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1);
 
       // Path cue -> target
       final pathPaint = Paint()
-        ..color = s.made ? Colors.green : Colors.redAccent
+        ..color = s.made ? AppColors.success : AppColors.error
         ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke;
       canvas.drawLine(cue, target, pathPaint);
 
       // Target ball
-      canvas.drawCircle(target, 5, Paint()..color = Colors.yellow);
+      canvas.drawCircle(target, 5, Paint()..color = AppColors.ballObject);
 
       // Path to pocket (if any)
       if (pocket != null) {
         final pPath = Paint()
-          ..color = s.made ? Colors.greenAccent : Colors.redAccent
+          ..color = s.made ? AppColors.success : AppColors.error
           ..strokeWidth = 1
           ..style = PaintingStyle.stroke;
         canvas.drawLine(target, pocket, pPath);
@@ -99,7 +101,7 @@ class ShotMapPainter extends CustomPainter {
         final v = grid[y][x];
         if (v == 0) continue;
         final alpha = (v / maxV).clamp(0.0, 1.0);
-        final p = Paint()..color = Colors.redAccent.withOpacity(alpha * 0.4);
+        final p = Paint()..color = AppColors.error.withValues(alpha: alpha * 0.4);
         canvas.drawRect(
           Rect.fromLTWH(x * cellW, y * cellH, cellW, cellH),
           p,

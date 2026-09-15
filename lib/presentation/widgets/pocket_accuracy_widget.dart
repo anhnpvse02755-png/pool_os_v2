@@ -4,6 +4,8 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
 import '../../data/models/match.dart';
 
 /// Pocket accuracy data extracted from rack data
@@ -144,6 +146,8 @@ class PocketAccuracyWidget extends StatelessWidget {
   }
 
   Widget _buildSummaryHeader(BuildContext context, List<PocketAccuracy> accuracy) {
+    final brightness = Theme.of(context).brightness;
+
     final totalAttempts = accuracy.fold<int>(0, (sum, p) => sum + p.attempts);
     final totalMade = accuracy.fold<int>(0, (sum, p) => sum + p.made);
     final overallAccuracy = totalAttempts > 0 ? (totalMade / totalAttempts) * 100 : 0.0;
@@ -165,12 +169,12 @@ class PocketAccuracyWidget extends StatelessWidget {
           Container(
             width: 1,
             height: 40,
-            color: Colors.grey.shade300,
+            color: AppColors.border(brightness),
           ),
           _SummaryItem(
             label: 'Độ chính xác',
             value: '${overallAccuracy.toStringAsFixed(1)}%',
-            color: _getAccuracyColor(overallAccuracy),
+            color: _getAccuracyColor(overallAccuracy, brightness),
           ),
         ],
       ),
@@ -178,27 +182,29 @@ class PocketAccuracyWidget extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+        color: AppColors.surfaceRecessed(brightness),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         children: [
-          Icon(Icons.gps_off, size: 48, color: Colors.grey.shade400),
+          Icon(Icons.gps_off, size: 48, color: AppColors.textTertiary(brightness)),
           const SizedBox(height: 12),
           Text(
             'Chưa có dữ liệu',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.grey.shade600,
+                  color: AppColors.textSecondary(brightness),
                 ),
           ),
           const SizedBox(height: 4),
           Text(
             'Cần ghi ít nhất 1 trận đấu để xem thống kê',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade500,
+                  color: AppColors.textTertiary(brightness),
                 ),
             textAlign: TextAlign.center,
           ),
@@ -208,22 +214,26 @@ class PocketAccuracyWidget extends StatelessWidget {
   }
 
   Widget _buildDataNote(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.amber.shade50,
+        color: AppColors.warningSubtle(brightness),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.amber.shade200),
+        border: Border.all(
+            color: AppColors.warningOnTint(brightness).withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline, size: 16, color: Colors.amber.shade700),
+          Icon(Icons.info_outline,
+              size: 16, color: AppColors.warningOnTint(brightness)),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               'Dữ liệu ước tính từ thống kê tổng. Shot-by-shot coordinates sẽ cải thiện độ chính xác.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.amber.shade900,
+                    color: AppColors.warningOnTint(brightness),
                   ),
             ),
           ),
@@ -232,11 +242,13 @@ class PocketAccuracyWidget extends StatelessWidget {
     );
   }
 
-  Color _getAccuracyColor(double accuracy) {
-    if (accuracy >= 80) return Colors.green;
-    if (accuracy >= 60) return Colors.blue;
-    if (accuracy >= 40) return Colors.orange;
-    return Colors.red;
+  /// Nhận [brightness] vì `primary` đổi theo chế độ; success/warning/error
+  /// thì không (chúng cố ý bất biến).
+  Color _getAccuracyColor(double accuracy, Brightness brightness) {
+    if (accuracy >= 80) return AppColors.success;
+    if (accuracy >= 60) return AppColors.primary(brightness);
+    if (accuracy >= 40) return AppColors.warning;
+    return AppColors.error;
   }
 }
 
@@ -259,6 +271,8 @@ class _SummaryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+
     return Column(
       children: [
         Text(
@@ -271,7 +285,7 @@ class _SummaryItem extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey.shade600,
+                color: AppColors.textSecondary(brightness),
               ),
         ),
       ],
@@ -286,17 +300,19 @@ class _PocketCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accuracyColor = _getAccuracyColor(pocket.accuracy);
+    final brightness = Theme.of(context).brightness;
+
+    final accuracyColor = _getAccuracyColor(pocket.accuracy, brightness);
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface(brightness),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.border(brightness)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.textPrimary(brightness).withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -326,7 +342,7 @@ class _PocketCard extends StatelessWidget {
           Text(
             pocket.pocketName,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey.shade600,
+                  color: AppColors.textSecondary(brightness),
                 ),
           ),
 
@@ -334,7 +350,7 @@ class _PocketCard extends StatelessWidget {
           Text(
             '${pocket.made}/${pocket.attempts}',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Colors.grey.shade500,
+                  color: AppColors.textTertiary(brightness),
                 ),
           ),
         ],
@@ -342,10 +358,12 @@ class _PocketCard extends StatelessWidget {
     );
   }
 
-  Color _getAccuracyColor(double accuracy) {
-    if (accuracy >= 80) return Colors.green;
-    if (accuracy >= 60) return Colors.blue;
-    if (accuracy >= 40) return Colors.orange;
-    return Colors.red;
+  /// Nhận [brightness] vì `primary` đổi theo chế độ; success/warning/error
+  /// thì không (chúng cố ý bất biến).
+  Color _getAccuracyColor(double accuracy, Brightness brightness) {
+    if (accuracy >= 80) return AppColors.success;
+    if (accuracy >= 60) return AppColors.primary(brightness);
+    if (accuracy >= 40) return AppColors.warning;
+    return AppColors.error;
   }
 }

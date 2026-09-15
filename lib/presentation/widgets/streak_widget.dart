@@ -55,7 +55,7 @@ class _StreakWidgetState extends ConsumerState<StreakWidget> {
         child: Row(
           children: [
             Icon(Icons.local_fire_department,
-                color: Colors.deepOrange, size: 36),
+                color: AppColors.streak, size: 36),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
