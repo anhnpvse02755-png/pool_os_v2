@@ -9,7 +9,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
-import '../training/drill_detail_screen.dart';
 
 /// Coach Onboarding Screen - 3 screens
 class CoachOnboardingScreen extends StatefulWidget {
@@ -134,7 +133,6 @@ class _CoachOnboardingScreenState extends State<CoachOnboardingScreen> {
   }
 
   Widget _buildButton() {
-    final accentColor = AppColors.primary(_brightness);
 
     if (_currentPage == _pages.length - 1) {
       return _OnboardingButton(

@@ -27,7 +27,6 @@
 import 'dart:io';
 
 import 'src/cli_options.dart';
-import 'src/migration_dto.dart';
 import 'src/migration_pipeline.dart';
 import 'src/io.dart';
 import 'report_generator.dart';

@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart' show debugPrint, visibleForTesting;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/providers/coach_provider.dart';
 import '../core/services/coach_types.dart';
 import 'knowledge_models.dart';
 import 'knowledge_data.dart';

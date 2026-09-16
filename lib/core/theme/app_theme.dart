@@ -44,10 +44,7 @@ class AppTheme {
         surface: AppColors.lightSurface,
         onSurface: AppColors.lightTextPrimary,
         error: AppColors.error,
-        // NỢ: trắng trên `error` #EF4444 chỉ đạt 3,76:1. Chưa sửa ở đây vì
-        // chưa có token mực cho nền đỏ — cần một quyết định màu riêng, không
-        // phải một phép đổi tên. Xem `onGold` cho khuôn mẫu.
-        onError: Colors.white,
+        onError: AppColors.onError(brightness),
       ),
 
       // Typography
@@ -347,8 +344,7 @@ class AppTheme {
         surface: AppColors.darkSurface,
         onSurface: AppColors.darkTextPrimary,
         error: AppColors.error,
-        // NỢ: giống bản sáng — trắng trên `error` chỉ 3,76:1.
-        onError: Colors.white,
+        onError: AppColors.onError(brightness),
       ),
 
       // Typography

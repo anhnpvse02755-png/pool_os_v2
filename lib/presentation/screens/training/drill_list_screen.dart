@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
-import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/utils/drills_library.dart';
 import '../../widgets/icon_tile.dart';
@@ -297,6 +296,52 @@ class _DrillListScreenState extends State<DrillListScreen>
   }
 }
 
+/// Tông NỀN của một bậc độ khó.
+///
+/// Tách khỏi [difficultyOnTint] có chủ đích: huy hiệu là chữ đặt trên nền 10%
+/// của chính tông này, và ở bản sáng tông nền KHÔNG dùng lại được làm màu chữ.
+/// Cùng khuôn `_levelTint`/`_levelOnTint` đã dùng ở màn cộng đồng.
+///
+/// Công khai (không `_`) để `test/theme/drill_badge_contrast_test.dart` đo
+/// đúng bảng màu màn này dùng, thay vì chép lại một bảng thứ hai rồi trôi.
+Color difficultyTint(String difficulty, Brightness brightness) {
+  switch (difficulty) {
+    case 'easy':
+      return AppColors.success;
+    case 'medium':
+      return AppColors.warning;
+    case 'hard':
+      return AppColors.error;
+    case 'expert':
+      return AppColors.difficultyExpert(brightness);
+    default:
+      return AppColors.textSecondary(brightness);
+  }
+}
+
+/// Tông CHỮ đặt trên nền 10% của [difficultyTint].
+///
+/// Đo thật trên `surface`, sàn 4,5:1 (chữ 9–20px). Dùng lại chính tông nền làm
+/// chữ thì `easy` chỉ được **2,31** ở bản sáng, `medium` **1,99**, `hard`
+/// **3,29** — cả ba dưới sàn, và `hard` trượt ở cả chế độ tối (3,94). Họ
+/// `*OnTint` có sẵn đúng cho chiều này và kéo cả ba lên ≥4,79.
+///
+/// `expert` (5,71/5,67) và nhánh mặc định (5,18/5,44) tự đạt nên dùng thẳng.
+Color difficultyOnTint(String difficulty, Brightness brightness) {
+  switch (difficulty) {
+    case 'easy':
+      return AppColors.successOnTint(brightness);
+    case 'medium':
+      return AppColors.warningOnTint(brightness);
+    case 'hard':
+      return AppColors.errorOnTint(brightness);
+    case 'expert':
+      return AppColors.difficultyExpert(brightness);
+    default:
+      return AppColors.textSecondary(brightness);
+  }
+}
+
 class _DrillCard extends StatelessWidget {
   final Drill drill;
   final bool showReason;
@@ -307,21 +352,6 @@ class _DrillCard extends StatelessWidget {
     this.showReason = false,
     required this.onTap,
   });
-
-  Color _getDifficultyColor(Brightness brightness) {
-    switch (drill.difficulty) {
-      case 'easy':
-        return AppColors.success;
-      case 'medium':
-        return AppColors.warning;
-      case 'hard':
-        return AppColors.error;
-      case 'expert':
-        return AppColors.difficultyExpert(brightness);
-      default:
-        return AppColors.textSecondary(brightness);
-    }
-  }
 
   String _getDifficultyLabel() {
     switch (drill.difficulty) {
@@ -348,18 +378,11 @@ class _DrillCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
 
-    return InkWell(
+    return PoolCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.surface(brightness),
-          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          border: Border.all(color: AppColors.border(brightness).withValues(alpha: 0.5)),
-          boxShadow: AppShadows.soft(brightness),
-        ),
-        child: Column(
+      radius: AppSpacing.radiusLg,
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -369,7 +392,8 @@ class _DrillCard extends StatelessWidget {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: _getDifficultyColor(brightness).withValues(alpha: 0.1),
+                    color: difficultyTint(drill.difficulty, brightness)
+                        .withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
                   ),
                   child: Center(
@@ -379,7 +403,8 @@ class _DrillCard extends StatelessWidget {
                         Text(
                           drill.nameVi.substring(0, 1),
                           style: TextStyle(
-                            color: _getDifficultyColor(brightness),
+                            color: difficultyOnTint(
+                                drill.difficulty, brightness),
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
@@ -387,7 +412,8 @@ class _DrillCard extends StatelessWidget {
                         Text(
                           _getLevelProgress(),
                           style: TextStyle(
-                            color: _getDifficultyColor(brightness),
+                            color: difficultyOnTint(
+                                drill.difficulty, brightness),
                             fontSize: 9,
                             fontWeight: FontWeight.w600,
                           ),
@@ -419,13 +445,15 @@ class _DrillCard extends StatelessWidget {
                               vertical: AppSpacing.xs,
                             ),
                             decoration: BoxDecoration(
-                              color: _getDifficultyColor(brightness).withValues(alpha: 0.1),
+                              color: difficultyTint(drill.difficulty, brightness)
+                        .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                             ),
                             child: Text(
                               _getDifficultyLabel(),
                               style: TextStyle(
-                                color: _getDifficultyColor(brightness),
+                                color: difficultyOnTint(
+                                    drill.difficulty, brightness),
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -477,7 +505,6 @@ class _DrillCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }

@@ -27,7 +27,6 @@ class CoachChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
 
     if (message.isUser) {
       return _buildUserBubble(context);

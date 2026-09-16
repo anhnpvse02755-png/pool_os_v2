@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../beta/providers/providers.dart';
 import '../../../beta/providers/black_box_provider.dart';
 import '../../../beta/services/feedback_collector_service.dart';
@@ -322,7 +321,8 @@ class _BlackBoxExportScreenState extends ConsumerState<BlackBoxExportScreen> {
 
   void _startExport({bool skipFeedback = false}) async {
     // Generate preview first
-    final preview = ref.read(blackBoxProvider.notifier).generatePreview(
+    // Ket qua khong dung o day: goi de provider dung san ban xem truoc.
+    ref.read(blackBoxProvider.notifier).generatePreview(
       testerId: 'A01', // TODO: Get from settings
     );
 

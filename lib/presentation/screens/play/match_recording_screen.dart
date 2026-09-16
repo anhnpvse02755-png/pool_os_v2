@@ -7,7 +7,6 @@ import 'package:uuid/uuid.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/match_analysis_service.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../data/models/match.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
@@ -55,7 +54,6 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
 
     // Show setup form if no match started
     if (_currentMatch == null) {
@@ -361,7 +359,6 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
             countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
               if (secondsRemaining > 0) {
                 setSheetState(() {
-    final brightness = Theme.of(context).brightness;
 
                   secondsRemaining--;
                 });

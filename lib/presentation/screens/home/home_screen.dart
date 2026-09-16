@@ -283,14 +283,14 @@ class HomeScreen extends ConsumerWidget {
                   child: CircularProgressIndicator(
                       color: AppColors.onPrimary(brightness)),
                 ),
-                error: (_, __) => _buildEmptyRecommendations(brightness),
+                error: (_, _) => _buildEmptyRecommendations(brightness),
               );
             },
             loading: () => Center(
               child: CircularProgressIndicator(
                   color: AppColors.onPrimary(brightness)),
             ),
-            error: (_, __) => _buildWarmupPrompt(brightness),
+            error: (_, _) => _buildWarmupPrompt(brightness),
           ),
 
           const SizedBox(height: AppSpacing.space5),

@@ -573,7 +573,6 @@ class CoachRulesEngine {
   }
 
   String _generateInstructions(Drill drill, CoachSkill skill) {
-    final level = drill.levels.isNotEmpty ? drill.levels.first : null;
 
     switch (skill) {
       case CoachSkill.stopShot:

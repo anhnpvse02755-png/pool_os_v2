@@ -48,12 +48,23 @@ chiều** — nó làm chữ trên nền gì, và nó làm nền cho chữ gì. 
 chỉ được kiểm một chiều nên nút back tụt 3,16 → 2,03:1 ở chế độ SÁNG, lọt qua
 cả ba vòng review.
 
-**Việc còn nợ:** `_NotificationCard` (lô 2) chưa có widget test ·
-`DrillListScreen` chưa đổi hết sang `PoolCard`/`IconTile` (còn 3 `Card` thô) ·
-**nhãn nút VÔ HIỆU chỉ đạt 2,59:1** (nền `textTertiary`, chữ `onPrimary`) —
-khuôn này trải trên ít nhất 8 màn nên cần một task đổi đồng loạt, WCAG miễn trừ
-nên không có test nào bắt · **`ColorScheme.onError` là trắng trên #EF4444 =
-3,76:1** — cần một token mực cho nền đỏ, theo khuôn `onGold`.
+**Nợ cũ đã đóng hết (16/9/2026).** Ba điều đáng nhớ từ đợt dọn:
+
+1. **Nợ "nhãn nút vô hiệu 2,59:1" đã tự hết** mà không ai ghi lại — commit
+   `93f9342` nâng `textTertiary` đã kéo nó lên 5,29 sáng / 4,80 tối. Ghi chép
+   nợ sống lâu hơn nguyên nhân của nó, nên **đo lại trước khi sửa**.
+2. Dọn nợ lòi ra lỗi to hơn chính món nợ: huy hiệu độ khó ở `DrillListScreen`
+   trượt tương phản ở **ba trong năm bậc** (easy 2,31 · medium 1,99 · hard
+   3,29), và **chấm "chưa đọc"** của thẻ thông báo trượt sàn 3:1 ở ba trong
+   bốn loại. Cả hai đều là thành ngữ "chữ cùng tông với nền 10% của nó" mà
+   `colors.dart` đã cảnh báo.
+3. `dart fix --apply --code=avoid_init_to_null` **sinh ra Dart không hợp lệ**:
+   nó biến `const A._({required this.ok, this.x, this.y});` thành
+   `const A._({required this.ok}) : x = null : y = null;` (hai dấu `:`). Chạy
+   `dart fix` thì phải `flutter analyze` ngay sau đó.
+
+Token thêm trong đợt này: `onError` (#2B0A0A, mực cho nền đỏ — trắng chỉ đạt
+3,76) và `streakOnTint` (#C75505 sáng / `streak` tối).
 
 **Luật hygiene không đo tương phản** — nó đọc mã nguồn. Nó cũng quét cả
 COMMENT, nên đừng viết tên token bị cấm hay emoji vào chú thích.

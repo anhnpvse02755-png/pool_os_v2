@@ -13,7 +13,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../knowledge/player_intelligence.dart';
-import '../../data/repositories/match_repository.dart';
 import '../services/session_memory_service.dart';
 import '../services/coach_types.dart';
 import '../services/match_analysis_service.dart';

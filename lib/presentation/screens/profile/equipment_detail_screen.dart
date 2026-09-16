@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/equipment_constants.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
@@ -172,7 +171,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: item.imageUrls.length,
-                separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
+                separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
                 itemBuilder: (_, i) => ClipRRect(
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   child: Image.network(
@@ -180,7 +179,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
                     width: 120,
                     height: 120,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
+                    errorBuilder: (_, _, _) => Container(
                       width: 120,
                       height: 120,
                       color: AppColors.background(brightness),

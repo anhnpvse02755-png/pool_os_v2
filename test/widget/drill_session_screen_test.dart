@@ -33,7 +33,6 @@ import 'package:pool_os_v2/data/repositories/player_repository.dart'
 import 'package:pool_os_v2/data/models/drill_session.dart';
 import 'package:pool_os_v2/data/models/drill_attempt.dart';
 import 'package:pool_os_v2/data/models/player.dart';
-import 'package:pool_os_v2/core/models/training_session.dart' hide DrillRun;
 
 /// Minimal fake for drill session repository
 class FakeDrillSessionRepository implements IDrillSessionRepository {

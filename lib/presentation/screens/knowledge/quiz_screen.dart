@@ -6,7 +6,6 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../data/models/quiz.dart';
-import '../../../domain/services/quiz_service.dart';
 
 /// Quiz screen - Redesigned with Minimalist Luxury
 /// Multiple choice per article

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/spacing.dart';
 import '../../../core/theme/colors.dart';
 
 /// PoolOS Linear Progress Bar

@@ -414,6 +414,40 @@ class AppColors {
   /// Một giá trị cho cả hai chế độ vì `gold` cũng không đổi theo chế độ.
   static Color onGold(Brightness brightness) => const Color(0xFF1A1400);
 
+  /// Bản ĐẬM của [streak], dùng khi tông cam phải đứng trên một mặt sáng.
+  ///
+  /// `streak` #F97316 rực trên nền tối (5,78:1 với mặt thẻ) nhưng chìm trên
+  /// nền sáng: chấm "chưa đọc" của thẻ thông báo chỉ đạt **2,80:1**, dưới sàn
+  /// 3:1 của đối tượng đồ hoạ mang nghĩa — mà chấm ấy là thứ DUY NHẤT phân
+  /// biệt đã đọc với chưa đọc.
+  ///
+  /// Dựng bằng đúng cách đã dùng cho họ `*OnTint`: hạ độ sáng DỌC TIA HSL của
+  /// chính nó (hue 24,6° · sat 95% · L 53% → 40%), nên nó vẫn là cam của
+  /// `streak`, chỉ đậm hơn. Bản tối giữ nguyên tông gốc vì nó đã đạt.
+  ///
+  /// Kiểm CẢ HAI chiều:
+  ///   - làm CHẤM/CHỮ trên `surface`: 4,44 sáng / 5,78 tối ✓
+  ///   - làm NỀN với chữ `onPrimary`: 4,08 sáng — đạt 3:1 cho mảng lớn nhưng
+  ///     KHÔNG đạt 4,5 cho chữ thường; đừng dùng nó làm nền chữ nhỏ.
+  static Color streakOnTint(Brightness brightness) =>
+      brightness == Brightness.light ? const Color(0xFFC75505) : streak;
+
+  /// Màu chữ/icon đặt TRÊN nền [error] ĐẶC — khác [errorOnTint], vốn dành cho
+  /// nền error 10%.
+  ///
+  /// `error` (#EF4444) sáng hơn vẻ ngoài của nó: chữ trắng chỉ đạt **3,76**,
+  /// hụt ngưỡng 4,5. Không màu sáng nào cứu được — muốn 4,5 với chữ trắng thì
+  /// phải kéo nền xuống dưới L=0,183, tức đổi luôn tông đỏ mà 40 chỗ khác đang
+  /// dùng làm MÀU CHỮ. Nên đi lối ngược: mực đỏ-đen, cùng cách đã làm với
+  /// [onGold].
+  ///
+  /// Kiểm CẢ HAI chiều theo CLAUDE.md:
+  ///   - làm CHỮ trên `error`: 4,85 ✓ (ngưỡng 4,5)
+  ///   - làm NỀN: không dùng, và không nên — trên nền kem nó thành một mảng
+  ///     gần đen không phân biệt được với `textPrimary`. Đây là mực.
+  /// Một giá trị cho cả hai chế độ vì `error` cũng không đổi theo chế độ.
+  static Color onError(Brightness brightness) => const Color(0xFF2B0A0A);
+
   /// Màu chữ/icon đặt TRÊN nền 10% của tông [silver].
   static Color silverOnTint(Brightness brightness) =>
       brightness == Brightness.light ? silverOnTintLight : silverOnTintDark;

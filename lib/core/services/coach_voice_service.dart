@@ -10,7 +10,6 @@
 // - Leads (doesn't ask when has data)
 // ============================================================================
 
-import '../providers/coach_provider.dart';
 import 'coach_types.dart';
 
 /// Coach Voice Service - Implements Coach Voice Guidelines

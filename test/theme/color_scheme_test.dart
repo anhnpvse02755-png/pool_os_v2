@@ -131,6 +131,25 @@ void main() {
             reason: 'secondary là gold #A67C00 — chữ trắng chỉ đạt 3,82');
       });
 
+      test('$b: chữ onError đọc được trên nền error', () {
+        final cs = _themeFor(b).colorScheme;
+        expect(_contrast(cs.error, cs.onError), greaterThanOrEqualTo(4.5),
+            reason: 'error là #EF4444 — chữ trắng chỉ đạt 3,76');
+      });
+
+      // Khuôn nút này được chép tay ở 13 màn (`_PrimaryButton` riêng của từng
+      // tệp) nên không import được để pump. Thứ thật sự quyết định là cặp
+      // token, và cặp token thì canh được.
+      test('$b: nhãn nút VÔ HIỆU đọc được trên nền nút vô hiệu', () {
+        expect(
+          _contrast(AppColors.textTertiary(b), AppColors.onPrimary(b)),
+          greaterThanOrEqualTo(4.5),
+          reason: 'Nút vô hiệu: nền textTertiary, chữ onPrimary. Từng tụt '
+              '2,59:1 trước khi textTertiary được nâng ở 93f9342 — test này '
+              'giữ cho nó không tụt lại.',
+        );
+      });
+
       test('$b: nhãn ElevatedButton đọc được trên nền của chính nó', () {
         final theme = _themeFor(b);
         final style = theme.elevatedButtonTheme.style!;

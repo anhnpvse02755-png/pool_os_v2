@@ -431,7 +431,7 @@ class CoachResponse {
     if (context.hasEnoughData) {
       return message;
     }
-    return '${message}\n\n⚠️ ${context.availableData.summary}';
+    return '$message\n\n⚠️ ${context.availableData.summary}';
   }
 }
 

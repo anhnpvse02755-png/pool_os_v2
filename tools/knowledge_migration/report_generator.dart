@@ -15,7 +15,6 @@
 import 'dart:convert';
 
 import 'src/migration_dto.dart';
-import 'validators.dart';
 
 class ReportGenerator {
   String toMarkdown(

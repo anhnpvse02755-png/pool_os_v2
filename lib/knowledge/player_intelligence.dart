@@ -782,7 +782,6 @@ enum TrendDirection {
 }
 
 extension on Iterable<num> {
-  double get average => isEmpty ? 0 : (reduce((a, b) => a + b) / length).toDouble();
 }
 
 // ============================================================================

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,11 +21,9 @@ import '../../data/models/equipment.dart';
 import '../services/daily_notification_service.dart';
 import '../../data/models/player.dart';
 import '../../data/models/player_interests.dart';
-import '../../data/models/drill_progress.dart';
 import '../../data/models/training_session.dart';
 import '../../data/models/match.dart';
 import '../../data/models/match_aggregates.dart'; // Sprint-11: Typed MatchStats
-import '../../data/models/equipment.dart';
 import '../../data/impl/local_player_repository.dart';
 import '../../data/impl/local_drill_repository.dart';
 import '../../data/impl/local_notification_repository.dart';

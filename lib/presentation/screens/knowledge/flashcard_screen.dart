@@ -6,7 +6,6 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../data/models/flashcard.dart';
-import '../../../domain/services/spaced_repetition_service.dart';
 
 /// Flashcard review screen - Redesigned with Minimalist Luxury
 /// Flip front/back, grade 0..5

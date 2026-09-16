@@ -645,57 +645,6 @@ class _DrillDetailScreenState extends State<DrillDetailScreen> {
     );
   }
 
-  Widget _buildBulletList(
-    List<String> items,
-    IconData icon, {
-    Color? color,
-  }) {
-    final brightness = Theme.of(context).brightness;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: items.map((item) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(icon,
-                  size: 20, color: color ?? AppColors.primary(brightness)),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                  child: Text(item,
-                      style: TextStyle(
-                          color: AppColors.textPrimary(brightness),
-                          height: 1.4))),
-            ],
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildTextCard(String text) {
-    final brightness = Theme.of(context).brightness;
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.surface(brightness),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(
-            color: AppColors.border(brightness).withValues(alpha: 0.5)),
-      ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.textPrimary(brightness),
-              height: 1.5,
-            ),
-      ),
-    );
-  }
-
   Widget _buildComingSoonCard() {
     final brightness = Theme.of(context).brightness;
 

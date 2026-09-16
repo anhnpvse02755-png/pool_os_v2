@@ -29,7 +29,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../category_mapper.dart';
 import '../hash_utils.dart';
 import '../report_generator.dart';
 import '../schema_mapper.dart';

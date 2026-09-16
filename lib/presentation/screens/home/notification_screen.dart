@@ -157,15 +157,20 @@ class _NotificationCard extends StatelessWidget {
     }
   }
 
-  /// Màu icon và chấm chưa đọc. Nằm TRÊN ô pastel nên phải là màu đậm.
+  /// Màu chấm "chưa đọc".
+  ///
+  /// Phải là bản ĐẬM của mỗi tông, không phải tông gốc: chấm nằm thẳng trên
+  /// mặt thẻ và là đối tượng đồ hoạ mang nghĩa — nó là thứ duy nhất phân biệt
+  /// đã đọc với chưa đọc — nên sàn của nó là 3:1. Tông gốc trượt hết ở bản
+  /// sáng: `warning` 2,15 · `success` 2,54 · `streak` 2,80.
   Color _getTypeColor() {
     switch (notification.type) {
       case 'streak_warning':
-        return AppColors.warning;
+        return AppColors.warningOnTint(brightness);
       case 'level_up':
-        return AppColors.success;
+        return AppColors.successOnTint(brightness);
       case 'streak_milestone':
-        return AppColors.streak;
+        return AppColors.streakOnTint(brightness);
       default:
         return AppColors.primary(brightness);
     }

@@ -16,8 +16,6 @@ import '../../data/remote/directus_client.dart';
 
 /// Kết quả một thao tác auth, đã sẵn sàng để UI hiển thị.
 class AuthResult {
-  const AuthResult._({required this.ok, this.userId, this.errorMessage});
-
   const AuthResult.success({String? userId})
       : ok = true,
         userId = userId,

@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
-import '../../../core/theme/app_theme.dart';
 
 /// Black Box Settings Tile for Settings Screen
 class BlackBoxSettingsTile extends ConsumerWidget {

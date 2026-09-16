@@ -4,7 +4,6 @@ import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../domain/services/learning_streak_service.dart';
 
 class LearningStreakWidget extends StatefulWidget {
   const LearningStreakWidget({super.key});

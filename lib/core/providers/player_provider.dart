@@ -36,7 +36,7 @@ class PlayerInterestsNotifier extends StateNotifier<AsyncValue<PlayerInterests?>
     if (_playerId == null) return;
     state = const AsyncValue.loading();
     try {
-      final interests = await _playerService.getPlayerInterests(_playerId!);
+      final interests = await _playerService.getPlayerInterests(_playerId);
       state = AsyncValue.data(interests);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -48,7 +48,7 @@ class PlayerInterestsNotifier extends StateNotifier<AsyncValue<PlayerInterests?>
     state = const AsyncValue.loading();
     try {
       final saved = await _playerService.savePlayerInterests(
-        playerId: _playerId!,
+        playerId: _playerId,
         interests: interests,
       );
       state = AsyncValue.data(saved);

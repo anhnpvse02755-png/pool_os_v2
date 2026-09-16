@@ -306,10 +306,10 @@ class MatchReviewEngine {
     final conf = s['confidence'];
     final focus = s['focus'];
     if (conf != null && conf <= 2) {
-      weaknesses.add('Low confidence (${conf}/5) — visualization exercises');
+      weaknesses.add('Low confidence ($conf/5) — visualization exercises');
     }
     if (focus != null && focus <= 2) {
-      weaknesses.add('Focus dips (${focus}/5) — pre-shot routine work');
+      weaknesses.add('Focus dips ($focus/5) — pre-shot routine work');
     }
 
     // Physical

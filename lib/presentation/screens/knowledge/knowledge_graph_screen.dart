@@ -4,9 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
-import '../../../core/theme/shadows.dart';
 import '../../../data/models/knowledge_node.dart';
-import '../../../domain/services/knowledge_graph_service.dart';
 
 /// Knowledge graph visualization - Redesigned with Minimalist Luxury
 /// Nodes are placed top-to-bottom by depth; edges are drawn as connectors.
@@ -18,8 +16,6 @@ class KnowledgeGraphScreen extends StatefulWidget {
 }
 
 class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
-  List<KnowledgeNode> _nodes = [];
-  List<List<String>> _edges = [];
   Map<int, List<KnowledgeNode>> _layers = {};
   bool _loading = true;
   late Brightness _brightness;
@@ -44,8 +40,6 @@ class _KnowledgeGraphScreenState extends State<KnowledgeGraphScreen> {
     final layers = _layerByPrereq(nodes, edges);
     if (!mounted) return;
     setState(() {
-      _nodes = nodes;
-      _edges = edges;
       _layers = layers;
       _loading = false;
     });

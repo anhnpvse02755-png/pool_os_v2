@@ -50,6 +50,7 @@ dependencies:
   # Notifications
   flutter_local_notifications: ^18.0.1
 
+  timezone: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

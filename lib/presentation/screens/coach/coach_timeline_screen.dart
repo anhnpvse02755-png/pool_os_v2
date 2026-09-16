@@ -19,8 +19,6 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/providers/training_provider.dart';
 import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_types.dart';
-import '../../widgets/coach/explain_bottom_sheet.dart';
-import '../training/drill_detail_screen.dart';
 import '../../widgets/logo/pool_cue_mark.dart';
 
 /// Timeline Entry

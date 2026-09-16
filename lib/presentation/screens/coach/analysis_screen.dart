@@ -50,7 +50,7 @@ class AnalysisScreen extends ConsumerWidget {
                       brightness: brightness,
                     ),
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (_, __) => const SizedBox(),
+                    error: (_, _) => const SizedBox(),
                   ),
                   const SizedBox(height: AppSpacing.space6),
 
@@ -61,7 +61,7 @@ class AnalysisScreen extends ConsumerWidget {
                       brightness: brightness,
                     ),
                     loading: () => const SizedBox(),
-                    error: (_, __) => const SizedBox(),
+                    error: (_, _) => const SizedBox(),
                   ),
                   const SizedBox(height: AppSpacing.space6),
 
@@ -72,7 +72,7 @@ class AnalysisScreen extends ConsumerWidget {
                       brightness: brightness,
                     ),
                     loading: () => const SizedBox(),
-                    error: (_, __) => const SizedBox(),
+                    error: (_, _) => const SizedBox(),
                   ),
                   const SizedBox(height: AppSpacing.space6),
 
@@ -83,7 +83,7 @@ class AnalysisScreen extends ConsumerWidget {
                       brightness: brightness,
                     ),
                     loading: () => const SizedBox(),
-                    error: (_, __) => const SizedBox(),
+                    error: (_, _) => const SizedBox(),
                   ),
                   const SizedBox(height: 100), // Bottom nav spacing
                 ]),

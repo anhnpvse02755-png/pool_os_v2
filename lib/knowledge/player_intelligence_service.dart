@@ -161,7 +161,7 @@ class PlayerIntelligenceService {
       } else if (daysAgo == 1) {
         parts.add('Hôm qua bạn tập ${lastSession.data['drillCode']}.');
       } else {
-        parts.add('Lần cuối tập là ${daysAgo} ngày trước.');
+        parts.add('Lần cuối tập là $daysAgo ngày trước.');
       }
     }
 

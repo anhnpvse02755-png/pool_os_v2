@@ -3,8 +3,6 @@ import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../core/theme/app_theme.dart';
-import '../../data/repositories/match_repository.dart';
 
 /// Per-skill trend chart — line chart derived from match history.
 ///

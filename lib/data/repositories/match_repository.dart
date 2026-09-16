@@ -57,7 +57,6 @@ class LocalMatchRepository implements IMatchRepository {
 
   final LocalJsonStore<Match> _matchesStore;
 
-  static const _kMatchesKey = 'poolos_v2.matches';
   static const _kRacksPrefix = 'poolos_v2.racks.';
   static const _kPlayerStatePrefix = 'poolos_v2.player_state.';
   static const _kEquipmentPrefix = 'poolos_v2.equipment.';

@@ -200,7 +200,6 @@ class _TournamentCreateScreenState extends State<TournamentCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
 
     return Scaffold(
       appBar: AppBar(

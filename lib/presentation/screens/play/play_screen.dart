@@ -410,7 +410,6 @@ class _CompetitionTypeCardState extends State<_CompetitionTypeCard> {
 class _RecentMatchesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final brightness = Theme.of(context).brightness;
 
     return Column(
       children: [

@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 import 'package:pool_os_v2/data/impl/local_player_repository.dart';
-import 'package:pool_os_v2/data/repositories/player_repository.dart';
 import 'package:pool_os_v2/core/utils/pool_rating_calculator.dart';
 
 void main() {

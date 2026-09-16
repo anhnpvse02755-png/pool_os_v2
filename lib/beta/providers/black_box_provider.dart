@@ -3,7 +3,6 @@
 // ============================================================================
 
 import 'package:flutter/foundation.dart';
-import '../models/black_box_manifest.dart';
 import '../services/event_recorder_service.dart';
 import '../services/replay_builder_service.dart';
 import '../services/snapshot_builder_service.dart';

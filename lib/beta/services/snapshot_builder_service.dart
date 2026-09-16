@@ -3,8 +3,6 @@
 // Builds player, coach, and session snapshots for Black Box
 // ============================================================================
 
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 /// Builds complete player snapshot for Black Box
 class SnapshotBuilderService {

@@ -16,7 +16,6 @@ class SoftBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    final isLight = brightness == Brightness.light;
 
     final peach = AppColors.blobPeach(brightness);
     final mint = AppColors.blobMint(brightness);

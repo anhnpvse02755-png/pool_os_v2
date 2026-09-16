@@ -1,5 +1,4 @@
 import '../utils/drills_library.dart';
-import '../providers/coach_provider.dart';
 import 'coach_types.dart';
 
 /// AI Coach Service - Generates recommendations based on:

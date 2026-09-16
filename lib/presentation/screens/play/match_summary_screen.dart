@@ -166,7 +166,6 @@ class _MatchSummaryScreenState extends ConsumerState<MatchSummaryScreen> {
   }
 
   void _onPrint() {
-    final brightness = Theme.of(context).brightness;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Đã gửi đến máy in.')),

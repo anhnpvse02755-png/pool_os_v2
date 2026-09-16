@@ -4,7 +4,6 @@ import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../data/repositories/match_repository.dart';
 import '../../domain/services/coach_profile_aggregator.dart';
 
 /// Coach profile panel — embeds in Coach screen or Home.
@@ -164,7 +163,7 @@ class _CoachProfilePanelState extends ConsumerState<CoachProfilePanel> {
             ),
           ),
           const SizedBox(width: 8),
-          Text('${score.toStringAsFixed(0)}'),
+          Text(score.toStringAsFixed(0)),
         ],
       ),
     );

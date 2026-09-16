@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
@@ -66,7 +65,6 @@ class _EquipmentComparisonScreenState
     extends ConsumerState<EquipmentComparisonScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  int _selectedTab = 0; // 0=owned, 1=market, 2=mixed
 
   @override
   void initState() {
@@ -74,7 +72,8 @@ class _EquipmentComparisonScreenState
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        setState(() => _selectedTab = _tabController.index);
+        // Tab hien tai doc thang tu _tabController; chi can ve lai.
+        setState(() {});
       }
     });
     // Dua id tu router vao state

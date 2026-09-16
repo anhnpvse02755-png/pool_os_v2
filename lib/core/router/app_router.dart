@@ -31,8 +31,6 @@ import '../../presentation/screens/training/todays_session_screen.dart';
 import '../../presentation/screens/training/session_summary_screen.dart';
 import '../providers/active_session_provider.dart';
 import '../../presentation/screens/training/warmup_screen.dart';
-import '../../presentation/screens/training/unified_timeline_screen.dart';
-import '../../presentation/screens/training/trend_dashboard_screen.dart';
 import '../../presentation/screens/training/recommended_screen.dart';
 import '../../presentation/screens/training/progress_screen.dart';
 import '../../presentation/screens/coach/analysis_screen.dart';
@@ -125,7 +123,7 @@ bool requiresAuth(String location) {
 /// người dùng vẫn ngồi nguyên ở màn riêng tư cho tới lần chuyển màn kế tiếp.
 class _AuthRefresh extends ChangeNotifier {
   _AuthRefresh(Ref ref) {
-    ref.listen<AuthState>(authProvider, (_, __) => notifyListeners());
+    ref.listen<AuthState>(authProvider, (_, _) => notifyListeners());
   }
 }
 

@@ -190,7 +190,7 @@ class CoachService {
       }
     }
 
-    if (rec.expectedImprovement != null) supportingPoints.add('Dự kiến cải thiện: ${rec.expectedImprovement!.improvementPercent}%');
+    supportingPoints.add('Dự kiến cải thiện: ${rec.expectedImprovement.improvementPercent}%');
 
     return CoachReasoning(
       type: ReasoningType.recommendation,

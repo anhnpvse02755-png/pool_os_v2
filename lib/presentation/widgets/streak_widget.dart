@@ -4,7 +4,6 @@ import '../../core/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/providers/repository_providers.dart';
-import '../../data/repositories/match_repository.dart';
 import '../../domain/services/streak_calculator.dart';
 
 /// Streak widget — current + longest consecutive daily streaks.
