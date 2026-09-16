@@ -144,3 +144,25 @@ quy ước token của Sprint-19 — xem [[design-system-tokens]].
 **How to apply:** Đọc plan ở `docs/superpowers/plans/2026-09-*-warm-green-*.md`
 trước khi mở lô mới. Chạy `expectTokenHygiene` (10 luật, `test/screens/token_hygiene.dart`)
 cho mỗi màn quét xong. Xem [[sprint-status]].
+
+## Analyzer: lib/ ve 0 canh bao (16/9/2026)
+
+238 canh bao dau phien -> 20, va trong `lib/` ve DUNG 0. Hai muoi muc con lai
+nam het o `test/` va `tools/`.
+
+Diem dang nho khong phai con so, ma la **ba lop loi that nup duoi muc canh
+bao** trong khi repo chi chan o muc error:
+
+| luat | no da giau gi |
+|---|---|
+| `unrelated_type_equality_checks` | bo dieu chinh diem Sprint-13 chua tung chay |
+| `equal_keys_in_map` | ba khoa 'BT07' trung — nuot hai bai tap |
+| `equal_elements_in_set` | mot id danh muc khai hai lan |
+| `dead_code` | `?? 0` tren mot truong khong nullable |
+| `use_build_context_synchronously` | `context.go` sau await, khong kiem mounted |
+
+Bon luat dau da nang len `error` trong `analysis_options.yaml`.
+
+`dart fix` xu ly duoc phan hinh thuc, nhung **KHONG tin duoc mu**: nho
+`--code=avoid_init_to_null` no sinh Dart khong hop le (hai dau `:` trong
+initializer list). Luon `flutter analyze` ngay sau khi chay no.
