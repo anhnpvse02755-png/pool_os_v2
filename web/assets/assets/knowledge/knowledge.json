@@ -80,7 +80,7 @@
       "kn_combination_carom"
     ],
     "relatedDrillCodes": [
-      "BT14"
+      "BT16"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -259,7 +259,7 @@
       "kn_run_out_planning"
     ],
     "relatedDrillCodes": [
-      "BT09"
+      "BT11"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -303,7 +303,7 @@
       "kn_rules_8ball"
     ],
     "relatedDrillCodes": [
-      "BT10"
+      "BT12"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -348,7 +348,7 @@
       "kn_safety_advanced"
     ],
     "relatedDrillCodes": [
-      "BT17"
+      "BT19"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -869,7 +869,7 @@
       "kn_cue_selection"
     ],
     "relatedDrillCodes": [
-      "BT08"
+      "BT10"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -912,7 +912,7 @@
       "kn_safety_play"
     ],
     "relatedDrillCodes": [
-      "BT11"
+      "BT13"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -958,7 +958,7 @@
       "kn_masse_shot"
     ],
     "relatedDrillCodes": [
-      "BT12"
+      "BT14"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1003,7 +1003,7 @@
       "kn_english"
     ],
     "relatedDrillCodes": [
-      "BT13"
+      "BT15"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1046,7 +1046,7 @@
       "kn_safety_play"
     ],
     "relatedDrillCodes": [
-      "BT15"
+      "BT17"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1132,7 +1132,7 @@
       "kn_table_layout"
     ],
     "relatedDrillCodes": [
-      "BT16"
+      "BT18"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1175,7 +1175,7 @@
       "kn_safety_advanced"
     ],
     "relatedDrillCodes": [
-      "BT18"
+      "BT20"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1218,7 +1218,7 @@
       "kn_rules_9ball"
     ],
     "relatedDrillCodes": [
-      "BT19"
+      "BT21"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1258,7 +1258,7 @@
       "kn_run_out_planning"
     ],
     "relatedDrillCodes": [
-      "BT20"
+      "BT22"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1301,7 +1301,7 @@
       "kn_safety_play"
     ],
     "relatedDrillCodes": [
-      "BT21"
+      "BT23"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1344,7 +1344,7 @@
       "kn_safety_advanced"
     ],
     "relatedDrillCodes": [
-      "BT22"
+      "BT24"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1386,7 +1386,7 @@
       "kn_run_out_planning"
     ],
     "relatedDrillCodes": [
-      "BT22"
+      "BT24"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1429,7 +1429,7 @@
       "kn_break_shot"
     ],
     "relatedDrillCodes": [
-      "BT23"
+      "BT25"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1514,7 +1514,7 @@
       "kn_grip"
     ],
     "relatedDrillCodes": [
-      "BT24"
+      "BT26"
     ],
     "readingTimeMinutes": 2,
     "media": {},
@@ -1557,7 +1557,7 @@
       "kn_grip"
     ],
     "relatedDrillCodes": [
-      "BT24"
+      "BT26"
     ],
     "readingTimeMinutes": 2,
     "media": {},
