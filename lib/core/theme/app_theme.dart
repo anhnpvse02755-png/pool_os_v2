@@ -10,40 +10,18 @@ class AppTheme {
   AppTheme._();
 
   // ========================================================================
-  // ĐÃ PHẾ — KHÔNG DÙNG TRONG MÀN MỚI HOẶC MÀN ĐÃ DI TRÚ
+  // Ở đây từng có mười `static const Color` alias — `AppTheme.primary`,
+  // `AppTheme.textPrimary`… — giữ lại "for backward compatibility".
   //
-  // Lớp alias này tồn tại "for backward compatibility" và nó là một cái lỗ,
-  // không phải một tiện ích:
+  // Chúng là một cái lỗ, không phải tiện ích: `static const` thì không bao giờ
+  // nhận được `Brightness`, nên mỗi điểm dùng khoá cứng một chế độ; và chúng
+  // lách qua chín luật vệ sinh token đầu tiên vì tên không khớp khuôn nào bị
+  // cấm. `primaryGreen` mang chữ "green" nhưng trỏ vào xanh điện.
   //
-  // 1. Chúng là `static const Color`, nên KHÔNG BAO GIỜ nhận được một
-  //    `Brightness`. Màn nào dùng chúng là khoá cứng một chế độ — và
-  //    `surfaceLight`/`textPrimary`/`textSecondary` khoá cứng bản SÁNG.
-  //
-  // 2. `primaryGreen` và `primary` mang tên "green" nhưng alias vào
-  //    `AppColors.accent` = #3B82F6, ĐÚNG MÀU XANH ĐIỆN mà đợt redesign này
-  //    tồn tại để loại bỏ. Bản đúng là `AppColors.primary(brightness)` —
-  //    xanh rêu #0F4032 / #34A97C.
-  //
-  // 3. Chúng đi vòng qua cả chín luật vệ sinh token đầu tiên trong
-  //    test/screens/token_hygiene.dart: tên không khớp `AppColors.light*`,
-  //    không có hậu tố Light/Dark, không phải `Colors.*`, không phải hex thô.
-  //    Nên một màn "đã chuyển đổi" vẫn có thể hardcode toàn bộ màu qua đây.
-  //    LUẬT 10 nay cấm mọi `AppTheme.<màu>` trong các màn đã di trú.
-  //
-  // Chưa xoá được: 107 điểm dùng ở 21 tệp thuộc 49 màn CHƯA di trú vẫn phụ
-  // thuộc vào chúng, xoá khai báo là vỡ build. Mỗi lô di trú sau phải dọn
-  // phần của mình; khi điểm dùng cuối cùng biến mất thì xoá cả khối này.
+  // Lô A–F đã dọn hết điểm dùng nên khối alias đã được xoá (16/9/2026). LUẬT
+  // 10 trong test/screens/token_hygiene.dart vẫn giữ để chặn nó quay lại.
+  // Bản đúng luôn là accessor: `AppColors.primary(brightness)`.
   // ========================================================================
-  static const Color primaryGreen = AppColors.accent;
-  static const Color primary = AppColors.accent;
-  static const Color primaryDark = AppColors.accentDark;
-  static const Color accentGold = AppColors.gold;
-  static const Color surfaceDark = AppColors.darkBackground;
-  static const Color surfaceLight = AppColors.lightBackground;
-  static const Color textPrimary = AppColors.lightTextPrimary;
-  static const Color textSecondary = AppColors.lightTextSecondary;
-  static const Color error = AppColors.error;
-  static const Color success = AppColors.success;
 
   // ========================================================================
   // LIGHT THEME
@@ -56,16 +34,19 @@ class AppTheme {
       useMaterial3: true,
       brightness: brightness,
       scaffoldBackgroundColor: AppColors.lightBackground,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.accent,
-        onPrimary: Colors.white,
-        primaryContainer: AppColors.accentSubtleLight,
-        onPrimaryContainer: AppColors.accentDark,
+      colorScheme: ColorScheme.light(
+        primary: AppColors.primary(brightness),
+        onPrimary: AppColors.onPrimary(brightness),
+        primaryContainer: AppColors.primarySubtle(brightness),
+        onPrimaryContainer: AppColors.textPrimary(brightness),
         secondary: AppColors.gold,
-        onSecondary: Colors.white,
+        onSecondary: AppColors.onGold(brightness),
         surface: AppColors.lightSurface,
         onSurface: AppColors.lightTextPrimary,
         error: AppColors.error,
+        // NỢ: trắng trên `error` #EF4444 chỉ đạt 3,76:1. Chưa sửa ở đây vì
+        // chưa có token mực cho nền đỏ — cần một quyết định màu riêng, không
+        // phải một phép đổi tên. Xem `onGold` cho khuôn mẫu.
         onError: Colors.white,
       ),
 
@@ -93,7 +74,7 @@ class AppTheme {
       // Bottom Navigation
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.lightSurface,
-        selectedItemColor: AppColors.accent,
+        selectedItemColor: AppColors.accentLabel(brightness),
         unselectedItemColor: AppColors.lightTextSecondary,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -110,7 +91,7 @@ class AppTheme {
       // Navigation Bar (Material 3)
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.lightSurface,
-        indicatorColor: AppColors.accentSubtleLight,
+        indicatorColor: AppColors.primarySubtle(brightness),
         elevation: 0,
         height: 64,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -119,7 +100,7 @@ class AppTheme {
             return GoogleFonts.plusJakartaSans(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppColors.accent,
+              color: AppColors.accentLabel(brightness),
             );
           }
           return GoogleFonts.plusJakartaSans(
@@ -130,8 +111,8 @@ class AppTheme {
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(
-              color: AppColors.accent,
+            return IconThemeData(
+              color: AppColors.accentLabel(brightness),
               size: 24,
             );
           }
@@ -145,8 +126,8 @@ class AppTheme {
       // Elevated Button
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.accent,
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary(brightness),
+          foregroundColor: AppColors.onPrimary(brightness),
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.space6,
@@ -186,7 +167,7 @@ class AppTheme {
       // Text Button
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.accent,
+          foregroundColor: AppColors.accentLabel(brightness),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.space4,
             vertical: AppSpacing.space2,
@@ -216,7 +197,8 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          borderSide: const BorderSide(color: AppColors.accent, width: 2),
+          borderSide:
+              BorderSide(color: AppColors.primary(brightness), width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -264,7 +246,7 @@ class AppTheme {
       // Chip
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.lightSurfaceElevated,
-        selectedColor: AppColors.accentSubtleLight,
+        selectedColor: AppColors.primarySubtle(brightness),
         labelStyle: GoogleFonts.plusJakartaSans(
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -280,8 +262,8 @@ class AppTheme {
       ),
 
       // Progress Indicator
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.accent,
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: AppColors.primary(brightness),
         linearTrackColor: AppColors.lightBorder,
         circularTrackColor: AppColors.lightBorder,
       ),
@@ -290,13 +272,13 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return Colors.white;
+            return AppColors.onPrimary(brightness);
           }
           return AppColors.lightTextSecondary;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColors.accent;
+            return AppColors.primary(brightness);
           }
           return AppColors.lightBorder;
         }),
@@ -355,16 +337,17 @@ class AppTheme {
       useMaterial3: true,
       brightness: brightness,
       scaffoldBackgroundColor: AppColors.darkBackground,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.accentLight,
-        onPrimary: AppColors.darkBackground,
-        primaryContainer: AppColors.accentSubtleDark,
-        onPrimaryContainer: AppColors.accentLight,
+      colorScheme: ColorScheme.dark(
+        primary: AppColors.primary(brightness),
+        onPrimary: AppColors.onPrimary(brightness),
+        primaryContainer: AppColors.primarySubtle(brightness),
+        onPrimaryContainer: AppColors.textPrimary(brightness),
         secondary: AppColors.gold,
-        onSecondary: AppColors.darkBackground,
+        onSecondary: AppColors.onGold(brightness),
         surface: AppColors.darkSurface,
         onSurface: AppColors.darkTextPrimary,
         error: AppColors.error,
+        // NỢ: giống bản sáng — trắng trên `error` chỉ 3,76:1.
         onError: Colors.white,
       ),
 
@@ -392,7 +375,7 @@ class AppTheme {
       // Bottom Navigation
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,
-        selectedItemColor: AppColors.accentLight,
+        selectedItemColor: AppColors.accentLabel(brightness),
         unselectedItemColor: AppColors.darkTextSecondary,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -409,7 +392,7 @@ class AppTheme {
       // Navigation Bar (Material 3)
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: AppColors.darkSurface,
-        indicatorColor: AppColors.accentSubtleDark,
+        indicatorColor: AppColors.primarySubtle(brightness),
         elevation: 0,
         height: 64,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -418,7 +401,7 @@ class AppTheme {
             return GoogleFonts.plusJakartaSans(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: AppColors.accentLight,
+              color: AppColors.accentLabel(brightness),
             );
           }
           return GoogleFonts.plusJakartaSans(
@@ -429,8 +412,8 @@ class AppTheme {
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(
-              color: AppColors.accentLight,
+            return IconThemeData(
+              color: AppColors.accentLabel(brightness),
               size: 24,
             );
           }
@@ -444,8 +427,8 @@ class AppTheme {
       // Elevated Button
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.accentLight,
-          foregroundColor: AppColors.darkBackground,
+          backgroundColor: AppColors.primary(brightness),
+          foregroundColor: AppColors.onPrimary(brightness),
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.space6,
@@ -485,7 +468,7 @@ class AppTheme {
       // Text Button
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: AppColors.accentLight,
+          foregroundColor: AppColors.accentLabel(brightness),
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.space4,
             vertical: AppSpacing.space2,
@@ -515,7 +498,8 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          borderSide: const BorderSide(color: AppColors.accentLight, width: 2),
+          borderSide:
+              BorderSide(color: AppColors.primary(brightness), width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -563,7 +547,7 @@ class AppTheme {
       // Chip
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkSurfaceElevated,
-        selectedColor: AppColors.accentSubtleDark,
+        selectedColor: AppColors.primarySubtle(brightness),
         labelStyle: GoogleFonts.plusJakartaSans(
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -579,8 +563,8 @@ class AppTheme {
       ),
 
       // Progress Indicator
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.accentLight,
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: AppColors.primary(brightness),
         linearTrackColor: AppColors.darkBorder,
         circularTrackColor: AppColors.darkBorder,
       ),
@@ -589,13 +573,13 @@ class AppTheme {
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return Colors.white;
+            return AppColors.onPrimary(brightness);
           }
           return AppColors.darkTextSecondary;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return AppColors.accentLight;
+            return AppColors.primary(brightness);
           }
           return AppColors.darkBorder;
         }),

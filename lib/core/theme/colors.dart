@@ -47,7 +47,12 @@ class AppColors {
   // ACCENT COLORS (Both Modes)
   // ========================================================================
 
-  // Primary Accent - Electric Blue (Premium, Trustworthy)
+  // XANH ĐIỆN — NGÔN NGỮ MÀU CŨ, ĐÃ BỊ ĐỢT "KEM ẤM & XANH RÊU" LOẠI BỎ.
+  //
+  // Không còn điểm dùng nào trong lib/. Năm hằng số này sống tiếp CHỈ để
+  // test/theme/color_scheme_test.dart có cái mà đối chiếu: nó khẳng định
+  // không màu nào trong ThemeData trùng với chúng. Đừng dùng chúng để sơn
+  // giao diện — bản đúng là AppColors.primary(brightness).
   static const Color accent = Color(0xFF3B82F6);
   static const Color accentLight = Color(0xFF60A5FA);
   static const Color accentDark = Color(0xFF1D4ED8);
@@ -61,11 +66,13 @@ class AppColors {
   static const Color lightPrimary = Color(0xFF0F4032);
   static const Color lightPrimaryDeep = Color(0xFF08291F);
   static const Color lightPrimaryContainer = Color(0xFF0F4032);
+  static const Color lightPrimarySubtle = Color(0xFFEAF2ED);
   static const Color lightAccentLabel = Color(0xFF0F7A55);
 
   static const Color darkPrimary = Color(0xFF34A97C);
   static const Color darkPrimaryDeep = Color(0xFF2A8A65);
   static const Color darkPrimaryContainer = Color(0xFF16382C);
+  static const Color darkPrimarySubtle = Color(0xFF1A3D30);
   static const Color darkAccentLabel = Color(0xFF4FC79A);
 
   // ========================================================================
@@ -425,6 +432,21 @@ class AppColors {
       brightness == Brightness.light
           ? lightPrimaryContainer
           : darkPrimaryContainer;
+
+  /// Nền dịu cùng tông `primary` — bản xanh rêu của `accentSubtle`.
+  ///
+  /// Khác [primaryContainer]: container là mảng xanh rêu ĐẶC để chữ trắng đè
+  /// lên; còn đây là lớp nhuộm mờ cho pill chip đã chọn và vệt chỉ mục
+  /// NavigationBar, nơi chữ vẫn phải là chữ tối ở chế độ sáng.
+  ///
+  /// Kiểm CẢ HAI chiều theo CLAUDE.md:
+  ///   - làm NỀN: `textPrimary` 11,74 sáng / 10,48 tối ✓; `accentLabel`
+  ///     (nhãn+icon mục đã chọn) 4,68 sáng / 5,68 tối ✓ — sàn 4,5.
+  ///   - làm CHỮ: không dùng, và không nên — sáng #EAF2ED chỉ đạt 1,15 trên
+  ///     nền kem, tối #1A3D30 chỉ 1,30 trên nền than. Đây là mặt phẳng, không
+  ///     phải mực.
+  static Color primarySubtle(Brightness brightness) =>
+      brightness == Brightness.light ? lightPrimarySubtle : darkPrimarySubtle;
 
   /// Ba đốm màu mờ của [SoftBackground]. Chúng là NỀN trang trí, luôn đi
   /// cùng nhau, nên có accessor riêng thay vì để mỗi nơi tự `isLight ? … : …`.

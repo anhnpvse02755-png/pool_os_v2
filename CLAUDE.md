@@ -61,11 +61,12 @@ liệu đi qua mạng.
 `/#/home`. Điều này chi phối toàn bộ cách viết E2E — xem
 `.claude/memory/e2e-playwright-accessibility.md` trước khi debug test Playwright.
 
-## Đang chạy: redesign "Kem ấm & Xanh rêu"
+## Redesign "Kem ấm & Xanh rêu" — đã xong
 
-Đợt quét 68 màn từ xanh điện sang kem ấm + xanh rêu. **28 màn xong, 40 còn
-lại.** Plan ở `docs/superpowers/plans/2026-09-*-warm-green-*.md`. Ràng buộc bắt
-buộc với mọi màn đụng tới:
+Đợt quét 68 màn từ xanh điện sang kem ấm + xanh rêu. **68/68 màn xong**
+(11/9/2026), **vệ sinh token 0 vi phạm** (lô A–F, 15/9), **gốc `ThemeData` hết
+xanh điện** (16/9). Plan ở `docs/superpowers/plans/2026-09-*-warm-green-*.md`.
+Ràng buộc vẫn bắt buộc với mọi màn đụng tới:
 
 - Màn đã quét **phải** dùng accessor `AppColors.foo(brightness)` — không để lại
   `AppColors.lightFoo` / `darkFoo` / `fooSubtleLight`.
@@ -73,15 +74,19 @@ buộc với mọi màn đụng tới:
   là ngoại lệ duy nhất.
 - **Không emoji làm icon** — dùng Material icon đặt trong `IconTile` pastel.
 - **Không đổi font** — giữ `GoogleFonts.plusJakartaSans()`.
-- `main.dart:137` giữ `ThemeMode.light` **cho tới khi hết lô 8**. Mọi tỉ lệ
-  tương phản chế độ tối trong plan là **tính toán, chưa quan sát**.
 - Quét xong một lô thì gọi `expectTokenHygiene(tênLô, [đườngDẫn…])` từ
   `test/screens/token_hygiene.dart` — 10 luật chặn token khoá-sáng quay lại.
 
-**`AppColors.accent = #3B82F6` vẫn còn trong `colors.dart`** nhưng là xanh điện
-mà đợt này tồn tại để loại bỏ; nó còn sống chỉ vì 40 màn chưa quét. Đừng coi sự
-tồn tại của nó là lời cho phép dùng. Giá trị đúng và các bẫy API của
-`AppShadows`/`AppSpacing`: `.claude/memory/design-system-tokens.md`.
+**`AppColors.accent = #3B82F6` vẫn còn trong `colors.dart`** nhưng đã hết điểm
+dùng trong `lib/`. Nó sống tiếp chỉ để `test/theme/color_scheme_test.dart` có
+cái đối chiếu. Đừng coi sự tồn tại của nó là lời cho phép dùng. Giá trị đúng và
+các bẫy API của `AppShadows`/`AppSpacing`: `.claude/memory/design-system-tokens.md`.
+
+**Mười luật vệ sinh token ĐỌC MÃ NGUỒN, không đọc giá trị.** Chúng không bắt
+được `Theme.of(context).colorScheme.primary` — đó là cách viết hợp lệ, cái sai
+nằm ở giá trị nạp vào `ColorScheme`. Đúng vì lỗ này mà xanh điện sống sót qua
+cả sáu lô ngay giữa `app_theme.dart`. Canh gốc theme là việc của
+`test/theme/color_scheme_test.dart`.
 
 **Khi thêm một token màu, kiểm CẢ HAI chiều** — nó làm chữ trên nền gì, và nó
 làm nền cho chữ gì. Một chiều là đủ để lọt qua ba vòng review (lô 3a mất một
