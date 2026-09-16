@@ -1,7 +1,6 @@
 
 import '../../data/models/match.dart';
 import '../../data/repositories/match_repository.dart';
-import '../services/match_statistics_service.dart';
 
 /// Weekly report — aggregates the last 7 days of matches + drills.
 class WeeklyReport {
@@ -39,9 +38,9 @@ class WeeklyReport {
 }
 
 class WeeklyReportGenerator {
-  WeeklyReportGenerator(this._matchRepo, this._stats);
+  /// Khong nhan `MatchStatisticsService`: ban truoc doi no roi khong dung.
+  WeeklyReportGenerator(this._matchRepo);
   final IMatchRepository _matchRepo;
-  final MatchStatisticsService _stats;
 
   Future<WeeklyReport> generate({String? playerId, DateTime? weekEnd}) async {
     final end = weekEnd ?? DateTime.now();

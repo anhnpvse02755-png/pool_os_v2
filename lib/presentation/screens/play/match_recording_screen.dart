@@ -25,8 +25,8 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
   int _raceTo = 1;
   String _matchType = 'friendly';
   String? _opponentLevel;
-  String _tableCondition = 'familiar';
-  String _environment = 'club';
+  final String _tableCondition = 'familiar';
+  final String _environment = 'club';
   bool _warmedUp = false;
 
   Match? _currentMatch;

@@ -146,7 +146,7 @@ class PlayScreen extends StatelessWidget {
                 color: AppColors.textPrimary(brightness),
               ),
         ),
-        if (action != null) action,
+        ?action,
       ],
     );
   }

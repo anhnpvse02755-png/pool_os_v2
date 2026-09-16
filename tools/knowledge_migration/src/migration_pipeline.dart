@@ -139,7 +139,6 @@ class MigrationPipeline {
       'cat_psychology',
       'cat_equipment',
       'cat_rules',
-      'cat_fundamentals',
     };
     final indexedIds = v2Articles.map((a) => a['id'] as String).toSet();
     final registry = ValidatorRegistry([

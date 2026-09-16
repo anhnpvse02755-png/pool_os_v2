@@ -10,22 +10,42 @@ import '../../widgets/icon_tile.dart';
 import '../../widgets/pool_card.dart';
 import '../../widgets/soft_background.dart';
 
-class WelcomeScreen extends ConsumerWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Check if onboarding is already completed
+  ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
+  bool _daKiem = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _chuyenNeuDaXongOnboarding();
+  }
+
+  /// Đã qua onboarding thì vào thẳng trang chủ.
+  ///
+  /// Trước đây việc này nằm trong `build()`: nó bắn một `Future.then` rồi gọi
+  /// `context.go` trong callback. Ba cái sai cùng lúc — điều hướng là TÁC DỤNG
+  /// PHỤ, không được đặt trong `build` (mỗi lần dựng lại là bắn thêm một lần);
+  /// `context` bị dùng sau khoảng chờ bất đồng bộ mà không kiểm `mounted`, nên
+  /// rời màn đúng lúc future về là vỡ.
+  Future<void> _chuyenNeuDaXongOnboarding() async {
+    if (_daKiem) return;
+    _daKiem = true;
+
+    final xong =
+        await ref.read(playerRepositoryProvider).isOnboardingCompleted();
+    if (!mounted) return;
+    if (xong) context.go('/home');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final playerRepo = ref.read(playerRepositoryProvider);
-    final isOnboardingCompleted = playerRepo.isOnboardingCompleted();
-
-    // If already completed onboarding, redirect to home
-    isOnboardingCompleted.then((completed) {
-      if (completed) {
-        context.go('/home');
-      }
-    });
-
     final brightness = Theme.of(context).brightness;
 
     return Scaffold(
@@ -108,6 +128,8 @@ class WelcomeScreen extends ConsumerWidget {
                 TextButton(
                   onPressed: () async {
                     final completed = await playerRepo.isOnboardingCompleted();
+                    // Người dùng có thể rời màn trong lúc chờ kho trả lời.
+                    if (!context.mounted) return;
                     if (completed) {
                       context.go('/home');
                     } else {

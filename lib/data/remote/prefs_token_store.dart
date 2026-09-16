@@ -13,7 +13,7 @@ import 'directus_client.dart';
 /// Giữ trong bộ nhớ một bản sao để [read] không phải chạm đĩa mỗi request —
 /// mỗi lời gọi API đều đọc token, mà `_send` gọi [read] cho từng cái.
 class PrefsTokenStore implements TokenStore {
-  PrefsTokenStore({SharedPreferences? prefs}) : _prefs = prefs;
+  PrefsTokenStore({this._prefs});
 
   static const String _key = 'directus_session';
 

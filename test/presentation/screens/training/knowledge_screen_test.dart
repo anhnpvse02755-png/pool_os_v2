@@ -158,6 +158,6 @@ void main() {
 /// Fake notifier that bypasses rootBundle loading entirely. Tests pass a
 /// pre-built KnowledgeState through the constructor.
 class _FakeKnowledgeNotifier extends KnowledgeNotifier {
-  _FakeKnowledgeNotifier(KnowledgeState initial)
-      : super.withState(initial);
+  _FakeKnowledgeNotifier(super.initial)
+      : super.withState();
 }

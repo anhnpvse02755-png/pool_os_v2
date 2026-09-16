@@ -72,10 +72,9 @@ class DirectusDrillProgressRemote implements DrillProgressRemote {
 
 class SyncingDrillRepository implements DrillRepository {
   SyncingDrillRepository({
-    required DrillRepository local,
-    required DrillProgressRemote remote,
-  })  : _local = local,
-        _remote = remote;
+    required this._local,
+    required this._remote,
+  });
 
   final DrillRepository _local;
   final DrillProgressRemote _remote;

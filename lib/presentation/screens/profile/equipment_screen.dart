@@ -852,36 +852,46 @@ class _EquipmentDetailSheet extends StatelessWidget {
 
   List<Widget> _specRows(Equipment eq, Brightness brightness) {
     final rows = <Widget>[];
-    if (eq.weight != null)
+    if (eq.weight != null) {
       rows.add(_detailRow(Icons.fitness_center, AppColors.primary(brightness),
           'Trọng lượng', '${eq.weight!.toStringAsFixed(1)} oz'));
-    if (eq.shaftMaterial != null)
+    }
+    if (eq.shaftMaterial != null) {
       rows.add(_detailRow(Icons.layers, AppColors.primary(brightness),
           'Chất liệu thân', eq.shaftMaterial!));
-    if (eq.shaftDiameter != null)
+    }
+    if (eq.shaftDiameter != null) {
       rows.add(_detailRow(Icons.straighten, AppColors.primary(brightness),
           'Đường kính thân', '${eq.shaftDiameter!.toStringAsFixed(2)} mm'));
-    if (eq.tipBrand != null)
+    }
+    if (eq.tipBrand != null) {
       rows.add(_detailRow(Icons.circle_outlined, AppColors.warning,
           'Thương hiệu đầu', eq.tipBrand!));
-    if (eq.tipDiameter != null)
+    }
+    if (eq.tipDiameter != null) {
       rows.add(_detailRow(Icons.circle_outlined, AppColors.warning,
           'Đường kính đầu', '${eq.tipDiameter!.toStringAsFixed(2)} mm'));
-    if (eq.tipHardness != null)
+    }
+    if (eq.tipHardness != null) {
       rows.add(_detailRow(Icons.circle_outlined, AppColors.warning,
           'Độ cứng đầu', eq.tipHardness!));
-    if (eq.balance != null)
+    }
+    if (eq.balance != null) {
       rows.add(_detailRow(Icons.balance, AppColors.primary(brightness),
           'Cân bằng', eq.balance!));
-    if (eq.joint != null)
+    }
+    if (eq.joint != null) {
       rows.add(_detailRow(Icons.link, AppColors.primary(brightness),
           'Joint', eq.joint!));
-    if (eq.wrap != null)
+    }
+    if (eq.wrap != null) {
       rows.add(_detailRow(Icons.gesture, AppColors.primary(brightness),
           'Wrap', eq.wrap!));
-    if (eq.ferrule != null)
+    }
+    if (eq.ferrule != null) {
       rows.add(_detailRow(Icons.circle, AppColors.primary(brightness),
           'Ferrule', eq.ferrule!));
+    }
     return rows;
   }
 

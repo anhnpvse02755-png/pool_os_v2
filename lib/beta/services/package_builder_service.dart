@@ -5,23 +5,18 @@
 
 import 'dart:convert';
 import '../models/black_box_manifest.dart';
-import 'event_recorder_service.dart';
 import 'replay_builder_service.dart';
-import 'snapshot_builder_service.dart';
 
 /// Builds the complete Black Box package
 class PackageBuilderService {
-  final EventRecorderService _eventRecorder;
-  final ReplayBuilderService _replayBuilder;
-  final SnapshotBuilderService _snapshotBuilder;
+  /// Chi nhan thu no THAT SU dung.
+  ///
+  /// Truoc day constructor con doi `eventRecorder` va `snapshotBuilder` roi
+  /// cat vao hai truong khong doc bao gio — mot loi khai bao ve thu lop nay
+  /// can, khien nguoi doc tuong no dung ca ba.
+  PackageBuilderService({required this._replayBuilder});
 
-  PackageBuilderService({
-    required EventRecorderService eventRecorder,
-    required ReplayBuilderService replayBuilder,
-    required SnapshotBuilderService snapshotBuilder,
-  })  : _eventRecorder = eventRecorder,
-        _replayBuilder = replayBuilder,
-        _snapshotBuilder = snapshotBuilder;
+  final ReplayBuilderService _replayBuilder;
 
   /// Build complete package and return map of files
   Future<Map<String, String>> buildPackage({

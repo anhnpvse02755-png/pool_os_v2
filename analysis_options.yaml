@@ -21,6 +21,7 @@ analyzer:
     # code khong bao gio chay toi.
     unrelated_type_equality_checks: error
     equal_keys_in_map: error
+    equal_elements_in_set: error
     dead_code: error
   exclude:
     - build/**

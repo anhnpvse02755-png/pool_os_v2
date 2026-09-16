@@ -97,7 +97,7 @@ void main() {
   // vì nó đọc mã nguồn chứ không đo tương phản — đúng khoảng mù đã để lọt lỗi
   // của lô 3a.
   group('lô 4 — bục vinh danh, ba lớp chồng nhau', () {
-    Color _card(Brightness b) =>
+    Color card(Brightness b) =>
         _over(AppColors.primary(b), 0.10, AppColors.surface(b));
 
     final medals = <String, Color Function(Brightness)>{
@@ -116,7 +116,7 @@ void main() {
     test('chữ avatar đọc được trên nền 30% của huy chương', () {
       for (final b in _brightnesses) {
         for (final key in medals.keys) {
-          final ring = _over(medals[key]!(b), 0.30, _card(b));
+          final ring = _over(medals[key]!(b), 0.30, card(b));
           expect(_contrast(ring, onTints[key]!(b)), greaterThanOrEqualTo(3.0),
               reason: 'Chữ avatar $key ($b) phải đạt 3:1');
         }
@@ -128,7 +128,7 @@ void main() {
     test('viền và icon huy chương nổi trên nền thẻ', () {
       for (final b in _brightnesses) {
         for (final key in medals.keys) {
-          expect(_contrast(_card(b), onTints[key]!(b)),
+          expect(_contrast(card(b), onTints[key]!(b)),
               greaterThanOrEqualTo(3.0),
               reason: 'Viền/icon $key ($b) phải đạt 3:1 trên nền thẻ');
         }

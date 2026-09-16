@@ -104,7 +104,7 @@ class EventRecorderService {
       'session_active': true,
       'current_drill': drillCode,
       'recommendation_status': recommendationId != null ? 'accepted' : null,
-      if (recommendationId != null) 'recommendationId': recommendationId,
+      'recommendationId': ?recommendationId,
     };
 
     _addEvent(BlackBoxReplayEvent.startDrill(
@@ -134,17 +134,17 @@ class EventRecorderService {
     final stateBefore = {
       'session_active': true,
       'drill_score': null,
-      if (previousSkillScore != null) 'skill_score': previousSkillScore,
+      'skill_score': ?previousSkillScore,
     };
 
     final stateAfter = {
       'session_active': false,
       'drill_score': score,
-      if (newSkillScore != null) 'skill_score': newSkillScore,
+      'skill_score': ?newSkillScore,
       if (previousSkillScore != null && newSkillScore != null)
         'improvement': '${newSkillScore - previousSkillScore}%',
       if (recommendationId != null) 'recommendation_status': 'completed',
-      if (recommendationId != null) 'recommendationId': recommendationId,
+      'recommendationId': ?recommendationId,
     };
 
     _addEvent(BlackBoxReplayEvent.drillCompleted(
@@ -177,7 +177,7 @@ class EventRecorderService {
         'drill': drillName,
         'drillCode': drillCode,
         'progress': progress,
-        if (recommendationId != null) 'recommendationId': recommendationId,
+        'recommendationId': ?recommendationId,
       },
       cause: EventCause(
         type: EventCauseType.userAction,
@@ -202,12 +202,12 @@ class EventRecorderService {
       elapsedSeconds: elapsedSeconds,
       eventType: BlackBoxEventType.coachChatOpen,
       data: {
-        if (conversationId != null) 'conversationId': conversationId,
+        'conversationId': ?conversationId,
       },
       stateBefore: {'screen': 'coach_home'},
       stateAfter: {
         'screen': 'coach_chat',
-        if (conversationId != null) 'conversationId': conversationId,
+        'conversationId': ?conversationId,
       },
     ));
   }
@@ -265,7 +265,7 @@ class EventRecorderService {
         'conversationId': conversationId,
         'message': response,
         'intent': intent,
-        if (recommendationId != null) 'recommendationId': recommendationId,
+        'recommendationId': ?recommendationId,
       },
       cause: EventCause(
         type: EventCauseType.coachService,
@@ -324,7 +324,7 @@ class EventRecorderService {
       data: {
         'matchId': matchId,
         'opponent': opponentType,
-        if (rackType != null) 'rackType': rackType,
+        'rackType': ?rackType,
       },
       stateBefore: {'match_active': false},
       stateAfter: {
@@ -377,8 +377,8 @@ class EventRecorderService {
       data: {
         'errorType': errorType,
         'message': message,
-        if (screen != null) 'screen': screen,
-        if (stackTrace != null) 'stackTrace': stackTrace,
+        'screen': ?screen,
+        'stackTrace': ?stackTrace,
       },
     ));
   }

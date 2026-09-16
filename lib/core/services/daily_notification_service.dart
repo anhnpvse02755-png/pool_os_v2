@@ -37,7 +37,7 @@ abstract class NotificationScheduler {
 /// Mock scheduler for testing
 class MockNotificationScheduler implements NotificationScheduler {
   final List<int> scheduledIds = [];
-  bool _isSupported = true;
+  final bool _isSupported = true;
 
   @override
   bool get isSupported => _isSupported;
@@ -196,13 +196,11 @@ class DailyNotificationService {
   // Notification ID for daily learning reminder
   static const int dailyNotificationId = 1001;
 
-  NotificationScheduler _scheduler = MockNotificationScheduler();
-
-  /// Set custom scheduler (for testing)
-  set scheduler(NotificationScheduler s) => _scheduler = s;
-
-  /// Get scheduler (for testing)
-  NotificationScheduler get scheduler => _scheduler;
+  /// Bộ hẹn lịch. Ghi đè được để test thay bằng bản giả.
+  ///
+  /// Trước đây là `scheduler` kèm một cặp getter/setter chỉ chuyển tiếp —
+  /// ba khai báo cho đúng một thứ.
+  NotificationScheduler scheduler = MockNotificationScheduler();
 
   /// Check if daily notifications are enabled
   bool isEnabled() {
@@ -233,7 +231,7 @@ class DailyNotificationService {
     await _cache.setString(_kDailyNotificationMinute, minute.toString());
 
     // Schedule notification
-    final success = await _scheduler.scheduleDaily(
+    final success = await scheduler.scheduleDaily(
       id: dailyNotificationId,
       title: 'Tập luyện hôm nay! 🏆',
       body: 'Đừng quên streak của bạn. Vào luyện tập ngay!',
@@ -247,7 +245,7 @@ class DailyNotificationService {
   /// Disable daily notifications
   Future<void> disable() async {
     await _cache.setString(_kDailyNotificationEnabled, 'false');
-    await _scheduler.cancel(dailyNotificationId);
+    await scheduler.cancel(dailyNotificationId);
   }
 
   /// Update notification time
@@ -261,9 +259,9 @@ class DailyNotificationService {
     await _cache.setString(_kDailyNotificationMinute, minute.toString());
 
     // Cancel and reschedule
-    await _scheduler.cancel(dailyNotificationId);
+    await scheduler.cancel(dailyNotificationId);
 
-    return await _scheduler.scheduleDaily(
+    return await scheduler.scheduleDaily(
       id: dailyNotificationId,
       title: 'Tập luyện hôm nay! 🏆',
       body: 'Đừng quên streak của bạn. Vào luyện tập ngay!',
@@ -273,10 +271,10 @@ class DailyNotificationService {
   }
 
   /// Check if platform supports notifications
-  bool get isSupported => _scheduler.isSupported;
+  bool get isSupported => scheduler.isSupported;
 
   /// Check if notifications are enabled in system settings
   Future<bool> checkSystemPermission() async {
-    return await _scheduler.areNotificationsEnabled();
+    return await scheduler.areNotificationsEnabled();
   }
 }

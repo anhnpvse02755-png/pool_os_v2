@@ -221,8 +221,8 @@ class DirectusClient {
       body: {
         'email': email,
         'password': password,
-        if (firstName != null) 'first_name': firstName,
-        if (lastName != null) 'last_name': lastName,
+        'first_name': ?firstName,
+        'last_name': ?lastName,
       },
       authenticated: false,
     );

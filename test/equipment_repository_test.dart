@@ -79,7 +79,7 @@ void main() {
   /// The seed (cue_main, cue_break, tip_kamui_clear, case_pool) is
   /// restored on first read of an empty storage key, so a single
   /// read-then-delete cycle clears it.
-  Future<void> _clearSeed(LocalEquipmentRepository repo) async {
+  Future<void> clearSeed(LocalEquipmentRepository repo) async {
     // Trigger seed creation by reading first.
     await repo.getAllEquipment();
     for (final id in [
@@ -97,7 +97,7 @@ void main() {
   // ===========================================================================
   test('CRUD round-trip: create, read-by-id, update, list, delete', () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
     final original = _makeCue(id: 'cue_crud', name: 'CRUD Cue');
 
     final id = await repo.createEquipment(original);
@@ -124,7 +124,7 @@ void main() {
   // ===========================================================================
   test('archive and unarchive toggle visibility', () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     final cue = _makeCue(id: 'cue_arch', name: 'Archive Test');
     await repo.createEquipment(cue);
@@ -149,7 +149,7 @@ void main() {
   // ===========================================================================
   test('maintenance log append and remove are atomic', () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     await repo.createEquipment(_makeCue(id: 'cue_maint'));
 
@@ -183,7 +183,7 @@ void main() {
   // ===========================================================================
   test('setActiveCue unsets previous playing cue', () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     await repo.createEquipment(
       _makeCue(id: 'a_playing_1', name: 'Playing 1', isActive: true),
@@ -207,7 +207,7 @@ void main() {
   // ===========================================================================
   test("getActiveCueByType 'break' falls back to break_jump", () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     // No dedicated break cue — only a break_jump.
     await repo.createEquipment(
@@ -246,7 +246,7 @@ void main() {
   // ===========================================================================
   test('getRecommendedEquipment honors topN and excludes archived', () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     await repo.createEquipment(_makeCue(
       id: 'rec_high',
@@ -273,7 +273,7 @@ void main() {
   test('getTotalEquipmentValue sums currentValue across non-archived',
       () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     await repo.createEquipment(
       _makeCue(id: 'val_1', currentValue: 100.0),
@@ -298,7 +298,7 @@ void main() {
   test('createEquipment with duplicate id does not create a duplicate row',
       () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     await repo.createEquipment(_makeCue(id: 'dup_id', name: 'First'));
     final first = await repo.getEquipmentById('dup_id');
@@ -324,7 +324,7 @@ void main() {
   // ===========================================================================
   test('operations on non-existent ids are silent no-ops', () async {
     final repo = LocalEquipmentRepository();
-    await _clearSeed(repo);
+    await clearSeed(repo);
 
     // None of these should throw.
     await repo.updateEquipment(_makeCue(id: 'ghost_id', name: 'Ghost'));

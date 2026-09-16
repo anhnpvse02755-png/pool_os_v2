@@ -58,7 +58,7 @@ Future<void> _flushPendingWrites() async {
   } catch (e) {
     // Best effort - don't crash if flush fails
     assert(() {
-      print('WARN: Failed to flush pending writes: $e');
+      debugPrint('WARN: Failed to flush pending writes: $e');
       return true;
     }());
   }

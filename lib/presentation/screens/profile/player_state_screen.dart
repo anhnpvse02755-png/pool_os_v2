@@ -108,7 +108,7 @@ class _PlayerStateScreenState extends ConsumerState<PlayerStateScreen> {
                 ),
               ),
               Text(
-                value.toStringAsFixed(1) + '/5',
+                '${value.toStringAsFixed(1)}/5',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: barColor,

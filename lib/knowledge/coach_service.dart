@@ -16,9 +16,8 @@ import 'conversation_engine.dart';
 class CoachService {
   CoachService({
     required KnowledgeGraphService knowledgeGraph,
-    PlayerIntelligence? playerIntelligence,
-  }) : _kg = knowledgeGraph,
-       _playerIntelligence = playerIntelligence;
+    this._playerIntelligence,
+  }) : _kg = knowledgeGraph;
 
   final KnowledgeGraphService _kg;
   final PlayerIntelligence? _playerIntelligence;

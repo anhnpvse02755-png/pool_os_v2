@@ -9,7 +9,7 @@ import '../../core/providers/training_provider.dart';
 ///
 /// Các ngưỡng có thể tinh chỉnh trong config.
 class SessionBuilderService {
-  SessionBuilderService({required kg.KnowledgeGraphService kg}) : _kg = kg;
+  SessionBuilderService({required this._kg});
 
   final kg.KnowledgeGraphService _kg;
 

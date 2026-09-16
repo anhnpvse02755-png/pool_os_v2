@@ -147,8 +147,8 @@ class BlackBoxReplayEvent {
       data: {
         'drill': drillName,
         'drillCode': drillCode,
-        if (source != null) 'source': source,
-        if (recommendationId != null) 'recommendationId': recommendationId,
+        'source': ?source,
+        'recommendationId': ?recommendationId,
       },
       cause: EventCause(
         type: EventCauseType.userAction,
@@ -186,7 +186,7 @@ class BlackBoxReplayEvent {
         'shotsAttempted': shotsAttempted,
         'shotsMade': shotsMade,
         'duration': durationSeconds,
-        if (recommendationId != null) 'recommendationId': recommendationId,
+        'recommendationId': ?recommendationId,
       },
       cause: recommendationId != null
           ? EventCause(

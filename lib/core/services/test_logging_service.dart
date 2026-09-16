@@ -113,7 +113,7 @@ class TestLoggingService {
       screen: screen,
       actionType: 'tap',
       actionDetails: buttonText ?? widgetName,
-      metadata: {'widget': widgetName, if (buttonText != null) 'text': buttonText},
+      metadata: {'widget': widgetName, 'text': ?buttonText},
     );
   }
 

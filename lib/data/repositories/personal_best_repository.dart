@@ -1,5 +1,6 @@
 import '../models/personal_best.dart';
 import 'local_json_store.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class IPersonalBestRepository {
   Future<List<PersonalBest>> getAll(String playerId);
@@ -53,7 +54,7 @@ class LocalPersonalBestRepository implements IPersonalBestRepository {
     final result = await _store.writeAll(all);
     if (!result.success) {
       assert(() {
-        print('WARN: PersonalBest save failed: ${result.error}');
+        debugPrint('WARN: PersonalBest save failed: ${result.error}');
         return true;
       }());
     }

@@ -680,7 +680,7 @@ class _SettingsItem extends StatelessWidget {
                   ],
                 ),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
               Icon(Icons.chevron_right, color: AppColors.textTertiary(brightness)),
             ],
           ),

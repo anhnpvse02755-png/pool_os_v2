@@ -12,7 +12,7 @@ void main() {
     await LocalStorageService.init();
   });
 
-  Future<void> _seed(List<DateTime> dates) async {
+  Future<void> seed(List<DateTime> dates) async {
     final repo = LocalMatchRepository();
     for (int i = 0; i < dates.length; i++) {
       await repo.saveMatch(Match(
@@ -34,7 +34,7 @@ void main() {
     final today = DateTime(now.year, now.month, now.day, 12);
     final yesterday = today.subtract(const Duration(days: 1));
     final twoDaysAgo = today.subtract(const Duration(days: 2));
-    await _seed([today, yesterday, twoDaysAgo]);
+    await seed([today, yesterday, twoDaysAgo]);
     final calc = StreakCalculator(LocalMatchRepository());
     final streak = await calc.currentStreak(playerId: 'p1');
     expect(streak, 3);
@@ -43,7 +43,7 @@ void main() {
   test('streak breaks on a gap', () async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day, 12);
-    await _seed([today, today.subtract(const Duration(days: 2))]);
+    await seed([today, today.subtract(const Duration(days: 2))]);
     final calc = StreakCalculator(LocalMatchRepository());
     final streak = await calc.currentStreak(playerId: 'p1');
     expect(streak, 1);

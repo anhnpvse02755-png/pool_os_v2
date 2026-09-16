@@ -4,7 +4,7 @@
 // ============================================================================
 
 /// Typed Match Statistics from player matches
-/// Replaces raw Map<String, dynamic> return from repository
+/// Replaces raw `Map<String, dynamic>` return from repository
 class MatchStats {
   final int totalMatches;
   final int wins;

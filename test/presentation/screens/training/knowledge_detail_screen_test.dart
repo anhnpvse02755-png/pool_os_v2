@@ -119,5 +119,5 @@ void main() {
 }
 
 class _FakeKnowledgeNotifier extends KnowledgeNotifier {
-  _FakeKnowledgeNotifier(KnowledgeState initial) : super.withState(initial);
+  _FakeKnowledgeNotifier(super.initial) : super.withState();
 }

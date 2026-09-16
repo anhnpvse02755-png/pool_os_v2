@@ -30,6 +30,7 @@
 import 'dart:convert';
 
 import '../../core/services/local_storage_service.dart';
+import 'package:flutter/foundation.dart';
 
 /// Result of a write operation with verification status.
 class WriteResult {
@@ -209,7 +210,7 @@ class LocalJsonStore<T> {
     // In debug mode, log to console. In production, could send to error tracking.
     assert(() {
       final prefix = isWarning ? 'WARN' : 'ERROR';
-      print('[$prefix] LocalJsonStore.$operation: $error');
+      debugPrint('[$prefix] LocalJsonStore.$operation: $error');
       return true;
     }());
   }

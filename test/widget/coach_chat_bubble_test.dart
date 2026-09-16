@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pool_os_v2/core/theme/colors.dart';
 import 'package:pool_os_v2/presentation/screens/coach/coach_chat_screen.dart'
     show ChatMessage;
 import 'package:pool_os_v2/presentation/widgets/coach/coach_chat_bubble.dart';

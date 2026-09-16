@@ -1,5 +1,6 @@
 import '../models/drill_progress.dart';
 import 'local_json_store.dart';
+import 'package:flutter/foundation.dart';
 
 /// Repository for DrillProgress (camelCase JSON — matches DrillProgress).
 abstract class IDrillProgressRepository {
@@ -54,7 +55,7 @@ class LocalDrillProgressRepository implements IDrillProgressRepository {
     if (!result.success) {
       // Log warning but don't throw - data is likely still in memory
       assert(() {
-        print('WARN: DrillProgress save failed: ${result.error}');
+        debugPrint('WARN: DrillProgress save failed: ${result.error}');
         return true;
       }());
     }

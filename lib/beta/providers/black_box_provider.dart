@@ -53,11 +53,7 @@ class BlackBoxProvider extends ChangeNotifier {
       shareService = ShareService();
       feedbackCollector = FeedbackCollectorService();
 
-      packageBuilder = PackageBuilderService(
-        eventRecorder: eventRecorder,
-        replayBuilder: replayBuilder,
-        snapshotBuilder: snapshotBuilder,
-      );
+      packageBuilder = PackageBuilderService(replayBuilder: replayBuilder);
 
       // Load events from storage
       await eventRecorder.loadFromStorage();

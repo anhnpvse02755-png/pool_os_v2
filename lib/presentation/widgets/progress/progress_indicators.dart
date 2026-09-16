@@ -95,7 +95,7 @@ class CircularProgressWidget extends StatelessWidget {
               strokeCap: StrokeCap.round,
             ),
           ),
-          if (child != null) child!,
+          ?child,
         ],
       ),
     );

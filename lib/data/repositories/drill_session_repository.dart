@@ -4,6 +4,7 @@ import '../../core/services/local_storage_service.dart';
 import '../models/drill_attempt.dart';
 import '../models/drill_session.dart';
 import 'local_json_store.dart';
+import 'package:flutter/foundation.dart';
 
 /// Repository interface for drill sessions — offline-first.
 abstract class IDrillSessionRepository {
@@ -71,7 +72,7 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
     final result = await _store.writeAll(all);
     if (!result.success) {
       assert(() {
-        print('WARN: DrillSession save failed: ${result.error}');
+        debugPrint('WARN: DrillSession save failed: ${result.error}');
         return true;
       }());
     }
@@ -90,7 +91,7 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
     final result = await _store.writeAll(all);
     if (!result.success) {
       assert(() {
-        print('WARN: DrillSession delete failed: ${result.error}');
+        debugPrint('WARN: DrillSession delete failed: ${result.error}');
         return true;
       }());
     }

@@ -11,8 +11,6 @@ import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/providers/repository_providers.dart';
-import '../../../data/repositories/shot_repository.dart';
-import '../../../domain/services/match_statistics_service.dart';
 import '../../../domain/services/weekly_report_generator.dart';
 
 class WeeklyReportScreen extends ConsumerStatefulWidget {
@@ -23,7 +21,6 @@ class WeeklyReportScreen extends ConsumerStatefulWidget {
 }
 
 class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
-  late final MatchStatisticsService _statsService;
   late final WeeklyReportGenerator _generator;
   WeeklyReport? _report;
   bool _loading = true;
@@ -31,14 +28,7 @@ class _WeeklyReportScreenState extends ConsumerState<WeeklyReportScreen> {
   @override
   void initState() {
     super.initState();
-    _statsService = MatchStatisticsService(
-      ref.read(matchRepositoryProvider),
-      LocalShotRepository(),
-    );
-    _generator = WeeklyReportGenerator(
-      ref.read(matchRepositoryProvider),
-      _statsService,
-    );
+    _generator = WeeklyReportGenerator(ref.read(matchRepositoryProvider));
     _load();
   }
 

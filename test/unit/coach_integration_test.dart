@@ -498,7 +498,7 @@ void main() {
       kg = KnowledgeGraphService.instance;
     });
 
-    MatchData _matchData(bool won) => MatchData(
+    MatchData matchData0(bool won) => MatchData(
       opponentName: 'Test',
       won: won,
       playerScore: won ? 5 : 3,
@@ -513,9 +513,9 @@ void main() {
       var pi = PlayerIntelligence.empty('test');
 
       // Add 3 losses
-      pi = pi.updateWithMatch(_matchData(false));
-      pi = pi.updateWithMatch(_matchData(false));
-      pi = pi.updateWithMatch(_matchData(false));
+      pi = pi.updateWithMatch(matchData0(false));
+      pi = pi.updateWithMatch(matchData0(false));
+      pi = pi.updateWithMatch(matchData0(false));
 
       // Verify streak state
       expect(pi.matchPatterns.currentStreak.type, equals(StreakType.loss));
@@ -546,7 +546,7 @@ void main() {
 
       // Add 5 wins
       for (var i = 0; i < 5; i++) {
-        pi = pi.updateWithMatch(_matchData(true));
+        pi = pi.updateWithMatch(matchData0(true));
       }
 
       // Verify streak state
@@ -568,9 +568,9 @@ void main() {
       // Build PlayerIntelligence with mixed results: W, L, W
       var pi = PlayerIntelligence.empty('test');
 
-      pi = pi.updateWithMatch(_matchData(true));
-      pi = pi.updateWithMatch(_matchData(false));
-      pi = pi.updateWithMatch(_matchData(true));
+      pi = pi.updateWithMatch(matchData0(true));
+      pi = pi.updateWithMatch(matchData0(false));
+      pi = pi.updateWithMatch(matchData0(true));
 
       // Verify no long streak
       expect(pi.matchPatterns.currentStreak.count, lessThan(3));
@@ -614,7 +614,7 @@ void main() {
 
       // Add 3 losses (loss streak)
       for (var i = 0; i < 3; i++) {
-        pi = pi.updateWithMatch(_matchData(false));
+        pi = pi.updateWithMatch(matchData0(false));
       }
 
       // Add training session with weakness and known drill
@@ -654,7 +654,7 @@ void main() {
       kg = KnowledgeGraphService.instance;
     });
 
-    TrainingSessionData _session(String drillCode, int score) => TrainingSessionData(
+    TrainingSessionData session0(String drillCode, int score) => TrainingSessionData(
       drillCode: drillCode,
       score: score,
       durationMinutes: 10,
@@ -669,7 +669,7 @@ void main() {
       // Add 3 sessions with high score (85%)
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
-          _session('BT01', 85),
+          session0('BT01', 85),
           drillSkills: ['aiming', 'stroke'],
         );
       }
@@ -696,7 +696,7 @@ void main() {
       // Add 3 sessions with low score (40%)
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
-          _session('BT01', 40),
+          session0('BT01', 40),
           drillSkills: ['aiming', 'stroke'],
         );
       }
@@ -765,7 +765,7 @@ void main() {
       // Add training sessions with skills
       for (var i = 0; i < 3; i++) {
         pi = pi.updateWithSession(
-          _session('BT01', 50),
+          session0('BT01', 50),
           drillSkills: ['aiming'],
         );
       }
