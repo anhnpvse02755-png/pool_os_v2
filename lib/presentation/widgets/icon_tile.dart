@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/colors.dart';
 import '../../core/theme/spacing.dart';
+import 'logo/pool_cue_mark.dart';
 
 /// Ô bo tròn nền pastel chứa một Material icon.
 ///
@@ -14,12 +15,22 @@ import '../../core/theme/spacing.dart';
 class IconTile extends StatelessWidget {
   const IconTile({
     super.key,
-    required this.icon,
+    required IconData this.icon,
     required this.toneIndex,
     this.size = 56,
   });
 
-  final IconData icon;
+  /// Ô chứa dấu hiệu bi-a của app thay vì một Material icon.
+  ///
+  /// Có constructor riêng chứ không nhận `Widget` tuỳ ý: ô vẫn phải nắm quyền
+  /// quyết định cỡ và màu, đúng như khi nó dựng [Icon].
+  const IconTile.mark({
+    super.key,
+    required this.toneIndex,
+    this.size = 56,
+  }) : icon = null;
+
+  final IconData? icon;
   final int toneIndex;
   final double size;
 
@@ -36,12 +47,17 @@ class IconTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(
             size / AppSpacing.iconTileSize * AppSpacing.radiusTile),
       ),
-      child: Icon(
-        icon,
-        key: const Key('icon-tile-icon'),
-        size: size * 0.46,
-        color: AppColors.primary(brightness),
-      ),
+      child: icon == null
+          ? PoolCueMark(
+              size: size * 0.46,
+              color: AppColors.primary(brightness),
+            )
+          : Icon(
+              icon,
+              key: const Key('icon-tile-icon'),
+              size: size * 0.46,
+              color: AppColors.primary(brightness),
+            ),
     );
   }
 }

@@ -89,8 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
               // Logo
               const Center(
-                child: IconTile(
-                  icon: Icons.pool,
+                child: IconTile.mark(
                   toneIndex: 0,
                   size: 80,
                 ),

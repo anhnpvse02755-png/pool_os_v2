@@ -21,6 +21,7 @@ import '../../../core/providers/coach_provider.dart';
 import '../../../core/services/coach_types.dart';
 import '../../widgets/coach/explain_bottom_sheet.dart';
 import '../training/drill_detail_screen.dart';
+import '../../widgets/logo/pool_cue_mark.dart';
 
 /// Timeline Entry
 class TimelineEntry {
@@ -303,11 +304,7 @@ class _TimelineEntryCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        _getIcon(),
-                        size: 20,
-                        color: _getIconColor(),
-                      ),
+                      _buildIcon(),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
@@ -379,18 +376,22 @@ class _TimelineEntryCard extends StatelessWidget {
     );
   }
 
-  IconData _getIcon() {
+  /// Tra ve Widget chu khong phai IconData: muc "practice" dung dau hieu bi-a
+  /// tu ve, khong co glyph Material tuong duong.
+  Widget _buildIcon() {
+    const kichThuoc = 20.0;
     switch (entry.type) {
       case TimelineEntryType.recommendation:
-        return Icons.lightbulb;
+        return Icon(Icons.lightbulb, size: kichThuoc, color: _getIconColor());
       case TimelineEntryType.practice:
-        return Icons.pool;
+        return PoolCueMark(size: kichThuoc, color: _getIconColor());
       case TimelineEntryType.match:
-        return Icons.emoji_events;
+        return Icon(Icons.emoji_events,
+            size: kichThuoc, color: _getIconColor());
       case TimelineEntryType.coachAdvice:
-        return Icons.psychology;
+        return Icon(Icons.psychology, size: kichThuoc, color: _getIconColor());
       case TimelineEntryType.break_:
-        return Icons.hotel;
+        return Icon(Icons.hotel, size: kichThuoc, color: _getIconColor());
     }
   }
 

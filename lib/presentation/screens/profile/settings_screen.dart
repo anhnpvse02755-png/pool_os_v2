@@ -10,6 +10,7 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/services/test_logging_service.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/repository_providers.dart';
+import '../../widgets/logo/pool_cue_mark.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -353,7 +354,7 @@ class SettingsScreen extends ConsumerWidget {
                 color: AppColors.pastelFor(0, brightness),
                 borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               ),
-              child: Icon(Icons.pool, color: AppColors.primary(brightness), size: 20),
+              child: PoolCueMark(size: 20, color: AppColors.primary(brightness)),
             ),
             const SizedBox(width: AppSpacing.md),
             Text(

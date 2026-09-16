@@ -39,8 +39,7 @@ class WelcomeScreen extends ConsumerWidget {
                 const Spacer(),
 
                 // Logo/Icon
-                const IconTile(
-                  icon: Icons.pool,
+                const IconTile.mark(
                   toneIndex: 0,
                   size: 120,
                 )

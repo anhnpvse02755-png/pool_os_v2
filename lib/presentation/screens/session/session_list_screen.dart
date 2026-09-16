@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
+import '../../widgets/logo/pool_cue_mark.dart';
 
 class SessionListScreen extends StatelessWidget {
   const SessionListScreen({super.key});
@@ -44,8 +45,7 @@ class SessionListScreen extends StatelessWidget {
                   color: AppColors.primary(brightness).withValues(alpha: 0.08),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.pool,
+                child: PoolCueMark(
                   size: 48,
                   color: AppColors.primary(brightness),
                 ),

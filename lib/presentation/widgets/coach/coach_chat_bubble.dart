@@ -10,6 +10,7 @@ import '../../../core/theme/shadows.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../screens/coach/coach_chat_screen.dart' show ChatMessage;
+import '../logo/pool_cue_mark.dart';
 
 /// Coach Chat Bubble
 class CoachChatBubble extends StatelessWidget {
@@ -159,8 +160,7 @@ class CoachChatBubble extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.pool,
+              PoolCueMark(
                 size: 18,
                 color: AppColors.primary(brightness),
               ),

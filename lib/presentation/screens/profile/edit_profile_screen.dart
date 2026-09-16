@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/shadows.dart';
 import '../../../core/theme/spacing.dart';
+import '../../widgets/logo/pool_cue_mark.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -495,7 +496,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   color: AppColors.pastelFor(0, brightness),
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
-                child: Icon(Icons.pool, color: AppColors.primary(brightness), size: 20),
+                child: PoolCueMark(size: 20, color: AppColors.primary(brightness)),
               ),
               const SizedBox(width: AppSpacing.md),
               Text(

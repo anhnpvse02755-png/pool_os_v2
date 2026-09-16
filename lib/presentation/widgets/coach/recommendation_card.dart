@@ -15,6 +15,7 @@ import '../../../core/theme/colors.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../core/services/coach_voice_service.dart';
+import '../logo/pool_cue_mark.dart';
 
 /// Coach Recommendation - ONE Priority Card
 /// This is the UI layer representation
@@ -157,10 +158,9 @@ class RecommendationCard extends StatelessWidget {
               color: AppColors.primary(brightness).withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.pool,
-              color: AppColors.primary(brightness),
+            child: PoolCueMark(
               size: 28,
+              color: AppColors.primary(brightness),
             ),
           ),
           const SizedBox(width: 16),

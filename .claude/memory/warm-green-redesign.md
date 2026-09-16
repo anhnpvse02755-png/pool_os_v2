@@ -1,6 +1,6 @@
 ---
 name: warm-green-redesign
-description: Redesign "Kem ấm & Xanh rêu" — 8 lô quét 68 màn, đang ở lô 3 xong, 40 màn còn lại
+description: Redesign "Kem ấm & Xanh rêu" — 68/68 màn xong, vệ sinh token sạch, gốc ThemeData hết xanh điện, mark bi-a tự vẽ
 metadata:
   type: project
 ---
@@ -22,7 +22,8 @@ Bo góc: `radiusSm=12` `radiusMd=20` `radiusLg=28` `radiusTile=18` `radiusFull=9
 1. Màn đã quét **phải** dùng accessor `AppColors.foo(brightness)` — không
    được để lại `AppColors.lightFoo` / `darkFoo` / `fooSubtleLight`.
 2. Không `Colors.*` của Material (`Colors.transparent` là ngoại lệ duy nhất).
-   Không emoji làm icon — dùng Material icon trong ô pastel.
+   Không emoji làm icon — dùng Material icon trong ô pastel, trừ dấu hiệu bi-a
+   thì dùng `PoolCueMark` vì Material không có glyph nào.
 3. `main.dart:137` giữ `ThemeMode.light` **cho tới khi hết lô 8**. Mọi tỉ lệ
    tương phản chế độ tối ghi trong plan đều là **tính toán, chưa quan sát**.
 
@@ -86,6 +87,31 @@ gặp bẫy thứ hai: GoogleFonts nạp font BẤT ĐỒNG BỘ, trong test lu�
 nổ sau khi test gọi nó đã xong nên làm đỏ test KẾ TIẾP ("This test failed after
 it had already completed") dù mọi assertion đều đúng — 22/24 đỏ vì lý do này.
 Bọc `runZonedGuarded` quanh chỗ dựng theme thì hết.
+
+## Icon bi-a: Material không có glyph nào
+
+Tám chỗ trong `lib/` mượn icon **bể bơi** của Material (glyph vẽ một người
+đang bơi) làm dấu hiệu cho app **bi-a** — gồm cả logo màn đăng nhập, màn chào,
+và bong bóng chat coach. Material không có glyph bi-a, nên thay bằng
+`PoolCueMark` tự vẽ (`lib/presentation/widgets/logo/pool_cue_mark.dart`): một
+bi đặc và cây cơ thuôn chéo 45°, chạm gần nhưng chừa khe hở.
+
+`IconTile` nay có constructor `IconTile.mark(...)` — ô vẫn nắm quyền quyết
+định cỡ và màu, đúng như khi nó dựng `Icon`.
+
+**Tỉ lệ bi/cơ quyết định mark đọc ra cái gì.** Bản đầu (bi bán kính 0,26 · cơ
+dài 0,52 · nét đều 0,12) nhìn ra **cái chảo** — cán ngắn hơn hai lần đường kính
+bi thì mắt đọc nó là tay cầm, và đuôi cơ còn đâm ra ngoài ô rồi cấn vào góc bo
+của `IconTile`. Bản chốt: bi 0,15 · cơ dài ~2,3 lần đường kính bi · thuôn
+0,035→0,055 · đuôi dừng ở 0,90 chứ không chạm mép.
+
+Kiểm ở cỡ thật, không chỉ ở cỡ logo: dựng mark trong widget test rồi
+`toImage(pixelRatio: 10)` cho ra ảnh phóng to đúng những pixel màn hình vẽ ở
+18px. Đó là cách duy nhất thấy được bản đầu hỏng ở cỡ nhỏ.
+
+Luật chặn tái phát nằm trong `test/widgets/pool_cue_mark_test.dart`: quét toàn
+`lib/` cấm icon cũ quay lại — và như luật vệ sinh token, **nó quét cả chú
+thích**, nên đừng viết tên icon đó vào comment.
 
 ## Chip không được nằm trong vùng cuộn ngang
 
