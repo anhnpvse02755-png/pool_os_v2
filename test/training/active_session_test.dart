@@ -22,11 +22,11 @@ void main() {
     });
 
     test('start dịch mã knowledge graph sang mã bài tập thật', () {
-      // POSITION_CONTROL là mã của knowledge graph; màn tập chỉ hiểu BT09.
+      // POSITION_CONTROL là mã của knowledge graph; màn tập chỉ hiểu BT11.
       notifier.start([_item('POSITION_CONTROL'), _item('BANK_SHOT')]);
 
-      expect(notifier.state.current!.drillCode, 'BT09');
-      expect(notifier.state.items[1].drillCode, 'BT14');
+      expect(notifier.state.current!.drillCode, 'BT11');
+      expect(notifier.state.items[1].drillCode, 'BT16');
     });
 
     test('bài không dịch được bị loại khỏi buổi, không làm hỏng cả buổi', () {
@@ -36,7 +36,7 @@ void main() {
       ]);
 
       expect(notifier.state.items, hasLength(1));
-      expect(notifier.state.current!.drillCode, 'BT14');
+      expect(notifier.state.current!.drillCode, 'BT16');
     });
 
     test('buổi rỗng sau khi lọc thì coi như không có buổi nào chạy', () {

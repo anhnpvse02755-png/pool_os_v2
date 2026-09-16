@@ -9,14 +9,10 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('Coach Widget Tests', () {
     testWidgets('Coach shows loading indicator', (tester) async {
-      bool isLoading = true;
-
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
-            body: isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : const Text('Loaded'),
+            body: Center(child: CircularProgressIndicator()),
           ),
         ),
       );

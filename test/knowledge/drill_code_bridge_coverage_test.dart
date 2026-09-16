@@ -4,7 +4,7 @@ import 'package:pool_os_v2/knowledge/drill_code_bridge.dart';
 import 'package:pool_os_v2/knowledge/knowledge_graph_service.dart';
 
 /// Buổi tập hôm nay đề xuất bài lấy từ knowledge graph (mã `STUN_SHOT`,
-/// `BANK_SHOT`…), nhưng màn tập đọc bài từ `DrillLibrary` (mã `BT01`–`BT24`).
+/// `BANK_SHOT`…), nhưng màn tập đọc bài từ `DrillLibrary` (mã `BT01`–`BT26`).
 /// Cầu nối giữa hai hệ là `drill_code_bridge`.
 ///
 /// Trước khi có test này, cầu nối chỉ phủ 2/13 bài — 11 bài còn lại đưa người
@@ -40,14 +40,14 @@ void main() {
         'STUN_SHOT': 'BT07', // bi cái dừng — Stop/Follow/Draw
         'THIN_CUT': 'BT05', // cắt mỏng <30° — ngắm bi sát băng & góc lệch
         'THICK_CUT': 'BT03', // cắt dày >45° — ngắm bi ảo theo góc tăng dần
-        'BANK_SHOT': 'BT14',
-        'KICK_SHOT': 'BT13',
-        'SAFETY_PLAY': 'BT10',
+        'BANK_SHOT': 'BT16',
+        'KICK_SHOT': 'BT15',
+        'SAFETY_PLAY': 'BT12',
         'BREAK_SHOT': 'BT06',
-        'POSITION_CONTROL': 'BT09',
-        'RUN_OUT': 'BT11',
-        'SPEED_CONTROL': 'BT17',
-        'ESCAPING': 'BT13', // thoát kẹt đi bằng kick shot
+        'POSITION_CONTROL': 'BT11',
+        'RUN_OUT': 'BT13',
+        'SPEED_CONTROL': 'BT19',
+        'ESCAPING': 'BT15', // thoát kẹt đi bằng kick shot
       };
 
       expected.forEach((from, to) {
@@ -56,13 +56,13 @@ void main() {
     });
 
     test('mã V2 có thật thì đi thẳng, mã lạ thì trả null', () {
-      expect(resolveDrillCode('BT24'), 'BT24');
+      expect(resolveDrillCode('BT26'), 'BT26');
       expect(resolveDrillCode('KHONG_TON_TAI'), isNull);
     });
 
     test('hậu tố _LV vẫn được gỡ', () {
       expect(resolveDrillCode('STOP_LV2'), 'BT07');
-      expect(resolveDrillCode('BANK_SHOT_LV3'), 'BT14');
+      expect(resolveDrillCode('BANK_SHOT_LV3'), 'BT16');
     });
   });
 }

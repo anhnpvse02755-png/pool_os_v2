@@ -160,7 +160,7 @@ Map<String, DrillNode> _seedDrillNodes() {
       skillsTrained: [PoolSkills.aiming, PoolSkills.stroke],
       fixesMistakes: [CommonMistakes.misalign],
       prerequisites: [],
-      nextDrills: ['BT07', 'BT07', 'BT07'],
+      nextDrills: ['BT07', 'BT08', 'BT09'],
       relatedDrills: ['BT07'],
       tips: [
         'Ngắm từ bi đến lỗ, chọn điểm ngắm',
@@ -185,7 +185,7 @@ Map<String, DrillNode> _seedDrillNodes() {
       skillsTrained: [PoolSkills.cueBallControl, PoolSkills.stroke, PoolSkills.speedControl],
       fixesMistakes: [CommonMistakes.cueBallOverrun, CommonMistakes.overRun],
       prerequisites: ['BT01'],
-      nextDrills: ['BT07', 'BT07'],
+      nextDrills: ['BT08', 'BT09'],
       relatedDrills: ['BT01', 'STUN_SHOT'],
       tips: [
         'Đánh vào tâm bi (center ball hit)',
@@ -202,8 +202,8 @@ Map<String, DrillNode> _seedDrillNodes() {
       estimatedMinutes: 15,
     ),
 
-    'BT07': const DrillNode(
-      code: 'BT07',
+    'BT08': const DrillNode(
+      code: 'BT08',
       name: 'Follow Shot',
       nameVi: 'Bi lăn theo',
       description: 'Bi cái lăn theo hướng bi đánh sau cú đánh.',
@@ -211,7 +211,7 @@ Map<String, DrillNode> _seedDrillNodes() {
       fixesMistakes: [CommonMistakes.cueBallStop],
       prerequisites: ['BT07'],
       nextDrills: ['POSITION_CONTROL'],
-      relatedDrills: ['BT07', 'BT07'],
+      relatedDrills: ['BT07', 'BT09'],
       tips: [
         'Đánh trên tâm bi (top spin)',
         'Tốc độ mạnh, follow through dài',
@@ -225,8 +225,8 @@ Map<String, DrillNode> _seedDrillNodes() {
       estimatedMinutes: 20,
     ),
 
-    'BT07': const DrillNode(
-      code: 'BT07',
+    'BT09': const DrillNode(
+      code: 'BT09',
       name: 'Draw Shot',
       nameVi: 'Bi quay lại',
       description: 'Bi cái quay ngược lại sau khi chạm bi mục tiêu.',
@@ -234,7 +234,7 @@ Map<String, DrillNode> _seedDrillNodes() {
       fixesMistakes: [CommonMistakes.underRun],
       prerequisites: ['BT07'],
       nextDrills: ['POSITION_CONTROL'],
-      relatedDrills: ['BT07', 'BT07'],
+      relatedDrills: ['BT07', 'BT08'],
       tips: [
         'Đánh dưới tâm bi (draw)',
         'Rút cue nhanh và mạnh',
@@ -376,7 +376,10 @@ Map<String, DrillNode> _seedDrillNodes() {
       description: 'Đánh an toàn khi không có cú đánh tốt.',
       skillsTrained: [PoolSkills.safetyPlay, PoolSkills.positionPlay],
       fixesMistakes: [CommonMistakes.rushShot],
-      prerequisites: ['BT07', 'BT07'],
+      // Cho thu hai von la mot bai khac cung ho Stop/Follow/Draw,
+      // nhung lan thay the hang loat da ghi de no thanh BT07. Khong
+      // khoi phuc duoc y goc nen chi khu trung lap — dien lai neu biet.
+      prerequisites: ['BT07'],
       nextDrills: ['BREAK_SHOT'],
       relatedDrills: ['ESCAPING'],
       tips: [
@@ -400,7 +403,10 @@ Map<String, DrillNode> _seedDrillNodes() {
       description: 'Cú đánh mở đầu ván đấu.',
       skillsTrained: [PoolSkills.breakShot, PoolSkills.stroke, PoolSkills.speedControl],
       fixesMistakes: [],
-      prerequisites: ['BT07', 'BT07'],
+      // Cho thu hai von la mot bai khac cung ho Stop/Follow/Draw,
+      // nhung lan thay the hang loat da ghi de no thanh BT07. Khong
+      // khoi phuc duoc y goc nen chi khu trung lap — dien lai neu biet.
+      prerequisites: ['BT07'],
       nextDrills: ['RUN_OUT'],
       relatedDrills: ['SPEED_CONTROL'],
       tips: [
@@ -425,9 +431,9 @@ Map<String, DrillNode> _seedDrillNodes() {
       description: 'Kiểm soát bi cái đến vị trí mong muốn sau cú đánh.',
       skillsTrained: [PoolSkills.positionPlay, PoolSkills.cueBallControl, PoolSkills.speedControl],
       fixesMistakes: [CommonMistakes.overRun, CommonMistakes.underRun, CommonMistakes.positionMiss],
-      prerequisites: ['BT07', 'BT07', 'BT07'],
+      prerequisites: ['BT07', 'BT08', 'BT09'],
       nextDrills: ['RUN_OUT'],
-      relatedDrills: ['BT07', 'BT07', 'BT07', 'STUN_SHOT'],
+      relatedDrills: ['BT07', 'BT08', 'BT09', 'STUN_SHOT'],
       tips: [
         'Lên kế hoạch vị trí trước khi đánh',
         'Chọn điểm đến thực tế',

@@ -274,12 +274,12 @@ class PriorityEngine {
       if (streak.type == StreakType.loss && streak.count >= 3) {
         // Losing streak: prefer easier/solid drills, reduce harder focus
         // Modify based on effort - higher effort areas get penalized
-        if (area.effort == PriorityLevel.high) {
+        if (area.effort == PriorityEffort.high) {
           score -= 0.15;
         }
       } else if (streak.type == StreakType.win && streak.count >= 5) {
         // Winning streak: player is confident, can handle harder focus
-        if (area.effort == PriorityLevel.high) {
+        if (area.effort == PriorityEffort.high) {
           score += 0.10;
         }
       }

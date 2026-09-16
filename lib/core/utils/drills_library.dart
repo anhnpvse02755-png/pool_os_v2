@@ -176,32 +176,90 @@ class DrillLibrary {
       nameVi: 'Kỹ thuật cú đánh',
       icon: 'sports_baseball',
       drills: [
+        // Ba cu xoay doc co ban, TACH RIENG chu khong gop.
+        //
+        // Nguon goc chung mot bai "Stop - Follow - Draw tren cung cu ly".
+        // Gop nhu vay hop ly voi nguoi da choi, nhung day la ba ky nang NEN
+        // TANG cua nguoi moi: ho can di tung buoc, va he goi y can noi duoc
+        // "em hong o draw" thay vi chi noi duoc "em hong o bai gop".
+        //
+        // Ca ba giu NGUYEN the tran — bi cai va bi muc tieu thang hang voi lo,
+        // cach nhau ~40cm — vi do chinh la y do cua nguon: doi DUNG MOT bien
+        // (diem cham co) tren cung mot cu ly va cung mot luc danh.
         Drill(
           code: 'BT07',
-          name: 'Stop - Follow - Draw at Fixed Distance',
-          nameVi: 'Bài tập Stop – Follow – Draw trên cùng cự ly',
+          name: 'Stop Shot at Fixed Distance',
+          nameVi: 'Cú dừng bi (Stop) trên cự ly cố định',
           category: 'shotmaking',
           difficulty: 'medium',
-          description: 'Cảm nhận rõ sự khác biệt giữa 3 loại xoáy dọc cơ bản với cùng một cự ly và lực đánh.',
+          description: 'Bi cái dừng lại ngay tại điểm va chạm — nền tảng của mọi kiểm soát vị trí.',
           setup: 'Đặt bi cái và bi mục tiêu thẳng hàng với lỗ, cách nhau ~40cm.',
           steps: [
             'Đặt bi cái và bi mục tiêu thẳng hàng với lỗ, cách nhau ~40cm.',
-            'Đánh 5 cú stun (ngắm giữa tâm) — quan sát bi cái dừng tại chỗ va chạm.',
-            'Đánh 5 cú follow (ngắm 1/2-3/4 phía trên tâm) — quan sát bi cái lăn tiếp theo bi mục tiêu.',
-            'Đánh 5 cú draw (ngắm 1/2 phía dưới tâm) — quan sát bi cái lùi lại.',
+            'Ngắm đúng giữa tâm bi cái, giữ cơ nằm ngang.',
+            'Đánh 10 cú với lực vừa phải — quan sát bi cái dừng tại chỗ va chạm.',
+            'Ghi lại số cú bi cái xê dịch quá một đường kính bi.',
           ],
-          goal: 'Cảm nhận rõ sự khác biệt giữa 3 loại xoáy dọc cơ bản với cùng một cự ly và lực đánh.',
-          criteriaVi: 'Nhận biết và mô tả đúng bằng lời sự khác biệt về khoảng cách di chuyển của bi cái ở cả 3 loại; bi cái không trượt cơ (miscue) quá 1 lần trong 15 cú.',
+          goal: 'Bi cái dừng tại điểm va chạm, không lăn tiếp và không lùi lại.',
+          criteriaVi: 'Bi cái dừng trong phạm vi một đường kính bi quanh điểm va chạm ở ít nhất 6/10 cú; không trượt cơ (miscue) quá 1 lần trong 10 cú.',
           commonMistakes: [],
           levels: [
             DrillLevel(level: 1, attempts: 50, passCount: 27),
             DrillLevel(level: 2, attempts: 50, passCount: 35),
             DrillLevel(level: 3, attempts: 50, passCount: 42),
           ],
-          knowledgeIds: ['kn_follow_shot', 'kn_draw_shot', 'kn_stop_shot'],
+          knowledgeIds: ['kn_stop_shot'],
         ),
         Drill(
           code: 'BT08',
+          name: 'Follow Shot at Fixed Distance',
+          nameVi: 'Cú bi lăn theo (Follow) trên cự ly cố định',
+          category: 'shotmaking',
+          difficulty: 'medium',
+          description: 'Bi cái lăn tiếp theo hướng bi mục tiêu sau va chạm.',
+          setup: 'Đặt bi cái và bi mục tiêu thẳng hàng với lỗ, cách nhau ~40cm.',
+          steps: [
+            'Đặt bi cái và bi mục tiêu thẳng hàng với lỗ, cách nhau ~40cm.',
+            'Ngắm 1/2–3/4 phía TRÊN tâm bi cái.',
+            'Đánh 10 cú, follow through dài — quan sát bi cái lăn tiếp theo bi mục tiêu.',
+            'Đặt một mốc cách điểm va chạm ~30cm và cố cho bi cái dừng quanh mốc đó.',
+          ],
+          goal: 'Điều khiển được quãng lăn tiếp của bi cái sau va chạm.',
+          criteriaVi: 'Bi cái lăn tiếp và dừng trong phạm vi 15cm quanh mốc ở ít nhất 6/10 cú; không trượt cơ quá 1 lần trong 10 cú.',
+          commonMistakes: [],
+          levels: [
+            DrillLevel(level: 1, attempts: 50, passCount: 27),
+            DrillLevel(level: 2, attempts: 50, passCount: 35),
+            DrillLevel(level: 3, attempts: 50, passCount: 42),
+          ],
+          knowledgeIds: ['kn_follow_shot'],
+        ),
+        Drill(
+          code: 'BT09',
+          name: 'Draw Shot at Fixed Distance',
+          nameVi: 'Cú bi quay lại (Draw) trên cự ly cố định',
+          category: 'shotmaking',
+          difficulty: 'medium',
+          description: 'Bi cái lùi ngược lại sau khi chạm bi mục tiêu — khó nhất trong ba cú xoáy dọc.',
+          setup: 'Đặt bi cái và bi mục tiêu thẳng hàng với lỗ, cách nhau ~40cm.',
+          steps: [
+            'Đặt bi cái và bi mục tiêu thẳng hàng với lỗ, cách nhau ~40cm.',
+            'Ngắm 1/2 phía DƯỚI tâm bi cái, giữ cơ càng nằm ngang càng tốt.',
+            'Đánh 10 cú dứt khoát, follow through xuyên qua bi — quan sát bi cái lùi lại.',
+            'Đặt một mốc cách điểm va chạm ~30cm về phía sau và cố cho bi cái dừng quanh mốc đó.',
+          ],
+          goal: 'Điều khiển được quãng lùi của bi cái sau va chạm.',
+          criteriaVi: 'Bi cái lùi lại và dừng trong phạm vi 15cm quanh mốc ở ít nhất 5/10 cú; không trượt cơ quá 1 lần trong 10 cú.',
+          commonMistakes: [],
+          levels: [
+            DrillLevel(level: 1, attempts: 50, passCount: 25),
+            DrillLevel(level: 2, attempts: 50, passCount: 32),
+            DrillLevel(level: 3, attempts: 50, passCount: 40),
+          ],
+          knowledgeIds: ['kn_draw_shot'],
+        ),
+        Drill(
+          code: 'BT10',
           name: 'Basic English through One Rail',
           nameVi: 'Xoáy ngang cơ bản qua 1 băng (English Drill)',
           category: 'shotmaking',
@@ -225,7 +283,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_english'],
         ),
         Drill(
-          code: 'BT12',
+          code: 'BT14',
           name: 'Recognising & Compensating Throw',
           nameVi: 'Nhận diện và bù Throw Effect',
           category: 'shotmaking',
@@ -248,7 +306,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_throw_squirt_swerve'],
         ),
         Drill(
-          code: 'BT13',
+          code: 'BT15',
           name: 'One-Rail Kick Shot',
           nameVi: 'Luyện Kick Shot 1 băng (Diamond System cơ bản)',
           category: 'shotmaking',
@@ -271,7 +329,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_kick_shot'],
         ),
         Drill(
-          code: 'BT14',
+          code: 'BT16',
           name: 'Bank Shot to Side Pocket',
           nameVi: 'Bank Shot cơ bản vào lỗ giữa',
           category: 'shotmaking',
@@ -294,7 +352,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_bank_shot'],
         ),
         Drill(
-          code: 'BT15',
+          code: 'BT17',
           name: 'Basic Jump Shot',
           nameVi: 'Jump Shot cơ bản (trên bàn/nỉ tập)',
           category: 'shotmaking',
@@ -318,7 +376,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_jump_shot'],
         ),
         Drill(
-          code: 'BT16',
+          code: 'BT18',
           name: 'Basic Combination',
           nameVi: 'Combination cơ bản (2 bi thẳng hàng)',
           category: 'shotmaking',
@@ -349,7 +407,7 @@ class DrillLibrary {
       icon: 'my_location',
       drills: [
         Drill(
-          code: 'BT09',
+          code: 'BT11',
           name: 'Three-Ball Position Drill',
           nameVi: 'Bài tập vị trí 3 bi liên tiếp (3-Ball Position Drill)',
           category: 'positioning',
@@ -372,7 +430,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_position_play'],
         ),
         Drill(
-          code: 'BT17',
+          code: 'BT19',
           name: 'Speed Control on a 1-10 Scale',
           nameVi: 'Kiểm soát tốc độ theo thang 1-10',
           category: 'positioning',
@@ -403,7 +461,7 @@ class DrillLibrary {
       icon: 'psychology_alt',
       drills: [
         Drill(
-          code: 'BT10',
+          code: 'BT12',
           name: 'Basic Safety - Screening One Ball',
           nameVi: 'Bài tập Safety cơ bản (Che chắn 1 bi)',
           category: 'strategy',
@@ -426,7 +484,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_safety_play'],
         ),
         Drill(
-          code: 'BT11',
+          code: 'BT13',
           name: 'Table Reading & Run-out Planning',
           nameVi: 'Bài tập đọc bàn & lên kế hoạch run-out',
           category: 'strategy',
@@ -449,7 +507,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_table_layout'],
         ),
         Drill(
-          code: 'BT18',
+          code: 'BT20',
           name: 'Advanced Run-out Planning (7+ balls)',
           nameVi: 'Lập kế hoạch Run-out nâng cao (7+ bi)',
           category: 'strategy',
@@ -472,7 +530,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_run_out_planning'],
         ),
         Drill(
-          code: 'BT19',
+          code: 'BT21',
           name: 'Probabilistic Active Safety',
           nameVi: 'Safety chủ động có tính xác suất',
           category: 'strategy',
@@ -503,7 +561,7 @@ class DrillLibrary {
       icon: 'self_improvement',
       drills: [
         Drill(
-          code: 'BT20',
+          code: 'BT22',
           name: 'Pre-shot Routine',
           nameVi: 'Routine trước cú đánh (Pre-shot Routine)',
           category: 'psychology',
@@ -534,7 +592,7 @@ class DrillLibrary {
       icon: 'gavel',
       drills: [
         Drill(
-          code: 'BT21',
+          code: 'BT23',
           name: '8-Ball Practice Game with Calls',
           nameVi: 'Ván tập 8-Ball có gọi bi/lỗ',
           category: 'rules',
@@ -556,7 +614,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_rules_8ball'],
         ),
         Drill(
-          code: 'BT22',
+          code: 'BT24',
           name: '9-Ball / 10-Ball Lowest-Ball Contact',
           nameVi: 'Ván tập 9-Ball / 10-Ball chú trọng chạm đúng bi nhỏ nhất',
           category: 'rules',
@@ -578,7 +636,7 @@ class DrillLibrary {
           knowledgeIds: ['kn_rules_9ball', 'kn_rules_10ball'],
         ),
         Drill(
-          code: 'BT23',
+          code: 'BT25',
           name: 'Short Straight Pool - Break Ball Awareness',
           nameVi: 'Ván tập Straight Pool ngắn (Break Ball Awareness)',
           category: 'rules',
@@ -609,7 +667,7 @@ class DrillLibrary {
       icon: 'build',
       drills: [
         Drill(
-          code: 'BT24',
+          code: 'BT26',
           name: 'Periodic Cue Inspection & Maintenance',
           nameVi: 'Kiểm tra & bảo dưỡng cơ định kỳ',
           category: 'equipment',

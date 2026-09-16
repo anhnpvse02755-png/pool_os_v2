@@ -18,7 +18,7 @@ void main() {
   const proposed = ProposedSession(
     items: [
       SessionItem(
-        drillCode: 'POSITION_CONTROL', // mã knowledge graph, phải dịch ra BT09
+        drillCode: 'POSITION_CONTROL', // mã knowledge graph, phải dịch ra BT11
         drillName: 'Kiểm soát vị trí',
         priority: SessionPriority.path,
         estimatedMinutes: 10,
@@ -95,8 +95,8 @@ void main() {
         (tester) async {
       final visited = await pumpAndTap(tester, 'Bắt đầu buổi tập');
 
-      expect(visited, ['/training/session/new?drill=BT09'],
-          reason: 'phải mở bài đầu tiên (POSITION_CONTROL -> BT09), '
+      expect(visited, ['/training/session/new?drill=BT11'],
+          reason: 'phải mở bài đầu tiên (POSITION_CONTROL -> BT11), '
               'không phải danh sách bài tập');
     });
 
@@ -150,7 +150,7 @@ void main() {
       expect(active.isActive, isTrue);
       expect(active.total, 2, reason: 'cả hai bài phải nằm trong buổi tập');
       expect(active.position, 1);
-      expect(active.items.map((i) => i.drillCode), ['BT09', 'BT14'],
+      expect(active.items.map((i) => i.drillCode), ['BT11', 'BT16'],
           reason: 'mã knowledge graph phải được dịch sang mã bài tập thật');
     });
   });

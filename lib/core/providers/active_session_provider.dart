@@ -98,7 +98,7 @@ class ActiveSessionNotifier extends StateNotifier<ActiveSessionState> {
   /// Bắt đầu một buổi tập từ danh sách bài đề xuất.
   ///
   /// Mã bài của knowledge graph (`BANK_SHOT`…) được dịch sang mã
-  /// `DrillLibrary` (`BT14`…) ngay tại đây, để mọi nơi phía sau chỉ còn làm
+  /// `DrillLibrary` (`BT16`…) ngay tại đây, để mọi nơi phía sau chỉ còn làm
   /// việc với một hệ mã. Bài nào không dịch được thì bị loại — thà buổi tập
   /// ngắn hơn còn hơn đẩy người dùng vào màn "bài tập không tồn tại".
   void start(List<SessionItem> proposed) {

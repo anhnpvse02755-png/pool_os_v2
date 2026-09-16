@@ -334,7 +334,7 @@ final dashboardStatsProvider = FutureProvider<DashboardStats>((ref) async {
 
   // Get practice minutes from sessions
   final sessions = await drillRepo.getTrainingHistory(limit: 100);
-  final totalMinutes = sessions.fold<int>(0, (sum, s) => sum + (s.duration ?? 0));
+  final totalMinutes = sessions.fold<int>(0, (sum, s) => sum + s.duration);
 
   return DashboardStats.fromAggregates(aggregates, completedDrills, totalMinutes);
 });

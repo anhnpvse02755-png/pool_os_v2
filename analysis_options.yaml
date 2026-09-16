@@ -8,6 +8,20 @@
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
+  errors:
+    # Nang len error, khong de o muc canh bao.
+    #
+    # `priority_engine` so sanh `area.effort` (PriorityEffort) voi
+    # `PriorityLevel.high`. Phep so sanh do LUON SAI, nen bo dieu chinh diem
+    # theo chuoi thang/thua cua Sprint-13 chua tung chay — va no song sot vi
+    # analyzer chi keu canh bao, ma repo nay chi chan o muc error.
+    #
+    # Ca ba luat duoi day deu la loi logic doi lot canh bao: so sanh hai kieu
+    # khong lien quan, khoa trung trong map literal (da nuot hai bai tap), va
+    # code khong bao gio chay toi.
+    unrelated_type_equality_checks: error
+    equal_keys_in_map: error
+    dead_code: error
   exclude:
     - build/**
     - android/**

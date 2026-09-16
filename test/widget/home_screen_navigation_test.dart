@@ -41,9 +41,14 @@ void main() {
       expect(resolved, equals('BT07'));
     });
 
-    test('DRAW resolves to BT07 (V1 → V2)', () {
+    test('DRAW resolves to BT09 (V1 → V2)', () {
       final resolved = resolveDrillCode('DRAW');
-      expect(resolved, equals('BT07'));
+      expect(resolved, equals('BT09'));
+    });
+
+    test('FOLLOW resolves to BT08 (V1 → V2)', () {
+      final resolved = resolveDrillCode('FOLLOW');
+      expect(resolved, equals('BT08'));
     });
 
     test('Unknown code returns null (navigation falls back gracefully)', () {
@@ -61,7 +66,7 @@ void main() {
     });
 
     test('All V2 codes resolve to valid drills', () {
-      final v2Codes = ['BT01', 'BT07', 'BT07', 'BT07'];
+      final v2Codes = ['BT01', 'BT07', 'BT08', 'BT09'];
       for (final code in v2Codes) {
         final drill = DrillLibrary.getDrill(code);
         expect(drill, isNotNull, reason: '$code should exist in DrillLibrary');
@@ -71,11 +76,11 @@ void main() {
     test('All V1→V2 mapped codes resolve to valid drills', () {
       final mappings = {
         'STOP': 'BT07',
-        'DRAW': 'BT07',
-        'FOLLOW': 'BT07',
+        'FOLLOW': 'BT08',
+        'DRAW': 'BT09',
         'STRAIGHT': 'BT01',
-        'POSITION': 'BT09',
-        'SAFETY': 'BT10',
+        'POSITION': 'BT11',
+        'SAFETY': 'BT12',
         'BASIC': 'BT01',
       };
       for (final entry in mappings.entries) {
