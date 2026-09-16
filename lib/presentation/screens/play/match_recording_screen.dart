@@ -1030,7 +1030,7 @@ class _MatchRecordingScreenState extends ConsumerState<MatchRecordingScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.primary(brightness),
+            activeThumbColor: AppColors.primary(brightness),
           ),
         ],
       ),

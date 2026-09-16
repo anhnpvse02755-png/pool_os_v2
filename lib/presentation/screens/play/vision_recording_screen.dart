@@ -459,7 +459,7 @@ class _VisionRecordingScreenState extends ConsumerState<VisionRecordingScreen> {
             onChanged: (value) {
               setState(() => _notificationsEnabled = value);
             },
-            activeColor: AppColors.primary(brightness),
+            activeThumbColor: AppColors.primary(brightness),
             contentPadding: EdgeInsets.zero,
           ),
           const SizedBox(height: 12),

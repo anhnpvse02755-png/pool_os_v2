@@ -357,7 +357,7 @@ class _SettingsToggleState extends State<_SettingsToggle> {
           Switch(
             value: _value,
             onChanged: (value) => setState(() => _value = value),
-            activeColor: accentColor,
+            activeThumbColor: accentColor,
           ),
         ],
       ),

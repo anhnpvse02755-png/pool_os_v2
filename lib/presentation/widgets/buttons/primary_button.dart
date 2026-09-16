@@ -29,6 +29,8 @@ class _PrimaryButtonState extends State<PrimaryButton> {
   Widget build(BuildContext context) {
     final isDisabled = widget.onPressed == null || widget.isLoading;
 
+    final nhun = _isPressed ? 0.97 : 1.0;
+
     return GestureDetector(
       onTapDown: isDisabled ? null : (_) => setState(() => _isPressed = true),
       onTapUp: isDisabled ? null : (_) => setState(() => _isPressed = false),
@@ -37,7 +39,9 @@ class _PrimaryButtonState extends State<PrimaryButton> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeOut,
-        transform: Matrix4.identity()..scale(_isPressed ? 0.97 : 1.0),
+        // `scale(x)` da phe; ban thay the nhan tung truc nen he so
+        // phai tinh mot lan roi dung lai, khong lap ba lan cung mot ternary.
+        transform: Matrix4.identity()..scaleByDouble(nhun, nhun, nhun, 1),
         transformAlignment: Alignment.center,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 100),

@@ -755,7 +755,7 @@ class _DailyReminderSettingsItem extends ConsumerWidget {
               Switch(
                 value: isEnabled,
                 onChanged: (value) => _toggleDailyReminder(context, ref, isEnabled),
-                activeColor: AppColors.onPrimary(brightness),
+                activeThumbColor: AppColors.onPrimary(brightness),
                 activeTrackColor: AppColors.primary(brightness),
               ),
             ],
@@ -1210,7 +1210,7 @@ class _SwitchSettingsItem extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: AppColors.onPrimary(brightness),
+            activeThumbColor: AppColors.onPrimary(brightness),
             activeTrackColor: AppColors.primary(brightness),
           ),
         ],

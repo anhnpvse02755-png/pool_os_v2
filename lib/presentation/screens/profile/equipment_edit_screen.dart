@@ -254,7 +254,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
     final brightness = Theme.of(context).brightness;
 
     return Container(
-      decoration: _cardDecoration(brightness),
+      decoration: _cardDecoration(),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -334,7 +334,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
     final brightness = Theme.of(context).brightness;
 
     return Container(
-      decoration: _cardDecoration(brightness),
+      decoration: _cardDecoration(),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,7 +349,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _brand,
-            value: _brand,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Brand'),
@@ -379,7 +378,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
     final brightness = Theme.of(context).brightness;
 
     return Container(
-      decoration: _cardDecoration(brightness),
+      decoration: _cardDecoration(),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,7 +389,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           // Shaft
           DropdownButtonFormField<String>(
             initialValue: _shaftMaterial,
-            value: _shaftMaterial,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Shaft material'),
@@ -406,18 +404,13 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             initialValue: _shaftDiameterCtrl.text.isEmpty
                 ? null
                 : double.tryParse(_shaftDiameterCtrl.text),
-            value: _shaftDiameterCtrl.text.isEmpty
-                ? null
-                : double.tryParse(_shaftDiameterCtrl.text),
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Shaft diameter (mm)'),
-            items: EquipmentConstants.shaftDiameters
-                .map((d) => DropdownMenuItem(
-                      value: d,
-                      child: Text('${d.toStringAsFixed(2)} mm'),
-                    ))
-                .toList(),
+            items: _mucDuongKinh(
+              EquipmentConstants.shaftDiameters,
+              _shaftDiameterCtrl.text.isEmpty ? null : double.tryParse(_shaftDiameterCtrl.text),
+            ),
             onChanged: (v) =>
                 setState(() => _shaftDiameterCtrl.text = v?.toString() ?? ''),
           ),
@@ -426,7 +419,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           // Tip
           DropdownButtonFormField<String>(
             initialValue: _tipBrand,
-            value: _tipBrand,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tip brand'),
@@ -442,25 +434,19 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             initialValue: _tipDiameterCtrl.text.isEmpty
                 ? null
                 : double.tryParse(_tipDiameterCtrl.text),
-            value: _tipDiameterCtrl.text.isEmpty
-                ? null
-                : double.tryParse(_tipDiameterCtrl.text),
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tip diameter (mm)'),
-            items: EquipmentConstants.tipDiameters
-                .map((d) => DropdownMenuItem(
-                      value: d,
-                      child: Text('${d.toStringAsFixed(2)} mm'),
-                    ))
-                .toList(),
+            items: _mucDuongKinh(
+              EquipmentConstants.tipDiameters,
+              _tipDiameterCtrl.text.isEmpty ? null : double.tryParse(_tipDiameterCtrl.text),
+            ),
             onChanged: (v) =>
                 setState(() => _tipDiameterCtrl.text = v?.toString() ?? ''),
           ),
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _tipHardness,
-            value: _tipHardness,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Tip hardness'),
@@ -472,38 +458,44 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             onChanged: (v) => setState(() => _tipHardness = v),
           ),
           const SizedBox(height: AppSpacing.md),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Lần thay đầu cơ gần nhất',
-              style: TextStyle(color: AppColors.textSecondary(brightness)),
-            ),
-            subtitle: Text(
-              _lastTipChange == null
-                  ? 'Not set'
-                  : _formatDate(_lastTipChange!),
-              style: TextStyle(
-                color: AppColors.textPrimary(brightness),
-                fontWeight: FontWeight.w500,
+          // `ListTile` ve nen va hieu ung cham len Material gan nhat. The bao
+          // quanh la Container co mau nen, nen no che mat hieu ung — chinh
+          // Flutter nem assertion ve viec nay o che do debug.
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Lần thay đầu cơ gần nhất',
+                style: TextStyle(color: AppColors.textSecondary(brightness)),
               ),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.pastelFor(0, brightness),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              subtitle: Text(
+                _lastTipChange == null
+                    ? 'Not set'
+                    : _formatDate(_lastTipChange!),
+                style: TextStyle(
+                  color: AppColors.textPrimary(brightness),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 18),
+              trailing: Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pastelFor(0, brightness),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 18),
+              ),
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: _lastTipChange ?? DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime.now(),
+                );
+                if (picked != null) setState(() => _lastTipChange = picked);
+              },
             ),
-            onTap: () async {
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: _lastTipChange ?? DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime.now(),
-              );
-              if (picked != null) setState(() => _lastTipChange = picked);
-            },
           ),
 
           Divider(color: AppColors.border(brightness)),
@@ -519,7 +511,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _balance,
-            value: _balance,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Balance'),
@@ -533,7 +524,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _joint,
-            value: _joint,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Joint'),
@@ -547,7 +537,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _wrap,
-            value: _wrap,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Wrap'),
@@ -593,35 +582,44 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
 
           // Roles
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Cơ đánh chính',
-              style: TextStyle(color: AppColors.textPrimary(brightness)),
+          Material(
+            color: Colors.transparent,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Cơ đánh chính',
+                style: TextStyle(color: AppColors.textPrimary(brightness)),
+              ),
+              value: _isActive,
+              onChanged: (v) => setState(() => _isActive = v),
+              activeThumbColor: AppColors.primary(brightness),
             ),
-            value: _isActive,
-            onChanged: (v) => setState(() => _isActive = v),
-            activeColor: AppColors.primary(brightness),
           ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Cơ phá (break) đang dùng',
-              style: TextStyle(color: AppColors.textPrimary(brightness)),
+          Material(
+            color: Colors.transparent,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Cơ phá (break) đang dùng',
+                style: TextStyle(color: AppColors.textPrimary(brightness)),
+              ),
+              value: _isBreakCue,
+              onChanged: (v) => setState(() => _isBreakCue = v),
+              activeThumbColor: AppColors.warning,
             ),
-            value: _isBreakCue,
-            onChanged: (v) => setState(() => _isBreakCue = v),
-            activeColor: AppColors.warning,
           ),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Cơ nhảy (jump) đang dùng',
-              style: TextStyle(color: AppColors.textPrimary(brightness)),
+          Material(
+            color: Colors.transparent,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Cơ nhảy (jump) đang dùng',
+                style: TextStyle(color: AppColors.textPrimary(brightness)),
+              ),
+              value: _isJumpCue,
+              onChanged: (v) => setState(() => _isJumpCue = v),
+              activeThumbColor: AppColors.primary(brightness),
             ),
-            value: _isJumpCue,
-            onChanged: (v) => setState(() => _isJumpCue = v),
-            activeColor: AppColors.primary(brightness),
           ),
         ],
       ),
@@ -636,45 +634,51 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
     final brightness = Theme.of(context).brightness;
 
     return Container(
-      decoration: _cardDecoration(brightness),
+      decoration: _cardDecoration(),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const _SectionTitle('Purchase & Condition'),
           const SizedBox(height: AppSpacing.md),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Ngày mua',
-              style: TextStyle(color: AppColors.textSecondary(brightness)),
-            ),
-            subtitle: Text(
-              _purchaseDate == null
-                  ? 'Not set'
-                  : _formatDate(_purchaseDate!),
-              style: TextStyle(
-                color: AppColors.textPrimary(brightness),
-                fontWeight: FontWeight.w500,
+          // `ListTile` ve nen va hieu ung cham len Material gan nhat. The bao
+          // quanh la Container co mau nen, nen no che mat hieu ung — chinh
+          // Flutter nem assertion ve viec nay o che do debug.
+          Material(
+            color: Colors.transparent,
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Ngày mua',
+                style: TextStyle(color: AppColors.textSecondary(brightness)),
               ),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.pastelFor(0, brightness),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              subtitle: Text(
+                _purchaseDate == null
+                    ? 'Not set'
+                    : _formatDate(_purchaseDate!),
+                style: TextStyle(
+                  color: AppColors.textPrimary(brightness),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 18),
+              trailing: Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.pastelFor(0, brightness),
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                ),
+                child: Icon(Icons.calendar_today, color: AppColors.primary(brightness), size: 18),
+              ),
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: _purchaseDate ?? DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime.now(),
+                );
+                if (picked != null) setState(() => _purchaseDate = picked);
+              },
             ),
-            onTap: () async {
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: _purchaseDate ?? DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime.now(),
-              );
-              if (picked != null) setState(() => _purchaseDate = picked);
-            },
           ),
           TextFormField(
             controller: _priceCtrl,
@@ -692,7 +696,6 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
             initialValue: _condition,
-            value: _condition,
             dropdownColor: AppColors.surface(brightness),
             style: TextStyle(color: AppColors.textPrimary(brightness)),
             decoration: _inputDecoration('Condition'),
@@ -711,19 +714,22 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: AppSpacing.md),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(
-              'Lưu trữ',
-              style: TextStyle(color: AppColors.textPrimary(brightness)),
+          Material(
+            color: Colors.transparent,
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Lưu trữ',
+                style: TextStyle(color: AppColors.textPrimary(brightness)),
+              ),
+              subtitle: Text(
+                'Ẩn khỏi danh sách chính',
+                style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 12),
+              ),
+              value: _isArchived,
+              onChanged: (v) => setState(() => _isArchived = v),
+              activeThumbColor: AppColors.textSecondary(brightness),
             ),
-            subtitle: Text(
-              'Ẩn khỏi danh sách chính',
-              style: TextStyle(color: AppColors.textSecondary(brightness), fontSize: 12),
-            ),
-            value: _isArchived,
-            onChanged: (v) => setState(() => _isArchived = v),
-            activeColor: AppColors.textSecondary(brightness),
           ),
         ],
       ),
@@ -738,7 +744,7 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
     final brightness = Theme.of(context).brightness;
 
     return Container(
-      decoration: _cardDecoration(brightness),
+      decoration: _cardDecoration(),
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -777,7 +783,34 @@ class _EquipmentEditScreenState extends ConsumerState<EquipmentEditScreen> {
   // Helpers
   // ===========================================================================
 
-  BoxDecoration _cardDecoration(brightness) {
+  /// Không nhận tham số: bản trước khai `_cardDecoration()` rồi CHE
+  /// ngay tham số đó bằng một biến cục bộ cùng tên đọc từ `context`. Sáu nơi
+  /// gọi đều truyền một giá trị bị vứt đi.
+  /// Danh sách lựa chọn, LUÔN gồm cả giá trị đang có.
+  ///
+  /// `DropdownButtonFormField` khẳng định giá trị đang chọn phải khớp đúng một
+  /// item; không khớp là ném assertion và màn vỡ ngay khi mở. Mà giá trị ở đây
+  /// đến từ ô nhập tự do (`double.tryParse` trên text người dùng gõ) và từ dữ
+  /// liệu đã lưu của bản cũ — cả hai đều có thể nằm ngoài danh sách hằng.
+  ///
+  /// Cây cơ mẫu `cue_main` dính đúng lỗi này: `shaftDiameter: 12.4` trong khi
+  /// hằng chỉ có 11.75/12.0/12.25/12.5/12.75/13.0.
+  List<DropdownMenuItem<double>> _mucDuongKinh(
+      List<double> chuan, double? dangCo) {
+    final tatCa = [...chuan];
+    if (dangCo != null && !tatCa.contains(dangCo)) {
+      tatCa.add(dangCo);
+      tatCa.sort();
+    }
+    return tatCa
+        .map((d) => DropdownMenuItem(
+              value: d,
+              child: Text('${d.toStringAsFixed(2)} mm'),
+            ))
+        .toList();
+  }
+
+  BoxDecoration _cardDecoration() {
     final brightness = Theme.of(context).brightness;
 
     return BoxDecoration(
