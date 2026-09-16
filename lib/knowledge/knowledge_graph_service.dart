@@ -376,10 +376,14 @@ Map<String, DrillNode> _seedDrillNodes() {
       description: 'Đánh an toàn khi không có cú đánh tốt.',
       skillsTrained: [PoolSkills.safetyPlay, PoolSkills.positionPlay],
       fixesMistakes: [CommonMistakes.rushShot],
-      // Cho thu hai von la mot bai khac cung ho Stop/Follow/Draw,
-      // nhung lan thay the hang loat da ghi de no thanh BT07. Khong
-      // khoi phuc duoc y goc nen chi khu trung lap — dien lai neu biet.
-      prerequisites: ['BT07'],
+      // Y goc cua o thu hai da bi lan thay the hang loat ghi de thanh BT07;
+      // day la DUNG LAI tu chinh noi dung node, khong phai khoi phuc.
+      //
+      // An toan la de bi cai o cho doi thu khong danh duoc: hoac ghim no tai
+      // cho (stop), hoac keo no lui ve sau mot bi chan (draw). Follow day bi
+      // cai ra khoang trong — nguoc han y do phong thu. Khop voi tip cua
+      // chinh node: "Kiem soat bi cai tot".
+      prerequisites: ['BT07', 'BT09'],
       nextDrills: ['BREAK_SHOT'],
       relatedDrills: ['ESCAPING'],
       tips: [
@@ -403,10 +407,12 @@ Map<String, DrillNode> _seedDrillNodes() {
       description: 'Cú đánh mở đầu ván đấu.',
       skillsTrained: [PoolSkills.breakShot, PoolSkills.stroke, PoolSkills.speedControl],
       fixesMistakes: [],
-      // Cho thu hai von la mot bai khac cung ho Stop/Follow/Draw,
-      // nhung lan thay the hang loat da ghi de no thanh BT07. Khong
-      // khoi phuc duoc y goc nen chi khu trung lap — dien lai neu biet.
-      prerequisites: ['BT07'],
+      // Nhu tren: dung lai tu noi dung node, khong phai khoi phuc.
+      //
+      // Khai cuoc la luc manh nhat voi co thang nhat, va bi cai phai o lai
+      // giua ban — do la cu stop. Tip "Follow through dai" cua chinh node tro
+      // thang vao co che cu follow. Draw khi khai cuoc gan nhu khong dung.
+      prerequisites: ['BT07', 'BT08'],
       nextDrills: ['RUN_OUT'],
       relatedDrills: ['SPEED_CONTROL'],
       tips: [
