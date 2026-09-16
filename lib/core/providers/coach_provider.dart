@@ -84,15 +84,31 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   late final CoachService _coachService;
   final SessionMemoryService _sessionMemory = SessionMemoryService();
 
-  CoachStateNotifier(this._ref, this._kg)
-      : super(CoachState(
-          playerIntelligence: PlayerIntelligence.empty('current_user'),
-        )) {
+  /// [autoStart] `false` dựng notifier mà KHÔNG chạy `_initialize()` lẫn
+  /// `_setupTrainingListener()`, và [initialState] cho phép đặt thẳng trạng
+  /// thái muốn có.
+  ///
+  /// Đây là khe để kiểm màn Coach. Không có nó thì không test được ba trạng
+  /// thái đang tải / lỗi / rỗng: constructor gọi `_initialize()` bất đồng bộ,
+  /// nên trạng thái test vừa đặt xong đã bị nó ghi đè, và `_setupTrainingListener`
+  /// còn đăng ký `_ref.listen` vào provider khác.
+  ///
+  /// Mặc định giữ nguyên hành vi cũ, nên mã chạy thật không đổi một dòng nào.
+  CoachStateNotifier(
+    this._ref,
+    this._kg, {
+    bool autoStart = true,
+    CoachState? initialState,
+  }) : super(initialState ??
+            CoachState(
+              playerIntelligence: PlayerIntelligence.empty('current_user'),
+            )) {
     // Sprint-13: Initialize CoachService with initial PlayerIntelligence
     _coachService = CoachService(
       knowledgeGraph: _kg,
       playerIntelligence: state.playerIntelligence,
     );
+    if (!autoStart) return;
     _initialize();
     _setupTrainingListener();
   }

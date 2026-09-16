@@ -15,6 +15,14 @@ import '../../providers/coach_survey_provider.dart';
 /// Coach Screen - Rule-based Coach với Recommendations
 /// Redesigned with Minimalist Luxury Design System
 class CoachScreen extends ConsumerStatefulWidget {
+  /// Bài mở ra khi chưa có gợi ý nào.
+  ///
+  /// Trước đây là chuỗi cứng `'straight_shot'`. Cầu nối chỉ biết `'STRAIGHT'`,
+  /// nên mã đó giải ra null rồi rơi vào nhánh `?? drillCode` và điều hướng
+  /// bằng chính nó — người dùng bấm "Bắt đầu" là tới màn "Bài tập không tồn
+  /// tại". `test/widget/coach_screen_states_test.dart` chặn việc này.
+  static const String fallbackDrillCode = 'BT01';
+
   const CoachScreen({super.key});
 
   @override
@@ -148,7 +156,35 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
           ),
           const SizedBox(height: AppSpacing.lg),
 
-          if (coachState.isLoading)
+          // Lỗi đi TRƯỚC: trước đây không widget nào đọc `coachState.error`,
+          // nên khi tải hỏng màn vẫn vẽ bài dự phòng và người dùng tưởng mọi
+          // thứ bình thường — hỏng im lặng, tệ hơn báo lỗi.
+          if (coachState.error != null) ...[
+            Row(
+              children: [
+                Icon(Icons.error_outline,
+                    color: AppColors.onPrimary(brightness), size: 20),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    coachState.error!,
+                    style: TextStyle(
+                      color: AppColors.onPrimary(brightness),
+                      fontSize: 15,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            _PrimaryButton(
+              onPressed: () =>
+                  ref.read(coachStateProvider.notifier).refreshCoachPlan(),
+              label: 'Thử lại',
+              icon: Icons.refresh,
+            ),
+          ] else if (coachState.isLoading)
             Center(
               child: CircularProgressIndicator(color: AppColors.onPrimary(brightness)),
             )
@@ -222,7 +258,7 @@ class _CoachScreenState extends ConsumerState<CoachScreen> {
             ),
             const SizedBox(height: AppSpacing.xl),
             _PrimaryButton(
-              onPressed: () => _startDrill(context, 'straight_shot'),
+              onPressed: () => _startDrill(context, CoachScreen.fallbackDrillCode),
               label: 'Bắt đầu',
               icon: Icons.arrow_forward,
             ),
