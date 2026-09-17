@@ -76,10 +76,6 @@ class FakePlayerRepository implements player_repo.PlayerRepository {
 void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    LocalStorageDataSource.reset();
-    SharedPreferences.setMockInitialValues({});
-    await SharedPreferences.getInstance();
-    LocalStorageDataSource.setTestPrefs(await SharedPreferences.getInstance());
     await LocalStorageDataSource.init();
   });
 

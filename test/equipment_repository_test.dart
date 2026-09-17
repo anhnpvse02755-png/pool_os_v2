@@ -71,10 +71,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
-    LocalStorageDataSource.reset();
     SharedPreferences.setMockInitialValues({});
-    await SharedPreferences.getInstance();
-    LocalStorageDataSource.setTestPrefs(await SharedPreferences.getInstance());
     await LocalStorageDataSource.init();
   });
 

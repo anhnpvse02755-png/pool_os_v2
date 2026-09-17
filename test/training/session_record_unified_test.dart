@@ -9,10 +9,7 @@ import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart'
 
 /// Runs fresh mock init for each test.
 Future<void> _freshInit() async {
-  LocalStorageDataSource.reset();
   SharedPreferences.setMockInitialValues({});
-  final prefs = await SharedPreferences.getInstance();
-  LocalStorageDataSource.setTestPrefs(prefs);
   await LocalStorageDataSource.init();
 }
 
@@ -22,17 +19,18 @@ void main() {
     // Khoa co di tru — trung voi _keyMigratedDrillSessions trong datasource.
     const migratedFlag = 'poolos_v2.migrated_drill_sessions';
 
+    /// Handle truc tiep toi kho in-memory. Moi test o group nay phai seed
+    /// TRUOC init(), ma `LocalStorageDataSource.prefs` thi nem neu chua init().
+    /// setMockInitialValues() dat lai `_completer` cua shared_preferences, nen
+    /// getInstance() o day tra ve dung instance ma init() se nhan sau do.
+    late SharedPreferences seedPrefs;
+
     setUp(() async {
-      // reset() clears the static _prefs singleton BEFORE setMockInitialValues
-      // so that init() always calls getInstance() against the fresh in-memory
-      // store rather than reusing a stale _prefs reference.
-      LocalStorageDataSource.reset();
+      // Kho sach tuyet doi: khong seed drill_sessions gi ca. Test nao can
+      // drill_sessions thi tu ghi trong than test — neu setUp seed san "[]"
+      // thi chot early-exit (G2) khong bao gio chay va cong G2 chet.
       SharedPreferences.setMockInitialValues({});
-      // Seed drill_sessions directly on the fresh SharedPreferences instance.
-      // Use setTestPrefs() so that prefs getter works before init() assigns _prefs.
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('drill_sessions', jsonEncode([]));
-      LocalStorageDataSource.setTestPrefs(prefs);
+      seedPrefs = await SharedPreferences.getInstance();
     });
 
     test('old drill_sessions migrates to training_history', () async {
@@ -62,7 +60,7 @@ void main() {
       ];
 
       // Seed drill_sessions BEFORE init() so migration sees it.
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
@@ -116,11 +114,11 @@ void main() {
       // Seed CA HAI khoa TRUOC lan init(). Co di tru chua bat, nen
       // G1 khong chan; drill_sessions co du lieu nen G2 khong chan. Thu duy
       // nhat giu 'existing1' lai la G3 (existingHistory.isNotEmpty).
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'training_history',
         jsonEncode(existingHistory),
       );
@@ -135,14 +133,16 @@ void main() {
     });
 
     test('G2: khong co drill_sessions thi co di tru VAN duoc dat', () async {
-      // Store sach, khong seed drill_sessions gi ca.
-      // init() chay tren store rong → G2 dat co (store rong → dat co) → exit.
+      // Kho hoan toan sach: setUp KHONG seed drill_sessions, va test nay cung
+      // khong seed. Nen `prefs.getString('drill_sessions')` tra null va luong
+      // di dung vao khoi early-exit cua G2.
       await LocalStorageDataSource.init();
 
-      // G2 phai dat co roi thoat. Neu G2 bi vo hieu, jsonDecode(null) nem,
-      // roi vao catch, co KHONG duoc dat.
+      // Chinh khoi early-exit (G2) phai dat co roi `return`. Neu bo lenh
+      // setBool trong khoi do, ham thoat ma khong dat co — khong con setBool
+      // nao khac chay vi `return` chan duong xuong cuoi ham — nen cho nay do.
       expect(
-        LocalStorageDataSource.prefs.getBool(migratedFlag),
+        seedPrefs.getBool(migratedFlag),
         isTrue,
         reason: 'khong co gi de di tru van phai danh dau da xong, '
             'neu khong init() nao cung chay lai vo ich',
@@ -165,7 +165,7 @@ void main() {
       ];
 
       // Lan 1: di tru chay, dat co, history=[old1].
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
@@ -174,9 +174,9 @@ void main() {
       // Dung trang thai ma G1 la thu DUY NHAT ngan thay doi:
       //   - training_history RONG  => G3 khong do thay
       //   - drill_sessions co 2 ban ghi => G2 khong do thay
-      await LocalStorageDataSource.prefs
+      await seedPrefs
           .setString('training_history', jsonEncode(<Map<String, dynamic>>[]));
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode([
           ...oldSessions,
@@ -194,9 +194,9 @@ void main() {
         ]),
       );
 
-      // G1: dat co di tru de G1 chan. Khong reset prefs — giu nguyen
-      // _prefs va in-memory store, chi dat them co di tru.
-      await LocalStorageDataSource.prefs.setBool(migratedFlag, true);
+      // KHONG dat lai co di tru bang tay: lan init() o tren da dat no roi
+      // (setBool cuoi ham di tru). Dat lai la tu tay dung trang thai ma G1
+      // can, khien test khong con phu duoc chot setBool cuoi ham.
       await LocalStorageDataSource.init();
 
       // Neu G1 bi vo hieu, di tru chay lai va ghi 2 ban ghi vao day.
@@ -210,7 +210,7 @@ void main() {
 
     test('C: drill_sessions hong thi khong nem, va co KHONG duoc bat',
         () async {
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         '{khong phai json hop le',
       );
@@ -233,14 +233,14 @@ void main() {
 
       // (b) ve dat nhat: dat co khi that bai nghia la du lieu cu KET VINH VIEN.
       expect(
-        LocalStorageDataSource.prefs.getBool(migratedFlag),
+        seedPrefs.getBool(migratedFlag),
         isNot(isTrue),
         reason: 'di tru that bai ma van danh dau da xong thi khong bao gio '
             'thu lai duoc nua',
       );
 
       // (c) sua du lieu thanh hop le roi init() lai => di tru chay duoc.
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode([
           {
@@ -261,7 +261,7 @@ void main() {
       final history = await LocalStorageDataSource.getTrainingHistory();
       expect(history.length, equals(1));
       expect(history.first['id'], equals('old1'));
-      expect(LocalStorageDataSource.prefs.getBool(migratedFlag), isTrue);
+      expect(seedPrefs.getBool(migratedFlag), isTrue);
     });
 
     test('drill_sessions key is preserved after migration', () async {
@@ -279,7 +279,7 @@ void main() {
         },
       ];
       // Seed drill_sessions BEFORE init() so migration sees it.
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
@@ -298,7 +298,7 @@ void main() {
 
       // ... VA drill_sessions van con nguyen: di tru la sao chep, khong phai
       // di chuyen. Xoa khoa cu di la mat duong lui neu di tru sai.
-      final raw = LocalStorageDataSource.prefs.getString('drill_sessions');
+      final raw = seedPrefs.getString('drill_sessions');
       expect(raw, isNotNull);
       final remaining =
           (jsonDecode(raw!) as List).cast<Map<String, dynamic>>();
@@ -322,7 +322,7 @@ void main() {
         },
       ];
       // Seed drill_sessions BEFORE init() so migration sees it.
-      await LocalStorageDataSource.prefs.setString(
+      await seedPrefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );

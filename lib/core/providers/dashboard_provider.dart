@@ -276,7 +276,7 @@ int _countTodaySessions(List<TrainingSession> sessions) {
 /// Today Goals Provider - reads from persistent TrainingNotifier storage.
 /// Sprint-18 Part 2: This replaces the StateProvider pattern that was never
 /// updated. Now it reads from trainingNotifierProvider which persists to
-/// LocalStorageService, so the count survives app restarts.
+/// LocalStorageDataSource, so the count survives app restarts.
 final todayGoalsProvider = Provider<TodayGoals>((ref) {
   // Watch trainingNotifierProvider so this updates when sessions are added
   final trainingState = ref.watch(trainingNotifierProvider);

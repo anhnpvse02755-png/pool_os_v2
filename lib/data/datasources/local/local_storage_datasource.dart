@@ -35,19 +35,12 @@ class LocalStorageDataSource {
   static const String _keyMigratedDrillSessions =
       'poolos_v2.migrated_drill_sessions';
 
-  /// Initialize the data source.
-  /// Idempotent: if _prefs is already set (e.g., after a test seeds data and
-  /// then calls init() again), only the migration runs; _prefs is NOT reassigned.
+  /// Initialize the data source, then run the one-time migration.
+  /// `SharedPreferences.getInstance()` is itself a cached singleton, so calling
+  /// init() more than once is cheap and always yields the current store.
   static Future<void> init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    _prefs = await SharedPreferences.getInstance();
     await _migrateDrillSessionsToTrainingHistory();
-  }
-
-  /// Reset the data source.  Call BEFORE SharedPreferences.setMockInitialValues
-  /// when a test needs a fresh in-memory store — because _prefs is a static
-  /// singleton and setMockInitialValues does not reset it.
-  static void reset() {
-    _prefs = null;
   }
 
   /// Get SharedPreferences instance
@@ -56,14 +49,6 @@ class LocalStorageDataSource {
       throw Exception('LocalStorageDataSource not initialized. Call init() first.');
     }
     return _prefs!;
-  }
-
-  /// TEST-ONLY: Inject a SharedPreferences instance directly.
-  /// Use this in test setUp when you need to seed data before calling init().
-  /// Must be called after reset() and before any code accesses prefs.
-  @visibleForTesting
-  static void setTestPrefs(SharedPreferences instance) {
-    _prefs = instance;
   }
 
   // ==========================================================================
@@ -214,10 +199,6 @@ class LocalStorageDataSource {
   static Future<Map<String, dynamic>> getKnowledgeProgress() async {
     final data = await getJson(_keyKnowledgeProgress);
     return data ?? {};
-  }
-
-  static Future<void> saveKnowledgeProgress(Map<String, dynamic> progress) async {
-    await setJson(_keyKnowledgeProgress, progress);
   }
 
   // ==========================================================================

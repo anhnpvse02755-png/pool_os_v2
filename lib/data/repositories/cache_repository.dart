@@ -6,7 +6,7 @@
 // knowledge, etc.) without reaching into SharedPreferences directly.
 //
 // Boundary rule (Day 2A — Repository Dependency Enforcement):
-//   * Services MUST go through this repository, NOT LocalStorageService.
+//   * Services MUST go through this repository, NOT LocalStorageDataSource.
 //   * UI MUST go through providers (riverpod).
 //
 // This is intentionally thin — it does NOT enforce schema validation,

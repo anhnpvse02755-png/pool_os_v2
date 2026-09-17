@@ -8,7 +8,7 @@ import '../../data/models/knowledge_node.dart';
 /// Knowledge graph service — models the article prerequisite DAG and
 /// powers navigation + visualization.
 ///
-/// Day 2A: depends on [ICacheRepository]. Does NOT import LocalStorageService.
+/// Day 2A: depends on [ICacheRepository]. Does NOT import LocalStorageDataSource.
 class KnowledgeGraphService {
   KnowledgeGraphService(this._cache);
   final ICacheRepository _cache;

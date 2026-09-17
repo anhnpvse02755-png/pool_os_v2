@@ -1,13 +1,28 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 
+/// Khoa co di tru — trung voi _keyMigratedDrillSessions trong datasource.
+const _migratedFlag = 'poolos_v2.migrated_drill_sessions';
+
+/// Mot ban ghi drill_sessions dinh dang CU (shotsAttempted + date).
+Map<String, dynamic> _orphan(String id) => {
+      'id': id,
+      'drillCode': 'BT01',
+      'drillName': 'Bai 1',
+      'level': 1,
+      'score': 70,
+      'shotsAttempted': 10,
+      'shotsMade': 7,
+      'duration': 10,
+      'date': '2026-09-15T10:00:00.000',
+    };
+
 void main() {
   setUp(() async {
-    LocalStorageDataSource.reset();
     SharedPreferences.setMockInitialValues({});
-    await SharedPreferences.getInstance();
-    LocalStorageDataSource.setTestPrefs(await SharedPreferences.getInstance());
     await LocalStorageDataSource.init();
   });
 
@@ -25,9 +40,8 @@ void main() {
   });
 
   test('giu nguyen ten key nen du lieu cu van doc duoc', () async {
-    // reset() must come BEFORE setMockInitialValues — because _prefs is a static
-    // singleton that setMockInitialValues does NOT reset.
-    LocalStorageDataSource.reset();
+    // setMockInitialValues() dat lai `_completer` cua shared_preferences, nen
+    // init() ngay sau do lay dung kho moi nay.
     SharedPreferences.setMockInitialValues({
       'latest_match_analysis': '{"score":9}',
       'player_intelligence': '{"level":5}',
@@ -39,11 +53,21 @@ void main() {
   });
 
   // =========================================================================
-  // B: wipeAllLocalData() must clear coach keys so a subsequent init() does
-  // NOT re-migrate orphan drill_sessions back into the freshly-wiped history.
-  // The correct order: wipe both drill_sessions AND the migration flag,
-  // then wipe everything else.  Wiping only the flag (leaving drill_sessions)
-  // makes the next init() re-migrate — the wipe command defeats itself.
+  // B: bay thu tu cua wipeAllLocalData().
+  //
+  // wipe phai xoa CA HAI khoa cua duong di tru — `drill_sessions` va co
+  // `poolos_v2.migrated_drill_sessions` — va hai nua do hong theo hai kieu
+  // NGUOC NHAU, nen phai co HAI test rieng:
+  //
+  //   * quen xoa `drill_sessions`  => init() sau wipe di tru NGUOC du lieu
+  //     vua xoa tro lai history. Test 1 canh cho nay.
+  //   * quen xoa co di tru         => kho khong con tro ve trang thai
+  //     "chua tung di tru"; lan wipe nay lam cho mot dot di tru ve sau khong
+  //     bao gio chay duoc nua. Test 2 canh cho nay.
+  //
+  // Mot test khong du: neu chi kiem "history rong sau wipe" thi khi bo
+  // remove(co di tru), init() thoat som o G1 va history VAN rong — test xanh
+  // du chot da chet.
   // =========================================================================
 
   test('wipeAllLocalData clears coach keys', () async {
@@ -56,22 +80,67 @@ void main() {
     expect(LocalStorageDataSource.getPlayerIntelligence(), isNull);
   });
 
-  test('wipeAllLocalData then init leaves training_history empty (no re-migration)',
+  test('1) wipeAllLocalData roi init() KHONG di tru nguoc drill_sessions',
       () async {
-    // Pre-populate via getTrainingHistory path (not via drill_sessions).
-    // WipeAll must clear drill_sessions AND the migration flag so that init()
-    // cannot re-migrate anything.
-    await LocalStorageDataSource.saveTrainingHistory([
-      {'id': 's1', 'drillCode': 'BT01', 'score': 80},
-    ]);
+    // Kho rieng cho test nay: setUp da init() mot lan (dat co di tru tren kho
+    // rong), nen phai dung lai tu dau de lan init() duoi day THAT SU di tru.
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('drill_sessions', jsonEncode([_orphan('orphan1')]));
+
+    await LocalStorageDataSource.init();
+
+    // Canh gac: neu di tru khong chay thi ba dong duoi day chang chung minh
+    // gi — history rong ke ca khi wipe hong.
+    expect(
+      (await LocalStorageDataSource.getTrainingHistory()).length,
+      equals(1),
+      reason: 'phai co du lieu da di tru truoc khi wipe, neu khong test nay '
+          'khang dinh tren mot kho von da rong',
+    );
+
     await LocalStorageDataSource.wipeAllLocalData();
     await LocalStorageDataSource.init();
 
-    final history = await LocalStorageDataSource.getTrainingHistory();
-    expect(history, isEmpty,
-        reason:
-            'wipeAllLocalData must clear the migration flag so init() '
-            'does not re-migrate orphan drill_sessions back into '
-            'the freshly-wiped training_history');
+    // Neu wipe quen `remove(drill_sessions)`: co di tru da bi xoa nen G1
+    // khong chan, drill_sessions mo coi con nguyen => orphan1 quay lai day.
+    expect(
+      await LocalStorageDataSource.getTrainingHistory(),
+      isEmpty,
+      reason: 'wipeAllLocalData phai xoa ca drill_sessions, neu khong init() '
+          'ngay sau do se di tru nguoc du lieu vua bi xoa tro lai',
+    );
+  });
+
+  test('2) wipeAllLocalData xoa co di tru nen dot di tru ve sau van chay duoc',
+      () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('drill_sessions', jsonEncode([_orphan('orphan1')]));
+
+    await LocalStorageDataSource.init();
+    expect(
+      prefs.getBool(_migratedFlag),
+      isTrue,
+      reason: 'canh gac: di tru lan 1 phai da chay va bat co',
+    );
+
+    await LocalStorageDataSource.wipeAllLocalData();
+
+    // Sau wipe, kho phai tro ve dung trang thai "chua tung di tru". Du lieu
+    // dinh dang cu xuat hien lai (ban cu ghi tiep, hoac khoi phuc backup)
+    // phai duoc di tru binh thuong.
+    await prefs.setString('drill_sessions', jsonEncode([_orphan('orphan2')]));
+    await LocalStorageDataSource.init();
+
+    // Neu wipe quen `remove(co di tru)`: co van la true => G1 chan =>
+    // orphan2 khong bao gio vao history => cho nay do.
+    expect(
+      (await LocalStorageDataSource.getTrainingHistory())
+          .map((s) => s['id']),
+      contains('orphan2'),
+      reason: 'wipeAllLocalData phai xoa co di tru, neu khong mot lan wipe '
+          'khoa vinh vien duong di tru cho moi du lieu cu ve sau',
+    );
   });
 }
