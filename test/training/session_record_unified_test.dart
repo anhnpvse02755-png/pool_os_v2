@@ -211,7 +211,20 @@ void main() {
       );
 
       // (a) init() khong duoc nem — du lieu hong khong duoc chan app khoi dong.
-      await expectLater(LocalStorageDataSource.init(), completes);
+      // Bat tuong minh thay vi matcher `completes`: matcher do bao lai nguyen
+      // exception goc, con cach nay do o dung mot dong expect.
+      Object? thrown;
+      try {
+        await LocalStorageDataSource.init();
+      } catch (e) {
+        thrown = e;
+      }
+      expect(
+        thrown,
+        isNull,
+        reason: 'du lieu hong khong duoc lam vo init(): app van phai khoi '
+            'dong duoc, chi la chua di tru',
+      );
 
       // (b) ve dat nhat: dat co khi that bai nghia la du lieu cu KET VINH VIEN.
       expect(
