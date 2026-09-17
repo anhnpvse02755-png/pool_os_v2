@@ -256,7 +256,7 @@ quyết định sản phẩm, không phải refactor.
 | Đổi constructor `TrainingNotifier` làm vỡ test | Khe `autoStart`/`initialState` giữ mặc định như cũ; 3 file test đã xác định trước |
 | `dashboard_provider.dart:265` đang ép kiểu `session.date as DateTime?` | Xem lại kiểu thật tại đó khi sửa, đừng đổi tên máy móc |
 | Bỏ sót một chỗ đọc `shotsAttempted` | Getter dẫn xuất giữ nguyên tên nên không có chỗ nào phải đổi |
-| Dữ liệu test cũ ở key `drill_sessions` mồ côi | Chấp nhận — chưa có người dùng thật, chỉ máy dev |
+| Dữ liệu test cũ ở key `drill_sessions` mồ côi | ~~Chấp nhận~~ **Đã đổi quyết định khi thi hành (Ruling 5).** "Chấp nhận" dựa trên giả định mất mát là vô hình. Sai: trước đợt này lịch sử tập đang hiện ra từ `drill_sessions`, sau đợt này notifier đọc `training_history`, nên lịch sử sẽ **biến mất trong app**. Đã thêm di trú một lần trong `LocalStorageDataSource.init()`, có cờ bền vững, bọc `try/catch`, và không xoá key cũ |
 
 ---
 
