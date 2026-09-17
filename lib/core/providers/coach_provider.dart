@@ -16,7 +16,7 @@ import '../../knowledge/player_intelligence.dart';
 import '../services/session_memory_service.dart';
 import '../services/coach_types.dart';
 import '../services/match_analysis_service.dart';
-import '../services/local_storage_service.dart';
+import '../../data/datasources/local/local_storage_datasource.dart';
 import '../models/match_stats.dart';
 import '../../knowledge/knowledge_graph_service.dart';
 import '../../knowledge/priority_engine.dart';
@@ -208,7 +208,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   Future<void> _loadPlayerIntelligence() async {
     try {
       // Sprint-8: Try to load from storage first
-      final savedData = LocalStorageService.getPlayerIntelligence();
+      final savedData = LocalStorageDataSource.getPlayerIntelligence();
       if (savedData != null) {
         final playerIntelligence = PlayerIntelligence.fromJson(savedData);
         state = state.copyWith(playerIntelligence: playerIntelligence);
@@ -411,19 +411,19 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     await _savePlayerIntelligence();
 
     // Persist MatchAnalysis for app restart (Sprint-8)
-    await LocalStorageService.saveLatestMatchAnalysis(analysis.toJson());
+    await LocalStorageDataSource.saveLatestMatchAnalysis(analysis.toJson());
   }
 
   /// Clear MatchAnalysis when starting new match (Sprint-8)
   Future<void> clearMatchAnalysis() async {
-    await LocalStorageService.clearLatestMatchAnalysis();
+    await LocalStorageDataSource.clearLatestMatchAnalysis();
   }
 
   /// Save PlayerIntelligence to storage
   Future<void> _savePlayerIntelligence() async {
     // Sprint-8: Save PlayerIntelligence to local storage
     try {
-      await LocalStorageService.savePlayerIntelligence(
+      await LocalStorageDataSource.savePlayerIntelligence(
         state.playerIntelligence.toJson(),
       );
     } catch (e) {
@@ -778,7 +778,7 @@ final matchAnalysisServiceProvider = Provider<MatchAnalysisService>((ref) {
 /// Sprint-11: Renamed from MatchAnalysis to MatchRackAnalysis
 final latestMatchAnalysisProvider = StateProvider<MatchRackAnalysis?>((ref) {
   // Load from storage on initialization (Sprint-8)
-  final savedData = LocalStorageService.getLatestMatchAnalysis();
+  final savedData = LocalStorageDataSource.getLatestMatchAnalysis();
   if (savedData != null) {
     try {
       return MatchRackAnalysis.fromJson(savedData);

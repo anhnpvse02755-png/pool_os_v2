@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 import '../models/shot.dart';
 
 /// Repository interface for shots.
@@ -20,7 +20,7 @@ class LocalShotRepository implements IShotRepository {
   static const _kShotsPrefix = 'poolos_v2.shots.';
 
   Future<List<Shot>> _readRack(String rackId) async {
-    final raw = LocalStorageService.prefs.getString('$_kShotsPrefix$rackId');
+    final raw = LocalStorageDataSource.prefs.getString('$_kShotsPrefix$rackId');
     if (raw == null || raw.isEmpty) return [];
     final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     return list.map((j) => Shot.fromJson(j)).toList();
@@ -28,7 +28,7 @@ class LocalShotRepository implements IShotRepository {
 
   Future<void> _writeRack(String rackId, List<Shot> shots) async {
     final raw = jsonEncode(shots.map((s) => s.toJson()).toList());
-    await LocalStorageService.prefs.setString('$_kShotsPrefix$rackId', raw);
+    await LocalStorageDataSource.prefs.setString('$_kShotsPrefix$rackId', raw);
   }
 
   @override
@@ -40,7 +40,7 @@ class LocalShotRepository implements IShotRepository {
 
   @override
   Future<List<Shot>> getShotsByMatch(String matchId) async {
-    final raw = LocalStorageService.prefs.getString('poolos_v2.match_racks.$matchId');
+    final raw = LocalStorageDataSource.prefs.getString('poolos_v2.match_racks.$matchId');
     if (raw == null || raw.isEmpty) return [];
     final rackIds = (jsonDecode(raw) as List).cast<String>();
     final List<Shot> all = [];
@@ -65,14 +65,14 @@ class LocalShotRepository implements IShotRepository {
 
   @override
   Future<void> deleteShot(String id) async {
-    for (final key in LocalStorageService.prefs.getKeys()) {
+    for (final key in LocalStorageDataSource.prefs.getKeys()) {
       if (!key.startsWith(_kShotsPrefix)) continue;
-      final raw = LocalStorageService.prefs.getString(key);
+      final raw = LocalStorageDataSource.prefs.getString(key);
       if (raw == null || raw.isEmpty) continue;
       final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
       final newList = list.where((j) => j['id'] != id).toList();
       if (newList.length != list.length) {
-        await LocalStorageService.prefs.setString(key, jsonEncode(newList));
+        await LocalStorageDataSource.prefs.setString(key, jsonEncode(newList));
       }
     }
   }

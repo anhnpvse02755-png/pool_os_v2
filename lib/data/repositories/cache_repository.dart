@@ -14,7 +14,7 @@
 // decode failures and key collisions themselves.
 // ============================================================================
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 
 abstract class ICacheRepository {
   String? getString(String key);
@@ -27,20 +27,20 @@ abstract class ICacheRepository {
 }
 
 /// Local SharedPreferences-backed implementation. Delegates to the
-/// existing [LocalStorageService] static layer without exposing it to
+/// [LocalStorageDataSource] static layer without exposing it to
 /// callers — keeps the boundary closed.
 class LocalCacheRepository implements ICacheRepository {
   @override
-  String? getString(String key) => LocalStorageService.prefs.getString(key);
+  String? getString(String key) => LocalStorageDataSource.prefs.getString(key);
 
   @override
   Future<void> setString(String key, String value) =>
-      LocalStorageService.prefs.setString(key, value);
+      LocalStorageDataSource.prefs.setString(key, value);
 
   @override
-  Set<String> getKeys() => LocalStorageService.prefs.getKeys();
+  Set<String> getKeys() => LocalStorageDataSource.prefs.getKeys();
 
   @override
   Future<Map<String, dynamic>> getKnowledgeProgress() =>
-      LocalStorageService.getKnowledgeProgress();
+      LocalStorageDataSource.getKnowledgeProgress();
 }

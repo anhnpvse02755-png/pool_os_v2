@@ -24,7 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:pool_os_v2/core/services/local_storage_service.dart';
+import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 import 'package:pool_os_v2/presentation/screens/training/drill_session_screen.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart' as repo;
 import 'package:pool_os_v2/data/repositories/drill_session_repository.dart';
@@ -76,7 +76,11 @@ class FakePlayerRepository implements player_repo.PlayerRepository {
 void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
+    LocalStorageDataSource.reset();
+    SharedPreferences.setMockInitialValues({});
+    await SharedPreferences.getInstance();
+    LocalStorageDataSource.setTestPrefs(await SharedPreferences.getInstance());
+    await LocalStorageDataSource.init();
   });
 
   testWidgets('DrillSessionScreen mounts with active session UI (Part 6)',

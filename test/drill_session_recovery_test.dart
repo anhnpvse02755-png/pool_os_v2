@@ -4,14 +4,18 @@ import 'package:pool_os_v2/data/models/drill_session.dart';
 import 'package:pool_os_v2/domain/services/drill_session_recovery_service.dart';
 import 'package:pool_os_v2/data/repositories/drill_session_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pool_os_v2/core/services/local_storage_service.dart';
+import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
+    LocalStorageDataSource.reset();
+    SharedPreferences.setMockInitialValues({});
+    await SharedPreferences.getInstance();
+    LocalStorageDataSource.setTestPrefs(await SharedPreferences.getInstance());
+    await LocalStorageDataSource.init();
   });
 
   test('pause / resume sets and clears pausedAt', () async {

@@ -6,13 +6,14 @@ import 'package:pool_os_v2/core/providers/repository_providers.dart';
 import 'package:pool_os_v2/core/providers/training_provider.dart';
 import 'package:pool_os_v2/data/models/training_session.dart';
 import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
-import 'package:pool_os_v2/core/services/local_storage_service.dart';
 
 /// Runs fresh mock init for each test.
 Future<void> _freshInit() async {
+  LocalStorageDataSource.reset();
   SharedPreferences.setMockInitialValues({});
+  final prefs = await SharedPreferences.getInstance();
+  LocalStorageDataSource.setTestPrefs(prefs);
   await LocalStorageDataSource.init();
-  await LocalStorageService.init();
 }
 
 void main() {
@@ -22,16 +23,16 @@ void main() {
     const migratedFlag = 'poolos_v2.migrated_drill_sessions';
 
     setUp(() async {
-      // setMockInitialValues thay HAN store nen bang mot
-      // InMemorySharedPreferencesStore rong va dat _completer = null. Lan
-      // getInstance() ke tiep — chinh la LocalStorageService.init() ngay duoi
-      // — dung lai instance cache tu store rong do. Lan
-      // LocalStorageDataSource.init() trong than test sau do nhan CUNG instance
-      // ay (getInstance() la singleton). Hai lop dung chung mot instance doc
-      // store rong, nen khong can API reset nao, va seed qua
-      // LocalStorageService.prefs thi LocalStorageDataSource.prefs doc duoc.
+      // reset() clears the static _prefs singleton BEFORE setMockInitialValues
+      // so that init() always calls getInstance() against the fresh in-memory
+      // store rather than reusing a stale _prefs reference.
+      LocalStorageDataSource.reset();
       SharedPreferences.setMockInitialValues({});
-      await LocalStorageService.init();
+      // Seed drill_sessions directly on the fresh SharedPreferences instance.
+      // Use setTestPrefs() so that prefs getter works before init() assigns _prefs.
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('drill_sessions', jsonEncode([]));
+      LocalStorageDataSource.setTestPrefs(prefs);
     });
 
     test('old drill_sessions migrates to training_history', () async {
@@ -60,14 +61,13 @@ void main() {
         },
       ];
 
-      // Seed drill_sessions via LocalStorageService (which has _prefs from setUp).
-      await LocalStorageService.prefs.setString(
+      // Seed drill_sessions BEFORE init() so migration sees it.
+      await LocalStorageDataSource.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
 
-      // init() o day nhan CUNG instance SharedPreferences ma setUp da dung,
-      // nen no doc duoc drill_sessions vua seed o tren.
+      // This init() runs migration against the seeded data.
       await LocalStorageDataSource.init();
 
       final history = await LocalStorageDataSource.getTrainingHistory();
@@ -113,14 +113,14 @@ void main() {
         },
       ];
 
-      // Seed CA HAI khoa TRUOC lan init() dau tien. Co di tru chua bat, nen
+      // Seed CA HAI khoa TRUOC lan init(). Co di tru chua bat, nen
       // G1 khong chan; drill_sessions co du lieu nen G2 khong chan. Thu duy
       // nhat giu 'existing1' lai la G3 (existingHistory.isNotEmpty).
-      await LocalStorageService.prefs.setString(
+      await LocalStorageDataSource.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
-      await LocalStorageService.prefs.setString(
+      await LocalStorageDataSource.prefs.setString(
         'training_history',
         jsonEncode(existingHistory),
       );
@@ -136,6 +136,7 @@ void main() {
 
     test('G2: khong co drill_sessions thi co di tru VAN duoc dat', () async {
       // Store sach, khong seed drill_sessions gi ca.
+      // init() chay tren store rong → G2 dat co (store rong → dat co) → exit.
       await LocalStorageDataSource.init();
 
       // G2 phai dat co roi thoat. Neu G2 bi vo hieu, jsonDecode(null) nem,
@@ -163,11 +164,12 @@ void main() {
         },
       ];
 
-      await LocalStorageService.prefs.setString(
+      // Lan 1: di tru chay, dat co, history=[old1].
+      await LocalStorageDataSource.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
-      await LocalStorageDataSource.init(); // di tru chay: co bat, history=[old1]
+      await LocalStorageDataSource.init();
 
       // Dung trang thai ma G1 la thu DUY NHAT ngan thay doi:
       //   - training_history RONG  => G3 khong do thay
@@ -192,6 +194,9 @@ void main() {
         ]),
       );
 
+      // G1: dat co di tru de G1 chan. Khong reset prefs — giu nguyen
+      // _prefs va in-memory store, chi dat them co di tru.
+      await LocalStorageDataSource.prefs.setBool(migratedFlag, true);
       await LocalStorageDataSource.init();
 
       // Neu G1 bi vo hieu, di tru chay lai va ghi 2 ban ghi vao day.
@@ -205,7 +210,7 @@ void main() {
 
     test('C: drill_sessions hong thi khong nem, va co KHONG duoc bat',
         () async {
-      await LocalStorageService.prefs.setString(
+      await LocalStorageDataSource.prefs.setString(
         'drill_sessions',
         '{khong phai json hop le',
       );
@@ -273,14 +278,13 @@ void main() {
           'date': '2026-09-15T10:00:00.000',
         },
       ];
-      // Seed via LocalStorageService (which has _prefs from setUp).
-      await LocalStorageService.prefs.setString(
+      // Seed drill_sessions BEFORE init() so migration sees it.
+      await LocalStorageDataSource.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
 
-      // Hai lop dung chung mot instance SharedPreferences, nen init() o day
-      // doc duoc drill_sessions vua seed.
+      // init() runs migration against the seeded data.
       await LocalStorageDataSource.init();
 
       // Truoc het phai chac chan di tru THAT SU da chay — neu khong, khang
@@ -317,14 +321,13 @@ void main() {
           'date': '2026-09-15T10:00:00.000',
         },
       ];
-      // Seed via LocalStorageService (which has _prefs from setUp).
-      await LocalStorageService.prefs.setString(
+      // Seed drill_sessions BEFORE init() so migration sees it.
+      await LocalStorageDataSource.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
 
-      // Hai lop dung chung mot instance SharedPreferences, nen init() o day
-      // doc duoc drill_sessions vua seed.
+      // init() runs migration.
       await LocalStorageDataSource.init();
 
       // Second init() must NOT re-run migration (would duplicate).

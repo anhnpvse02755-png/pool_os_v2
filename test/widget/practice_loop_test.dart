@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pool_os_v2/core/services/local_storage_service.dart';
+import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart'
     as repo_providers;
 import 'package:pool_os_v2/data/models/drill_session.dart';
@@ -86,7 +86,11 @@ DrillSession _sampleSession() => DrillSession(
 void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
+    LocalStorageDataSource.reset();
+    SharedPreferences.setMockInitialValues({});
+    await SharedPreferences.getInstance();
+    LocalStorageDataSource.setTestPrefs(await SharedPreferences.getInstance());
+    await LocalStorageDataSource.init();
   });
 
   testWidgets('Smoke 1 — DrillSessionScreen mounts and shows recording UI',

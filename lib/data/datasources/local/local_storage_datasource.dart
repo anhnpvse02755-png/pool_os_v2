@@ -28,15 +28,26 @@ class LocalStorageDataSource {
   static const String _keyOnboardingCompleted = 'onboarding_completed';
   static const String _keyFirstLaunch = 'first_launch_complete';
   static const String _keyDrillSessions = 'drill_sessions';
+  static const String _keyLatestMatchAnalysis = 'latest_match_analysis';
+  static const String _keyPlayerIntelligence = 'player_intelligence';
 
   /// Key for the one-time migration flag (drill_sessions -> training_history).
   static const String _keyMigratedDrillSessions =
       'poolos_v2.migrated_drill_sessions';
 
-  /// Initialize the data source
+  /// Initialize the data source.
+  /// Idempotent: if _prefs is already set (e.g., after a test seeds data and
+  /// then calls init() again), only the migration runs; _prefs is NOT reassigned.
   static Future<void> init() async {
-    _prefs = await SharedPreferences.getInstance();
+    _prefs ??= await SharedPreferences.getInstance();
     await _migrateDrillSessionsToTrainingHistory();
+  }
+
+  /// Reset the data source.  Call BEFORE SharedPreferences.setMockInitialValues
+  /// when a test needs a fresh in-memory store — because _prefs is a static
+  /// singleton and setMockInitialValues does not reset it.
+  static void reset() {
+    _prefs = null;
   }
 
   /// Get SharedPreferences instance
@@ -45,6 +56,14 @@ class LocalStorageDataSource {
       throw Exception('LocalStorageDataSource not initialized. Call init() first.');
     }
     return _prefs!;
+  }
+
+  /// TEST-ONLY: Inject a SharedPreferences instance directly.
+  /// Use this in test setUp when you need to seed data before calling init().
+  /// Must be called after reset() and before any code accesses prefs.
+  @visibleForTesting
+  static void setTestPrefs(SharedPreferences instance) {
+    _prefs = instance;
   }
 
   // ==========================================================================
@@ -312,6 +331,38 @@ class LocalStorageDataSource {
   }
 
   // ==========================================================================
+  // Coach — phan tich tran gan nhat & ho so nang luc
+  // Chuyen tu LocalStorageService (17/9/2026). Chu ky DONG BO giu nguyen
+  // nhu ban cu vi coach_provider goi khong await.
+  // ==========================================================================
+
+  static Future<void> saveLatestMatchAnalysis(
+      Map<String, dynamic> analysis) async {
+    await prefs.setString(_keyLatestMatchAnalysis, jsonEncode(analysis));
+  }
+
+  static Map<String, dynamic>? getLatestMatchAnalysis() {
+    final data = prefs.getString(_keyLatestMatchAnalysis);
+    if (data == null) return null;
+    return jsonDecode(data) as Map<String, dynamic>;
+  }
+
+  static Future<void> clearLatestMatchAnalysis() async {
+    await prefs.remove(_keyLatestMatchAnalysis);
+  }
+
+  static Future<void> savePlayerIntelligence(
+      Map<String, dynamic> intelligence) async {
+    await prefs.setString(_keyPlayerIntelligence, jsonEncode(intelligence));
+  }
+
+  static Map<String, dynamic>? getPlayerIntelligence() {
+    final data = prefs.getString(_keyPlayerIntelligence);
+    if (data == null) return null;
+    return jsonDecode(data) as Map<String, dynamic>;
+  }
+
+  // ==========================================================================
   // Warmup Log — Dac-Ta-Che-Do-Khoi-Dong.md
   // ==========================================================================
 
@@ -423,5 +474,11 @@ class LocalStorageDataSource {
     await prefs.remove(_keyCoachingHistory);
     await prefs.remove(_keyStreakInfo);
     await prefs.remove(_keyOnboardingCompleted);
+    await prefs.remove(_keyWarmupLog);
+    await prefs.remove(_keyFirstLaunch);
+    await prefs.remove(_keyDrillSessions);
+    await prefs.remove(_keyMigratedDrillSessions);
+    await prefs.remove(_keyLatestMatchAnalysis);
+    await prefs.remove(_keyPlayerIntelligence);
   }
 }
