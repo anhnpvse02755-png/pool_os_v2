@@ -165,7 +165,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         drillCode: session.drillCode,
         score: session.score,
         durationMinutes: session.duration,
-        completedAt: session.date,
+        completedAt: session.completedAt,
         mistakes: mistakes,
       );
       updatedPI = updatedPI.updateWithSession(sessionData, drillSkills: drillSkills);
@@ -239,7 +239,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         drillCode: session.drillCode,
         score: session.score,
         durationMinutes: session.duration,
-        completedAt: session.date,
+        completedAt: session.completedAt,
         mistakes: [],
       );
       playerIntelligence = playerIntelligence.updateWithSession(sessionData);
@@ -743,7 +743,7 @@ final allDrillProgressProvider = Provider<Map<String, SimpleDrillProgress>>((ref
         totalAttempts: totalAttempts,
         successfulAttempts: successfulAttempts,
         averageAccuracy: avgAccuracy,
-        lastAttemptedAt: session.date,
+        lastAttemptedAt: session.completedAt,
       );
     } else {
       final successRate = session.shotsAttempted > 0
@@ -756,7 +756,7 @@ final allDrillProgressProvider = Provider<Map<String, SimpleDrillProgress>>((ref
         totalAttempts: session.shotsAttempted,
         successfulAttempts: session.shotsMade,
         averageAccuracy: session.score.toDouble(),
-        lastAttemptedAt: session.date,
+        lastAttemptedAt: session.completedAt,
       );
     }
   }

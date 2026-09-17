@@ -11,6 +11,7 @@ import '../../../core/providers/repository_providers.dart';
 import '../../../core/providers/training_provider.dart';
 import '../../../core/providers/active_session_provider.dart';
 import '../../../data/models/drill_session.dart';
+import '../../../data/models/training_session.dart';
 import '../../../data/models/drill_progress.dart';
 import '../../../data/models/personal_best.dart';
 import '../../../data/repositories/personal_best_repository.dart';

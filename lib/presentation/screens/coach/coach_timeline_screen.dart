@@ -213,7 +213,7 @@ class CoachTimelineScreen extends ConsumerWidget {
 
     for (final session in trainingState.sessions) {
       entries.add(TimelineEntry(
-        date: session.date,
+        date: session.completedAt,
         type: TimelineEntryType.practice,
         title: session.drillName,
         subtitle: 'Đã tập',

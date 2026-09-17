@@ -10,6 +10,7 @@ import '../../../core/providers/coach_provider.dart';
 import '../../../core/providers/warmup_provider.dart';
 import '../../../core/providers/active_session_provider.dart';
 import '../../../core/providers/training_provider.dart';
+import '../../../data/models/training_session.dart';
 import '../../../knowledge/knowledge_graph_service.dart' as kg;
 import '../../../core/models/session_item.dart';
 import '../../../domain/services/session_builder_service.dart';

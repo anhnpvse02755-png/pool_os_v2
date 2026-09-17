@@ -1,10 +1,14 @@
 // ============================================================================
-// TRAINING PROVIDER - Với Local Storage
+// TRAINING PROVIDER
+// ============================================================================
+// Buoi tap di qua DrillRepository, KHONG cham storage truc tiep.
+// Nho vay Sprint 3 (noi Directus) chi phai doi mot dong o
+// repository_providers.dart.
 // ============================================================================
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uuid/uuid.dart';
-import '../services/local_storage_service.dart';
+import '../../data/models/training_session.dart';
+import 'repository_providers.dart';
 
 class TrainingState {
   final List<TrainingSession> sessions;
@@ -30,70 +34,25 @@ class TrainingState {
   }
 }
 
-class TrainingSession {
-  final String id;
-  final String drillCode;
-  final String drillName;
-  final int level;
-  final int score;
-  final int shotsAttempted;
-  final int shotsMade;
-  final int duration;
-  final DateTime date;
-  final int? improvement;
-
-  TrainingSession({
-    required this.id,
-    required this.drillCode,
-    required this.drillName,
-    this.level = 1,
-    required this.score,
-    required this.shotsAttempted,
-    required this.shotsMade,
-    required this.duration,
-    required this.date,
-    this.improvement,
-  });
-
-  factory TrainingSession.fromJson(Map<String, dynamic> json) {
-    return TrainingSession(
-      id: json['id'] ?? const Uuid().v4(),
-      drillCode: json['drillCode'] ?? '',
-      drillName: json['drillName'] ?? '',
-      level: json['level'] ?? 1,
-      score: json['score'] ?? 0,
-      shotsAttempted: json['shotsAttempted'] ?? 0,
-      shotsMade: json['shotsMade'] ?? 0,
-      duration: json['duration'] ?? 0,
-      date: json['date'] != null ? DateTime.parse(json['date']) : DateTime.now(),
-      improvement: json['improvement'],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'drillCode': drillCode,
-    'drillName': drillName,
-    'level': level,
-    'score': score,
-    'shotsAttempted': shotsAttempted,
-    'shotsMade': shotsMade,
-    'duration': duration,
-    'date': date.toIso8601String(),
-    'improvement': improvement,
-  };
-}
-
 class TrainingNotifier extends StateNotifier<TrainingState> {
-  TrainingNotifier() : super(const TrainingState()) {
-    _loadData();
+  /// [autoStart] va [initialState] la khe cho test. Mac dinh giu nguyen
+  /// hanh vi cu nen ma chay that khong doi. Cung khuon voi
+  /// CoachStateNotifier — xem .claude/memory/poolos.md muc 9.
+  TrainingNotifier(
+    this._ref, {
+    bool autoStart = true,
+    TrainingState? initialState,
+  }) : super(initialState ?? const TrainingState()) {
+    if (autoStart) _loadData();
   }
+
+  final Ref _ref;
 
   Future<void> _loadData() async {
     state = state.copyWith(isLoading: true);
     try {
-      final data = await LocalStorageService.getDrillSessions();
-      final sessions = data.map((json) => TrainingSession.fromJson(json)).toList();
+      final sessions =
+          await _ref.read(drillRepositoryProvider).getTrainingHistory();
       state = state.copyWith(sessions: sessions, isLoading: false);
     } catch (e) {
       state = state.copyWith(error: e.toString(), isLoading: false);
@@ -102,30 +61,8 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
 
   Future<void> addSession(TrainingSession session) async {
     try {
-      await LocalStorageService.saveDrillSession(session.toJson());
+      await _ref.read(drillRepositoryProvider).saveTrainingSession(session);
       state = state.copyWith(sessions: [session, ...state.sessions]);
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-    }
-  }
-
-  Future<void> updateSession(TrainingSession session) async {
-    try {
-      await LocalStorageService.updateDrillSession(session.id, session.toJson());
-      final sessions = state.sessions.map((s) {
-        return s.id == session.id ? session : s;
-      }).toList();
-      state = state.copyWith(sessions: sessions);
-    } catch (e) {
-      state = state.copyWith(error: e.toString());
-    }
-  }
-
-  Future<void> deleteSession(String id) async {
-    try {
-      await LocalStorageService.deleteDrillSession(id);
-      final sessions = state.sessions.where((s) => s.id != id).toList();
-      state = state.copyWith(sessions: sessions);
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
@@ -135,7 +72,6 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
     await _loadData();
   }
 
-  // Stats
   Map<String, dynamic> getStats() {
     final sessions = state.sessions;
     if (sessions.isEmpty) {
@@ -149,7 +85,8 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
 
     final totalSessions = sessions.length;
     final totalMinutes = sessions.fold<int>(0, (sum, s) => sum + s.duration);
-    final avgScore = sessions.fold<int>(0, (sum, s) => sum + s.score) ~/ totalSessions;
+    final avgScore =
+        sessions.fold<int>(0, (sum, s) => sum + s.score) ~/ totalSessions;
     final totalShots = sessions.fold<int>(0, (sum, s) => sum + s.shotsMade);
 
     return {
@@ -160,32 +97,23 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
     };
   }
 
-  // Filter
   List<TrainingSession> getSessionsByDrill(String drillCode) {
     return state.sessions.where((s) => s.drillCode == drillCode).toList();
   }
 
   List<TrainingSession> getSessionsInRange(DateTime start, DateTime end) {
     return state.sessions.where((s) {
-      return s.date.isAfter(start) && s.date.isBefore(end);
+      return s.completedAt.isAfter(start) && s.completedAt.isBefore(end);
     }).toList();
   }
 }
 
-// ============================================================================
-// Training Provider - Sprint-10C
-// Centralized provider for training sessions
-// Used by Coach AI to track player progress
-// ============================================================================
-
-// Sprint-11: Canonical provider - use trainingNotifierProvider
-final trainingNotifierProvider = StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
-  return TrainingNotifier();
+final trainingNotifierProvider =
+    StateNotifierProvider<TrainingNotifier, TrainingState>((ref) {
+  return TrainingNotifier(ref);
 });
 
-// Stats provider
 final trainingStatsProvider = Provider<Map<String, dynamic>>((ref) {
-  // Sprint-11: Use canonical trainingNotifierProvider
-  final notifier = ref.read(trainingNotifierProvider.notifier);
-  return notifier.getStats();
+  ref.watch(trainingNotifierProvider);
+  return ref.read(trainingNotifierProvider.notifier).getStats();
 });

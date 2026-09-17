@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/drill_progress.dart';
+import '../../data/models/training_session.dart';
 import '../../core/providers/repository_providers.dart';
 import 'training_provider.dart';
 
@@ -254,7 +255,7 @@ class TodayGoals {
 }
 
 /// Calculates how many drills were completed today from training sessions.
-int _countTodaySessions(List<dynamic> sessions) {
+int _countTodaySessions(List<TrainingSession> sessions) {
   if (sessions.isEmpty) return 0;
 
   final now = DateTime.now();
@@ -262,8 +263,7 @@ int _countTodaySessions(List<dynamic> sessions) {
 
   int count = 0;
   for (final session in sessions) {
-    final date = session.date as DateTime?;
-    if (date == null) continue;
+    final date = session.completedAt;
 
     final sessionDay = DateTime(date.year, date.month, date.day);
     if (sessionDay.isAtSameMomentAs(today)) {
