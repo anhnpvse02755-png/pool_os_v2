@@ -57,9 +57,8 @@ void main() {
         jsonEncode(oldSessions),
       );
 
-      // resetForTesting() clears _prefs so init() fetches the fresh mock and
-      // runs migration (??= skips when _prefs is already set).
-      await LocalStorageDataSource.resetForTesting();
+      // init() luon gan lai _prefs, va setMockInitialValues dat _completer=null,
+      // nen getInstance() o day tra ve instance moi doc tu store rong.
       await LocalStorageDataSource.init();
 
       final history = await LocalStorageDataSource.getTrainingHistory();
@@ -147,8 +146,7 @@ void main() {
         jsonEncode(oldSessions),
       );
 
-      // resetForTesting() clears _prefs so init() fetches fresh mock and runs.
-      await LocalStorageDataSource.resetForTesting();
+      // init() luon gan lai _prefs tu mock moi — khong can API reset nao.
       await LocalStorageDataSource.init();
 
       // drill_sessions must still be present — no deletion.
@@ -181,8 +179,7 @@ void main() {
         jsonEncode(oldSessions),
       );
 
-      // resetForTesting() clears _prefs so init() fetches fresh mock and runs.
-      await LocalStorageDataSource.resetForTesting();
+      // init() luon gan lai _prefs tu mock moi — khong can API reset nao.
       await LocalStorageDataSource.init();
 
       // Second init() must NOT re-run migration (would duplicate).

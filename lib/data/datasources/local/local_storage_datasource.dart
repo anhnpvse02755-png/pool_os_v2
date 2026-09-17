@@ -32,22 +32,6 @@ class LocalStorageDataSource {
   static const String _keyMigratedDrillSessions =
       'poolos_v2.migrated_drill_sessions';
 
-  /// Resets all static state for test isolation.
-  /// Named after main.dart's forceResetAllLocalData — same pattern: production
-  /// code carries a test helper because static SharedPreferences refs cannot
-  /// otherwise be reset between test cases without a fresh process.
-  ///
-  /// Always nulls _prefs so that init() fetches a fresh SharedPreferences
-  /// instance.  When _prefs is non-null, also clears the migration flag so
-  /// init() re-runs migration for the fresh mock.
-  // ignore: unused_element
-  static Future<void> resetForTesting() async {
-    if (_prefs != null) {
-      await _prefs!.remove(_keyMigratedDrillSessions);
-    }
-    _prefs = null;
-  }
-
   /// Initialize the data source
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
