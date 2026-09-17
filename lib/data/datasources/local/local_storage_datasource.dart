@@ -382,7 +382,14 @@ class LocalStorageDataSource {
       // Corrupt record, bad date format, wrong type — do not crash the app.
       // The flag was NOT set, so this migration will be retried on next init.
       // Log it: a permanently failing migration must not be invisible.
-      debugPrint('WARN: migrate drill_sessions failed: $e');
+      // Boc trong assert theo le cua repo (drill_progress_repository.dart:57,
+      // drill_session_repository.dart:74, personal_best_repository.dart:56):
+      // chi in o ban debug. `$e` co the mang mot mau JSON cua nguoi dung, khong
+      // duoc phep roi vao log ban release.
+      assert(() {
+        debugPrint('WARN: migrate drill_sessions failed: $e');
+        return true;
+      }());
     }
   }
 
