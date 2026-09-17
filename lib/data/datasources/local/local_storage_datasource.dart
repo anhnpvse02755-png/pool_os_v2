@@ -32,15 +32,21 @@ class LocalStorageDataSource {
   static const String _keyMigratedDrillSessions =
       'poolos_v2.migrated_drill_sessions';
 
-  /// Resets the migration flag. Only for test use.
-  static Future<void> resetMigrationFlag() async {
-    _migrated = false;
+  /// Resets all static state for test isolation.
+  /// Named after main.dart's forceResetAllLocalData — same pattern: production
+  /// code carries a test helper because static SharedPreferences refs cannot
+  /// otherwise be reset between test cases without a fresh process.
+  ///
+  /// Always nulls _prefs so that init() fetches a fresh SharedPreferences
+  /// instance.  When _prefs is non-null, also clears the migration flag so
+  /// init() re-runs migration for the fresh mock.
+  // ignore: unused_element
+  static Future<void> resetForTesting() async {
     if (_prefs != null) {
       await _prefs!.remove(_keyMigratedDrillSessions);
     }
+    _prefs = null;
   }
-
-  static bool _migrated = false;
 
   /// Initialize the data source
   static Future<void> init() async {
@@ -344,52 +350,53 @@ class LocalStorageDataSource {
   // contain the OLD keys: shotsAttempted, date) and converts them to the
   // new format (shotsMissed, completedAt) using TrainingSession.fromJson
   // (which is already tolerant of old keys from Task 1).
-  // Migration only runs once — guarded by a flag in SharedPreferences.
+  //
+  // Why a separate flag here instead of the existing schema-version system in
+  // main.dart (currentSchemaVersion / _migrate / poolos_v2.schema_version)?
+  // Because init() is the only entry point that is always called before any
+  // business logic — including widget tests, integration tests, and all app
+  // startup paths.  Embedding migration here means it runs for every test
+  // without needing to know about main.dart's version logic.
+  //
+  // Guarded by a flag in SharedPreferences; the flag is persistent across
+  // restarts and app upgrades.
   // ==========================================================================
 
   /// Runs once: copies drill_sessions data into training_history if the latter
   /// is empty.  Safe to call on every init(); exits early if already done.
+  /// Failures are silently swallowed so a corrupt record does not prevent
+  /// the app from starting — the user simply has not migrated yet.
   static Future<void> _migrateDrillSessionsToTrainingHistory() async {
-    if (_migrated) return;
+    try {
+      final already = prefs.getBool(_keyMigratedDrillSessions);
+      if (already == true) return;
 
-    // Check flag (persisted so it survives app restarts within the same build).
-    final already = prefs.getBool(_keyMigratedDrillSessions);
-    if (already == true) {
-      _migrated = true;
-      return;
-    }
+      final drillSessionsJson = prefs.getString(_keyDrillSessions);
+      if (drillSessionsJson == null || drillSessionsJson.isEmpty) {
+        await prefs.setBool(_keyMigratedDrillSessions, true);
+        return;
+      }
 
-    // Read old-format drill_sessions (written by old TrainingNotifier).
-    final drillSessionsJson = prefs.getString(_keyDrillSessions);
-    if (drillSessionsJson == null || drillSessionsJson.isEmpty) {
-      // Nothing to migrate; mark done and exit.
+      final existingHistory = await getTrainingHistory();
+      if (existingHistory.isNotEmpty) {
+        await prefs.setBool(_keyMigratedDrillSessions, true);
+        return;
+      }
+
+      final List<dynamic> oldList = jsonDecode(drillSessionsJson);
+      final migrated = <Map<String, dynamic>>[];
+      for (final raw in oldList) {
+        final session =
+            TrainingSession.fromJson(raw as Map<String, dynamic>);
+        migrated.add(session.toJson());
+      }
+
+      await saveTrainingHistory(migrated);
       await prefs.setBool(_keyMigratedDrillSessions, true);
-      _migrated = true;
-      return;
+    } catch (_) {
+      // Corrupt record, bad date format, wrong type — do not crash the app.
+      // The flag was NOT set, so this migration will be retried on next init.
     }
-
-    // If training_history already has data, the user already has new-format
-    // records — do NOT overwrite them.
-    final existingHistory = await getTrainingHistory();
-    if (existingHistory.isNotEmpty) {
-      await prefs.setBool(_keyMigratedDrillSessions, true);
-      _migrated = true;
-      return;
-    }
-
-    // Decode old-format sessions and convert to new format.
-    final List<dynamic> oldList = jsonDecode(drillSessionsJson);
-    final migrated = <Map<String, dynamic>>[];
-    for (final raw in oldList) {
-      // TrainingSession.fromJson handles both old keys (shotsAttempted, date)
-      // and new keys (shotsMissed, completedAt).
-      final session = TrainingSession.fromJson(raw as Map<String, dynamic>);
-      migrated.add(session.toJson());
-    }
-
-    await saveTrainingHistory(migrated);
-    await prefs.setBool(_keyMigratedDrillSessions, true);
-    _migrated = true;
   }
 
   // ==========================================================================

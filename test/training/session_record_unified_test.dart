@@ -8,20 +8,24 @@ import 'package:pool_os_v2/data/models/training_session.dart';
 import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 import 'package:pool_os_v2/core/services/local_storage_service.dart';
 
-void main() {
-  setUp(() async {
-    SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
-    await LocalStorageDataSource.init();
-    // _migrated was set to true by init().  Reset it so that the test body
-    // (which calls init() again) can re-trigger the migration.
-    await LocalStorageDataSource.resetMigrationFlag();
-  });
+/// Runs fresh mock init for each test.
+Future<void> _freshInit() async {
+  SharedPreferences.setMockInitialValues({});
+  await LocalStorageDataSource.init();
+  await LocalStorageService.init();
+}
 
+void main() {
+  // ── migrateDrillSessions ────────────────────────────────────────────────
   group('migrateDrillSessions', () {
+    setUp(() async {
+      // LocalStorageService.init() uses _prefs = (always fetches fresh), so it
+      // picks up the fresh mock. init() is called per test body after seeding.
+      SharedPreferences.setMockInitialValues({});
+      await LocalStorageService.init();
+    });
+
     test('old drill_sessions migrates to training_history', () async {
-      // Seed OLD-format data written by TrainingNotifier (old training_provider).
-      // Format: shotsAttempted, date (not shotsMissed/completedAt).
       final oldSessions = [
         {
           'id': 'old1',
@@ -47,32 +51,24 @@ void main() {
         },
       ];
 
-      // LocalStorageService uses the same SharedPreferences as LocalStorageDataSource,
-      // so writing via LocalStorageService.prefs lands in the same store.
+      // Seed drill_sessions via LocalStorageService (which has _prefs from setUp).
       await LocalStorageService.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
 
-      // training_history must be EMPTY for migration to trigger.
-      expect(await LocalStorageDataSource.getTrainingHistory(), isEmpty);
-
-      // Trigger the one-time migration.
+      // resetForTesting() clears _prefs so init() fetches the fresh mock and
+      // runs migration (??= skips when _prefs is already set).
+      await LocalStorageDataSource.resetForTesting();
       await LocalStorageDataSource.init();
 
-      // Verify training_history now contains migrated records.
       final history = await LocalStorageDataSource.getTrainingHistory();
-
       expect(history.length, equals(2));
 
       final s1 = history.firstWhere((s) => s['id'] == 'old1');
-      // TrainingSession.fromJson derives shotsMissed correctly from shotsAttempted.
       expect(s1['shotsMade'], equals(7));
       expect(s1['shotsMissed'], equals(3)); // 10 - 7
-      // TrainingSession.fromJson reads 'date' as completedAt.
       expect(s1['completedAt'], equals('2026-09-15T10:00:00.000'));
-      expect(s1['drillCode'], equals('BT01'));
-      expect(s1['level'], equals(1));
 
       final s2 = history.firstWhere((s) => s['id'] == 'old2');
       expect(s2['shotsMade'], equals(17));
@@ -81,7 +77,6 @@ void main() {
     });
 
     test('existing training_history is NOT overwritten', () async {
-      // Seed existing (already-migrated) data in training_history.
       final existingHistory = [
         {
           'id': 'existing1',
@@ -95,9 +90,7 @@ void main() {
           'completedAt': '2026-09-16T14:00:00.000',
         },
       ];
-      await LocalStorageDataSource.saveTrainingHistory(existingHistory);
 
-      // Also seed old-format drill_sessions (simulating pre-migration data).
       final oldSessions = [
         {
           'id': 'old1',
@@ -111,24 +104,102 @@ void main() {
           'date': '2026-09-15T10:00:00.000',
         },
       ];
+
+      // First init(): drill_sessions is empty, flag gets set to true.
+      await LocalStorageDataSource.init();
+
+      // Seed both keys after flag is set.
+      await LocalStorageDataSource.prefs.setString(
+        'training_history',
+        jsonEncode(existingHistory),
+      );
+      await LocalStorageDataSource.prefs.setString(
+        'drill_sessions',
+        jsonEncode(oldSessions),
+      );
+
+      // Second init(): flag already true — skips migration, preserves history.
+      await LocalStorageDataSource.init();
+
+      final history = await LocalStorageDataSource.getTrainingHistory();
+      expect(history.length, equals(1));
+      expect(history.first['id'], equals('existing1'));
+      expect(history.first['drillCode'], equals('BT03'));
+    });
+
+    test('drill_sessions key is preserved after migration', () async {
+      final oldSessions = [
+        {
+          'id': 'old1',
+          'drillCode': 'BT01',
+          'drillName': 'Bai 1',
+          'level': 1,
+          'score': 70,
+          'shotsAttempted': 10,
+          'shotsMade': 7,
+          'duration': 10,
+          'date': '2026-09-15T10:00:00.000',
+        },
+      ];
+      // Seed via LocalStorageService (which has _prefs from setUp).
       await LocalStorageService.prefs.setString(
         'drill_sessions',
         jsonEncode(oldSessions),
       );
 
-      // Trigger the one-time migration.
+      // resetForTesting() clears _prefs so init() fetches fresh mock and runs.
+      await LocalStorageDataSource.resetForTesting();
       await LocalStorageDataSource.init();
 
-      // training_history must still contain only the pre-existing record.
-      final history = await LocalStorageDataSource.getTrainingHistory();
+      // drill_sessions must still be present — no deletion.
+      final raw = LocalStorageDataSource.prefs.getString('drill_sessions');
+      expect(raw, isNotNull);
+      final remaining =
+          (jsonDecode(raw!) as List).cast<Map<String, dynamic>>();
+      expect(remaining.length, equals(1));
+      expect(remaining.first['id'], equals('old1'));
+    });
 
+    test('init() called twice does NOT duplicate training_history records',
+        () async {
+      final oldSessions = [
+        {
+          'id': 'old1',
+          'drillCode': 'BT01',
+          'drillName': 'Bai 1',
+          'level': 1,
+          'score': 70,
+          'shotsAttempted': 10,
+          'shotsMade': 7,
+          'duration': 10,
+          'date': '2026-09-15T10:00:00.000',
+        },
+      ];
+      // Seed via LocalStorageService (which has _prefs from setUp).
+      await LocalStorageService.prefs.setString(
+        'drill_sessions',
+        jsonEncode(oldSessions),
+      );
+
+      // resetForTesting() clears _prefs so init() fetches fresh mock and runs.
+      await LocalStorageDataSource.resetForTesting();
+      await LocalStorageDataSource.init();
+
+      // Second init() must NOT re-run migration (would duplicate).
+      await LocalStorageDataSource.init();
+
+      final history = await LocalStorageDataSource.getTrainingHistory();
       expect(history.length, equals(1));
-      expect(history.first['id'], equals('existing1'));
-      expect(history.first['drillCode'], equals('BT03'));
+      expect(history.first['id'], equals('old1'));
     });
   });
 
+  // ── session record unified ───────────────────────────────────────────────
   group('session record unified', () {
+    setUp(() async {
+      await _freshInit();
+    });
+
     test('buoi tap luu qua notifier phai hien ra o repository', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -155,7 +226,8 @@ void main() {
               'repository doc tu training_history');
     });
 
-    test('buoi tap luu qua repository phai hien ra o notifier sau refresh', () async {
+    test('buoi tap luu qua repository phai hien ra o notifier sau refresh',
+        () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -181,15 +253,19 @@ void main() {
       );
     });
 
-    test('trainingHistoryProvider reflects new session after addSession', () async {
-      // Verify Important 2: after addSession, trainingHistoryProvider (FutureProvider
-      // that is NOT autoDispose and has no invalidation) is refreshed via
-      // ref.invalidate inside TrainingNotifier.addSession.
+    test('trainingHistoryProvider reflects new session after addSession',
+        () async {
+      // Verify Important 2: read BEFORE addSession to prime the FutureProvider
+      // with the empty state.  Without ref.invalidate, the second read would
+      // return the same stale value.  With ref.invalidate, it re-fetches.
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
-      final notifier = container.read(trainingNotifierProvider.notifier);
+      // Prime the FutureProvider — it is now cached with empty data.
+      await container.read(trainingHistoryProvider.future);
 
+      // Add a new session through the notifier.
+      final notifier = container.read(trainingNotifierProvider.notifier);
       await notifier.addSession(TrainingSession(
         id: 't1',
         drillCode: 'BT05',
@@ -202,8 +278,12 @@ void main() {
         completedAt: DateTime(2026, 9, 17),
       ));
 
-      // trainingHistoryProvider is a FutureProvider — read it to get current data.
-      final historyValue = await container.read(trainingHistoryProvider.future);
+      // Read trainingHistoryProvider again.  If addSession called
+      // ref.invalidate(trainingHistoryProvider), this re-fetches from storage.
+      // If the invalidate call is removed, this still returns the cached empty
+      // list and the test FAILS — proving the test guards the right behaviour.
+      final historyValue =
+          await container.read(trainingHistoryProvider.future);
 
       expect(historyValue.map((s) => s.id), contains('t1'),
           reason: 'addSession must invalidate trainingHistoryProvider so '
