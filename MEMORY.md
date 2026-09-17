@@ -1,42 +1,29 @@
-# Claude Code Memory Index
+# Memory Index
 
-> Cập nhật lần cuối: 11/9/2026
+Dự án này có **đúng một file memory**:
 
-## Project Memory
+- [poolos](.claude/memory/poolos.md) — cạm bẫy và quy ước của PoolOS v2: môi
+  trường, backend Directus, deploy, auth, E2E, design system, dữ liệu, bẫy test
 
-- [pool-os-project](.claude/memory/pool-os-project.md) — PoolOS_v2 là app huấn luyện **bi-a** bằng AI (không phải bể bơi), tech stack, quy mô
-- [sprint-status](.claude/memory/sprint-status.md) — Sprint 3A→19 đã đóng; đang chạy redesign kem ấm, 22 commit chưa push, CLAUDE.md rỗng
-- [warm-green-redesign](.claude/memory/warm-green-redesign.md) — Redesign "Kem ấm & Xanh rêu": 28/68 màn xong, 40 màn còn lại, bài học kiểm token hai chiều
-- [design-system-tokens](.claude/memory/design-system-tokens.md) — Cạm bẫy API AppShadows/AppSpacing; ⚠️ giá trị màu/bo góc của Sprint-19 đã bị redesign đảo ngược
-- [shell-encoding-traps](.claude/memory/shell-encoding-traps.md) — `flutter` không có trên PATH; PowerShell 5.1 làm hỏng UTF-8 tiếng Việt khi patch file
-- [phase-conventions](.claude/memory/phase-conventions.md) — Phase A/B/C/D conventions, Phase 3 Constitution
-- [coach-design](.claude/memory/coach-design.md) — Coach UX Blueprint v2.1 & Voice Guidelines
-- [drill-code-two-systems](.claude/memory/drill-code-two-systems.md) — Hai hệ mã bài tập (KG vs DrillLibrary); quên resolve là ra màn lỗi
-- [kg-service-duality](.claude/memory/kg-service-duality.md) — Hai class KnowledgeGraphService trùng tên: provider nào cho đường dẫn nào
+## Luật
 
-- [knowledge-drill-data](.claude/memory/knowledge-drill-data.md) — Thư viện kiến thức 36 bài & bài tập 24 bài: nguồn thật, cách sinh lại, thang cấp độ 50 cú
+File memory **chỉ chứa thứ không rữa theo thời gian** — cạm bẫy đã vấp, quy ước
+đã chốt, lý do đằng sau một quyết định. Nó **không chứa trạng thái**: không đếm
+màn, không đếm commit, không "còn N việc", không "đã push chưa".
 
-- [auth-account](.claude/memory/auth-account.md) — Đăng nhập/tài khoản trên Directus: 7 lỗi đã sửa, ranh giới guard
+| Muốn biết | Hỏi ở đâu |
+|---|---|
+| Còn việc gì, tầng nào xong | `BACKLOG.md` |
+| Đã commit/push gì | `git log`, `git status` |
+| Bao nhiêu màn / bài tập / mục kiến thức | đếm bằng lệnh, đừng tin số viết sẵn |
+| Sức khoẻ test | chạy `flutter analyze` + `flutter test` |
 
-## Known Issues
+Trước đây chỗ này có 20 file trộn lẫn hai loại, nên sau vài ngày file nào cũng
+"có phần sai" và phải kiểm lại toàn dự án mới dám tin. Gộp về một file ngày
+17/9/2026. Bản cũ vẫn lấy lại được:
+`git show 8900b02 -- .claude/memory/` hoặc `git checkout 8900b02 -- .claude/memory/`.
 
-- [web-deploy-easypanel](.claude/memory/web-deploy-easypanel.md) — Đưa bundle Flutter web lên server: nhánh deploy-easypanel, build ở máy dev, cách kiểm chứng
-- [backend-directus](.claude/memory/backend-directus.md) — Backend Directus trên EasyPanel: URL đang sống, 6 bẫy đã vấp, và nợ kỹ thuật row-level security
-- [e2e-auth-and-theme-seeding](.claude/memory/e2e-auth-and-theme-seeding.md) — E2E: seed phiên + chế độ tối vào localStorage; bẫy fixture chạy sau beforeEach
-- [e2e-playwright-accessibility](.claude/memory/e2e-playwright-accessibility.md) — ✅ Đã sửa (ce2391f): 4 nguyên nhân Playwright không chạy được với Flutter Web — hash routing, boot race, canvas semantics, data-testid
-- [sprint-17-training-flow-bug](.claude/memory/sprint-17-training-flow-bug.md) — ✅ Đã fix: DrillDetail CTA nhảy nhầm sang Training History
-
-- [claude-mem-auth-trap](.claude/memory/claude-mem-auth-trap.md) — claude-mem tước ANTHROPIC_* khỏi env; phải tạo ~/.claude-mem/.env trỏ vào proxy ocd, nếu không observation ngừng sinh
-
-## User Context
-
-- [user-project-context](.claude/memory/user-project-context.md) — Windows 11 + PowerShell, đường dẫn Flutter SDK, cấu trúc thư mục, repo
-
-## Reference
-
-- [python-environment](.claude/memory/python-environment.md) — Python 3.13.15 đã cài 28/8; bẫy stub Microsoft Store; skill nào cần Python
-- [understand-anything](.claude/memory/understand-anything.md) — Plugin Understand-Anything, các skill `/understand*`
-
-## History
-
-- [session-recovery](.claude/memory/session-recovery.md) — Khôi phục sau khi cài lại Windows (13/8/2026)
+**Thêm memory mới:** viết thẳng vào `.claude/memory/poolos.md`, đúng mục phù
+hợp. Chỉ thêm khi học được thứ sẽ còn đúng sau ba tháng nữa. Đừng tạo file thứ
+hai — mục đích của lần gộp này là để không bao giờ phải đi đối chiếu nhiều
+nguồn nữa.

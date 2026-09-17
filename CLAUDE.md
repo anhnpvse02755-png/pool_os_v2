@@ -6,10 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Memory
 
-Toàn bộ memory của dự án nằm ở **`.claude/memory/`**, index ở `MEMORY.md` tại
-gốc repo. Đọc `MEMORY.md` đầu mỗi session. Khi ghi memory mới, ghi vào
-`.claude/memory/` và thêm một dòng vào `MEMORY.md` — **không** dùng thư mục
-memory mặc định của harness (`~/.claude/projects/…/memory/`), nó đã được gộp bỏ.
+Dự án có **đúng một file memory**: `.claude/memory/poolos.md`. Đọc nó đầu mỗi
+session. **Không** dùng thư mục memory mặc định của harness
+(`~/.claude/projects/…/memory/`), nó đã được gộp bỏ.
+
+Memory **chỉ chứa thứ không rữa** — cạm bẫy, quy ước đã chốt, lý do đằng sau
+quyết định. Nó **không chứa trạng thái**: tiến độ ở `BACKLOG.md`, lịch sử ở
+`git log`, số lượng thì đếm bằng lệnh. Ghi memory mới thì viết thẳng vào
+`poolos.md`, đừng tạo file thứ hai.
 
 ## Lệnh
 
@@ -44,18 +48,21 @@ Flutter 3.47.0 · Dart 3.13.0 · Riverpod 2.x · GoRouter · Material 3.
 lib/core/         theme (design token) · router · providers · services · models
 lib/domain/       entities + services thuần, không phụ thuộc Flutter
 lib/data/         repositories (interface) · impl · datasources · remote · content
-lib/presentation/ screens (68 màn, 13 nhóm) · widgets dùng chung · providers
+lib/presentation/ screens (13 nhóm) · widgets dùng chung · providers
 lib/knowledge/    knowledge graph bi-a — node nhân/quả/quyết định, coach & conversation engine
 lib/beta/         nhánh tính năng beta, tự chứa (models/providers/services/presentation)
 ```
 
-Từ điển kiến thức là dữ liệu, không phải mã: `assets/knowledge/knowledge.json` (138 mục).
+Từ điển kiến thức là dữ liệu, không phải mã: `assets/knowledge/knowledge.json`.
 
-**Repository pattern có một điểm cần biết trước khi đọc code:** cả 10 provider
-trong `lib/core/providers/repository_providers.dart` đều trả về bản `Local*`
-(SharedPreferences). Supabase đã cấu hình nhưng **chưa nhánh nào dùng
-`SupabaseConfig.client`** — app hiện chạy hoàn toàn offline. Đừng giả định dữ
-liệu đi qua mạng.
+**Backend là DIRECTUS, không phải Supabase.** Supabase đã bị thay hẳn — gỡ khỏi
+`pubspec.yaml`, không còn import nào trong `lib/` (vài comment tàn dư thì đừng
+tin). API thật: https://poolos-api.kjdybl.easypanel.host
+
+**Nhưng chỉ auth đã nối.** Mọi provider trong
+`lib/core/providers/repository_providers.dart` còn trả bản `Local*`
+(SharedPreferences), nên dữ liệu nghiệp vụ vẫn nằm trên máy. Đừng giả định nó
+đi qua mạng — kiểm file đó trước, vì đây là thứ đang thay đổi.
 
 **Router dùng hash strategy.** Không có `usePathUrlStrategy`, nên URL thật là
 `/#/home`. Điều này chi phối toàn bộ cách viết E2E — xem
@@ -63,10 +70,10 @@ liệu đi qua mạng.
 
 ## Redesign "Kem ấm & Xanh rêu" — đã xong
 
-Đợt quét 68 màn từ xanh điện sang kem ấm + xanh rêu. **68/68 màn xong**
-(11/9/2026), **vệ sinh token 0 vi phạm** (lô A–F, 15/9), **gốc `ThemeData` hết
-xanh điện** (16/9). Plan ở `docs/superpowers/plans/2026-09-*-warm-green-*.md`.
-Ràng buộc vẫn bắt buộc với mọi màn đụng tới:
+Đợt quét toàn bộ màn từ xanh điện sang kem ấm + xanh rêu **đã xong**, gồm cả
+gốc `ThemeData`. Plan ở `docs/superpowers/plans/2026-09-*-warm-green-*.md`;
+bài học chi tiết ở `.claude/memory/poolos.md` mục 6. Ràng buộc vẫn bắt buộc với
+mọi màn đụng tới:
 
 - Màn đã quét **phải** dùng accessor `AppColors.foo(brightness)` — không để lại
   `AppColors.lightFoo` / `darkFoo` / `fooSubtleLight`.
