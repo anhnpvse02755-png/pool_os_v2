@@ -18,7 +18,6 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/data/models/training_session.dart';
-import 'package:pool_os_v2/core/providers/training_provider.dart';
 import 'package:pool_os_v2/core/services/coach_types.dart';
 import 'package:pool_os_v2/knowledge/player_intelligence.dart';
 import 'package:pool_os_v2/knowledge/priority_engine.dart';

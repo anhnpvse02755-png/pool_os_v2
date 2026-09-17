@@ -63,6 +63,9 @@ class TrainingNotifier extends StateNotifier<TrainingState> {
     try {
       await _ref.read(drillRepositoryProvider).saveTrainingSession(session);
       state = state.copyWith(sessions: [session, ...state.sessions]);
+      // Invalidate trainingHistoryProvider so FutureProvider readers (e.g.
+      // trainingHistoryScreen) see the new record without app restart.
+      _ref.invalidate(trainingHistoryProvider);
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
