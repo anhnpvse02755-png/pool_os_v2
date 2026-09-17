@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/training_session.dart';
 
@@ -377,9 +378,11 @@ class LocalStorageDataSource {
 
       await saveTrainingHistory(migrated);
       await prefs.setBool(_keyMigratedDrillSessions, true);
-    } catch (_) {
+    } catch (e) {
       // Corrupt record, bad date format, wrong type — do not crash the app.
       // The flag was NOT set, so this migration will be retried on next init.
+      // Log it: a permanently failing migration must not be invisible.
+      debugPrint('WARN: migrate drill_sessions failed: $e');
     }
   }
 
