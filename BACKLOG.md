@@ -215,7 +215,7 @@ Chi tiết hạ tầng + 6 bẫy đã vấp: `.claude/memory/backend-directus.md
 
 | Hạng mục | Bằng chứng |
 |---|---|
-| Test suite: 942 unit/widget pass | test |
+| Test suite: 951 unit/widget pass | test |
 | E2E Playwright: 22 pass (44 tính cả Firefox) | test |
 | `flutter analyze` 0 lỗi | test |
 | Thư viện kiến thức 138 mục, 8 category | test + runtime |
@@ -303,10 +303,10 @@ Theo luồng người dùng, **từng cái một**:
 - [ ] Sync engine: append-only union theo id cho session/match; last-write-wins
       theo `updated_at` cho player/equipment
 - [ ] Di trú dữ liệu SharedPreferences hiện có
-- [ ] Mục "Tiến độ kiến thức" ở màn Profile luôn rỗng — không gì ghi vào
-      `knowledge_progress`. Phát hiện khi gộp kho 17/9, **chưa sửa**. Quyết
-      định: nối `markKnowledgeAsRead` vào màn đọc kiến thức, hoặc gỡ mục đó
-      khỏi Profile.
+- [x] ~~Mục "Tiến độ kiến thức" ở màn Profile luôn rỗng~~ — **XONG 18/9/2026.**
+      Đã nối `markKnowledgeAsRead` vào `KnowledgeDetailScreen` (gọi ở
+      `initState`, không ở `build`). Màn Profile hiện tiêu đề bài thay vì id
+      thô. 9 test mới, đều đi qua màn hình chứ không gọi thẳng hàm ghi.
 
 ### UI còn thiếu (đang là `test.fixme` trong E2E)
 
@@ -328,7 +328,7 @@ Theo luồng người dùng, **từng cái một**:
 |---|---|
 | Giao diện & điều hướng | ✅ ~100% |
 | Nội dung (kiến thức, drill) | ✅ ~100% |
-| Test & CI | ✅ 942 + 22 pass |
+| Test & CI | ✅ 951 + 22 pass · `flutter analyze` 0 issue |
 | Lưu trữ local | ✅ một kho duy nhất (`LocalStorageDataSource`) |
 | Hạ tầng backend | ✅ đã dựng, đã kiểm chứng |
 | **App ↔ Backend** | ❌ **0%** |
