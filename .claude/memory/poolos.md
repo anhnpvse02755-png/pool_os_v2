@@ -471,6 +471,16 @@ pending"* chứ không phải vì assertion. Phải `pump(Duration(seconds: 1))`
 **không dùng được `pumpAndSettle`** vì vòng quay của trạng thái đang tải quay
 mãi.
 
+**"Không ai gọi" ≠ "mã chết".** Task 4 xoá `saveKnowledgeProgress` vì grep ra 0
+caller. Đúng là 0 caller, nhưng đó chính là **bug**: mục "Tiến độ kiến thức" ở
+Profile rỗng vì đường ghi chưa bao giờ được nối, không phải vì tính năng đã bỏ.
+Trước khi xoá một API không có caller, hỏi *"phía ĐỌC có ai dùng không"* — còn
+người đọc mà mất người ghi thì đó là tính năng gãy, không phải rác.
+
+Hệ quả cho cách viết test: bug dạng này **test gọi thẳng hàm ghi không bắt
+được** — nó xanh trong khi màn hình vẫn rỗng. Test phải đi qua màn hình. Kiểm
+bằng đột biến: bỏ lời gọi ở `initState`, test phải đỏ.
+
 **Đổi model mà quên nguồn phát `toJson`/`toMap` thì hỏng IM LẶNG.** `fromJson`
 không tìm thấy khoá sẽ rơi về mặc định — `0` và `DateTime.now()` — không một
 ngoại lệ nào nổ, không log nào in. Buổi tập đọc ra vẫn "hợp lệ", chỉ là số liệu
