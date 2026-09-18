@@ -67,7 +67,6 @@ Future<int> main(List<String> args) async {
     }
   }
   perDomainLocks.sort();
-  final sha = const {}.toString(); // placeholder for runtime hash
   // Use crypto to compute SHA256 of concatenated locks.
   // For simplicity, use plain concat + a length marker.
   final lockContent = perDomainLocks.join('\n');

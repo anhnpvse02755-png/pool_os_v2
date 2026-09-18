@@ -16,7 +16,7 @@ import '../../knowledge/player_intelligence.dart';
 import '../services/session_memory_service.dart';
 import '../services/coach_types.dart';
 import '../services/match_analysis_service.dart';
-import '../services/local_storage_service.dart';
+import '../../data/datasources/local/local_storage_datasource.dart';
 import '../models/match_stats.dart';
 import '../../knowledge/knowledge_graph_service.dart';
 import '../../knowledge/priority_engine.dart';
@@ -165,7 +165,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         drillCode: session.drillCode,
         score: session.score,
         durationMinutes: session.duration,
-        completedAt: session.date,
+        completedAt: session.completedAt,
         mistakes: mistakes,
       );
       updatedPI = updatedPI.updateWithSession(sessionData, drillSkills: drillSkills);
@@ -208,7 +208,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
   Future<void> _loadPlayerIntelligence() async {
     try {
       // Sprint-8: Try to load from storage first
-      final savedData = LocalStorageService.getPlayerIntelligence();
+      final savedData = LocalStorageDataSource.getPlayerIntelligence();
       if (savedData != null) {
         final playerIntelligence = PlayerIntelligence.fromJson(savedData);
         state = state.copyWith(playerIntelligence: playerIntelligence);
@@ -239,7 +239,7 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
         drillCode: session.drillCode,
         score: session.score,
         durationMinutes: session.duration,
-        completedAt: session.date,
+        completedAt: session.completedAt,
         mistakes: [],
       );
       playerIntelligence = playerIntelligence.updateWithSession(sessionData);
@@ -411,19 +411,19 @@ class CoachStateNotifier extends StateNotifier<CoachState> {
     await _savePlayerIntelligence();
 
     // Persist MatchAnalysis for app restart (Sprint-8)
-    await LocalStorageService.saveLatestMatchAnalysis(analysis.toJson());
+    await LocalStorageDataSource.saveLatestMatchAnalysis(analysis.toJson());
   }
 
   /// Clear MatchAnalysis when starting new match (Sprint-8)
   Future<void> clearMatchAnalysis() async {
-    await LocalStorageService.clearLatestMatchAnalysis();
+    await LocalStorageDataSource.clearLatestMatchAnalysis();
   }
 
   /// Save PlayerIntelligence to storage
   Future<void> _savePlayerIntelligence() async {
     // Sprint-8: Save PlayerIntelligence to local storage
     try {
-      await LocalStorageService.savePlayerIntelligence(
+      await LocalStorageDataSource.savePlayerIntelligence(
         state.playerIntelligence.toJson(),
       );
     } catch (e) {
@@ -743,7 +743,7 @@ final allDrillProgressProvider = Provider<Map<String, SimpleDrillProgress>>((ref
         totalAttempts: totalAttempts,
         successfulAttempts: successfulAttempts,
         averageAccuracy: avgAccuracy,
-        lastAttemptedAt: session.date,
+        lastAttemptedAt: session.completedAt,
       );
     } else {
       final successRate = session.shotsAttempted > 0
@@ -756,7 +756,7 @@ final allDrillProgressProvider = Provider<Map<String, SimpleDrillProgress>>((ref
         totalAttempts: session.shotsAttempted,
         successfulAttempts: session.shotsMade,
         averageAccuracy: session.score.toDouble(),
-        lastAttemptedAt: session.date,
+        lastAttemptedAt: session.completedAt,
       );
     }
   }
@@ -778,7 +778,7 @@ final matchAnalysisServiceProvider = Provider<MatchAnalysisService>((ref) {
 /// Sprint-11: Renamed from MatchAnalysis to MatchRackAnalysis
 final latestMatchAnalysisProvider = StateProvider<MatchRackAnalysis?>((ref) {
   // Load from storage on initialization (Sprint-8)
-  final savedData = LocalStorageService.getLatestMatchAnalysis();
+  final savedData = LocalStorageDataSource.getLatestMatchAnalysis();
   if (savedData != null) {
     try {
       return MatchRackAnalysis.fromJson(savedData);

@@ -3,13 +3,13 @@ import 'package:pool_os_v2/data/models/match.dart';
 import 'package:pool_os_v2/data/repositories/match_repository.dart';
 import 'package:pool_os_v2/domain/services/streak_calculator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:pool_os_v2/core/services/local_storage_service.dart';
+import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
+    await LocalStorageDataSource.init();
   });
 
   Future<void> seed(List<DateTime> dates) async {

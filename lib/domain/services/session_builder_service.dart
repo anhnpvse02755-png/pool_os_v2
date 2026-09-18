@@ -1,6 +1,6 @@
 import '../../core/models/session_item.dart';
+import '../../data/models/training_session.dart';
 import '../../knowledge/knowledge_graph_service.dart' as kg;
-import '../../core/providers/training_provider.dart';
 
 /// Session Builder Service
 ///
@@ -122,7 +122,7 @@ class SessionBuilderService {
     final latestByDrill = <String, TrainingSession>{};
     for (final s in history) {
       final ex = latestByDrill[s.drillCode];
-      if (ex == null || s.date.isAfter(ex.date)) {
+      if (ex == null || s.completedAt.isAfter(ex.completedAt)) {
         latestByDrill[s.drillCode] = s;
       }
     }
@@ -136,7 +136,7 @@ class SessionBuilderService {
       if (drillSessions.length < 2 && session.score < 70) continue;
 
       final threshold = retestThresholds[drill.difficulty.name] ?? 21;
-      final daysSince = today.difference(session.date).inDays;
+      final daysSince = today.difference(session.completedAt).inDays;
 
       if (daysSince >= threshold) {
         final urgency = daysSince - threshold;

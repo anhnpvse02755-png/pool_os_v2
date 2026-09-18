@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 import '../models/drill_attempt.dart';
 import '../models/drill_session.dart';
 import 'local_json_store.dart';
@@ -33,12 +33,12 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
 
   @override
   Future<DrillSession?> getActiveSession(String playerId) async {
-    final activeId = LocalStorageService.prefs.getString('$_kActiveKey$playerId');
+    final activeId = LocalStorageDataSource.prefs.getString('$_kActiveKey$playerId');
     if (activeId == null || activeId.isEmpty) return null;
     final session = await getById(activeId);
     if (session == null) return null;
     if (session.isActive) return session;
-    await LocalStorageService.prefs.remove('$_kActiveKey$playerId');
+    await LocalStorageDataSource.prefs.remove('$_kActiveKey$playerId');
     return null;
   }
 
@@ -77,10 +77,10 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
       }());
     }
     if (session.isActive) {
-      await LocalStorageService.prefs.setString(
+      await LocalStorageDataSource.prefs.setString(
           '$_kActiveKey${session.playerId}', session.id);
     } else {
-      await LocalStorageService.prefs.remove('$_kActiveKey${session.playerId}');
+      await LocalStorageDataSource.prefs.remove('$_kActiveKey${session.playerId}');
     }
   }
 
@@ -95,17 +95,17 @@ class LocalDrillSessionRepository implements IDrillSessionRepository {
         return true;
       }());
     }
-    await LocalStorageService.prefs.remove('$_kAttemptsPrefix$id');
+    await LocalStorageDataSource.prefs.remove('$_kAttemptsPrefix$id');
   }
 
   @override
   Future<void> addAttempt(DrillAttempt attempt) async {
-    final raw = LocalStorageService.prefs.getString('$_kAttemptsPrefix${attempt.sessionId}');
+    final raw = LocalStorageDataSource.prefs.getString('$_kAttemptsPrefix${attempt.sessionId}');
     final list = (raw == null || raw.isEmpty)
         ? <Map<String, dynamic>>[]
         : (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     list.add(attempt.toJson());
-    await LocalStorageService.prefs.setString(
+    await LocalStorageDataSource.prefs.setString(
         '$_kAttemptsPrefix${attempt.sessionId}', jsonEncode(list));
   }
 

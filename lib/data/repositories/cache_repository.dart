@@ -6,7 +6,7 @@
 // knowledge, etc.) without reaching into SharedPreferences directly.
 //
 // Boundary rule (Day 2A — Repository Dependency Enforcement):
-//   * Services MUST go through this repository, NOT LocalStorageService.
+//   * Services MUST go through this repository, NOT LocalStorageDataSource.
 //   * UI MUST go through providers (riverpod).
 //
 // This is intentionally thin — it does NOT enforce schema validation,
@@ -14,7 +14,7 @@
 // decode failures and key collisions themselves.
 // ============================================================================
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 
 abstract class ICacheRepository {
   String? getString(String key);
@@ -24,23 +24,31 @@ abstract class ICacheRepository {
   /// Returns the persisted knowledge progress map (article slug → progress).
   /// Day 2A: previously read directly from `LocalStorageService.getKnowledgeProgress`.
   Future<Map<String, dynamic>> getKnowledgeProgress();
+
+  /// Đánh dấu một bài kiến thức là đã đọc. `title` để màn Profile hiện được
+  /// tên bài thay vì id thô.
+  Future<void> markKnowledgeAsRead(String id, {String? title});
 }
 
 /// Local SharedPreferences-backed implementation. Delegates to the
-/// existing [LocalStorageService] static layer without exposing it to
+/// [LocalStorageDataSource] static layer without exposing it to
 /// callers — keeps the boundary closed.
 class LocalCacheRepository implements ICacheRepository {
   @override
-  String? getString(String key) => LocalStorageService.prefs.getString(key);
+  String? getString(String key) => LocalStorageDataSource.prefs.getString(key);
 
   @override
   Future<void> setString(String key, String value) =>
-      LocalStorageService.prefs.setString(key, value);
+      LocalStorageDataSource.prefs.setString(key, value);
 
   @override
-  Set<String> getKeys() => LocalStorageService.prefs.getKeys();
+  Set<String> getKeys() => LocalStorageDataSource.prefs.getKeys();
 
   @override
   Future<Map<String, dynamic>> getKnowledgeProgress() =>
-      LocalStorageService.getKnowledgeProgress();
+      LocalStorageDataSource.getKnowledgeProgress();
+
+  @override
+  Future<void> markKnowledgeAsRead(String id, {String? title}) =>
+      LocalStorageDataSource.markKnowledgeAsRead(id, title: title);
 }

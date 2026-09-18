@@ -224,10 +224,10 @@ class DrillSession {
         'drillName': run.drillName,
         'level': run.level,
         'score': run.successRate.round(),
-        'shotsAttempted': run.attempts,
         'shotsMade': run.successes,
+        'shotsMissed': run.attempts - run.successes,
         'duration': totalMinutes > 0 ? totalMinutes : run.durationSeconds ~/ 60,
-        'date': (completedAt ?? DateTime.now()).toIso8601String(),
+        'completedAt': (completedAt ?? DateTime.now()).toIso8601String(),
       };
     }
     return {
@@ -236,10 +236,10 @@ class DrillSession {
       'drillName': title,
       'level': 1,
       'score': accuracy.round(),
-      'shotsAttempted': totalShotsMade + totalShotsMissed,
       'shotsMade': totalShotsMade,
+      'shotsMissed': totalShotsMissed,
       'duration': totalMinutes,
-      'date': (completedAt ?? DateTime.now()).toIso8601String(),
+      'completedAt': (completedAt ?? DateTime.now()).toIso8601String(),
     };
   }
 }

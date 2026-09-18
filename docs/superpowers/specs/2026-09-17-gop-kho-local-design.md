@@ -29,13 +29,23 @@ cò.
 **Bug thật nằm ở chỗ khác và không có trong BACKLOG:** buổi tập đang được ghi
 vào **hai bản ghi tách rời**, writer và reader không giao nhau.
 
+> **Đính chính 17/9/2026 (sau khi thi hành Task 3).** Bản spec đầu tiên tả sai
+> mức độ, ghi rằng hai bên "không thấy của nhau". Đo lại trong mã thì nặng hơn
+> thế: `LocalDrillRepository.saveTrainingSession()` có **0 nơi gọi trong
+> `lib/`**, nên `training_history` **chưa bao giờ được ghi** một lần nào. Không
+> có chiều ngược lại để mà mất — mọi bên đọc nó luôn nhận danh sách rỗng, từ
+> ngày nó ra đời. Bảng dưới đã sửa theo thực đo.
+
 | Key | Ai ghi | Ai đọc |
 |---|---|---|
 | `drill_sessions` | `training_provider` (`addSession`) | chỉ `training_provider` |
-| `training_history` | `LocalDrillRepository.saveTrainingSession()` | `dashboard_provider`, `coach_ai_provider`, `repository_providers` |
+| `training_history` | **không ai** — `saveTrainingSession()` tồn tại nhưng 0 nơi gọi | `dashboard_provider`, `coach_ai_provider`, `repository_providers`, `training_history_screen`, `trend_dashboard_screen`, `unified_timeline_screen`, `SessionBuilderService` |
 
-Cùng là "một buổi tập đã xong". Hệ quả: buổi tập ghi qua `training_provider`
-**không bao giờ hiện ở** dashboard hay Coach, và ngược lại.
+Cùng là "một buổi tập đã xong". Hệ quả thật: buổi tập ghi qua
+`training_provider` chỉ nằm ở `drill_sessions` và chỉ chính nó đọc được; còn
+`training_history` — thứ mà dashboard, Coach và ba màn lịch sử đều đọc — **rỗng
+vĩnh viễn**. Giao diện lịch sử tập không phải là "thiếu vài buổi", nó chưa bao
+giờ có gì.
 
 Đây là lý do thật sự để làm việc này. Key đụng nhau chỉ là triệu chứng bề mặt
 của cùng một nguyên nhân: hai tầng lưu trữ song song mọc lên ở hai thời điểm
@@ -246,7 +256,7 @@ quyết định sản phẩm, không phải refactor.
 | Đổi constructor `TrainingNotifier` làm vỡ test | Khe `autoStart`/`initialState` giữ mặc định như cũ; 3 file test đã xác định trước |
 | `dashboard_provider.dart:265` đang ép kiểu `session.date as DateTime?` | Xem lại kiểu thật tại đó khi sửa, đừng đổi tên máy móc |
 | Bỏ sót một chỗ đọc `shotsAttempted` | Getter dẫn xuất giữ nguyên tên nên không có chỗ nào phải đổi |
-| Dữ liệu test cũ ở key `drill_sessions` mồ côi | Chấp nhận — chưa có người dùng thật, chỉ máy dev |
+| Dữ liệu test cũ ở key `drill_sessions` mồ côi | ~~Chấp nhận~~ **Đã đổi quyết định khi thi hành (Ruling 5).** "Chấp nhận" dựa trên giả định mất mát là vô hình. Sai: trước đợt này lịch sử tập đang hiện ra từ `drill_sessions`, sau đợt này notifier đọc `training_history`, nên lịch sử sẽ **biến mất trong app**. Đã thêm di trú một lần trong `LocalStorageDataSource.init()`, có cờ bền vững, bọc `try/catch`, và không xoá key cũ |
 
 ---
 

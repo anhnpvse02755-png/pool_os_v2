@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 import '../models/voice_note.dart';
 
 abstract class IVoiceNoteRepository {
@@ -14,7 +14,7 @@ class LocalVoiceNoteRepository implements IVoiceNoteRepository {
 
   @override
   Future<List<VoiceNote>> forMatch(String matchId) async {
-    final raw = LocalStorageService.prefs.getString(_kKey);
+    final raw = LocalStorageDataSource.prefs.getString(_kKey);
     if (raw == null || raw.isEmpty) return [];
     final all = (jsonDecode(raw) as List)
         .cast<Map<String, dynamic>>()
@@ -26,11 +26,11 @@ class LocalVoiceNoteRepository implements IVoiceNoteRepository {
 
   @override
   Future<void> save(VoiceNote note) async {
-    final raw = LocalStorageService.prefs.getString(_kKey);
+    final raw = LocalStorageDataSource.prefs.getString(_kKey);
     final list = (raw == null || raw.isEmpty)
         ? <Map<String, dynamic>>[]
         : (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     list.add(note.toJson());
-    await LocalStorageService.prefs.setString(_kKey, jsonEncode(list));
+    await LocalStorageDataSource.prefs.setString(_kKey, jsonEncode(list));
   }
 }

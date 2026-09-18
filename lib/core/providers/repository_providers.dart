@@ -165,7 +165,7 @@ final upcomingTournamentsProvider = FutureProvider<List<Tournament>>((ref) async
 // ============================================================================
 //
 // Domain services that need to cache parsed assets (drills, knowledge, etc.)
-// MUST go through this provider, not import LocalStorageService directly.
+// MUST go through this provider, not import LocalStorageDataSource directly.
 //
 // Tracked as: STAB-031 (P0 arch bypass closure).
 // ============================================================================

@@ -7,7 +7,7 @@
 // Full integration tests with SharedPreferences require widget tests.
 //
 // Key flow verified:
-// 1. TrainingSession has required fields (level, shotsAttempted)
+// 1. TrainingSession has required fields (level, shotsMade, shotsMissed)
 // 2. DrillSession.toTrainingSessionMap() produces correct data
 // 3. PerformanceSummary calculation logic
 // 4. WeaknessAnalysis identification logic
@@ -17,7 +17,7 @@
 // 8. Streak-aware priority and Coach reasoning (Sprint-13)
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pool_os_v2/core/providers/training_provider.dart';
+import 'package:pool_os_v2/data/models/training_session.dart';
 import 'package:pool_os_v2/core/services/coach_types.dart';
 import 'package:pool_os_v2/knowledge/player_intelligence.dart';
 import 'package:pool_os_v2/knowledge/priority_engine.dart';
@@ -32,10 +32,10 @@ void main() {
         drillName: 'Straight Shot',
         level: 2,
         score: 85,
-        shotsAttempted: 10,
         shotsMade: 8,
+        shotsMissed: 2,
         duration: 5,
-        date: DateTime.now(),
+        completedAt: DateTime.now(),
       );
 
       expect(session.level, equals(2));
@@ -49,10 +49,10 @@ void main() {
         drillName: 'Draw Shot',
         level: 3,
         score: 75,
-        shotsAttempted: 20,
         shotsMade: 15,
+        shotsMissed: 5,
         duration: 10,
-        date: DateTime(2024, 1, 15),
+        completedAt: DateTime(2024, 1, 15),
       );
 
       final json = original.toJson();
@@ -75,10 +75,10 @@ void main() {
           drillName: 'Drill A',
           level: 1,
           score: 80,
-          shotsAttempted: 10,
           shotsMade: 8,
+          shotsMissed: 2,
           duration: 5,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
         TrainingSession(
           id: '2',
@@ -86,10 +86,10 @@ void main() {
           drillName: 'Drill B',
           level: 1,
           score: 60,
-          shotsAttempted: 10,
           shotsMade: 6,
+          shotsMissed: 4,
           duration: 7,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
       ];
 
@@ -116,10 +116,10 @@ void main() {
           drillName: 'Strong Drill',
           level: 1,
           score: 90,
-          shotsAttempted: 10,
           shotsMade: 9,
+          shotsMissed: 1,
           duration: 5,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
         TrainingSession(
           id: '2',
@@ -127,10 +127,10 @@ void main() {
           drillName: 'Weak Drill',
           level: 1,
           score: 40,
-          shotsAttempted: 10,
           shotsMade: 4,
+          shotsMissed: 6,
           duration: 7,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
       ];
 
@@ -167,10 +167,10 @@ void main() {
           drillName: 'Weak Drill',
           level: 1,
           score: 40,
-          shotsAttempted: 10,
           shotsMade: 4,
+          shotsMissed: 6,
           duration: 7,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
         TrainingSession(
           id: '2',
@@ -178,10 +178,10 @@ void main() {
           drillName: 'Weak Drill',
           level: 1,
           score: 45,
-          shotsAttempted: 10,
           shotsMade: 4,
+          shotsMissed: 6,
           duration: 7,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
       ];
 
@@ -206,10 +206,10 @@ void main() {
           drillName: 'Test Drill',
           level: 1,
           score: 80,
-          shotsAttempted: 10,
           shotsMade: 8,
+          shotsMissed: 2,
           duration: 5,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
         TrainingSession(
           id: '2',
@@ -217,10 +217,10 @@ void main() {
           drillName: 'Test Drill',
           level: 2,
           score: 85,
-          shotsAttempted: 10,
           shotsMade: 8,
+          shotsMissed: 2,
           duration: 5,
-          date: DateTime.now(),
+          completedAt: DateTime.now(),
         ),
       ];
 
@@ -240,7 +240,7 @@ void main() {
                       100)
                     .roundToDouble()
                 : 0,
-            lastAttemptedAt: session.date,
+            lastAttemptedAt: session.completedAt,
           );
         } else {
           progressMap[session.drillCode] = SimpleDrillProgress(
@@ -250,7 +250,7 @@ void main() {
             totalAttempts: session.shotsAttempted,
             successfulAttempts: session.shotsMade,
             averageAccuracy: session.score.toDouble(),
-            lastAttemptedAt: session.date,
+            lastAttemptedAt: session.completedAt,
           );
         }
       }
@@ -973,7 +973,9 @@ void main() {
         playerIntelligence: pi,
         knowledgeGraph: kg,
       );
-      final plan = engine.getCoachingPlan();
+      // Goi de chac chan engine dung duoc session vua them ma khong nem; ban
+      // than `plan` khong duoc khang dinh gi o day nen khong giu bien.
+      engine.getCoachingPlan();
 
       // ShortTermMemory should have evidence
       final lastSession = pi.shortTermMemory.getLastSessionForDrill('BT01');

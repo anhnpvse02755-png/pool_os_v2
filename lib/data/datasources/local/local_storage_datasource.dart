@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../models/training_session.dart';
 
 /// LocalStorage Data Source
 /// Implements data persistence using SharedPreferences
@@ -25,10 +27,20 @@ class LocalStorageDataSource {
   static const String _keyWarmupLog = 'warmup_log';
   static const String _keyOnboardingCompleted = 'onboarding_completed';
   static const String _keyFirstLaunch = 'first_launch_complete';
+  static const String _keyDrillSessions = 'drill_sessions';
+  static const String _keyLatestMatchAnalysis = 'latest_match_analysis';
+  static const String _keyPlayerIntelligence = 'player_intelligence';
 
-  /// Initialize the data source
+  /// Key for the one-time migration flag (drill_sessions -> training_history).
+  static const String _keyMigratedDrillSessions =
+      'poolos_v2.migrated_drill_sessions';
+
+  /// Initialize the data source, then run the one-time migration.
+  /// `SharedPreferences.getInstance()` is itself a cached singleton, so calling
+  /// init() more than once is cheap and always yields the current store.
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    await _migrateDrillSessionsToTrainingHistory();
   }
 
   /// Get SharedPreferences instance
@@ -189,7 +201,18 @@ class LocalStorageDataSource {
     return data ?? {};
   }
 
-  static Future<void> saveKnowledgeProgress(Map<String, dynamic> progress) async {
+  /// Danh dau mot bai kien thuc la da doc.
+  ///
+  /// `readAt` giu lai LAN DOC DAU — man Profile hien "Doc luc ...", va moc do
+  /// phai la luc nguoi dung gap bai lan dau, khong phai lan mo gan nhat.
+  static Future<void> markKnowledgeAsRead(String id, {String? title}) async {
+    final progress = await getKnowledgeProgress();
+    final cu = progress[id] as Map<String, dynamic>?;
+    progress[id] = {
+      'read': true,
+      'readAt': cu?['readAt'] ?? DateTime.now().toIso8601String(),
+      'title': ?title,
+    };
     await setJson(_keyKnowledgeProgress, progress);
   }
 
@@ -304,6 +327,38 @@ class LocalStorageDataSource {
   }
 
   // ==========================================================================
+  // Coach — phan tich tran gan nhat & ho so nang luc
+  // Chuyen tu LocalStorageService (17/9/2026). Chu ky DONG BO giu nguyen
+  // nhu ban cu vi coach_provider goi khong await.
+  // ==========================================================================
+
+  static Future<void> saveLatestMatchAnalysis(
+      Map<String, dynamic> analysis) async {
+    await prefs.setString(_keyLatestMatchAnalysis, jsonEncode(analysis));
+  }
+
+  static Map<String, dynamic>? getLatestMatchAnalysis() {
+    final data = prefs.getString(_keyLatestMatchAnalysis);
+    if (data == null) return null;
+    return jsonDecode(data) as Map<String, dynamic>;
+  }
+
+  static Future<void> clearLatestMatchAnalysis() async {
+    await prefs.remove(_keyLatestMatchAnalysis);
+  }
+
+  static Future<void> savePlayerIntelligence(
+      Map<String, dynamic> intelligence) async {
+    await prefs.setString(_keyPlayerIntelligence, jsonEncode(intelligence));
+  }
+
+  static Map<String, dynamic>? getPlayerIntelligence() {
+    final data = prefs.getString(_keyPlayerIntelligence);
+    if (data == null) return null;
+    return jsonDecode(data) as Map<String, dynamic>;
+  }
+
+  // ==========================================================================
   // Warmup Log — Dac-Ta-Che-Do-Khoi-Dong.md
   // ==========================================================================
 
@@ -313,6 +368,76 @@ class LocalStorageDataSource {
 
   static Future<void> saveWarmupLogs(List<Map<String, dynamic>> logs) async {
     await setJsonList(_keyWarmupLog, logs);
+  }
+
+  // ==========================================================================
+  // One-time Migration: drill_sessions -> training_history
+  // ==========================================================================
+  // Before this change, TrainingNotifier wrote to key 'drill_sessions' (via
+  // LocalStorageService.saveDrillSession) while LocalDrillRepository.read
+  // from 'training_history'.  saveTrainingSession had ZERO callers, so
+  // training_history was always empty.
+  //
+  // This one-time migration reads existing 'drill_sessions' records (which
+  // contain the OLD keys: shotsAttempted, date) and converts them to the
+  // new format (shotsMissed, completedAt) using TrainingSession.fromJson
+  // (which is already tolerant of old keys from Task 1).
+  //
+  // Why a separate flag here instead of the existing schema-version system in
+  // main.dart (currentSchemaVersion / _migrate / poolos_v2.schema_version)?
+  // Because init() is the only entry point that is always called before any
+  // business logic — including widget tests, integration tests, and all app
+  // startup paths.  Embedding migration here means it runs for every test
+  // without needing to know about main.dart's version logic.
+  //
+  // Guarded by a flag in SharedPreferences; the flag is persistent across
+  // restarts and app upgrades.
+  // ==========================================================================
+
+  /// Runs once: copies drill_sessions data into training_history if the latter
+  /// is empty.  Safe to call on every init(); exits early if already done.
+  /// Failures are silently swallowed so a corrupt record does not prevent
+  /// the app from starting — the user simply has not migrated yet.
+  static Future<void> _migrateDrillSessionsToTrainingHistory() async {
+    try {
+      final already = prefs.getBool(_keyMigratedDrillSessions);
+      if (already == true) return;
+
+      final drillSessionsJson = prefs.getString(_keyDrillSessions);
+      if (drillSessionsJson == null || drillSessionsJson.isEmpty) {
+        await prefs.setBool(_keyMigratedDrillSessions, true);
+        return;
+      }
+
+      final existingHistory = await getTrainingHistory();
+      if (existingHistory.isNotEmpty) {
+        await prefs.setBool(_keyMigratedDrillSessions, true);
+        return;
+      }
+
+      final List<dynamic> oldList = jsonDecode(drillSessionsJson);
+      final migrated = <Map<String, dynamic>>[];
+      for (final raw in oldList) {
+        final session =
+            TrainingSession.fromJson(raw as Map<String, dynamic>);
+        migrated.add(session.toJson());
+      }
+
+      await saveTrainingHistory(migrated);
+      await prefs.setBool(_keyMigratedDrillSessions, true);
+    } catch (e) {
+      // Corrupt record, bad date format, wrong type — do not crash the app.
+      // The flag was NOT set, so this migration will be retried on next init.
+      // Log it: a permanently failing migration must not be invisible.
+      // Boc trong assert theo le cua repo (drill_progress_repository.dart:57,
+      // drill_session_repository.dart:74, personal_best_repository.dart:56):
+      // chi in o ban debug. `$e` co the mang mot mau JSON cua nguoi dung, khong
+      // duoc phep roi vao log ban release.
+      assert(() {
+        debugPrint('WARN: migrate drill_sessions failed: $e');
+        return true;
+      }());
+    }
   }
 
   // ==========================================================================
@@ -345,5 +470,11 @@ class LocalStorageDataSource {
     await prefs.remove(_keyCoachingHistory);
     await prefs.remove(_keyStreakInfo);
     await prefs.remove(_keyOnboardingCompleted);
+    await prefs.remove(_keyWarmupLog);
+    await prefs.remove(_keyFirstLaunch);
+    await prefs.remove(_keyDrillSessions);
+    await prefs.remove(_keyMigratedDrillSessions);
+    await prefs.remove(_keyLatestMatchAnalysis);
+    await prefs.remove(_keyPlayerIntelligence);
   }
 }

@@ -22,8 +22,22 @@ class MockCacheRepository implements ICacheRepository {
   @override
   Set<String> getKeys() => _storage.keys.toSet();
 
+  final Map<String, dynamic> _knowledge = {};
+
   @override
-  Future<Map<String, dynamic>> getKnowledgeProgress() async => {};
+  Future<Map<String, dynamic>> getKnowledgeProgress() async => _knowledge;
+
+  // Ghi that vao map chu khong tra rong: mock noi doi voi nhau thi test dua
+  // tren no khong con y nghia.
+  @override
+  Future<void> markKnowledgeAsRead(String id, {String? title}) async {
+    _knowledge[id] = {
+      'read': true,
+      'readAt': (_knowledge[id] as Map?)?['readAt'] ??
+          DateTime.now().toIso8601String(),
+      'title': ?title,
+    };
+  }
 }
 
 void main() {

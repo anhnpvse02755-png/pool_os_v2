@@ -23,7 +23,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:pool_os_v2/core/services/local_storage_service.dart';
+import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart'
     as repo_providers;
 import 'package:pool_os_v2/data/models/player.dart';
@@ -62,7 +62,7 @@ Future<void> _settle(WidgetTester tester) async {
 void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    await LocalStorageService.init();
+    await LocalStorageDataSource.init();
   });
 
   group('DrillSessionScreen UX — Sprint-17 Part 6 / Sprint-19 Redesign', () {

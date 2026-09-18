@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 import '../models/match.dart';
 import '../models/match_analysis.dart';
 import 'local_json_store.dart';
@@ -119,11 +119,11 @@ class LocalMatchRepository implements IMatchRepository {
     final all = await _readAll();
     all.removeWhere((m) => m.id == id);
     await _writeAll(all);
-    await LocalStorageService.prefs.remove('$_kRacksPrefix$id');
-    await LocalStorageService.prefs.remove('$_kPlayerStatePrefix$id');
-    await LocalStorageService.prefs.remove('$_kEquipmentPrefix$id');
-    await LocalStorageService.prefs.remove('$_kTimelinePrefix$id');
-    await LocalStorageService.prefs.remove('$_kAnalysisPrefix$id');
+    await LocalStorageDataSource.prefs.remove('$_kRacksPrefix$id');
+    await LocalStorageDataSource.prefs.remove('$_kPlayerStatePrefix$id');
+    await LocalStorageDataSource.prefs.remove('$_kEquipmentPrefix$id');
+    await LocalStorageDataSource.prefs.remove('$_kTimelinePrefix$id');
+    await LocalStorageDataSource.prefs.remove('$_kAnalysisPrefix$id');
   }
 
   // -- Racks --------------------------------------------------------------
@@ -138,12 +138,12 @@ class LocalMatchRepository implements IMatchRepository {
       racks.add(rack);
     }
     final raw = jsonEncode(racks.map((r) => r.toJson()).toList());
-    await LocalStorageService.prefs.setString('$_kRacksPrefix$matchId', raw);
+    await LocalStorageDataSource.prefs.setString('$_kRacksPrefix$matchId', raw);
   }
 
   @override
   Future<List<Rack>> getRacksByMatch(String matchId) async {
-    final raw = LocalStorageService.prefs.getString('$_kRacksPrefix$matchId');
+    final raw = LocalStorageDataSource.prefs.getString('$_kRacksPrefix$matchId');
     if (raw == null || raw.isEmpty) return [];
     final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     return list.map((j) => Rack.fromJson(j)).toList();
@@ -153,7 +153,7 @@ class LocalMatchRepository implements IMatchRepository {
 
   @override
   Future<void> savePlayerState(PlayerStateSnapshot state) async {
-    await LocalStorageService.prefs.setString(
+    await LocalStorageDataSource.prefs.setString(
       '$_kPlayerStatePrefix${state.matchId}',
       jsonEncode(state.toJson()),
     );
@@ -161,7 +161,7 @@ class LocalMatchRepository implements IMatchRepository {
 
   @override
   Future<PlayerStateSnapshot?> getPlayerState(String matchId) async {
-    final raw = LocalStorageService.prefs.getString('$_kPlayerStatePrefix$matchId');
+    final raw = LocalStorageDataSource.prefs.getString('$_kPlayerStatePrefix$matchId');
     if (raw == null || raw.isEmpty) return null;
     return PlayerStateSnapshot.fromJson(
         jsonDecode(raw) as Map<String, dynamic>);
@@ -171,7 +171,7 @@ class LocalMatchRepository implements IMatchRepository {
 
   @override
   Future<void> saveEquipmentSnapshot(MatchEquipmentSnapshot snapshot) async {
-    await LocalStorageService.prefs.setString(
+    await LocalStorageDataSource.prefs.setString(
       '$_kEquipmentPrefix${snapshot.matchId}',
       jsonEncode(snapshot.toJson()),
     );
@@ -179,7 +179,7 @@ class LocalMatchRepository implements IMatchRepository {
 
   @override
   Future<MatchEquipmentSnapshot?> getEquipmentSnapshot(String matchId) async {
-    final raw = LocalStorageService.prefs.getString('$_kEquipmentPrefix$matchId');
+    final raw = LocalStorageDataSource.prefs.getString('$_kEquipmentPrefix$matchId');
     if (raw == null || raw.isEmpty) return null;
     return MatchEquipmentSnapshot.fromJson(
         jsonDecode(raw) as Map<String, dynamic>);
@@ -193,12 +193,12 @@ class LocalMatchRepository implements IMatchRepository {
     entries.add(entry);
     entries.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     final raw = jsonEncode(entries.map((e) => e.toJson()).toList());
-    await LocalStorageService.prefs.setString('$_kTimelinePrefix$matchId', raw);
+    await LocalStorageDataSource.prefs.setString('$_kTimelinePrefix$matchId', raw);
   }
 
   @override
   Future<List<MatchTimelineEntry>> getTimeline(String matchId) async {
-    final raw = LocalStorageService.prefs.getString('$_kTimelinePrefix$matchId');
+    final raw = LocalStorageDataSource.prefs.getString('$_kTimelinePrefix$matchId');
     if (raw == null || raw.isEmpty) return [];
     final list = (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
     return list
@@ -211,7 +211,7 @@ class LocalMatchRepository implements IMatchRepository {
 
   @override
   Future<void> saveAnalysis(MatchAnalysis analysis) async {
-    await LocalStorageService.prefs.setString(
+    await LocalStorageDataSource.prefs.setString(
       '$_kAnalysisPrefix${analysis.matchId}',
       jsonEncode(analysis.toJson()),
     );
@@ -219,7 +219,7 @@ class LocalMatchRepository implements IMatchRepository {
 
   @override
   Future<MatchAnalysis?> getAnalysis(String matchId) async {
-    final raw = LocalStorageService.prefs.getString('$_kAnalysisPrefix$matchId');
+    final raw = LocalStorageDataSource.prefs.getString('$_kAnalysisPrefix$matchId');
     if (raw == null || raw.isEmpty) return null;
     return MatchAnalysis.fromJson(jsonDecode(raw) as Map<String, dynamic>);
   }

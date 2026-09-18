@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/providers/repository_providers.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/shadows.dart';
@@ -11,15 +12,56 @@ import '../../../knowledge/knowledge_models.dart';
 import '../../../knowledge/drill_code_bridge.dart';
 import '../../widgets/soft_background.dart';
 
-class KnowledgeDetailScreen extends ConsumerWidget {
+class KnowledgeDetailScreen extends ConsumerStatefulWidget {
   final String slug;
 
   const KnowledgeDetailScreen({super.key, required this.slug});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<KnowledgeDetailScreen> createState() =>
+      _KnowledgeDetailScreenState();
+}
+
+class _KnowledgeDetailScreenState extends ConsumerState<KnowledgeDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Ghi tien do doc o initState, KHONG o build(): build chay lai nhieu lan
+    // (doi theme, resize, rebuild cua provider) nen dat tac dung phu o do se
+    // ghi lai lien tuc. Cung ly do da bat WelcomeScreen phai bo context.go
+    // khoi build().
+    _ghiDaDoc();
+  }
+
+  /// Danh dau bai dang mo la da doc. Khong cho ket qua: nguoi dung khong phai
+  /// doi mot luot ghi SharedPreferences moi thay duoc bai viet.
+  Future<void> _ghiDaDoc() async {
+    final knowledge =
+        ref.read(knowledgeProvider.notifier).getBySlug(widget.slug);
+    if (knowledge == null) return;
+    try {
+      await ref.read(cacheRepositoryProvider).markKnowledgeAsRead(
+            knowledge.id,
+            title: knowledge.titleVi ?? knowledge.title,
+          );
+    } catch (e) {
+      // Ghi tien do la viec PHU. Kho chua init (deep link truoc khi main() kip
+      // chay) khong duoc phep lam hong man DOC bai — noi dung bai viet nam
+      // trong asset, khong phu thuoc gi vao SharedPreferences.
+      //
+      // Boc trong assert theo le cua repo: chi in o ban debug.
+      assert(() {
+        debugPrint('WARN: khong ghi duoc tien do doc: $e');
+        return true;
+      }());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final brightness = Theme.of(context).brightness;
-    final knowledge = ref.read(knowledgeProvider.notifier).getBySlug(slug);
+    final knowledge =
+        ref.read(knowledgeProvider.notifier).getBySlug(widget.slug);
 
     if (knowledge == null) {
       return Scaffold(

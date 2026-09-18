@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:pool_os_v2/data/datasources/local/local_storage_datasource.dart';
 import 'package:pool_os_v2/presentation/screens/training/knowledge_detail_screen.dart';
 import 'package:pool_os_v2/knowledge/knowledge_provider.dart';
 import 'package:pool_os_v2/knowledge/knowledge_models.dart';
@@ -114,6 +116,74 @@ void main() {
       await tester.pumpWidget(buildScreen('does-not-exist'));
       await tester.pumpAndSettle();
       expect(find.text('Không tìm thấy bài viết'), findsOneWidget);
+    });
+  });
+
+  // ── Ghi tiến độ đọc ──────────────────────────────────────────────────────
+  //
+  // Cổng thật của bug "mục Tiến độ kiến thức ở Profile luôn rỗng". Bug KHÔNG
+  // nằm ở hàm ghi sai, mà ở chỗ KHÔNG AI GỌI hàm ghi. Nên mọi test ở group
+  // này phải đi qua MÀN HÌNH — test gọi thẳng `markKnowledgeAsRead` sẽ xanh
+  // trong khi Profile vẫn rỗng, đúng cái bẫy ở memory mục 9.
+  group('KnowledgeDetailScreen ghi tiến độ đọc', () {
+    setUp(() async {
+      SharedPreferences.setMockInitialValues({});
+      await LocalStorageDataSource.init();
+    });
+
+    testWidgets('mở một bài thì bài đó được đánh dấu đã đọc', (tester) async {
+      expect(await LocalStorageDataSource.getKnowledgeProgress(), isEmpty);
+
+      await tester.pumpWidget(buildScreen('stop-shot'));
+      await tester.pumpAndSettle();
+
+      final progress = await LocalStorageDataSource.getKnowledgeProgress();
+      expect(progress.containsKey('kn_stop_shot'), isTrue);
+      expect((progress['kn_stop_shot'] as Map)['read'], isTrue);
+    });
+
+    testWidgets('bản ghi mang tiêu đề tiếng Việt để Profile khỏi hiện id thô',
+        (tester) async {
+      await tester.pumpWidget(buildScreen('stop-shot'));
+      await tester.pumpAndSettle();
+
+      final progress = await LocalStorageDataSource.getKnowledgeProgress();
+      expect((progress['kn_stop_shot'] as Map)['title'], 'Cú Dừng');
+    });
+
+    testWidgets('slug không tồn tại thì không ghi gì', (tester) async {
+      await tester.pumpWidget(buildScreen('does-not-exist'));
+      await tester.pumpAndSettle();
+
+      expect(await LocalStorageDataSource.getKnowledgeProgress(), isEmpty);
+    });
+
+    testWidgets('đọc lại một bài giữ nguyên readAt của lần đọc đầu',
+        (tester) async {
+      await tester.pumpWidget(buildScreen('stop-shot'));
+      await tester.pumpAndSettle();
+      final lanDau = (await LocalStorageDataSource.getKnowledgeProgress())
+          ['kn_stop_shot'] as Map;
+      final readAtDau = lanDau['readAt'] as String;
+
+      await tester.pumpWidget(buildScreen('stop-shot'));
+      await tester.pumpAndSettle();
+
+      final lanSau = (await LocalStorageDataSource.getKnowledgeProgress())
+          ['kn_stop_shot'] as Map;
+      expect(lanSau['readAt'], readAtDau);
+    });
+
+    testWidgets('đọc bài thứ hai không xoá bản ghi của bài thứ nhất',
+        (tester) async {
+      await tester.pumpWidget(buildScreen('stop-shot'));
+      await tester.pumpAndSettle();
+
+      await tester.pumpWidget(buildScreen('draw-shot'));
+      await tester.pumpAndSettle();
+
+      final progress = await LocalStorageDataSource.getKnowledgeProgress();
+      expect(progress.keys, containsAll(['kn_stop_shot', 'kn_draw_shot']));
     });
   });
 }

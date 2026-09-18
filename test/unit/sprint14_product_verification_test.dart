@@ -12,6 +12,7 @@
 // Scenario D: Winning streak → Challenge mode
 // Scenario E: Combined → Training + Match context
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/knowledge/player_intelligence.dart';
 import 'package:pool_os_v2/knowledge/priority_engine.dart';
@@ -66,8 +67,8 @@ void main() {
       // Coach reasoning should mention sessions and potentially weakness
       expect(plan.reasoning, contains('buổi tập'),
           reason: 'Coach should mention training sessions');
-      print('SCENARIO A - Reasoning: ${plan.reasoning}');
-      print('SCENARIO A - Avoids: ${plan.avoidRecommendations.map((a) => a.item).join(", ")}');
+      debugPrint('SCENARIO A - Reasoning: ${plan.reasoning}');
+      debugPrint('SCENARIO A - Avoids: ${plan.avoidRecommendations.map((a) => a.item).join(", ")}');
     });
 
     // =========================================================================
@@ -124,8 +125,8 @@ void main() {
       expect(plan.reasoning, contains('trận'),
           reason: 'Coach should mention matches');
 
-      print('SCENARIO B - Improvement Rate: ${pi.progress.improvementRate.toStringAsFixed(1)}%');
-      print('SCENARIO B - Reasoning: ${plan.reasoning}');
+      debugPrint('SCENARIO B - Improvement Rate: ${pi.progress.improvementRate.toStringAsFixed(1)}%');
+      debugPrint('SCENARIO B - Reasoning: ${plan.reasoning}');
     });
 
     // =========================================================================
@@ -171,9 +172,9 @@ void main() {
       expect(plan.reasoning, contains('thua'),
           reason: 'Coach should mention losing streak');
 
-      print('SCENARIO C - Streak: ${pi.matchPatterns.currentStreak.count} ${pi.matchPatterns.currentStreak.type}');
-      print('SCENARIO C - Avoids: ${plan.avoidRecommendations.map((a) => a.item).join(", ")}');
-      print('SCENARIO C - Reasoning: ${plan.reasoning}');
+      debugPrint('SCENARIO C - Streak: ${pi.matchPatterns.currentStreak.count} ${pi.matchPatterns.currentStreak.type}');
+      debugPrint('SCENARIO C - Avoids: ${plan.avoidRecommendations.map((a) => a.item).join(", ")}');
+      debugPrint('SCENARIO C - Reasoning: ${plan.reasoning}');
     });
 
     // =========================================================================
@@ -212,8 +213,8 @@ void main() {
       expect(plan.reasoning, contains('thắng'),
           reason: 'Coach should mention winning streak');
 
-      print('SCENARIO D - Streak: ${pi.matchPatterns.currentStreak.count} ${pi.matchPatterns.currentStreak.type}');
-      print('SCENARIO D - Reasoning: ${plan.reasoning}');
+      debugPrint('SCENARIO D - Streak: ${pi.matchPatterns.currentStreak.count} ${pi.matchPatterns.currentStreak.type}');
+      debugPrint('SCENARIO D - Reasoning: ${plan.reasoning}');
     });
 
     // =========================================================================
@@ -276,10 +277,10 @@ void main() {
       expect(hasRecoveryAvoid, isTrue,
           reason: 'Should have recovery advice for losing streak + weakness');
 
-      print('SCENARIO E - Training Skills: ${pi.skillProfile.skills.keys.join(", ")}');
-      print('SCENARIO E - Match Streak: ${pi.matchPatterns.currentStreak.count} ${pi.matchPatterns.currentStreak.type}');
-      print('SCENARIO E - Reasoning: $reasoning');
-      print('SCENARIO E - Avoids: ${plan.avoidRecommendations.map((a) => "${a.item}: ${a.reason}").join("; ")}');
+      debugPrint('SCENARIO E - Training Skills: ${pi.skillProfile.skills.keys.join(", ")}');
+      debugPrint('SCENARIO E - Match Streak: ${pi.matchPatterns.currentStreak.count} ${pi.matchPatterns.currentStreak.type}');
+      debugPrint('SCENARIO E - Reasoning: $reasoning');
+      debugPrint('SCENARIO E - Avoids: ${plan.avoidRecommendations.map((a) => "${a.item}: ${a.reason}").join("; ")}');
     });
 
     // =========================================================================
@@ -312,7 +313,7 @@ void main() {
       expect(plan.reasoning, isNotEmpty,
           reason: 'Coach should still provide reasoning for new users');
 
-      print('EDGE CASE - Reasoning: ${plan.reasoning}');
+      debugPrint('EDGE CASE - Reasoning: ${plan.reasoning}');
     });
   });
 }

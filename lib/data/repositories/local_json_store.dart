@@ -15,7 +15,7 @@
 // 4. Graceful degradation when storage fails
 //
 // Boundary rule preserved:
-//   - This helper touches LocalStorageService directly. It MUST only be used
+//   - This helper touches LocalStorageDataSource directly. It MUST only be used
 //     inside the data layer (lib/data/repositories/).
 //   - It is NOT exposed to UI, services, or providers.
 //
@@ -29,7 +29,7 @@
 
 import 'dart:convert';
 
-import '../../core/services/local_storage_service.dart';
+import '../datasources/local/local_storage_datasource.dart';
 import 'package:flutter/foundation.dart';
 
 /// Result of a write operation with verification status.
@@ -103,7 +103,7 @@ class LocalJsonStore<T> {
     if (!_storageAvailable) return <T>[];
 
     try {
-      final raw = LocalStorageService.prefs.getString(key);
+      final raw = LocalStorageDataSource.prefs.getString(key);
       if (raw == null || raw.isEmpty) return <T>[];
 
       final decoded = jsonDecode(raw);
@@ -144,7 +144,7 @@ class LocalJsonStore<T> {
       _pendingWrites[key] = DateTime.now();
 
       // Perform the write
-      await LocalStorageService.prefs.setString(key, encoded);
+      await LocalStorageDataSource.prefs.setString(key, encoded);
 
       // Verify write by reloading
       final verified = await _verifyWrite(key, encoded);
@@ -177,10 +177,10 @@ class LocalJsonStore<T> {
   Future<bool> _verifyWrite(String key, String expected) async {
     try {
       // Force reload from disk
-      await LocalStorageService.prefs.reload();
+      await LocalStorageDataSource.prefs.reload();
 
       // Read back and compare
-      final actual = LocalStorageService.prefs.getString(key);
+      final actual = LocalStorageDataSource.prefs.getString(key);
       return actual == expected;
     } catch (e) {
       // If reload fails, assume write succeeded but log warning
@@ -192,7 +192,7 @@ class LocalJsonStore<T> {
   /// Handle corrupt data by clearing the key.
   Future<void> _handleCorruptData(FormatException e) async {
     try {
-      await LocalStorageService.prefs.remove(key);
+      await LocalStorageDataSource.prefs.remove(key);
     } catch (_) {
       // If we can't clear, at least mark storage as problematic
     }
@@ -201,7 +201,7 @@ class LocalJsonStore<T> {
   /// Clear corrupt data - same as handleCorruptData but public.
   Future<void> _clearCorruptData() async {
     try {
-      await LocalStorageService.prefs.remove(key);
+      await LocalStorageDataSource.prefs.remove(key);
     } catch (_) {}
   }
 
@@ -222,7 +222,7 @@ extension PendingWritesExtension on LocalJsonStore {
   /// Returns true if all writes are verified or false if some may be lost.
   static Future<bool> flushPendingWrites() async {
     try {
-      await LocalStorageService.prefs.reload();
+      await LocalStorageDataSource.prefs.reload();
       return true;
     } catch (e) {
       return false;
