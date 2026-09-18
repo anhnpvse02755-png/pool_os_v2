@@ -415,7 +415,3 @@ Set<String> buildValidCategoryIds(dynamic categoriesJson) {
   return out;
 }
 
-extension _AllMatchesExt on String {
-  Iterable<Match> allMatches(String pattern) =>
-      RegExp(pattern).allMatches(this);
-}

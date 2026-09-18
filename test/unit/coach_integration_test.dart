@@ -973,7 +973,9 @@ void main() {
         playerIntelligence: pi,
         knowledgeGraph: kg,
       );
-      final plan = engine.getCoachingPlan();
+      // Goi de chac chan engine dung duoc session vua them ma khong nem; ban
+      // than `plan` khong duoc khang dinh gi o day nen khong giu bien.
+      engine.getCoachingPlan();
 
       // ShortTermMemory should have evidence
       final lastSession = pi.shortTermMemory.getLastSessionForDrill('BT01');

@@ -14,7 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:pool_os_v2/core/providers/repository_providers.dart'
     as repo_providers;
 import 'package:pool_os_v2/data/models/equipment.dart';
-import 'package:pool_os_v2/presentation/screens/profile/equipment_screen.dart' hide Equipment;
+import 'package:pool_os_v2/presentation/screens/profile/equipment_screen.dart';
 
 import '../helpers/fake_equipment_repository.dart';
 

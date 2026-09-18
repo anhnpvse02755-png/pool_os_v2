@@ -93,7 +93,7 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
                   borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
                 ),
                 child: Text(
-                  '$readCount articles',
+                  '$readCount bài viết',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -162,7 +162,10 @@ class _KnowledgeProgressSectionState extends State<KnowledgeProgressSection> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                id,
+                                // Ban ghi truoc 18/9/2026 khong co `title` —
+                                // roi ve id de khong vo, dung hien chuoi rong.
+                                (_progress[id] as Map)['title'] as String? ??
+                                    id,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w500,
                                   color: AppColors.textPrimary(brightness),

@@ -201,6 +201,21 @@ class LocalStorageDataSource {
     return data ?? {};
   }
 
+  /// Danh dau mot bai kien thuc la da doc.
+  ///
+  /// `readAt` giu lai LAN DOC DAU — man Profile hien "Doc luc ...", va moc do
+  /// phai la luc nguoi dung gap bai lan dau, khong phai lan mo gan nhat.
+  static Future<void> markKnowledgeAsRead(String id, {String? title}) async {
+    final progress = await getKnowledgeProgress();
+    final cu = progress[id] as Map<String, dynamic>?;
+    progress[id] = {
+      'read': true,
+      'readAt': cu?['readAt'] ?? DateTime.now().toIso8601String(),
+      'title': ?title,
+    };
+    await setJson(_keyKnowledgeProgress, progress);
+  }
+
   // ==========================================================================
   // Matches
   // ==========================================================================

@@ -135,6 +135,14 @@ void main() {
       expect(easyCount, greaterThan(0),
           reason: 'No easy drills found - bad for onboarding');
 
+      // `mediumCount`/`hardCount` truoc day tinh ra roi bo khong — lint chi o
+      // muc canh bao nen khong ai thay. Ten test la "distribution is
+      // reasonable", ma mot thang do CHI co easy va expert thi khong reasonable.
+      expect(mediumCount, greaterThan(0),
+          reason: 'No medium drills - nguoi moi khong co buoc chuyen tiep');
+      expect(hardCount, greaterThan(0),
+          reason: 'No hard drills - nguoi kha khong co gi de tap');
+
       // Expert drills should be rare
       expect(expertCount, lessThan(allDrills.length ~/ 2),
           reason: 'Too many expert drills');

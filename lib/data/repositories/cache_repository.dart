@@ -24,6 +24,10 @@ abstract class ICacheRepository {
   /// Returns the persisted knowledge progress map (article slug → progress).
   /// Day 2A: previously read directly from `LocalStorageService.getKnowledgeProgress`.
   Future<Map<String, dynamic>> getKnowledgeProgress();
+
+  /// Đánh dấu một bài kiến thức là đã đọc. `title` để màn Profile hiện được
+  /// tên bài thay vì id thô.
+  Future<void> markKnowledgeAsRead(String id, {String? title});
 }
 
 /// Local SharedPreferences-backed implementation. Delegates to the
@@ -43,4 +47,8 @@ class LocalCacheRepository implements ICacheRepository {
   @override
   Future<Map<String, dynamic>> getKnowledgeProgress() =>
       LocalStorageDataSource.getKnowledgeProgress();
+
+  @override
+  Future<void> markKnowledgeAsRead(String id, {String? title}) =>
+      LocalStorageDataSource.markKnowledgeAsRead(id, title: title);
 }
