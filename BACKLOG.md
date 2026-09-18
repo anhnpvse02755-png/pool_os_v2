@@ -1,6 +1,6 @@
 # PoolOS v2 — Backlog & Nguồn sự thật
 
-**Cập nhật:** 2026-09-09
+**Cập nhật:** 2026-09-18
 **Vai trò:** Đây là **nguồn sự thật duy nhất** về trạng thái dự án. Mọi sprint
 phải đọc file này trước.
 
@@ -215,7 +215,7 @@ Chi tiết hạ tầng + 6 bẫy đã vấp: `.claude/memory/backend-directus.md
 
 | Hạng mục | Bằng chứng |
 |---|---|
-| Test suite: 473 unit/widget pass | test |
+| Test suite: 942 unit/widget pass | test |
 | E2E Playwright: 22 pass (44 tính cả Firefox) | test |
 | `flutter analyze` 0 lỗi | test |
 | Thư viện kiến thức 138 mục, 8 category | test + runtime |
@@ -290,14 +290,23 @@ Theo luồng người dùng, **từng cái một**:
 
 ### Sprint 5 — Local-first + Sync
 
-- [ ] Hợp nhất 2 kho local — `LocalStorageService` và `LocalStorageDataSource`
-      đang **đụng key `knowledge_progress`**
+- [x] ~~Hợp nhất 2 kho local~~ — **XONG 17/9/2026** (nhánh `feat/gop-kho-local`).
+      Ghi chú: key `knowledge_progress` trùng nhau **không phải** bug đang sống
+      — không bên nào ghi vào nó. Bug thật là buổi tập nằm ở **hai bản ghi tách
+      rời** (`drill_sessions` vs `training_history`) nên dashboard và Coach
+      không thấy buổi tập ghi qua `training_provider`. `LocalStorageService` đã
+      bị xoá hẳn, chỉ còn `LocalStorageDataSource`. Thiết kế:
+      `docs/superpowers/specs/2026-09-17-gop-kho-local-design.md`.
 - [ ] Đưa drift vào (đã spike: chạy được cả 6 nền tảng kể cả web, cần 2 asset
       `sqlite3.wasm` + `drift_worker.js` ~1.1 MB trong `web/`)
 - [ ] Cột `dirty` / `updated_at` / tombstone
 - [ ] Sync engine: append-only union theo id cho session/match; last-write-wins
       theo `updated_at` cho player/equipment
 - [ ] Di trú dữ liệu SharedPreferences hiện có
+- [ ] Mục "Tiến độ kiến thức" ở màn Profile luôn rỗng — không gì ghi vào
+      `knowledge_progress`. Phát hiện khi gộp kho 17/9, **chưa sửa**. Quyết
+      định: nối `markKnowledgeAsRead` vào màn đọc kiến thức, hoặc gỡ mục đó
+      khỏi Profile.
 
 ### UI còn thiếu (đang là `test.fixme` trong E2E)
 
@@ -319,8 +328,8 @@ Theo luồng người dùng, **từng cái một**:
 |---|---|
 | Giao diện & điều hướng | ✅ ~100% |
 | Nội dung (kiến thức, drill) | ✅ ~100% |
-| Test & CI | ✅ 473 + 22 pass |
-| Lưu trữ local | 🟢 chạy, nhưng 2 kho đụng key |
+| Test & CI | ✅ 942 + 22 pass |
+| Lưu trữ local | ✅ một kho duy nhất (`LocalStorageDataSource`) |
 | Hạ tầng backend | ✅ đã dựng, đã kiểm chứng |
 | **App ↔ Backend** | ❌ **0%** |
 | **Đồng bộ đa thiết bị** | ❌ **0%** |

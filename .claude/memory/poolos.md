@@ -471,6 +471,25 @@ pending"* chứ không phải vì assertion. Phải `pump(Duration(seconds: 1))`
 **không dùng được `pumpAndSettle`** vì vòng quay của trạng thái đang tải quay
 mãi.
 
+**Đổi model mà quên nguồn phát `toJson`/`toMap` thì hỏng IM LẶNG.** `fromJson`
+không tìm thấy khoá sẽ rơi về mặc định — `0` và `DateTime.now()` — không một
+ngoại lệ nào nổ, không log nào in. Buổi tập đọc ra vẫn "hợp lệ", chỉ là số liệu
+sai và ngày là hôm nay. Sửa model thì phải đi ngược lên **mọi** chỗ phát ra map
+đó, đừng chỉ sửa chỗ đọc.
+
+**`setMockInitialValues` KHÔNG xoá cache singleton tĩnh của
+`shared_preferences`** (bản `_foundation` 2.x). `getInstance()` trả lại đúng
+instance cũ, nên prefs rò rỉ **giữa các file test** chứ không chỉ giữa các test
+trong một file. Triệu chứng: test xanh khi chạy riêng, đỏ khi chạy cả suite
+(hoặc ngược lại). Đừng thêm `reset()`/`setTestPrefs()` vào **mã sản phẩm** để
+vá — đó là API chỉ-để-test làm bẩn tầng thật; seed prefs trong `setUp` của từng
+file thay vào đó.
+
+**Một hàm có hai chế độ hỏng thì cần hai test, không phải một.**
+`wipeAllLocalData()` vừa có thể xoá thiếu key vừa có thể xoá nhầm cờ di trú; một
+test bao cả hai sẽ vẫn xanh khi một trong hai hỏng. Kiểm bằng **đột biến từng
+nhánh**: tắt riêng từng guard, phải có **đúng một** test đỏ cho mỗi nhánh.
+
 **Test xanh chưa chắc test đúng.** Một test cho lỗi "CTA dùng chuỗi cứng" ban
 đầu chỉ khẳng định *hằng số* giải được — nó vẫn xanh khi cái nút bên dưới còn
 dùng chuỗi cứng. Phải dựng GoRouter thật, **bấm nút**, đọc mã trong URL. Kiểm
